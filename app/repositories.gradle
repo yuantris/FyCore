@@ -1,0 +1,10 @@
+//1600
+allprojects {
+    repositories {
+        maven { url "https://artifact.bytedance.com/repository/Volcengine/" }
+        maven { url "https://artifact.bytedance.com/repository/pangle/" }
+        maven { url 'https://maven.aliyun.com/repository/central' }
+        maven { url 'https://maven.aliyun.com/repository/public' }
+        maven { url 'https://maven.aliyun.com/repository/google' }
+    }
+}

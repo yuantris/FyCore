@@ -1,0 +1,58 @@
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+
+//添加 repositories.gradle
+apply from: 'app/repositories.gradle'
+
+buildscript {
+    ext.kotlin_version = '1.7.20'
+    repositories {
+        maven {
+            credentials {
+                username '63d4d579378edb0fd9aa3b2d'
+                password ']NMEqopV(RUs'
+            }
+            url 'https://packages.aliyun.com/maven/repository/2081012-release-FVvGXU/'
+        }
+        maven {
+            credentials {
+                username '63d4d579378edb0fd9aa3b2d'
+                password ']NMEqopV(RUs'
+            }
+            url 'https://packages.aliyun.com/maven/repository/2081012-snapshot-SS3pDx/'
+        }
+        maven { url 'https://jitpack.io' }
+        mavenCentral()
+        google()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:7.3.1'
+        classpath 'com.zy.sdk.res.guard:gradle-plugin:1.6.03'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
+allprojects {
+    repositories {
+        maven {
+            credentials {
+                username '63d4d579378edb0fd9aa3b2d'
+                password ']NMEqopV(RUs'
+            }
+            url 'https://packages.aliyun.com/maven/repository/2081012-release-FVvGXU/'
+        }
+        maven {
+            credentials {
+                username '63d4d579378edb0fd9aa3b2d'
+                password ']NMEqopV(RUs'
+            }
+            url 'https://packages.aliyun.com/maven/repository/2081012-snapshot-SS3pDx/'
+        }
+        maven { url 'https://jitpack.io' }
+        mavenCentral()
+        google()
+    }
+}
+
+tasks.register('clean', Delete) {
+    delete rootProject.buildDir
+}

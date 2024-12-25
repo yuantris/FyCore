@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.core.libraries.view.TitleBar
+        android:id="@+id/title_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:backgroundColor="#FFDDDD"
+        app:layout_constraintTop_toTopOf="parent"
+        app:leftIcon="@drawable/bar_arrows_left_black"
+        app:titleLeftAlign="false"
+        app:titleSize="@dimen/sp_18"
+        app:titleText="Dialog" />
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintTop_toBottomOf="@+id/title_bar">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/show"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="显示" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/dismiss"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="隐藏" />
+    </androidx.appcompat.widget.LinearLayoutCompat>
+</androidx.constraintlayout.widget.ConstraintLayout>

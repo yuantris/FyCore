@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="TitleBar">
+        <!-- 中间标题 -->
+        <attr name="titleText" format="string" />
+        <attr name="titleColor" format="reference|color" />
+        <attr name="titleSize" format="dimension" />
+        <attr name="titleLeftAlign" format="boolean" />
+        <!-- 背景色值 -->
+        <attr name="backgroundColor" format="color" />
+        <!-- 竖向 Padding -->
+        <attr name="verticalPadding" format="dimension" />
+        <!-- 左侧图标 -->
+        <attr name="leftIcon" format="reference" />
+
+    </declare-styleable>
+
+
+</resources>

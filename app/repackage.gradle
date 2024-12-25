@@ -1,0 +1,1367 @@
+apply plugin: 'com.android.application'
+
+
+import groovy.json.JsonOutput
+import groovy.json.JsonSlurper
+import groovy.namespace.QName
+import groovy.xml.Namespace
+
+import javax.crypto.Cipher
+import javax.crypto.spec.IvParameterSpec
+import javax.crypto.spec.SecretKeySpec
+import java.util.regex.Matcher
+import java.util.regex.Pattern
+
+import static groovy.io.FileType.FILES
+
+android {
+    def ZYV = "1618"
+    flavorDimensions "ZYAUTO${ZYV}"
+    JsonSlurper jsonSlurper = new JsonSlurper()
+    def json = file("${projectDir.path}/channel/info.json").getText("UTF-8")
+    def flavors = jsonSlurper.parseText(json) //转换成Jsons数组对象
+    String OS = System.getProperty("os.name").toLowerCase()//系统名称
+    def prodName = "zytest"//修改默认渠道包
+    def channels = [prodName]//多渠道名称
+
+    def isXiaoMi = true
+    def isNoTx = true
+
+    //忽略图片的检测
+    aaptOptions.cruncherEnabled = false
+    aaptOptions.useNewCruncher = false
+
+    //设置日志级别
+    logging.captureStandardOutput LogLevel.ERROR
+
+
+    signingConfigs {
+        release {
+            storeFile file(projectDir.path + "/" + flavors[0].sign.storeFile)
+            storePassword flavors[0].sign.storePassword
+            keyAlias flavors[0].sign.keyAlias
+            keyPassword flavors[0].sign.keyPassword
+        }
+
+        debug {
+            storeFile file(projectDir.path + "/" + flavors[0].sign.storeFile)
+            storePassword flavors[0].sign.storePassword
+            keyAlias flavors[0].sign.keyAlias
+            keyPassword flavors[0].sign.keyPassword
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled true//是否混淆
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release//配置签名文件
+        }
+
+        debug {
+            minifyEnabled false//是否混淆
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.debug//配置签名文件
+        }
+    }
+
+    //多渠道打包设置
+    productFlavors {
+        flavors.each { flavor ->
+            String sid = flavor.sid == null ? "appid" : flavor.sid
+
+            String jgStr = (flavor.jiagu == null || !flavor.jiagu) ? '普通' : '加固'
+            println "<-------------------------------------------------------------------------------------->"
+            println "<---------------------------------${jgStr}-多渠道打包V-${ZYV}--------------------------------------->"
+            println "<-------------------------------------------------------------------------------------->"
+            //多渠道打包
+            flavor.channels.each {
+                channel ->
+                    channels.add(channel.cname)
+                    isXiaoMi = isXiaoMi && channel.show == 0
+            }
+            boolean hasXiaomi = flavor.sdk.csj.contains('xiaomi')
+            isXiaoMi = isXiaoMi || hasXiaomi;
+            if (isXiaoMi) {
+                if (!hasXiaomi) {
+                    flavor.sdk.csj = flavor.sdk.csj + "xiaomi"
+                }
+            }
+
+            if (flavors[0].channels && flavors[0].channels.size() > 0) {
+                flavors[0].channels.each {
+                    channel ->
+                        if (isNoTx) {
+                            isNoTx = channel.show == null || channel.show == 0 || channel.show == 3;
+                        }
+                }
+            }
+            if (isNoTx) {
+                flavor.sdk.tx = flavor.sdk.tx + "clean"
+            }
+
+            String DP_URL_SCHEME = (flavor.ads.csj.dp == null || flavor.ads.csj.dp.urlscheme == null) ? "" : flavor.ads.csj.dp.urlscheme
+
+            "${prodName}" {//渠道名称，对应文件中的dname
+
+                minSdkVersion 24
+                targetSdkVersion 33
+                versionCode flavor.versionCode //渠道版本号，对应文件中的versionCode
+                versionName flavor.versionName //渠道版本名称，对应文件中的versionName
+                manifestPlaceholders = [APPLOG_SCHEME: DP_URL_SCHEME, UMENG_APPKEY_VALUE: flavor.keys.umeng_appkey, UMENG_CHANNEL_VALUE: prodName, GD_KEY: flavor.keys.gd_key]
+                applicationId flavor.applicationId
+                buildConfigField 'int', 'AD_SHOW_ORDER', '0'
+                buildConfigField 'String', 'ZYAPPID', '"' + flavor.appid + '"'
+                buildConfigField 'String', 'YMD', '"' + makeTime("dd/MM/yyyy", 5) + '"'
+                buildConfigField 'String', 'TencentAppId', '""'
+                buildConfigField 'String', 'Tencent_COOPEN_ID', '""'
+                buildConfigField 'String', 'Tencent_Banner_ID', '""'
+                buildConfigField 'String', 'Tencent_SCREEN_ID', '""'
+                buildConfigField 'String', 'Tencent_VIDEO_ID', '""'
+                buildConfigField 'String', 'Tencent_INFO_FLOW_ID', '""'
+                buildConfigField 'String', 'Tencent_INFO_FLOW_LEFT_ID', '""'
+                buildConfigField 'String', 'JRTT_APP_ID', '""'
+                buildConfigField 'String', 'JRTT_COOPEN_ID', '""'
+                buildConfigField 'String', 'JRTT_BANNER_ID', '""'
+                buildConfigField 'String', 'JRTT_SCREEN_ID', '""'
+                buildConfigField 'String', 'JRTT_VIDEO_ID', '""'
+
+                buildConfigField 'String', 'JRTT_INFO_FLOW_ID', '""'
+                buildConfigField 'String', 'JRTT_INFO_FLOW_LEFT_ID', '""'
+                buildConfigField 'String', 'YouDao_ID', '""'
+                buildConfigField 'String', 'GaoDe_ID', '""'
+                buildConfigField 'String', 'TK_ID', '""'
+                buildConfigField 'String', 'UM_KEY', '""'
+                buildConfigField 'String', 'UM_CL', '""'
+
+
+                buildConfigField 'String', 'ZY_SID', '"' + sid + '"'
+                buildConfigField 'int', 'JRTT_SEC', '0'
+                buildConfigField 'int', 'TENCENT_SEC', '0'
+                buildConfigField 'int', 'AD_VJUMP', '0'
+                buildConfigField 'String', 'JRTT_DP_URL_SCHEME', '""'
+
+
+                ndk {
+                    abiFilters 'armeabi-v7a', 'arm64-v8a'
+                }
+
+            }
+
+
+            println "<-------------------------------------------------------------------------------------->"
+            println "<---------------------------------打包处理信息打印-------------------------------------->"
+            println "<-------------------------------------------------------------------------------------->"
+            println "<------>DEV->{{{" + flavor.dname + "}}}"
+            println "<------>APPID->{{{" + flavor.appid + "}}}"
+            println "<------>AVNAME->{{{" + flavor.vname + "}}}"
+            println "<------>APPNAME->{{{" + flavor.app_name + "}}}"
+            println "<------>PCK->{{{" + flavor.applicationId + "}}}"
+            println "<------>VCODE->{{{" + flavor.versionCode + "}}}"
+            println "<------>VNAME->{{{" + flavor.versionName + "}}}"
+            println "<------>SDK->{{{" + flavor.sdk + "}}}"
+
+            String btimes = makeTime("yyyy-MM-dd", 0)
+
+            String htmlStr = ""
+            String htmlTh = "<tr><th><a href='/android/${flavor.dname}/${flavor.applicationId}/${flavor.versionCode}/release_${prodName}.apk?v=" + (int) (Math.random() * 10000000) + "'>测试包-点击下载</a></th>"
+            String htmlTd = "<tr><td><img src='/android/${flavor.dname}/${flavor.applicationId}/${flavor.versionCode}/release_${prodName}.jpg?v=" + (int) (Math.random() * 10000000) + "' width='120'></td>"
+            String htmlTLd = "<tr><td><a href='/back/app/${btimes}/${flavor.dname}/${flavor.applicationId}/${flavor.versionCode}/release_${prodName}.apk?v=" + (int) (Math.random() * 10000000) + "'>备份包-点击下载</a></td>"
+
+
+            flavor.channels.each {
+                channel ->
+                    htmlTh += "<th><a href='/android/${flavor.dname}/${flavor.applicationId}/${flavor.versionCode}/release_${channel.cname}.apk?v=" + (int) (Math.random() * 10000000) + "'>${channel.cname}-点击下载</a></th>"
+                    htmlTd += "<td><img src='/android/${flavor.dname}/${flavor.applicationId}/${flavor.versionCode}/release_${channel.cname}.jpg?v=" + (int) (Math.random() * 10000000) + "' width='120'></td>"
+                    htmlTLd += "<td><a href='/back/app/${btimes}/${flavor.dname}/${flavor.applicationId}/${flavor.versionCode}/release_${channel.cname}.apk?v=" + (int) (Math.random() * 10000000) + "'>备份包-点击下载</a></td>"
+            }
+            htmlStr = htmlTh + "</tr>" + htmlTd + "</tr>" + htmlTLd + "</tr>"
+            println "<------>HTMLSTART->${htmlStr}<-HTMLEND->"
+
+            println "<------>APKS->{{{" + "/${flavor.dname}/${flavor.applicationId}/${flavor.versionCode}" + "/release_${channels[0]}.apk?v=" + (int) (Math.random() * 10000000) + "}}}APKS->{{{" + "/${flavor.dname}/${flavor.applicationId}/${flavor.versionCode}" + "/release.jpg?v=" + (int) (Math.random() * 10000000) + "}}}"
+
+            println "<------>CHANNELS->{{{" + channels.join(",") + "}}}"
+            println "<------>OS->{{{" + OS + "}}}"
+            println "<------>福利展示时间：" + makeTime("dd/MM/yyyy", 5)
+
+            println "<------>UMENG_APPKEY->{{{" + flavor.keys.umeng_appkey + "}}}"
+            println "<------>GD_KEY->{{{" + flavor.keys.gd_key + "}}}"
+            println "<------>YouDao_ID->{{{" + flavor.keys.yd_key + "}}}"
+
+            println "<------>ZY_SID->{{{" + sid + "}}}"
+            println "<------>AD_JRTT_DP_URL_SCHEME->{{{" + DP_URL_SCHEME + "}}}"
+
+            println "<------>ENV->{{{" + flavor.env + "}}}"
+
+            println "<-------------------------------------------------------------------------------------->"
+            println "<---------------------------------配置内容广告信息-------------------------------------->"
+            println "<-------------------------------------------------------------------------------------->"
+
+            if (DP_URL_SCHEME.length() > 20) {
+
+                def pangleDep = dependencies.create("com.pangle.cn:pangrowth-sdk:3.9.0.2") {
+                    exclude group: 'com.pangle.cn', module: 'pangrowth-dpsdk-live'
+                    exclude group: 'com.pangle.cn', module: 'pangrowth-novel-sdk'
+                    exclude group: 'com.pangle.cn', module: 'pangrowth-game-sdk'
+                    exclude group: 'com.pangle.cn', module: 'pangrowth-luckycat-sdk'
+                }
+                dependencies.add("implementation", pangleDep)
+                println "<------>增加 依赖：【com.pangle.cn:pangrowth-sdk:3.9.0.2】成功-------------------------->"
+                dependencies.add("implementation", 'com.bytedance.applog:RangersAppLog-Lite-cn:6.9.6')
+                println "<------>增加 依赖：【com.bytedance.applog:RangersAppLog-Lite-cn:6.9.6】成功------------->"
+
+            }
+
+            dependencies.add("implementation", 'com.alibaba:fastjson:1.2.61')
+            println "<------>增加 依赖：【com.alibaba:fastjson:1.2.61】成功---------------------------------->"
+            dependencies.add("implementation", 'com.github.bumptech.glide:glide:4.9.0')
+            println "<------>增加 依赖：【com.github.bumptech.glide:glide:4.9.0】成功------------------------>"
+
+            ConfigurableFileTree hasAlipay = fileTree(include: ['*.jar', '*.aar'], dir: 'libs')
+            hasAlipay.each { afile ->
+                if (afile && afile.getName().contains("alipay")) {
+                    dependencies.add("api", 'com.alipay.sdk:alipaysdk-android:+@aar')
+                    updateStr("${projectDir.path}/build.gradle", "implementation 'com.umeng.umsdk:common", "api 'com.alipay.sdk:alipaysdk-android:+@aar'\n    implementation 'com.umeng.umsdk:common")
+                    println "<------>增加 依赖：【com.alipay.sdk:alipaysdk-android:+@aar】成功------------->" + afile.delete()
+                }
+            }
+
+            //替换SDK版本
+            task updateVersion {
+                int umv = flavor.sdk.um.replaceAll("[^0-9]", "").toInteger()
+                String asms = "1.6.3", apm = "1.9.0", uyumao = "1.1.2",nns = "1.1.0", uverify = "2.5.9",uverifylog = "2.1.4",uverifymain = "2.1.4", xxpers = "18.5", layout = "1.6.14"
+
+                if (umv >= 977) {
+                    asms = "1.8.3"
+                    apm = "1.9.11"
+                    uyumao = "1.1.4"
+					nns = "1.1.0"
+					uverify = "2.6.4"
+					uverifylog = "2.2.2"
+					uverifymain = "2.2.3"
+                }else if (umv >= 975) {
+                    asms = "1.8.3"
+                    apm = "1.9.8"
+                    uyumao = "1.1.2"
+					uverify = "2.6.4"
+					uverifylog = "2.2.2"
+					uverifymain = "2.2.3"
+                }else if (umv >= 973) {
+                    asms = "1.8.3"
+                    apm = "1.9.8"
+                    uyumao = "1.1.2"
+					uverify = "2.6.3"
+					uverifylog = "2.2.2"
+					uverifymain = "2.2.3"
+                } else if (umv >= 972) {
+                    asms = "1.8.0"
+                    apm = "1.9.5"
+                    uyumao = "1.1.2"
+					uverify = "2.6.2"
+					uverifylog = "2.2.2"
+					uverifymain = "2.2.3"
+                }
+
+
+                long start = System.currentTimeMillis() / 1000
+                println "<-------------------------------------------------------------------------------------->"
+                println "<---------------------------------更新SDK依赖信息--------------------------------------->"
+                println "<-------------------------------------------------------------------------------------->"
+
+                println "<------>替换 gradle ZYSDK【ad-core】       到最新版本----->" + flavor.sdk.zy + "----------------------->"
+                println "<------>替换 gradle ZYSDK【ad-plugin-csj】 到最新版本----->" + flavor.sdk.csj + "---------------------->"
+                println "<------>替换 gradle ZYSDK【ad-plugin-tx】  到最新版本----->" + flavor.sdk.tx + "------------------->"
+                println "<------>替换 gradle ZYSDK【layout】        到最新版本----->${layout}------------------------->"
+
+                println "<------>替换 gradle UMSDK【common】        到最新版本----->" + flavor.sdk.um + "------------------------>"
+                println "<------>替换 gradle UMSDK【asms】          到最新版本----->${asms}------------------------>"
+                println "<------>替换 gradle UMSDK【apm】           到最新版本----->${apm}------------------------>"
+                println "<------>替换 gradle UMSDK【uyumao】        到最新版本----->${uyumao}------------------------>"
+                println "<------>替换权限申请框架                   到最新版本----->${xxpers}------------------------->"
+
+
+				dependencies.add("implementation", 'com.umeng.umsdk:common:' + umv)
+				dependencies.add("implementation", 'com.umeng.umsdk:asms:' + asms)
+				dependencies.add("implementation", 'com.umeng.umsdk:apm:' + apm)
+				dependencies.add("implementation", 'com.umeng.umsdk:nns:' + nns)
+				dependencies.add("implementation", 'com.umeng.umsdk:uyumao:' + uyumao)
+
+				if (flavor.keys.umeng_auth.length() > 0) {
+					dependencies.add("implementation", 'com.umeng.umsdk:uverify:' + uverify)
+					dependencies.add("implementation", 'com.umeng.umsdk:uverify-main:' + uverifymain)
+					dependencies.add("implementation", 'com.umeng.umsdk:uverify-logger:' + uverifylog)
+					println "<------>替换 gradle UMSDK【uverify】          到最新版本----->${uverify}-------------------->"
+					println "<------>替换 gradle UMSDK【uverify-main】     到最新版本----->${uverifymain}------------------->"
+					println "<------>替换 gradle UMSDK【uverify-log】      到最新版本----->${uverifylog}------------------->"
+				}
+
+
+                configurations.all {
+                    if (flavor.sdk.zy.contains("SNAPSHOT")) {
+                        resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+                    }
+                    resolutionStrategy {
+                        // 遍历依赖
+                        eachDependency { details ->
+                            // 为指定依赖指定固定版本d
+                            if (details.requested.group == 'com.zy.sdk') {
+                                if (details.requested.name == 'ad-core-androidx') {
+                                    details.useVersion flavor.sdk.zy
+                                    //更新所有核心包到V4版本
+                                    updateStr("${projectDir.path}/build.gradle", "ad-core-androidx", "ad-core-android")
+//                                    println "<------>替换gradle SDK 版本----->" + details.requested.name + ":" + details.requested.version + "---为--->" + flavor.sdk.zy + "------>"
+                                } else if (details.requested.name == 'ad-core-android') {
+                                    details.useVersion flavor.sdk.zy
+//                                    println "<------>替换gradle SDK 版本----->" + details.requested.name + ":" + details.requested.version + "---为--->" + flavor.sdk.zy + "------>"
+                                } else if (details.requested.name == 'ad-plugin-csj') {
+                                    details.useVersion flavor.sdk.csj
+//                                    println "<------>替换gradle SDK 版本----->" + details.requested.name + ":" + details.requested.version + "---为--->" + flavor.sdk.csj + "------>"
+                                } else if (details.requested.name == 'ad-plugin-tx') {
+                                    details.useVersion flavor.sdk.tx
+//                                    println "<------>替换gradle SDK 版本----->" + details.requested.name + ":" + details.requested.version + "---为--->" + flavor.sdk.tx + "------>"
+                                } else if (details.requested.name == 'layout') {
+                                    details.useVersion layout
+//                                    println "<------>替换gradle SDK 版本----->" + details.requested.name + ":" + details.requested.version + "---为--->"+ layout +"------>"
+                                }
+                            } else if (details.requested.group == 'com.umeng.umsdk') {
+                                if (details.requested.name == 'common') {
+                                    details.useVersion flavor.sdk.um
+                                }
+                                if (details.requested.name == 'uverify') {
+                                    details.useVersion uverify
+                                }
+                            } else if (details.requested.group == 'com.github.getActivity') {
+                                if (details.requested.name == 'XXPermissions') {
+                                    details.useVersion xxpers
+//                                    println "<------>替换权限申请框架版本-18.0---->"
+                                }
+                            } else if (details.requested.group == 'com.alipay.sdk') {
+                                if (details.requested.name == 'alipaysdk-android') {
+                                    details.useVersion '+'
+//                                    println "<------>替换支付宝版本-${details.requested}---->"
+                                }
+                            }
+                        }
+                    }
+                }
+                println "<------>更新SDK依赖信息-结束--用时-【" + (System.currentTimeMillis() / 1000) - start + "】秒->"
+            }
+            println "<-------------------------------------------------------------------------------------->"
+            println "<---------------------------------替换资源信息------------------------------------------>"
+            println "<-------------------------------------------------------------------------------------->"
+
+            //替换隐私协议
+            task updateAppAgrt {
+
+                File assets_file = new File("${projectDir.path}/" + flavor.agrt.yhxy.to)
+                assets_file.listFiles().each { file ->
+
+                    if (file.name.length() == 17 && file.name.contains(".json") && !file.name.contains(flavors[0].appid)) {
+                        println "<------>删除多余短视频文件---->${file.name}---------------------------------------------->"
+                    }
+                    if (file.name.length() == 13 && !file.name.contains(".") && !file.name.contains(flavors[0].appid) && file.name.endsWithAny("1", "2")) {
+                        file.delete()
+                        println "<------>删除多余用户协议文件---->${file.name}-------------------------------------------->"
+                    }
+                }
+
+
+                //替换用户协议
+                if (flavor.agrt.yhxy.from != "" && flavor.agrt.yhxy.to != "" && new File("${projectDir.path}/" + flavor.agrt.yhxy.from).exists()) {
+                    copyFile(flavor.agrt.yhxy.from, flavor.agrt.yhxy.to, flavor.agrt.yhxy.name)
+                    encryptFile(flavor.applicationId, new File("${projectDir.path}/" + flavor.agrt.yhxy.to + flavor.agrt.yhxy.name), new File("${projectDir.path}/" + flavor.agrt.yhxy.to + flavors[0].appid + "1"), true)
+                    println "<------>替换用户协议完毕---------------------------------------------------------------->"
+                } else {
+                    println "<------>无用户协议不执行替换------------------------------------------------------------>"
+                }
+
+                //替换隐私协议
+                if (flavor.agrt.ysxy.from != "" && flavor.agrt.ysxy.to != "" && new File("${projectDir.path}/" + flavor.agrt.ysxy.from).exists()) {
+                    copyFile(flavor.agrt.ysxy.from, flavor.agrt.ysxy.to, flavor.agrt.ysxy.name)
+                    encryptFile(flavor.applicationId, new File("${projectDir.path}/" + flavor.agrt.ysxy.to + flavor.agrt.ysxy.name), new File("${projectDir.path}/" + flavor.agrt.ysxy.to + flavors[0].appid + "2"), true)
+                    println "<------>替换隐私协议完毕---------------------------------------------------------------->"
+                } else {
+                    println "<------>无隐私协议不 执行替换------------------------------------------------------------>"
+                }
+            }
+
+            //自定义UI信息加密
+            task encryptAppCustomUI {
+                File src = new File("${projectDir.path}/channel/customUI.json")
+                if (src.exists()) {
+                    copyFile("channel/customUI.json", "src/main/assets/", "customUI.json")
+                } else {
+                    copyFile("src/main/assets/customUI.json", "channel/", "customUI.json")
+                }
+                File ui_src = new File("${projectDir.path}/src/main/assets/customUI.json")
+                File des = new File("${projectDir.path}/src/main/assets/UI")
+                if (ui_src.exists()) {
+                    println "<------>自定义UI信息加密---------------------------------------------------------------->"
+                    encryptFile(flavor.applicationId, ui_src, des, true)
+                }
+            }
+
+            //替换图片
+            task updateAppImgs {
+                //替换图标
+                //指定文件拷贝的目的地
+                //def icon_from = "${projectDir.path}/channel/imgs/icons/${flavor.dname}.png"
+                def icon_from = "${projectDir.path}/${flavor.imgs.icon.from}"
+                def icon_to = "${projectDir.path}/${flavor.imgs.icon.to}"
+
+                //APP替换图标
+                if (icon_from != "" && icon_to != "" && new File(icon_from).exists()) {
+                    copyFile(icon_from, icon_to, flavor.imgs.icon.name)
+                    println "<------>替换APP图标完毕----------------------------------------------------------------->"
+                } else {
+                    println "<------>无用APP图标不执行替换----------------------------------------------------------->"
+                }
+
+                //替换启动图
+                if (flavor.imgs.start.from != "" && flavor.imgs.start.to != "" && new File("${projectDir.path}/" + flavor.imgs.start.from).exists()) {
+                    copyFile(flavor.imgs.start.from, flavor.imgs.start.to, flavor.imgs.start.name)
+                    println "<------>替换启动图完毕------------------------------------------------------------------>"
+                } else {
+                    println "<------>无启动图不执行替换-------------------------------------------------------------->"
+                }
+
+
+                //替换导航图
+                if (flavor.imgs.splashs != null && flavor.imgs.splashs.size() > 0) {
+                    flavor.imgs.splashs.each { splash ->
+                        if (splash.from != "" && splash.to != "" && new File("${projectDir.path}/" + splash.from).exists()) {
+                            copyFile("${projectDir.path}/${splash.from}", "${projectDir.path}/${splash.to}", splash.name)
+                        }
+                    }
+                    println "<------>替换导航图${flavor.imgs.splashs.size()}个完毕--------------------------------------------------------------->"
+                } else {
+                    println "<------>无导航图不执行替换--------------------------------------------------------------->"
+                }
+
+                //替换其他图片
+                if (flavor.imgs.others != null && flavor.imgs.others.size() > 0) {
+                    flavor.imgs.others.each { other ->
+                        if (other.from != "" && other.to != "" && new File("${projectDir.path}/" + other.from).exists()) {
+                            copyFile("${projectDir.path}/${other.from}", "${projectDir.path}/${other.to}", other.name)
+                        }
+                    }
+                    println "<------>替换其他图片${flavor.imgs.others.size()}个完毕--------------------------------------->"
+                } else {
+                    println "<------>无其他图片不执行替换------------------------------------------------------------>"
+                }
+
+            }
+
+            //替换清单文件权限
+            task updateManifest {
+                String xmlFile = "${projectDir.path}/src/main/AndroidManifest.xml"
+                updateManifest(xmlFile, isXiaoMi, isNoTx)
+//                //修改module中的AndroidManifest
+//                if (isXiaoMi) {
+//                    rootDir.listFiles(new FileFilter() {
+//                        @Override
+//                        boolean accept(File pathname) {
+//                            return pathname.isDirectory() && !pathname.getName().contains("app")
+//                        }
+//                    }).each {
+//                        verifyXiaoMiManifest(new File(it, "src/main/AndroidManifest.xml"))
+//                    }
+//                }
+
+                String file_path = "${projectDir.path}/src/main/res/xml/csj_file_paths.xml"
+
+                String gtd_file_path = "${projectDir.path}/src/main/res/xml/gdt_file_path.xml"
+
+                String network_security_config_path = "${projectDir.path}/src/main/res/xml/network_security_config.xml"
+
+                def proFile = new File(file_path)
+                if (!proFile.parentFile.exists()) {
+                    proFile.parentFile.mkdirs()
+                }
+                if (proFile.exists()) {
+                    proFile.delete()
+                }
+
+                proFile << '<?xml version="1.0" encoding="utf-8"?>'
+                proFile << '\n<paths xmlns:android="http://schemas.android.com/apk/res/android">'
+                //proFile << '\n      <!--为了适配所有路径可以设置 path = "." -->'
+                proFile << '\n      <external-path name="tt_external_root" path="." />'
+                proFile << '\n      <external-path name="tt_external_download" path="Download" />'
+                proFile << '\n      <external-files-path name="tt_external_files_download" path="Download" />'
+                proFile << '\n      <files-path name="tt_internal_file_download" path="Download" />'
+                proFile << '\n      <cache-path name="tt_internal_cache_download" path="Download" />'
+                proFile << '\n</paths>'
+
+
+                def gtd_file = new File(gtd_file_path)
+                if (gtd_file.exists()) {
+                    gtd_file.delete()
+                }
+
+                gtd_file << '<?xml version="1.0" encoding="utf-8"?>'
+                gtd_file << '\n<paths xmlns:android="http://schemas.android.com/apk/res/android">'
+                //gtd_file << '\n      <!-- 这个下载路径也不可以修改，必须为GDTDOWNLOAD -->'
+                gtd_file << '\n      <external-cache-path name="gdt_sdk_download_path1" path="com_qq_e_download" />'
+                gtd_file << '\n      <cache-path name="gdt_sdk_download_path2" path="com_qq_e_download" />'
+                gtd_file << '\n</paths>'
+
+
+                def network_security_config = new File(network_security_config_path)
+                if (network_security_config.exists()) {
+                    network_security_config.delete()
+                }
+
+                network_security_config << '<?xml version="1.0" encoding="utf-8"?>'
+                network_security_config << '\n<network-security-config>'
+                network_security_config << '\n   <base-config cleartextTrafficPermitted="true">'
+                network_security_config << '\n      <trust-anchors>'
+                network_security_config << '\n         <certificates src="user" />'
+                network_security_config << '\n         <certificates src="system" />'
+                network_security_config << '\n      </trust-anchors>'
+                network_security_config << '\n   </base-config>'
+                network_security_config << '\n</network-security-config>'
+
+                println "<------>修改清单文件完毕---------------------------------------------------------------->"
+            }
+
+            //修改布局、图片文件md5值
+            task updateRes {
+                if (!OS.contains("windows") && !OS.contains("mac")) {
+                    String rootPath = projectDir.path + "/src/main/res/"
+                    println "<------>修改布局、图片文件md5值--------------------------------------------------------->"
+                    def dir = new File(rootPath)
+                    dir.traverse(type: FILES, maxDepth: 10) {
+                        if (it.getAbsolutePath().contains("layout") && it.getAbsolutePath().endsWith(".xml")) {
+                            //println "<------>布局资源--->名字-->$it.name"
+                            def updatedContent = it.getText('UTF-8')
+                            if (updatedContent.contains("</LinearLayout>")) {
+                                //updateStr(it.getAbsolutePath(), "</LinearLayout>", "<fragment android:layout_width=\"wrap_content\" android:layout_height=\"wrap_content\" android:visibility=\"gone\"/> </LinearLayout>")
+                            }
+                        } else if (it.getAbsolutePath().endsWith(".png") || it.getAbsolutePath().endsWith(".jpg")) {
+                            //println "<------>图片资源--->名字-->$it.name"
+							if(it.size()>10){
+								it << (int) (Math.random() * 9999900)
+							}
+                        }
+                    }
+                }
+            }
+
+            //修改Gitignore日志
+            task updateGitignore {
+                def proFile = new File(rootDir, ".gitignore")
+                println "<------>Gitignore--修改代码混淆日志开始------------------------------------------------->"
+                if (!proFile.getText("utf-8").contains("app/src/main/assets/zy/*")) {
+                    proFile << "\n!app/src/main/assets/zy/*"
+                }
+                println "<------>Gitignore--修改代码混淆日志结束------------------------------------------------->"
+            }
+
+            //修改资源混淆
+            task updateResguard {
+
+                andResGuard { andRes ->
+                    if (flavors[0].jiagu != null) {
+                        andRes["useJiaGu"] = flavors[0].jiagu
+                    }
+                    andRes["jgName"] = "com.zy.ZyApp"
+
+                    println "<------>Resguard--修改是否加固-${andRes.useJiaGu}-------${andRes.jgName}--------------------------------->"
+
+                    if (!OS.contains("windows") && !OS.contains("mac")) {
+                        def releaseFileName = "release_%s.apk"
+                        println "<------>渠道打包-输出apk文件-->" + releaseFileName + "-------------->"
+                        andRes["moveApkName"] = releaseFileName
+                        def des = "/jenkins/workspace/android/${flavors[0].dname}/${flavors[0].applicationId}/${flavors[0].versionCode}"
+                        def dfile = new File(des)
+                        if (dfile.exists()) {
+                            println "删除APK文件-->" + dfile.deleteDir() + "-------------------------------------------->"
+                        }
+                        andRes["moveApkFolder"] = des
+                        println "<------>渠道打包-输出apk文件夹-->" + des + "-------------->"
+                    }
+
+                    println "<------>Resguard--修改白名单------------------------------------------------------------>"
+                    println "<------>Resguard--修改白名单前长度-->" + andRes.whiteList.size + "------------------------------------------------>"
+                    File wfile = new File(projectDir.path + "/channel/whiteList.json")
+
+                    if (!wfile.exists()) {
+                        wfile = new File(projectDir.path + "/src/main/assets/whiteList.json")
+                    }
+
+                    if (wfile.exists()) {
+                        String whiteListStr = wfile.getText("utf-8")
+                        def whiteListJson = jsonSlurper.parseText(whiteListStr) //转换成Jsons数组对象
+                        andRes.whiteList.addAll(whiteListJson)
+                    } else {
+                        andRes.whiteList.add("R.drawable.gdt_*")
+                    }
+                    andRes.whiteList.unique()
+
+                    println "<------>Resguard--修改白名单后长度-->" + andRes.whiteList.size + "----------------------------------------------->"
+                    println "<------>Resguard--修改白名单完毕-------------------------------------------------------->"
+
+                    println "<------>Resguard--修改渠道信息---------------------------------------------------------->"
+
+                    def resChannels = []
+
+                    resChannels.add([
+                            "app_name": flavors[0].app_name + "-测试版本",
+                            "cname"   : prodName])
+
+                    flavors[0].channels.each {
+                        channel ->
+                            resChannels.add([
+                                    "app_name": channel.app_name,
+                                    "cname"   : channel.cname])
+                    }
+                    andRes["channels"] = resChannels
+                    println "<------>Resguard--修改渠道信息完毕------------------------------------------------------>"
+
+                    wfile = new File(projectDir.path + "/src/main/assets/whiteList.json")
+                    if (wfile.exists()) {
+                        wfile.delete()
+                    }
+                }
+            }
+
+            //修改代码混淆日志
+            task updateProguard {
+                if (!OS.contains("windows") && !OS.contains("mac")) {
+                    String rootPath = projectDir.path + "/proguard-rules.pro"
+                    println "<------>ProGuard--修改代码混淆日志------------------------------------------------------>"
+                    def proFile = new File(rootPath)
+                    proFile << "\n#---------------------------------禁止日志打印----------------------------------"
+                    proFile << "\n-dontwarn com.**"
+                    proFile << "\n-dontwarn org.**"
+                    proFile << "\n-dontwarn java.**"
+                    proFile << "\n-dontwarn javax.**"
+                    proFile << "\n-dontwarn net.**"
+                    proFile << "\n-printconfiguration proguardConfiguration.txt"
+                    proFile << "\n-keep class com.bytedance.sdk.openadsdk.** { *; }"
+                    proFile << "\n-keep class com.bytedance.frameworks.** { *; }"
+
+                    //穿山甲混淆规则
+					//聚合混淆
+					proFile << '\n-keep class bykvm*.**'
+					proFile << '\n-keep class com.bytedance.msdk.adapter.**{ public *; }'
+					proFile << '\n-keep class com.bytedance.msdk.api.** {'
+					proFile << '\n public *;'
+					proFile << '\n}'
+					proFile << '\n-keep class com.bytedance.msdk.base.TTBaseAd{*;}'
+					proFile << '\n-keep class com.bytedance.msdk.adapter.TTAbsAdLoaderAdapter{'
+					proFile << '\n    public *;'
+					proFile << '\n    protected <fields>;'
+					proFile << '\n}'
+					proFile << '\n'
+					proFile << '\n# baidu sdk 不接入baidu sdk可以不引入'
+					proFile << '\n-ignorewarnings'
+					proFile << '\n-dontwarn com.baidu.mobads.sdk.api.**'
+					proFile << '\n-keepclassmembers class * extends android.app.Activity {'
+					proFile << '\n   public void *(android.view.View);'
+					proFile << '\n}'
+					proFile << '\n'
+					proFile << '\n-keepclassmembers enum * {'
+					proFile << '\n    public static **[] values();'
+					proFile << '\n    public static ** valueOf(java.lang.String);'
+					proFile << '\n}'
+					proFile << '\n'
+					proFile << '\n-keep class com.baidu.mobads.** { *; }'
+					proFile << '\n-keep class com.style.widget.** {*;}'
+					proFile << '\n-keep class com.component.** {*;}'
+					proFile << '\n-keep class com.baidu.ad.magic.flute.** {*;}'
+					proFile << '\n-keep class com.baidu.mobstat.forbes.** {*;}'
+					proFile << '\n'
+					proFile << '\n#ks  不接入ks sdk可以不引入'
+					proFile << '\n-keep class org.chromium.** {*;}'
+					proFile << '\n-keep class org.chromium.** { *; }'
+					proFile << '\n-keep class aegon.chrome.** { *; }'
+					proFile << '\n-keep class com.kwai.**{ *; }'
+					proFile << '\n-dontwarn com.kwai.**'
+					proFile << '\n-dontwarn com.kwad.**'
+					proFile << '\n-dontwarn com.ksad.**'
+					proFile << '\n-dontwarn aegon.chrome.**'
+					proFile << '\n'
+					proFile << '\n# Admob 不接入admob sdk可以不引入'
+					proFile << '\n-keep class com.google.android.gms.ads.MobileAds {'
+					proFile << '\n public *;'
+					proFile << '\n}'
+					proFile << '\n'
+					proFile << '\n#sigmob  不接入sigmob sdk可以不引入'
+					proFile << '\n-dontwarn android.support.v4.**'
+					proFile << '\n-keep class android.support.v4.** { *; }'
+					proFile << '\n-keep interface android.support.v4.** { *; }'
+					proFile << '\n-keep public class * extends android.support.v4.**'
+					proFile << '\n'
+					proFile << '\n-keep class sun.misc.Unsafe { *; }'
+					proFile << '\n-dontwarn com.sigmob.**'
+					proFile << '\n-keep class com.sigmob.**.**{*;}'
+					proFile << '\n'
+					proFile << '\n#oaid 不同的版本混淆代码不太一致，你注意你接入的oaid版本 ，不接入oaid可以不添加'
+					proFile << '\n-dontwarn com.bun.**'
+					proFile << '\n-keep class com.bun.** {*;}'
+					proFile << '\n-keep class a.**{*;}'
+					proFile << '\n-keep class XI.CA.XI.**{*;}'
+					proFile << '\n-keep class XI.K0.XI.**{*;}'
+					proFile << '\n-keep class XI.XI.K0.**{*;}'
+					proFile << '\n-keep class XI.vs.K0.**{*;}'
+					proFile << '\n-keep class XI.xo.XI.XI.**{*;}'
+					proFile << '\n-keep class com.asus.msa.SupplementaryDID.**{*;}'
+					proFile << '\n-keep class com.asus.msa.sdid.**{*;}'
+					proFile << '\n-keep class com.huawei.hms.ads.identifier.**{*;}'
+					proFile << '\n-keep class com.samsung.android.deviceidservice.**{*;}'
+					proFile << '\n-keep class com.zui.opendeviceidlibrary.**{*;}'
+					proFile << '\n-keep class org.json.**{*;}'
+					proFile << '\n-keep public class com.netease.nis.sdkwrapper.Utils {public <methods>;}'
+					proFile << '\n'
+					proFile << '\n'
+					proFile << '\n#klevin 游可赢'
+					proFile << '\n-keep class com.tencent.tgpa.**{*;}'
+					proFile << '\n-keep class com.tencent.klevin.**{*;}'
+					proFile << '\n'
+					proFile << '\n'
+					proFile << '\n#Mintegral 不接入Mintegral sdk，可以不引入'
+					proFile << '\n-keepattributes Signature'
+					proFile << '\n-keepattributes *Annotation*'
+					proFile << '\n-keep class com.mbridge.** {*; }'
+					proFile << '\n-keep interface com.mbridge.** {*; }'
+					proFile << '\n-keep class android.support.v4.** { *; }'
+					proFile << '\n-dontwarn com.mbridge.**'
+					proFile << '\n-keep class **.R$* { public static final int mbridge*; }'
+                    println "<------>ProGuard--增加穿山甲淆成功---------------------------------------------------->"
+
+
+                    //友盟混淆
+                    proFile << "\n-keep class com.umeng.** {*;}"
+                    proFile << "\n-keep class org.repackage.** {*;}"
+                    proFile << "\n-keepclassmembers class * {"
+                    proFile << "\npublic <init> (org.json.JSONObject); }"
+                    proFile << "\n-keepclassmembers enum * {"
+                    proFile << "\npublic static **[] values();"
+                    proFile << "\npublic static ** valueOf(java.lang.String); }"
+                    proFile << "\n-keep public class ${flavors[0].applicationId}.R\$*{"
+                    proFile << "\npublic static final int *; }"
+
+
+                    println "<------>ProGuard--增加友盟混淆成功---------------------------------------------------->"
+                }
+            }
+
+        }
+    }
+
+    applicationVariants.all { variant ->
+        variant.outputs.all { output ->
+            variant.mergeAssets.doFirst {
+
+//            variant.mergeResources.doFirst {
+                def configs = [:]
+                def JRTT_SEC = flavors[0].ads.csj.sec == null ? 0 : flavors[0].ads.csj.sec
+                def TENCENT_SEC = flavors[0].ads.tx.sec == null ? 0 : flavors[0].ads.tx.sec
+                def AD_VJUMP = 0
+                def AD_VID = flavors[0].ads.csj.video == null ? 0 : flavors[0].ads.csj.video
+                def AD_SHOW = flavors[0].ads.show == null ? 0 : flavors[0].ads.show
+                def DP_URL_SCHEME = (flavors[0].ads.csj.dp == null || flavors[0].ads.csj.dp.urlscheme == null) ? "" : flavors[0].ads.csj.dp.urlscheme
+                def UMKEY = flavors[0].keys.umeng_appkey
+                def adPersonal = 0
+                def RID = flavors[0].keys.rid == null ? "" : flavors[0].keys.rid
+
+                def share
+                if (flavors[0].channels && flavors[0].channels.size() > 0) {
+                    flavors[0].channels.each {
+                        channel ->
+
+                            JRTT_SEC = channel.csj_sec == null ? 0 : channel.csj_sec
+                            TENCENT_SEC = channel.tx_sec == null ? 0 : channel.tx_sec
+                            AD_VJUMP = 0
+                            AD_VID = channel.video == null ? 0 : channel.video
+                            AD_SHOW = channel.show == null ? 0 : channel.show
+                            DP_URL_SCHEME = (flavors[0].ads.csj.dp == null || flavors[0].ads.csj.dp.urlscheme == null) ? "" : flavors[0].ads.csj.dp.urlscheme
+                            adPersonal = channel.personal == null ? 0 : channel.personal
+
+                            if (channel.cname == "") {
+                                channel.cname = "other"
+                            }
+
+                            share = "https://ss.bscstorage.com/zyapp/share/${flavors[0].appid}/${flavors[0].versionCode}/${channel.cname}.apk?v=" + (int) (Math.random() * 10000000)
+                            configs[channel.cname] = ["share": share, "personal": adPersonal, "agrt": channel.agrt, "show": AD_SHOW, "video": AD_VID, "vjump": AD_VJUMP, "um": UMKEY, "dpscheme": DP_URL_SCHEME, "JRTT_SEC": JRTT_SEC, "TENCENT_SEC": TENCENT_SEC]
+                    }
+                }
+
+                def zyper = [:]
+                def agrt = [:]
+
+                agrt["addr"] = "测试公司地址"
+                agrt["name"] = "测试公司名称"
+                agrt["phone"] = "13777777777"
+
+
+                zyper["pers"] = flavors[0].exts.pers
+                zyper["v"] = flavors[0].channels[0].agrt.v
+
+                configs[prodName] = ["share": share, "personal": 0, "agrt": agrt, "show": AD_SHOW, "video": AD_VID, "vjump": AD_VJUMP, "um": UMKEY, "dpscheme": DP_URL_SCHEME, "JRTT_SEC": JRTT_SEC, "TENCENT_SEC": TENCENT_SEC]
+                configs["sid"] = flavors[0].sid
+                configs["appid"] = flavors[0].appid
+                configs["zyper"] = zyper
+                configs["smd5"] = flavors[0].sign.md5
+                configs["um_auth"] = flavors[0].keys.umeng_auth
+
+                configs["rid"] = RID
+                configs["ads"] = flavors[0].ads
+
+
+                def easyTestAds = getEasyTestAdMap(flavors[0].ads.csj.modules)
+                configs.ads.csj.modules = getAdMap(flavors[0].ads.csj.modules)
+                configs.ads.tx.modules = getAdMap(flavors[0].ads.tx.modules)
+
+
+                flavors[0].adchs.each {
+                    ch ->
+                        if (ch == "huawei") {
+                            configs["hwads"] = flavors[0].hwads
+                            configs.hwads.csj.modules = getAdMap(flavors[0].hwads.csj.modules)
+                            configs.hwads.tx.modules = getAdMap(flavors[0].hwads.tx.modules)
+                        } else if (ch == "oppo") {
+                            configs["opads"] = flavors[0].opads
+                            configs.opads.csj.modules = getAdMap(flavors[0].opads.csj.modules)
+                            configs.opads.tx.modules = getAdMap(flavors[0].opads.tx.modules)
+                        } else if (ch == "vivo") {
+                            configs["vvads"] = flavors[0].vvads
+                            configs.vvads.csj.modules = getAdMap(flavors[0].vvads.csj.modules)
+                            configs.vvads.tx.modules = getAdMap(flavors[0].vvads.tx.modules)
+                        } else if (ch == "xiaomi") {
+                            configs["xmads"] = flavors[0].xmads
+                            configs.xmads.csj.modules = getAdMap(flavors[0].xmads.csj.modules)
+                            configs.xmads.tx.modules = getAdMap(flavors[0].xmads.tx.modules)
+                        } else if (ch == "other") {
+                            configs["qtads"] = flavors[0].qtads
+                            configs.qtads.csj.modules = getAdMap(flavors[0].qtads.csj.modules)
+                            configs.qtads.tx.modules = getAdMap(flavors[0].qtads.tx.modules)
+                        } else if (ch == "samsung") {
+                            configs["sxads"] = flavors[0].sxads
+                            configs.sxads.csj.modules = getAdMap(flavors[0].sxads.csj.modules)
+                            configs.sxads.tx.modules = getAdMap(flavors[0].sxads.tx.modules)
+                        } else if (ch == "honor") {
+                            configs["hnads"] = flavors[0].hnads
+                            configs.hnads.csj.modules = getAdMap(flavors[0].hnads.csj.modules)
+                            configs.hnads.tx.modules = getAdMap(flavors[0].hnads.tx.modules)
+                        }
+                }
+
+
+                createConfigsJson(flavors[0].applicationId, easyTestAds, new File(projectDir.path + "/src/main/assets/cas"))
+                createConfigsJson(flavors[0].applicationId, configs, new File(projectDir.path + "/src/main/assets/configs"))
+            }
+        }
+    }
+
+}
+
+def getAdMap(modules) {
+    def adMap = [:]
+    modules.each { adtype ->
+        adtype.each { key, ad ->
+            if (ad instanceof Collection && !ad.isEmpty()) {
+                ad.each {
+                    adInfo ->
+                        adMap[adInfo.adId] = adInfo.id
+                }
+            }
+        }
+    }
+    return adMap
+}
+
+def getEasyTestAdMap(modules) {
+    def easyTestMap = [:]
+    modules.each { module ->
+        module.each { key, ad ->
+            if (ad instanceof Collection && !ad.isEmpty()) {
+                ad.each {
+                    adInfo ->
+                        easyTestMap[adInfo.adId] = [t: key, tid: adInfo.adId, n: adInfo.name]
+                }
+            }
+        }
+    }
+    return easyTestMap
+}
+
+def updateStr(String path, old_str, new_str) {
+    //重新写入到文件中
+    def updatedContent = new File(path).getText('UTF-8').replaceAll(old_str, new_str)
+    new File(path).write(updatedContent, 'UTF-8')
+}
+
+def updateStr(File file, old_str, new_str) {
+    //重新写入到文件中
+    def updatedContent = file.getText('UTF-8').replaceAll(old_str, new_str)
+    file.write(updatedContent, 'UTF-8')
+}
+
+
+/**
+ * 创建assets配置信息文件,必须在mergeAssets前执行
+ * @param configs
+ * @return
+ */
+def createConfigsJson(appid, configs, file) {
+    def configsJson = JsonOutput.toJson(configs)
+    configsJson = AESCodec.encrypt(appid, configsJson)
+    file.write(configsJson, "utf-8")
+    println "<------>配置信息写入assets文件:configs -------------------->"
+}
+/**
+ * 文件信息加密
+ * @param pwd 加密密钥
+ * @param src 加密源文件
+ * @param des 加密后的文件
+ * @return
+ */
+def encryptFile(pwd, File src, File des, boolean deleteSrc) {
+    if (des.exists()) {
+        des.delete()
+    }
+    des.write(AESCodec.encrypt(pwd, src.getText("UTF-8")), "utf-8")
+    if (deleteSrc) {
+        src.delete()
+    }
+    println "<------>文件:${src.getName()}加密成功,输出：${des.getName()} ---------------------------------------->"
+}
+
+/**
+ * 替换清单文件权限
+ * @param xmlFile
+ * @return
+ */
+def updateManifest(String xmlFile, boolean isXiaoMi, boolean isNoTx) {
+
+    def android = new Namespace('http://schemas.android.com/apk/res/android', 'android')
+    def tools = new Namespace('http://schemas.android.com/tools', 'tools')
+    if (!new File(xmlFile).exists()) {
+        return
+    }
+
+    //直接修改AndroidManifest文本--->START--->
+
+    def manifestContent = file(xmlFile).getText()
+
+    if (!manifestContent.contains("xmlns:tools=\"http://schemas.android.com/tools\"")) {
+        updateStr(xmlFile, 'xmlns:android="http://schemas.android.com/apk/res/android"', 'xmlns:android="http://schemas.android.com/apk/res/android"\nxmlns:tools="http://schemas.android.com/tools"')
+        println "<------>替换xmlns:tools---完毕------------------------------------------------------------->"
+    }
+
+    //适配zytest网络抓包
+    if (!manifestContent.contains('android:networkSecurityConfig')) {
+        updateStr(xmlFile, '<application', '<application android:networkSecurityConfig="@xml/network_security_config"')
+        println "<------>增加android:networkSecurityConfig=\"@xml/network_security_config\"---完毕-------->"
+    } else if (!manifestContent.contains('android:networkSecurityConfig="@xml/network_security_config"')) {
+        String patternString = "android:networkSecurityConfig=\"@xml/([^\"]+)\""
+        Matcher matcher = Pattern.compile(patternString).matcher(manifestContent)
+        if (matcher.find()) {
+            String extractedString = matcher.group(0)
+            updateStr(xmlFile, extractedString, 'android:networkSecurityConfig="@xml/network_security_config"')
+            println "<------>替换android:networkSecurityConfig=\"@xml/network_security_config\"---完毕-------->"
+        }
+    }
+
+    //适配旧的存储权限模式
+    if (!manifestContent.contains('android:requestLegacyExternalStorage')) {
+        updateStr(xmlFile, '<application', '<application android:requestLegacyExternalStorage="true"')
+        println "<------>增加requestLegacyExternalStorage=true---完毕-------------------------------------->"
+    } else if (manifestContent.contains('android:requestLegacyExternalStorage="false"')) {
+        updateStr(xmlFile, 'android:requestLegacyExternalStorage="false"', 'android:requestLegacyExternalStorage="true"')
+        println "<------>替换requestLegacyExternalStorage=true---完毕-------------------------------------->"
+    }
+
+    //适配api24出包
+    if (!manifestContent.contains('android:extractNativeLibs')) {
+        updateStr(xmlFile, '<application', '<application android:extractNativeLibs="true"')
+        println "<------>增加extractNativeLibs=true---完毕-------------------------------------->"
+    } else if (manifestContent.contains('android:extractNativeLibs="false"')) {
+        updateStr(xmlFile, 'android:extractNativeLibs="false"', 'android:extractNativeLibs="true"')
+        println "<------>替换extractNativeLibs=true---完毕-------------------------------------->"
+    }
+
+//    //小米渠道移除所有存储权限
+//    if (isXiaoMi) {
+//        if (manifestContent.contains("android.permission.MANAGE_EXTERNAL_STORAGE")) {
+//            updateStr(xmlFile, "android.permission.MANAGE_EXTERNAL_STORAGE", "android.permission.INTERNET")
+//            println "<------>替换MANAGE_EXTERNAL_STORAGE为INTERNET---完毕---sdk已修改为surfaceview----------------------------->"
+//        }
+//        if (manifestContent.contains("android.permission.READ_EXTERNAL_STORAGE")) {
+//            updateStr(xmlFile, "android.permission.READ_EXTERNAL_STORAGE", "android.permission.INTERNET")
+//            println "<------>替换READ_EXTERNAL_STORAGE为INTERNET---完毕---sdk已修改为surfaceview----------------------------->"
+//        }
+//        if (manifestContent.contains("android.permission.WRITE_EXTERNAL_STORAGE")) {
+//            updateStr(xmlFile, "android.permission.WRITE_EXTERNAL_STORAGE", "android.permission.INTERNET")
+//            println "<------>替换WRITE_EXTERNAL_STORAGE为INTERNET---完毕---sdk已修改为surfaceview----------------------------->"
+//        }
+//        if (manifestContent.contains("android.permission.READ_MEDIA_IMAGES")) {
+//            updateStr(xmlFile, "android.permission.READ_MEDIA_IMAGES", "android.permission.INTERNET")
+//            println "<------>替换READ_MEDIA_IMAGES为INTERNET---完毕---sdk已修改为surfaceview----------------------------->"
+//        }
+//        if (manifestContent.contains("android.permission.READ_MEDIA_VIDEO")) {
+//            updateStr(xmlFile, "android.permission.READ_MEDIA_VIDEO", "android.permission.INTERNET")
+//            println "<------>替换READ_MEDIA_VIDEO为INTERNET---完毕---sdk已修改为surfaceview----------------------------->"
+//        }
+//        if (manifestContent.contains("android.permission.READ_MEDIA_AUDIO")) {
+//            updateStr(xmlFile, "android.permission.READ_MEDIA_AUDIO", "android.permission.INTERNET")
+//            println "<------>替换READ_MEDIA_AUDIO为INTERNET---完毕---sdk已修改为surfaceview----------------------------->"
+//        }
+//        if (manifestContent.contains("android.permission.WAKE_LOCK")) {
+//            updateStr(xmlFile, "android.permission.WAKE_LOCK", "android.permission.INTERNET")
+//            println "<------>替换WAKE_LOCK为INTERNET---完毕---sdk已修改为surfaceview----------------------------->"
+//        }
+//    }
+
+    //直接修改AndroidManifest文本--->END--->
+
+    //动态修改AndroidManifest节点--->START--->
+
+    Node manifest = new groovy.xml.XmlParser().parse(xmlFile)
+
+//    //非小米渠道添加存储权限
+//    if (!isXiaoMi) {
+//        if (!manifest.toString().contains("android.permission.MANAGE_EXTERNAL_STORAGE")) {
+//            println "<------>添加MANAGE_EXTERNAL_STORAGE---完毕-------------------------------->"
+//            Map lock_map = new HashMap()
+//            lock_map.put(android.name, "android.permission.MANAGE_EXTERNAL_STORAGE")
+//            manifest.appendNode("uses-permission", lock_map)
+//        }
+//        if (!manifest.toString().contains("android.permission.READ_MEDIA_IMAGES")) {
+//            println "<------>添加READ_MEDIA_IMAGES---完毕-------------------------------->"
+//            Map lock_map = new HashMap()
+//            lock_map.put(android.name, "android.permission.READ_MEDIA_IMAGES")
+//            manifest.appendNode("uses-permission", lock_map)
+//        }
+//        if (!manifest.toString().contains("android.permission.READ_MEDIA_VIDEO")) {
+//            println "<------>添加READ_MEDIA_VIDEO---完毕-------------------------------->"
+//            Map lock_map = new HashMap()
+//            lock_map.put(android.name, "android.permission.READ_MEDIA_VIDEO")
+//            manifest.appendNode("uses-permission", lock_map)
+//        }
+//        if (!manifest.toString().contains("android.permission.READ_MEDIA_AUDIO")) {
+//            println "<------>添加READ_MEDIA_AUDIO---完毕-------------------------------->"
+//            Map lock_map = new HashMap()
+//            lock_map.put(android.name, "android.permission.READ_MEDIA_AUDIO")
+//            manifest.appendNode("uses-permission", lock_map)
+//        }
+//        if (!manifest.toString().contains("android.permission.WAKE_LOCK")) {
+//            println "<------>添加WAKE_LOCK---完毕-------------------------------->"
+//            Map lock_map = new HashMap()
+//            lock_map.put(android.name, "android.permission.WAKE_LOCK")
+//            manifest.appendNode("uses-permission", lock_map)
+//        }
+//    }
+
+    //适配api24出包，uses-permission重复需添加tools:ignore=ManifestOrder
+    Map<String, Integer> map = new HashMap<>()
+    manifest.get("uses-permission").each {
+        if (it instanceof Node) {
+            String name = it.attribute(android.name)
+            Integer count = map.get(name)
+            map.put(name, count == null ? 1 : (count + 1))
+        }
+    }
+    manifest.get("uses-permission").each {
+        if (it instanceof Node) {
+            String name = it.attribute(android.name)
+            if (map.get(name) > 1) {
+                String ignore = it.attribute(tools.ignore)
+                if (ignore == null) {
+                    it.attributes().put(tools.ignore, "ManifestOrder")
+                    println "<------>" + name + "<------>添加tools:ignore=ManifestOrder"
+                } else if (!ignore.contains("ManifestOrder")) {
+                    it.attributes().put(tools.ignore, ignore + ",ManifestOrder")
+                    println "<------>" + name + "<------>补充tools:ignore=ManifestOrder"
+                }
+            }
+        }
+    }
+
+    //动态修改AndroidManifest节点--->START--->添加穿山甲广告必备项
+
+//    <!--必要权限，解决安全风险漏洞，发送和注册广播事件需要调用带有传递权限的接口-->
+    if (!manifest.toString().contains("openadsdk.permission.TT_PANGOLIN")) {
+        Map lock_map = new HashMap(), lock_map2 = new HashMap()
+        lock_map.put(android.name, "\${applicationId}.openadsdk.permission.TT_PANGOLIN")
+        lock_map2.put(android.name, "\${applicationId}.openadsdk.permission.TT_PANGOLIN")
+        lock_map2.put(android.protectionLevel, "signature")
+        manifest.appendNode("uses-permission", lock_map)
+        manifest.appendNode("permission", lock_map2)
+    }
+
+    Node application = manifest.application[0]
+
+    //小米渠道穿山甲SDK使用TextureView
+    if (isXiaoMi) {
+        if (application.toString().contains("USE_TEXTURE_VIEW")) {
+            application.iterator().each {
+                if (it instanceof Node) {
+                    if ("meta-data" == it.name()
+                            && "USE_TEXTURE_VIEW".equals(it.attributes().get(new QName("http://schemas.android.com/apk/res/android", "name")))) {
+                        it.attributes().put(new QName("http://schemas.android.com/apk/res/android", "value"), false)
+                    }
+                }
+            }
+        } else {
+            Map meta_map = new HashMap()
+            meta_map.put(android.name, "USE_TEXTURE_VIEW")
+            meta_map.put(android.value, false)
+            Node mate = new Node(application, "meta-data", meta_map)
+        }
+    } else {
+        if (application.toString().contains("USE_TEXTURE_VIEW")) {
+            application.iterator().each {
+                if (it instanceof Node) {
+                    if ("meta-data" == it.name()
+                            && "USE_TEXTURE_VIEW".equals(it.attributes().get(new QName("http://schemas.android.com/apk/res/android", "name")))) {
+                        it.attributes().put(new QName("http://schemas.android.com/apk/res/android", "value"), true)
+                    }
+                }
+            }
+        }
+    }
+
+    if (!application.toString().contains("com.bytedance.sdk.openadsdk.multipro.TTMultiProvider")) {
+        Map provider_map = new HashMap()
+        provider_map.put(android.name, "com.bytedance.sdk.openadsdk.multipro.TTMultiProvider")
+        provider_map.put(android.authorities, "\${applicationId}.TTMultiProvider")
+        provider_map.put(android.exported, "false")
+        application.appendNode("provider", provider_map)
+    }
+
+
+    if (true) {
+        Map provider_map = new HashMap(), meta_map = new HashMap()
+        provider_map.put(android.name, "com.bytedance.sdk.openadsdk.TTFileProvider")
+        provider_map.put(android.authorities, "\${applicationId}.TTFileProvider")
+        provider_map.put(android.exported, "false")
+        provider_map.put(android.grantUriPermissions, "true")
+
+        meta_map.put(android.name, "android.support.FILE_PROVIDER_PATHS")
+        meta_map.put(android.resource, "@xml/csj_file_paths")
+
+        List<Node> remove = new ArrayList<>()
+        if (application.toString().contains("com.bytedance.sdk.openadsdk.TTFileProvider")) {
+            application.children().each { pnode ->
+                if (pnode.toString().contains("com.bytedance.sdk.openadsdk.TTFileProvider")) {
+                    remove.add(pnode)
+                }
+            }
+            if (!remove.empty) {
+                remove.each { rnode ->
+                    application.remove(rnode)
+                }
+            }
+        }
+        Node provider = new Node(application, "provider", provider_map)
+        Node mate = new Node(provider, "meta-data", meta_map)
+    }
+
+    //动态修改AndroidManifest节点--->START--->添加腾讯广告必备项
+    if (isNoTx) {
+        if (application.toString().contains("com.qq.e.comm.GDTFileProvider")) {
+            application.provider.each {
+                if ("com.qq.e.comm.GDTFileProvider".equals(it.attribute(android.name))) {
+                    application.remove(it)
+                }
+            }
+        }
+    } else if (!application.toString().contains("com.qq.e.comm.GDTFileProvider")) {
+
+        Map provider_map = new HashMap(), meta_map = new HashMap()
+        provider_map.put(android.name, "com.qq.e.comm.GDTFileProvider")
+        provider_map.put(android.authorities, "\${applicationId}.gdt.fileprovider")
+        provider_map.put(android.exported, "false")
+        provider_map.put(android.grantUriPermissions, "true")
+        provider_map.put(android.authorities, "\${applicationId}.gdt.fileprovider")
+
+        meta_map.put(android.name, "android.support.FILE_PROVIDER_PATHS")
+        meta_map.put(android.resource, "@xml/gdt_file_path")
+
+        Node provider = new Node(application, "provider", provider_map)
+        Node mate = new Node(provider, "meta-data", meta_map)
+    }
+
+    //动态修改AndroidManifest节点--->START--->添加其它必备项
+
+    application.attributes().put(android.allowBackup, true)
+
+    def replace = application.attribute(tools.replace)
+
+    if (replace == null) {
+        replace = "android:allowBackup,android:networkSecurityConfig"
+        application.attributes().put(tools.replace, replace)
+    } else {
+        if (!replace.toString().contains("android:allowBackup")) {
+            replace += ",android:allowBackup"
+        }
+        if (!replace.toString().contains("android:networkSecurityConfig")) {
+            replace += ",android:networkSecurityConfig"
+        }
+        application.attributes().put(tools.replace, replace)
+    }
+
+    application.children().each { child ->
+        Node activity = child
+        if (activity.attribute(android.exported) == null) {
+            if (activity.toString().contains("intent-filter")) {
+                activity.attributes().put(android.exported, true)
+            } else {
+                activity.attributes().put(android.exported, false)
+            }
+        }
+    }
+
+    //动态修改AndroidManifest节点--->END--->
+
+    def xmlModified = groovy.xml.XmlUtil.serialize(manifest)
+    File des = new File(xmlFile)
+    if (des.exists()) {
+        des.delete()
+    }
+    des << xmlModified
+
+}
+
+////小米渠道修改module中的AndroidManifest
+//def verifyXiaoMiManifest(File xmlFile) {
+//    if (!xmlFile.exists() || !xmlFile.isFile()) {
+//        return
+//    }
+//    def manifestContent = xmlFile.getText()
+//    if (manifestContent.contains("android.permission.READ_MEDIA_IMAGES")) {
+//        updateStr(xmlFile, "android.permission.READ_MEDIA_IMAGES", "android.permission.INTERNET")
+//        println "<------>替换READ_MEDIA_IMAGES为INTERNET---完毕---sdk已修改为surfaceview----------------------------->"
+//    }
+//    if (manifestContent.contains("android.permission.READ_MEDIA_VIDEO")) {
+//        updateStr(xmlFile.path, "android.permission.READ_MEDIA_VIDEO", "android.permission.INTERNET")
+//        println "<------>替换READ_MEDIA_VIDEO为INTERNET---完毕---sdk已修改为surfaceview----------------------------->"
+//    }
+//    if (manifestContent.contains("android.permission.READ_MEDIA_AUDIO")) {
+//        updateStr(xmlFile.path, "android.permission.READ_MEDIA_AUDIO", "android.permission.INTERNET")
+//        println "<------>替换READ_MEDIA_AUDIO为INTERNET---完毕---sdk已修改为surfaceview----------------------------->"
+//    }
+//    if (manifestContent.contains("android.permission.WAKE_LOCK")) {
+//        updateStr(xmlFile.path, "android.permission.WAKE_LOCK", "android.permission.INTERNET")
+//        println "<------>替换WAKE_LOCK为INTERNET---完毕---sdk已修改为surfaceview----------------------------->"
+//    }
+//
+////    Node manifest = new groovy.xml.XmlParser().parse(xmlFile)
+////
+////    Map<String, Integer> map = new HashMap<>()
+////    manifest.get("uses-permission").each {
+////        if (it instanceof Node) {
+////            String name = it.attribute(android.name)
+////            Integer count = map.get(name)
+////            map.put(name, count == null ? 1 : (count + 1))
+////        }
+////    }
+////    manifest.get("uses-permission").each {
+////        if (it instanceof Node) {
+////            String name = it.attribute(android.name)
+////            if (map.get(name) > 1) {
+////                String ignore = it.attribute(tools.ignore)
+////                if (ignore == null) {
+////                    it.attributes().put(tools.ignore, "ManifestOrder")
+////                    println "<------>" + name + "<------>添加tools:ignore=ManifestOrder"
+////                } else if (!ignore.contains("ManifestOrder")) {
+////                    it.attributes().put(tools.ignore, ignore + ",ManifestOrder")
+////                    println "<------>" + name + "<------>补充tools:ignore=ManifestOrder"
+////                }
+////            }
+////        }
+////    }
+////
+////    def xmlModified = groovy.xml.XmlUtil.serialize(manifest)
+////    File des = new File(xmlFile)
+////    if (des.exists()) {
+////        des.delete()
+////    }
+////    des << xmlModified
+//}
+
+def makeTime(def patten, int sunday) {
+    if (patten == null) {
+        patten = "yyyy-MM-dd-HH-mm"
+    }
+    Date ltime = new Date()
+    if (sunday > 0) {
+        ltime = ltime.toInstant().plus(24 * 60 * 60 * sunday).toDate()
+    }
+    return ltime.format(patten, TimeZone.getTimeZone("GMT+8"))
+}
+
+def copyFile(def file_from, def file_to, def rname) {
+    //指定文件拷贝的目的地
+    def desFile = new File(file_to)
+    try {
+//            判断文件夹是否存在
+        if (!desFile.exists()) {
+            desFile.mkdirs()
+        }
+        //拷贝
+        copy {
+            from file_from
+            into file_to
+            rename {
+                rname
+            }
+        }
+    } catch (Exception e) {
+        e.printStackTrace()
+    }
+}
+
+class AESCodec {
+    static String KEY_TEMP = "zy7777777777777777"
+
+    private static String getInitKey(String key) {
+        if (key == null || key == "") {
+            key = "zyLink7777777777"
+        } else if (key.length() < 16) {
+            key = (key + KEY_TEMP).substring(0, 16)
+        } else if (key.length() > 16) {
+            key = key.substring(0, 16)
+        }
+        return key
+    }
+
+
+    static String encrypt(String key, String value) {
+        key = getInitKey(key)
+        String initVector = new StringBuffer(key).reverse().toString()
+        value = value + UUID.randomUUID().toString().substring(0, 7)
+        try {
+            IvParameterSpec iv = new IvParameterSpec(initVector.getBytes("UTF-8"))
+            SecretKeySpec skeySpec = new SecretKeySpec(key.getBytes("UTF-8"), "AES")
+            Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5PADDING")
+            cipher.init(Cipher.ENCRYPT_MODE, skeySpec, iv)
+            byte[] encrypted = cipher.doFinal(value.getBytes())
+            String result = Base64.getUrlEncoder().encodeToString(encrypted)
+            return result
+        } catch (Exception ex) {
+            ex.printStackTrace()
+        }
+        return null
+    }
+
+    static String decrypt(String key, String encrypted) {
+        key = getInitKey(key)
+        String initVector = new StringBuffer(key).reverse().toString()
+        try {
+            IvParameterSpec iv = new IvParameterSpec(initVector.getBytes("UTF-8"))
+            SecretKeySpec skeySpec = new SecretKeySpec(key.getBytes("UTF-8"), "AES")
+            Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5PADDING")
+            cipher.init(Cipher.DECRYPT_MODE, skeySpec, iv)
+            byte[] original = cipher.doFinal(Base64.getUrlDecoder().decode(encrypted))
+            String result = new String(original)
+            return result.substring(0, result.length() - 7)
+        } catch (Exception ex) {
+            ex.printStackTrace()
+        }
+        return null
+    }
+}

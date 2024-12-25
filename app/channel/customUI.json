@@ -1,0 +1,725 @@
+{
+  "name": "自定义UI聚合7",
+  "info": {},
+  "tabs": {
+    "bg": "@drawable/bg_fy_item",
+    "children": [
+      {
+        "name": "遥控",
+        "tid": "remote",
+        "show": {
+          "able": 1,
+          "value": 1
+        },
+        "order": {
+          "able": 1,
+          "value": 1
+        },
+        "bg": {
+          "img": "@drawable/remote_ui_remote_default",
+          "checkImg": "@drawable/remote_ui_remote"
+        }
+      },
+      {
+        "name": "高效办公",
+        "tid": "office",
+        "show": {
+          "able": 1,
+          "value": 1
+        },
+        "order": {
+          "able": 1,
+          "value": 2
+        },
+        "bg": {
+          "img": "@drawable/office_ui_office_default",
+          "checkImg": "@drawable/officec_ui_office"
+        }
+      },
+      {
+        "name": "投屏",
+        "tid": "cast",
+        "show": {
+          "able": 1,
+          "value": 1
+        },
+        "order": {
+          "able": 1,
+          "value": 3
+        },
+        "bg": {
+          "img": "@drawable/cast_ui_cast_default",
+          "checkImg": "@drawable/cast_ui_cast"
+        }
+      },
+      {
+        "name": "计算器",
+        "tid": "calculator",
+        "show": {
+          "able": 1,
+          "value": 1
+        },
+        "order": {
+          "able": 1,
+          "value": 4
+        },
+        "bg": {
+          "img": "@drawable/calculate_ic_btm_cal_uncheck",
+          "checkImg": "@drawable/calculate_ic_btm_cal_check"
+        }
+      },
+      {
+        "name": "办公笔记",
+        "tid": "officenote",
+        "show": {
+          "able": 1,
+          "value": 1
+        },
+        "order": {
+          "able": 1,
+          "value": 5
+        },
+        "bg": {
+          "img": "@drawable/office_ui_office_default",
+          "checkImg": "@drawable/officec_ui_office"
+        }
+      },
+      {
+        "name": "恋爱",
+        "tid": "love",
+        "show": {
+          "able": 1,
+          "value": 1
+        },
+        "order": {
+          "able": 1,
+          "value": 6
+        },
+        "bg": {
+          "img": "@drawable/love_home_icon0",
+          "checkImg": "@drawable/love_home_icon1"
+        }
+      },
+      {
+        "name": "小金库",
+        "tid": "vault",
+        "show": {
+          "able": 1,
+          "value": 1
+        },
+        "order": {
+          "able": 1,
+          "value": 7
+        },
+        "bg": {
+          "img": "@drawable/love_vault_icon0",
+          "checkImg": "@drawable/love_vault_icon1"
+        }
+      },
+      {
+        "name": "天气",
+        "tid": "weather",
+        "show": {
+          "able": 1,
+          "value": 1
+        },
+        "order": {
+          "able": 1,
+          "value":8
+        },
+        "bg": {
+          "img": "@drawable/sleep_ui_weather_default",
+          "checkImg": "@drawable/sleep_ui_weather"
+        }
+      },
+      {
+        "name": "克隆",
+        "tid": "clone",
+        "show": {
+          "able": 1,
+          "value": 1
+        },
+        "order": {
+          "able": 1,
+          "value": 9
+        },
+        "bg": {
+          "img": "@drawable/clone_ui_clone_default",
+          "checkImg": "@drawable/clone_ui_clone"
+        }
+      },
+      {
+        "name": "快递",
+        "tid": "express",
+        "show": {
+          "able": 1,
+          "value": 1
+        },
+        "order": {
+          "able": 1,
+          "value": 10
+        },
+        "bg": {
+          "img": "@drawable/exp_ui_express_default",
+          "checkImg": "@drawable/exp_ui_express"
+        }
+      },
+      {
+        "name": "喝水",
+        "tid": "drink",
+        "show": {
+          "able": 1,
+          "value": 1
+        },
+        "order": {
+          "able": 1,
+          "value": 11
+        },
+        "bg": {
+          "img": "@drawable/dk_ui_drink_default",
+          "checkImg": "@drawable/dk_ui_drink"
+        }
+      },
+      {
+        "name": "录音器",
+        "tid": "audio",
+        "show": {
+          "able": 1,
+          "value": 1
+        },
+        "order": {
+          "able": 1,
+          "value": 12
+        },
+        "bg": {
+          "img": "@drawable/audio_ui_tools_default",
+          "checkImg": "@drawable/audio_ui_tools"
+        }
+      },
+      {
+        "name": "睡眠",
+        "tid": "sleep",
+        "show": {
+          "able": 1,
+          "value": 1
+        },
+        "order": {
+          "able": 1,
+          "value": 13
+        },
+        "bg": {
+          "img": "@drawable/sleep_ui_sleep_default",
+          "checkImg": "@drawable/sleep_ui_sleep"
+        }
+      },
+      {
+        "name": "笔记",
+        "tid": "note",
+        "show": {
+          "able": 1,
+          "value": 1
+        },
+        "order": {
+          "able": 1,
+          "value": 14
+        },
+        "bg": {
+          "img": "@drawable/note_ui_home_default",
+          "checkImg": "@drawable/note_ui_home"
+        }
+      },
+      {
+        "name": "二维码",
+        "tid": "qrcode",
+        "show": {
+          "able": 1,
+          "value": 1
+        },
+        "order": {
+          "able": 1,
+          "value": 15
+        },
+        "bg": {
+          "img": "@drawable/qr_ui_qrcode_default",
+          "checkImg": "@drawable/qr_ui_qrcode"
+        }
+      },
+      {
+        "name": "播放器",
+        "tid": "player",
+        "show": {
+          "able": 1,
+          "value": 1
+        },
+        "order": {
+          "able": 1,
+          "value": 16
+        },
+        "bg": {
+          "img": "@drawable/p_ui_player_default",
+          "checkImg": "@drawable/p_ui_player"
+        }
+      },
+      {
+        "name": "出行",
+        "tid": "travel",
+        "show": {
+          "able": 1,
+          "value": 1
+        },
+        "order": {
+          "able": 1,
+          "value": 17
+        },
+        "bg": {
+          "img": "@drawable/car_d1",
+          "checkImg": "@drawable/car_d2"
+        }
+      },
+      {
+        "name": "汽车",
+        "tid": "car",
+        "show": {
+          "able": 1,
+          "value": 1
+        },
+        "order": {
+          "able": 1,
+          "value": 18
+        },
+        "bg": {
+          "img": "@drawable/car_d3",
+          "checkImg": "@drawable/car_d4"
+        }
+      },
+      {
+        "name": "驾考",
+        "tid": "test",
+        "show": {
+          "able": 1,
+          "value": 1
+        },
+        "order": {
+          "able": 1,
+          "value": 19
+        },
+        "bg": {
+          "img": "@drawable/car_d5",
+          "checkImg": "@drawable/car_d6"
+        }
+      },
+      {
+        "name": "wifi",
+        "tid": "wifihome",
+        "show": {
+          "able": 1,
+          "value": 1
+        },
+        "order": {
+          "able": 1,
+          "value": 20
+        },
+        "bg": {
+          "img": "@drawable/wifi_icon_home_0",
+          "checkImg": "@drawable/wifi_icon_home_1"
+        }
+      },
+      {
+        "name": "充电桩主页",
+        "tid": "chargehome",
+        "show": {
+          "able": 1,
+          "value": 0
+        },
+        "order": {
+          "able": 1,
+          "value": 21
+        },
+        "bg": {
+          "img": "@drawable/charge_d1",
+          "checkImg": "@drawable/charge_d2"
+        }
+      },
+      {
+        "name": "爱车日志",
+        "tid": "chargelog",
+        "show": {
+          "able": 1,
+          "value": 0
+        },
+        "order": {
+          "able": 1,
+          "value": 22
+        },
+        "bg": {
+          "img": "@drawable/charge_d3",
+          "checkImg": "@drawable/charge_d4"
+        }
+      },
+      {
+        "name": "爱车账本",
+        "tid": "chargebook",
+        "show": {
+          "able": 1,
+          "value": 0
+        },
+        "order": {
+          "able": 1,
+          "value": 23
+        },
+        "bg": {
+          "img": "@drawable/charge_d5",
+          "checkImg": "@drawable/charge_d6"
+        }
+      },
+      {
+        "name": "视频制作",
+        "tid": "cutmake",
+        "show": {
+          "able": 1,
+          "value": 1
+        },
+        "order": {
+          "able": 1,
+          "value": 24
+        },
+        "bg": {
+          "img": "@drawable/app_tab_cut_make",
+          "checkImg": "@drawable/app_tab_cut_make_select"
+        }
+      },
+      {
+        "name": "屏幕截屏",
+        "tid": "cutcut",
+        "show": {
+          "able": 1,
+          "value": 1
+        },
+        "order": {
+          "able": 1,
+          "value": 25
+        },
+        "bg": {
+          "img": "@drawable/app_tab_cut",
+          "checkImg": "@drawable/app_tab_cut_select"
+        }
+      },
+      {
+        "name": "动态壁纸",
+        "tid": "wallhome",
+        "show": {
+          "able": 1,
+          "value": 0
+        },
+        "order": {
+          "able": 1,
+          "value": 26
+        },
+        "bg": {
+          "img": "@drawable/app_tab_wall_main",
+          "checkImg": "@drawable/app_tab_wall_main_select"
+        }
+      },
+      {
+        "name": "拍照翻译",
+        "tid": "phototranslator",
+        "show": {
+          "able": 1,
+          "value": 1
+        },
+        "order": {
+          "able": 1,
+          "value": 27
+        },
+        "bg": {
+          "img": "@drawable/app_tab_photo_translation",
+          "checkImg": "@drawable/app_tab_photo_translation_select"
+        }
+      },
+      {
+        "name": "文件管理",
+        "tid": "filemanager",
+        "show": {
+          "able": 1,
+          "value": 1
+        },
+        "order": {
+          "able": 1,
+          "value": 28
+        },
+        "bg": {
+          "img": "@drawable/app_tab_file_bt",
+          "checkImg": "@drawable/app_tab_file_bt_select"
+        }
+      },
+      {
+        "name": "文件扫描",
+        "tid": "filescanning",
+        "show": {
+          "able": 1,
+          "value": 1
+        },
+        "order": {
+          "able": 1,
+          "value": 29
+        },
+        "bg": {
+          "img": "@drawable/app_tab_file_scan",
+          "checkImg": "@drawable/app_tab_file_scan_select"
+        }
+      },
+      {
+        "name": "文件解压缩",
+        "tid": "filecompress",
+        "show": {
+          "able": 1,
+          "value": 1
+        },
+        "order": {
+          "able": 1,
+          "value": 30
+        },
+        "bg": {
+          "img": "@drawable/app_tab_file_zip",
+          "checkImg": "@drawable/app_tab_file_zip_select"
+        }
+      },
+      {
+        "name": "格式转换",
+        "tid": "fileconversion",
+        "show": {
+          "able": 1,
+          "value": 1
+        },
+        "order": {
+          "able": 1,
+          "value": 31
+        },
+        "bg": {
+          "img": "@drawable/app_tab_file_transform",
+          "checkImg": "@drawable/app_tab_file_transform_select"
+        }
+      },
+      {
+        "name": "定位",
+        "tid": "location",
+        "show": {
+          "able": 1,
+          "value": 1
+        },
+        "order": {
+          "able": 1,
+          "value": 32
+        },
+        "bg": {
+          "img": "@drawable/location_i1",
+          "checkImg": "@drawable/location_i2"
+        }
+      },
+      {
+        "name": "我的",
+        "tid": "mine",
+        "show": {
+          "able": 1,
+          "value": 1
+        },
+        "order": {
+          "able": 1,
+          "value": 33
+        },
+        "bg": {
+          "img": "@drawable/mine_ui_mine_default",
+          "checkImg": "@drawable/mine_ui_mine"
+        }
+      },
+      {
+        "name": "新版设置",
+        "tid": "newset",
+        "show": {
+          "able": 1,
+          "value": 1
+        },
+        "order": {
+          "able": 1,
+          "value": 34
+        },
+        "bg": {
+          "img": "@drawable/app_tab_set",
+          "checkImg": "@drawable/app_tab_set_select"
+        }
+      }
+    ]
+  },
+  "module": [
+    {
+      "com.zy.app.view.ZYScrollView": {
+        "app:xml_from": "res/layout/fragment_remote.xml"
+      }
+    },
+    {
+      "com.zy.app.view.ZYScrollView": {
+        "app:xml_from": "res/layout/fragment_office.xml"
+      }
+    },
+    {
+      "com.zy.app.view.ZYScrollView": {
+        "app:xml_from": "res/layout/fragment_cast.xml"
+      }
+    },
+    {
+      "com.zy.app.view.ZYScrollView": {
+        "app:xml_from": "res/layout/fragment_calculator.xml"
+      }
+    },
+    {
+      "com.zy.app.view.ZYScrollView": {
+        "app:xml_from": "res/layout/fragment_office_notes.xml"
+      }
+    },
+    {
+      "com.zy.app.view.ZYScrollView": {
+        "app:xml_from": "res/layout/fragment_love.xml"
+      }
+    },
+    {
+      "com.zy.app.view.ZYScrollView": {
+        "app:xml_from": "res/layout/fragment_vault.xml"
+      }
+    },
+    {
+      "com.zy.app.view.ZYScrollView": {
+        "app:xml_from": "res/layout/fragment_weather.xml"
+      }
+    },
+    {
+      "com.zy.app.view.ZYScrollView": {
+        "app:xml_from": "res/layout/fragment_clone.xml"
+      }
+    },
+    {
+      "com.zy.app.view.ZYScrollView": {
+        "app:xml_from": "res/layout/fragment_express.xml"
+      }
+    },
+    {
+      "com.zy.app.view.ZYScrollView": {
+        "app:xml_from": "res/layout/fragment_drink.xml"
+      }
+    },
+    {
+      "com.zy.app.view.ZYScrollView": {
+        "app:xml_from": "res/layout/fragment_audio.xml"
+      }
+    },
+    {
+      "com.zy.app.view.ZYScrollView": {
+        "app:xml_from": "res/layout/fragment_sleep.xml"
+      }
+    },
+    {
+      "com.zy.app.view.ZYScrollView": {
+        "app:xml_from": "res/layout/fragment_note.xml"
+      }
+    },
+    {
+      "com.zy.app.view.ZYScrollView": {
+        "app:xml_from": "res/layout/fragment_qr_code.xml"
+      }
+    },
+    {
+      "com.zy.app.view.ZYScrollView": {
+        "app:xml_from": "res/layout/fragment_player.xml"
+      }
+    },
+    {
+      "com.zy.app.view.ZYScrollView": {
+        "app:xml_from": "res/layout/fragment_travel.xml"
+      }
+    },
+    {
+      "com.zy.app.view.ZYScrollView": {
+        "app:xml_from": "res/layout/fragment_car.xml"
+      }
+    },
+    {
+      "com.zy.app.view.ZYScrollView": {
+        "app:xml_from": "res/layout/fragment_test.xml"
+      }
+    },
+    {
+      "com.zy.app.view.ZYScrollView": {
+        "app:xml_from": "res/layout/fragment_home.xml"
+      }
+    },
+    {
+      "com.zy.app.view.ZYScrollView": {
+        "app:xml_from": "res/layout/fragment_charge_home.xml"
+      }
+    },
+    {
+      "com.zy.app.view.ZYScrollView": {
+        "app:xml_from": "res/layout/fragment_charge_log.xml"
+      }
+    },
+    {
+      "com.zy.app.view.ZYScrollView": {
+        "app:xml_from": "res/layout/fragment_charge_book.xml"
+      }
+    },
+    {
+      "com.zy.app.view.ZYScrollView": {
+        "app:xml_from": "res/layout/fragment_video_make.xml"
+      }
+    },
+    {
+      "com.zy.app.view.ZYScrollView": {
+        "app:xml_from": "res/layout/fragment_screen.xml"
+      }
+    },
+    {
+      "com.zy.app.view.ZYScrollView": {
+        "app:xml_from": "res/layout/fragment_main.xml"
+      }
+    },
+    {
+      "com.zy.app.view.ZYScrollView": {
+        "app:xml_from": "res/layout/fragment_translate.xml"
+      }
+    },
+    {
+      "com.zy.app.view.ZYScrollView": {
+        "app:xml_from": "res/layout/fragment_filemanager_c.xml"
+      }
+    },
+    {
+      "com.zy.app.view.ZYScrollView": {
+        "app:xml_from": "res/layout/fragment_scanning.xml"
+      }
+    },
+    {
+      "com.zy.app.view.ZYScrollView": {
+        "app:xml_from": "res/layout/fregment_compression.xml"
+      }
+    },
+    {
+      "com.zy.app.view.ZYScrollView": {
+        "app:xml_from": "res/layout/fragment_format_converssion.xml"
+      }
+    },
+    {
+      "com.zy.app.view.ZYScrollView": {
+        "app:xml_from": "res/layout/fragment_location_home.xml"
+      }
+    },
+    {
+      "com.zy.app.view.ZYScrollView": {
+        "app:xml_from": "res/layout/fragment_mine.xml"
+      }
+    },
+    {
+      "com.zy.app.view.ZYScrollView": {
+        "app:xml_from": "res/layout/fragment_setting_new.xml"
+      }
+    }
+  ]
+}
