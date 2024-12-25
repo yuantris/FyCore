@@ -7,11 +7,21 @@
         <attr name="titleSize" format="dimension" />
         <attr name="titleLeftAlign" format="boolean" />
         <!-- 背景色值 -->
-        <attr name="backgroundColor" format="color" />
+        <attr name="bgColor" format="color" />
         <!-- 竖向 Padding -->
         <attr name="verticalPadding" format="dimension" />
         <!-- 左侧图标 -->
         <attr name="leftIcon" format="reference" />
+        <!-- 右侧图标 -->
+        <attr name="rightIcon" format="reference" />
+        <!-- 右侧文字 -->
+        <attr name="rightText" format="string" />
+        <!-- 点击效果 -->
+        <attr name="clickEffect">
+            <enum name="rectangle" value="0x10"/>
+            <enum name="roundedRectangle" value="0x20"/>
+            <enum name="circleShape" value="0x30"/>
+        </attr>
 
     </declare-styleable>
 

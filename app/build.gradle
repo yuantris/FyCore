@@ -42,6 +42,7 @@ android {
 
 dependencies {
 
+    //implementation 'com.github.yuantris:FyCore:0.0.1'
     implementation project(':core_feature')
 
     implementation 'androidx.core:core-ktx:1.9.0'

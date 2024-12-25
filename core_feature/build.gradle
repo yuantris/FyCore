@@ -69,7 +69,7 @@ dependencies {
     api "com.geyifeng.immersionbar:immersionbar:$immersionbar_version"
     api "com.geyifeng.immersionbar:immersionbar-ktx:$immersionbar_version"
     // 标题栏框架：https://github.com/getActivity/TitleBar
-    // api 'com.github.getActivity:TitleBar:10.5'
+    api 'com.github.getActivity:TitleBar:10.5'
 
 
     def room_version = "2.5.2"
