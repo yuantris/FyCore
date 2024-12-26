@@ -51,7 +51,7 @@ class RoomActivity : ReflectBindingActivity<ActivityRoomBinding>() {
 
                 // 先判断是否为空，如果不为空则更新，否则插入
                 it?.let { user ->
-                    user.name = System.currentTimeMillis().toString()
+                    user.name = CoreUtil.File.generateNameNoExtension("name")
                     user.age = 100
                     userVM.update(user)
                     "查询到：${user.name}，details已更新为：${user.age}".logD()

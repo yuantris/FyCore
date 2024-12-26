@@ -9,10 +9,10 @@ plugins {
 
 android {
     namespace 'com.core.fy.android'
-    compileSdk 33
+    compileSdk 34
 
     defaultConfig {
-        applicationId "com.core.librares"
+        applicationId "com.core.libraries"
         minSdk 24
         targetSdk 33
         versionCode 1
@@ -45,19 +45,18 @@ dependencies {
     //implementation 'com.github.yuantris:FyCore:0.0.1'
     implementation project(':core_feature')
 
-    implementation 'androidx.core:core-ktx:1.9.0'
-    implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'com.google.android.material:material:1.6.0'
-    testImplementation 'junit:junit:4.13.2'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+    implementation libs.core.ktx
+    implementation libs.appcompat
+    implementation libs.material
+    testImplementation libs.junit
+    androidTestImplementation libs.ext.junit
+    androidTestImplementation libs.espresso.core
 
     // 动画解析库：https://github.com/airbnb/lottie-android
     // 动画资源：https://lottiefiles.com、https://icons8.com/animated-icons
-    implementation 'com.airbnb.android:lottie:6.4.0'
+    implementation libs.lottie
 
-
-    def room_version = "2.5.2"
-    implementation "androidx.room:room-ktx:$room_version"
-    kapt "androidx.room:room-compiler:$room_version"
+    implementation libs.room.ktx
+    kapt libs.room.compiler
+    annotationProcessor libs.room.compiler
 }

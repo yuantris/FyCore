@@ -1,0 +1,36 @@
+[versions]
+appcompat = "1.6.1"
+core-ktx = "1.9.0"
+material = "1.6.0"
+junit = "4.13.2"
+ext-junit = "1.1.5"
+espresso-core = "3.5.1"
+activity-ktx = "1.6.0"
+lifecycle-ktx = "2.5.1"
+kotlin-version = "1.7.20"
+room = "2.6.1"
+immersionbar = "3.2.2"
+utilcodex = "1.31.1"
+lottie = "6.4.0"
+
+[libraries]
+appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat" }
+core-ktx = { module = "androidx.core:core-ktx", version.ref = "core-ktx" }
+material = { module = "com.google.android.material:material", version.ref = "material" }
+junit = { module = "junit:junit", version.ref = "junit" }
+ext-junit = { module = "androidx.test.ext:junit", version.ref = "ext-junit" }
+espresso-core = { module = "androidx.test.espresso:espresso-core", version.ref = "espresso-core" }
+
+activity-ktx = { module = "androidx.activity:activity-ktx", version.ref = "activity-ktx" }
+lifecycle-livedata-ktx = { module = "androidx.lifecycle:lifecycle-livedata-ktx", version.ref = "lifecycle-ktx" }
+lifecycle-viewmodel-ktx = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "lifecycle-ktx" }
+lifecycle-runtime-ktx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "lifecycle-ktx" }
+kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin-version" }
+room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
+room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
+immersionbar = { module = "com.geyifeng.immersionbar:immersionbar", version.ref = "immersionbar" }
+immersionbar-ktx = { module = "com.geyifeng.immersionbar:immersionbar-ktx", version.ref = "immersionbar" }
+utilcodex = { module = "com.blankj:utilcodex", version.ref = "utilcodex" }
+lottie = { module = "com.airbnb.android:lottie", version.ref = "lottie" }
+
+

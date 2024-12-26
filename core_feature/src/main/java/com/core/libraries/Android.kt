@@ -7,7 +7,12 @@ class Android private constructor() {
         private lateinit var _context: Application
 
         val context: Application
-            get() = _context
+            get() {
+                if (!::_context.isInitialized) {
+                    throw IllegalStateException("Android context has not been initialized")
+                }
+                return _context
+            }
 
         fun init(application: Application) {
             if (::_context.isInitialized) {

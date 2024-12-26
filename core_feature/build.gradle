@@ -6,7 +6,7 @@ plugins {
 
 android {
     namespace 'com.core.libraries'
-    compileSdk 33
+    compileSdk 34
 
     defaultConfig {
         minSdk 24
@@ -39,7 +39,6 @@ android {
 
     kotlinOptions {
         jvmTarget = '11'
-        // freeCompilerArgs += ["-Xjvm-default=all-compatibility"]
     }
 
     buildFeatures {
@@ -49,37 +48,32 @@ android {
 
 }
 
-def versions = [
-        room: "2.5.2",
-        immersionbar: "3.2.2",
-        utilcodex: "1.31.1"
-]
 
 dependencies {
 
-    implementation 'androidx.core:core-ktx:1.9.0'
-    implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'com.google.android.material:material:1.6.0'
-    testImplementation 'junit:junit:4.13.2'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+    implementation libs.core.ktx
+    implementation libs.appcompat
+    implementation libs.material
+    testImplementation libs.junit
+    androidTestImplementation libs.ext.junit
+    androidTestImplementation libs.espresso.core
 
-    api "androidx.activity:activity-ktx:1.6.0"
-    api 'androidx.lifecycle:lifecycle-livedata-ktx:2.5.1'
-    api 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1'
-    api 'androidx.lifecycle:lifecycle-runtime-ktx:2.5.1'
-    implementation "org.jetbrains.kotlin:kotlin-reflect:1.7.20"
+    api libs.activity.ktx
+    api libs.lifecycle.livedata.ktx
+    api libs.lifecycle.viewmodel.ktx
+    api libs.lifecycle.runtime.ktx
+    implementation libs.kotlin.reflect
 
-    implementation "androidx.room:room-ktx:${versions.room}"
-    kapt "androidx.room:room-compiler:${versions.room}"
-    //annotationProcessor "androidx.room:room-compiler:$room_version"
+    implementation libs.room.ktx
+    kapt libs.room.compiler
+    annotationProcessor libs.room.compiler
 
     // https://github.com/gyf-dev/ImmersionBar
-    api "com.geyifeng.immersionbar:immersionbar:${versions.immersionbar}"
-    api "com.geyifeng.immersionbar:immersionbar-ktx:${versions.immersionbar}"
+    api libs.immersionbar
+    api libs.immersionbar.ktx
 
     // https://github.com/Blankj/AndroidUtilCode
-    api "com.blankj:utilcodex:${versions.utilcodex}"
+    api libs.utilcodex
     // 标题栏框架：https://github.com/getActivity/TitleBar
     // api 'com.github.getActivity:TitleBar:10.5'
 
