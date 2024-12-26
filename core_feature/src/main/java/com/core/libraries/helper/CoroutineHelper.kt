@@ -1,4 +1,4 @@
-package com.core.libraries.util
+package com.core.libraries.helper
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

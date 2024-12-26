@@ -7,6 +7,7 @@ import androidx.room.RoomDatabase
 import com.core.fy.android.App
 import com.core.fy.android.room.dao.UserDao
 import com.core.fy.android.room.entity.User
+import com.core.libraries.Android
 
 @Database(entities = [User::class], version = 1, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
@@ -20,7 +21,7 @@ abstract class AppDatabase : RoomDatabase() {
         fun getDatabase(): AppDatabase {
             return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(
-                    App.context,
+                    Android.context,
                     AppDatabase::class.java,
                     "app_database"
                 ).build()

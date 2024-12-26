@@ -8,6 +8,7 @@ import com.core.libraries.base.room.RoomRepository
 class UserRepository : RoomRepository<User>(AppDatabase.getDatabase().userDao()) {
 
     suspend fun getUserByName(name: String) = (dao as UserDao).getUserByName(name)
+    suspend fun getUserById(id: Long) = (dao as UserDao).getUserById(id)
 
     suspend fun deleteAll() = (dao as UserDao).deleteAll()
 

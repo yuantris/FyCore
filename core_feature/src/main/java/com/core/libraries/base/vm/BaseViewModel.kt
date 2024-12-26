@@ -59,7 +59,6 @@ open class BaseViewModel : ViewModel() {
                 is CancellationException -> {
                     cancel?.invoke(e)
                 }
-
                 else -> {
                     val exception = e as? Exception ?: RuntimeException("Unknown error", e)
                     if (handleError) {

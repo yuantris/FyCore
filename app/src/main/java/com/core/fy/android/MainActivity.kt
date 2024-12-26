@@ -7,12 +7,16 @@ import com.core.fy.android.function.DialogActivity
 import com.core.fy.android.function.KeyboardActivity
 import com.core.fy.android.function.RoomActivity
 import com.core.libraries.base.activity.ReflectBindingActivity
+import com.core.libraries.util.CoreUtil
+import com.core.libraries.util.ToastUtil
 
 class MainActivity : ReflectBindingActivity<ActivityMainBinding>() {
     private val TAG by lazy { "MainActivity_" }
 
     override fun initial(savedInstanceState: Bundle?) {
         super.initial(savedInstanceState)
+        val filename = CoreUtil.File.generateName("mp3")
+        ToastUtil.show("filename: $filename")
     }
 
     override fun setListener() {

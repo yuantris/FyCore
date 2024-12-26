@@ -1,6 +1,7 @@
 package com.core.fy.android
 
 import android.app.Application
+import com.core.libraries.Android
 import com.core.libraries.other.keyboard.SoftKeyboardGlobal
 
 /**
@@ -18,13 +19,9 @@ import com.core.libraries.other.keyboard.SoftKeyboardGlobal
  */
 class App : Application() {
 
-    companion object {
-        lateinit var context: Application
-    }
-
     override fun onCreate() {
-        context = this
         super.onCreate()
+        Android.init(this)
         // SoftKeyboardGlobal.install(this, false)
     }
 }

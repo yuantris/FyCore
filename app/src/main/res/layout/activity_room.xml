@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
-        app:titleText="ROOM"/>
+        app:titleText="ROOM" />
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -41,7 +41,8 @@
                 android:id="@+id/age"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="年龄" />
+                android:hint="年龄"
+                android:inputType="number" />
 
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"

@@ -9,12 +9,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:bgColor="#FFDDDD"
+        app:clickEffect="circleShape"
         app:layout_constraintTop_toTopOf="parent"
         app:leftIcon="@drawable/bar_arrows_left_black"
+        app:rightText="关闭"
         app:titleLeftAlign="false"
         app:titleSize="18sp"
-        app:clickEffect="circleShape"
-        app:rightIcon="@drawable/bar_arrows_left_white"
         app:titleText="Dialog" />
 
     <androidx.appcompat.widget.LinearLayoutCompat

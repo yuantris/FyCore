@@ -18,9 +18,9 @@
         <attr name="rightText" format="string" />
         <!-- 点击效果 -->
         <attr name="clickEffect">
-            <enum name="rectangle" value="0x10"/>
-            <enum name="roundedRectangle" value="0x20"/>
-            <enum name="circleShape" value="0x30"/>
+            <enum name="rectangle" value="0"/>
+            <enum name="roundedRectangle" value="1"/>
+            <enum name="circleShape" value="2"/>
         </attr>
 
     </declare-styleable>

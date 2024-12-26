@@ -1,11 +1,12 @@
 package com.core.libraries.view
 
 import android.content.Context
+import android.content.res.ColorStateList
 import android.graphics.Color
-import android.graphics.Typeface
+import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.RippleDrawable
-import android.os.Build
+import android.graphics.drawable.StateListDrawable
 import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.Gravity
@@ -17,10 +18,8 @@ import android.widget.TextView
 import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
 import androidx.core.content.ContextCompat
-import androidx.databinding.adapters.ViewBindingAdapter.setPadding
+import androidx.core.view.size
 import com.core.libraries.R
-import com.core.libraries.base.ext.logE
-import com.google.android.material.internal.ViewUtils.dpToPx
 
 class TitleBar @JvmOverloads constructor(
     context: Context,
@@ -33,11 +32,16 @@ class TitleBar @JvmOverloads constructor(
     private val titleTextView: TextView
     private val rightContainer: LinearLayout
 
+    private val rightContainerChildSize = 2 // 默认右侧容器最多包含两个子 View
     private val defaultVerticalPadding = dpToPx(6)
     private val buttonTouchPadding = dpToPx(8) // 按钮点击区域扩展
 
     private var onClickListener: OnTitleClickListener? = null
     private var defaultClickEffect = ClickEffect.Rectangle
+
+    private var leftIcon: Int = 0
+    private var rightIcon: Int = 0
+    private var rightText: String = ""
 
     // 点击效果
     private enum class ClickEffect {
@@ -47,14 +51,9 @@ class TitleBar @JvmOverloads constructor(
     }
 
     interface OnTitleClickListener {
-        val onLiftClick: () -> Unit
-            get() = {}
-
-        val onRightImgClick: () -> Unit
-            get() = {}
-
-        val onRightTextClick: () -> Unit
-            get() = {}
+        fun onBackClick() {}
+        fun onRightXmlImgClick() {}
+        fun onRightXmlTextClick() {}
     }
 
 
@@ -134,54 +133,54 @@ class TitleBar @JvmOverloads constructor(
             val titleLeftAlign = typedArray.getBoolean(R.styleable.TitleBar_titleLeftAlign, false)
             val bgColor =
                 typedArray.getColor(R.styleable.TitleBar_bgColor, Color.WHITE)
-            val leftIcon = typedArray.getResourceId(R.styleable.TitleBar_leftIcon, 0)
-            val rightIcon = typedArray.getResourceId(R.styleable.TitleBar_rightIcon, 0)
-            val rightText = typedArray.getString(R.styleable.TitleBar_rightText) ?: ""
+            leftIcon = typedArray.getResourceId(R.styleable.TitleBar_leftIcon, 0)
+            rightIcon = typedArray.getResourceId(R.styleable.TitleBar_rightIcon, 0)
+            rightText = typedArray.getString(R.styleable.TitleBar_rightText) ?: ""
             val verticalPadding = typedArray.getDimensionPixelSize(
                 R.styleable.TitleBar_verticalPadding, defaultVerticalPadding
             )
 
             val clickEffect = typedArray.getInt(R.styleable.TitleBar_clickEffect, 0)
             when (clickEffect) {
-                0x10 -> defaultClickEffect = ClickEffect.Rectangle
-                0x20 -> defaultClickEffect = ClickEffect.RoundedRectangle
-                0x30 -> defaultClickEffect = ClickEffect.Circle
+                0 -> defaultClickEffect = ClickEffect.Rectangle
+                1 -> defaultClickEffect = ClickEffect.RoundedRectangle
+                2 -> defaultClickEffect = ClickEffect.Circle
             }
 
-            "titleSize=${pxToSp(titleSize.toFloat())}".logE()
             titleTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, pxToSp(titleSize.toFloat()))
             titleTextView.setTextColor(titleColor)
 
             setBackgroundColor(bgColor)
             setTitle(title, alignLeft = titleLeftAlign)
-            addRightButtonText(
-                rightText,
-                if (onClickListener != null) onClickListener?.onRightTextClick else null
-            )
-            addRightButtonImage(
-                rightIcon,
-                if (onClickListener != null) onClickListener?.onRightImgClick else null
-            )
             setPadding(paddingLeft, verticalPadding, paddingRight, verticalPadding)
-//            setLeftButton(
-//                if (leftIcon != 0) leftIcon
-//                else R.drawable.bar_arrows_left_black,
-//                if (onClickListener != null) onClickListener?.onLiftClick else null
-//            )
 
             setLeftButton(
                 if (leftIcon != 0) leftIcon
-                else R.drawable.bar_arrows_left_black,
-                onClickListener?.onLiftClick
-            )
+                else R.drawable.bar_arrows_left_black
+            ) { onClickListener?.onBackClick() }
 
             typedArray.recycle()
         }
 
     }
 
-    fun setOnTitleClickListener(listener: OnTitleClickListener) {
+    fun setOnTitleClickListener(listener: OnTitleClickListener?) {
         onClickListener = listener
+        if (rightText.isNotBlank()) {
+            addRightButtonText(
+                rightText
+            ) { onClickListener?.onRightXmlTextClick() }
+        }
+        if (rightIcon != 0) {
+            addRightButtonImage(
+                rightIcon
+            ) { onClickListener?.onRightXmlImgClick() }
+        }
+        if (leftIcon != 0) {
+            setLeftButton(
+                leftIcon
+            ) { onClickListener?.onBackClick() }
+        }
     }
 
     // 设置标题文本
@@ -271,14 +270,27 @@ class TitleBar @JvmOverloads constructor(
                     setImageDrawable(ContextCompat.getDrawable(context, iconRes))
             }
             onClick?.let { a ->
-                setClickEffect(this)
+                // setClickEffect(this)
+                // 右侧图标为点击缩放效果
                 setOnClickListener {
-                    a.invoke()
+                    it.animate()
+                        .scaleX(0.9f)
+                        .scaleY(0.9f)
+                        .setDuration(150)
+                        .withEndAction {
+                            it.scaleX = 1f
+                            it.scaleY = 1f
+                            a.invoke()
+                        }
                 }
             }
-            setOnClickListener { onClick?.invoke() }
+
         }
-        rightContainer.addView(imageView)
+
+        if (rightContainer.size < rightContainerChildSize) {
+            rightContainer.addView(imageView)
+        } else throw RuntimeException("右侧按钮数量超出限制")
+
     }
 
     // 添加右侧按钮（文字）
@@ -306,7 +318,9 @@ class TitleBar @JvmOverloads constructor(
                 }
             }
         }
-        rightContainer.addView(textView)
+        if (rightContainer.size < rightContainerChildSize) {
+            rightContainer.addView(textView)
+        } else throw RuntimeException("右侧按钮数量超出限制")
     }
 
     // 设置控件的点击效果
@@ -320,7 +334,7 @@ class TitleBar @JvmOverloads constructor(
 
     // 设置圆角点击效果
     private fun setRoundedClickEffect(angle: Int, view: View) {
-        val rippleColor = Color.parseColor("#20000000") // 波纹效果颜色
+        val rippleColor = ContextCompat.getColor(context, R.color.black5)  // 波纹效果颜色
         val cornerRadius = dpToPx(angle).toFloat()
 
         // 背景：透明色
@@ -337,7 +351,7 @@ class TitleBar @JvmOverloads constructor(
 
         // RippleDrawable
         val rippleDrawable = RippleDrawable(
-            android.content.res.ColorStateList.valueOf(rippleColor), // 波纹颜色
+            ColorStateList.valueOf(rippleColor), // 波纹颜色
             backgroundDrawable, // 背景（透明）
             maskDrawable // 波纹作用范围
         )
@@ -349,9 +363,25 @@ class TitleBar @JvmOverloads constructor(
 
     // 设置矩形点击效果
     private fun setDefaultClickEffect(view: View) {
-        val typedValue = TypedValue()
-        context.theme.resolveAttribute(android.R.attr.selectableItemBackground, typedValue, true)
-        view.setBackgroundResource(typedValue.resourceId)
+        val drawable = StateListDrawable()
+        drawable.addState(
+            intArrayOf(android.R.attr.state_pressed),
+            ColorDrawable(ContextCompat.getColor(context, R.color.black5))
+        )
+        drawable.addState(
+            intArrayOf(android.R.attr.state_selected),
+            ColorDrawable(ContextCompat.getColor(context, R.color.black5))
+        )
+        drawable.addState(
+            intArrayOf(android.R.attr.state_focused),
+            ColorDrawable(ContextCompat.getColor(context, R.color.black5))
+        )
+        drawable.addState(
+            intArrayOf(),
+            ColorDrawable(ContextCompat.getColor(context, R.color.transparent))
+        )
+        // 设置背景
+        view.background = drawable
     }
 
     // 工具方法：dp 转 px

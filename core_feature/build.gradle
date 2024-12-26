@@ -49,6 +49,12 @@ android {
 
 }
 
+def versions = [
+        room: "2.5.2",
+        immersionbar: "3.2.2",
+        utilcodex: "1.31.1"
+]
+
 dependencies {
 
     implementation 'androidx.core:core-ktx:1.9.0'
@@ -64,16 +70,17 @@ dependencies {
     api 'androidx.lifecycle:lifecycle-runtime-ktx:2.5.1'
     implementation "org.jetbrains.kotlin:kotlin-reflect:1.7.20"
 
-    def immersionbar_version = "3.2.2"
-    // https://github.com/gyf-dev/ImmersionBar
-    api "com.geyifeng.immersionbar:immersionbar:$immersionbar_version"
-    api "com.geyifeng.immersionbar:immersionbar-ktx:$immersionbar_version"
-    // 标题栏框架：https://github.com/getActivity/TitleBar
-    api 'com.github.getActivity:TitleBar:10.5'
-
-
-    def room_version = "2.5.2"
-    implementation "androidx.room:room-ktx:$room_version"
-    kapt "androidx.room:room-compiler:$room_version"
+    implementation "androidx.room:room-ktx:${versions.room}"
+    kapt "androidx.room:room-compiler:${versions.room}"
     //annotationProcessor "androidx.room:room-compiler:$room_version"
+
+    // https://github.com/gyf-dev/ImmersionBar
+    api "com.geyifeng.immersionbar:immersionbar:${versions.immersionbar}"
+    api "com.geyifeng.immersionbar:immersionbar-ktx:${versions.immersionbar}"
+
+    // https://github.com/Blankj/AndroidUtilCode
+    api "com.blankj:utilcodex:${versions.utilcodex}"
+    // 标题栏框架：https://github.com/getActivity/TitleBar
+    // api 'com.github.getActivity:TitleBar:10.5'
+
 }

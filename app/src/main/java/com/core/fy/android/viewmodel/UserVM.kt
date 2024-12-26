@@ -2,52 +2,65 @@ package com.core.fy.android.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
+import com.core.fy.android.room.AppDatabase
 import com.core.fy.android.room.dao.UserDao
 import com.core.fy.android.room.entity.User
 import com.core.fy.android.room.repository.UserRepository
+import com.core.libraries.base.ext.launchAsync
 import com.core.libraries.base.ext.logD
 import com.core.libraries.base.ext.logE
 import com.core.libraries.base.room.RoomRepository
 import com.core.libraries.base.vm.BaseViewModel
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.launch
 
 class UserVM(private var repository: RoomRepository<User>) : BaseViewModel() {
     private val _userLiveData = MutableLiveData<List<User>>()
     val userLiveData: LiveData<List<User>>
         get() = _userLiveData
 
-    fun insert(user: User) = launch(
-        {
-            val result = repository.insert(user)
-        }, {
-            "插入失败：${it.message}".logE()
-        }
-    )
+    fun insert(user: User) = launchAsync {
+        repository.insert(user)
+    }
 
-    fun delete(user: User) = launch(
-        {
-            val result = repository.delete(user)
-        }, {
-            "删除失败：${it.message}".logE()
-        }
-    )
+    fun delete(user: User) = launchAsync {
+        repository.delete(user)
+    }
 
-    fun update(user: User) = launch(
-        {
-            val result = repository.update(user)
-        }, {
-            "更新失败：${it.message}".logE()
-        }
-    )
+    fun update(user: User) = launchAsync {
+        repository.update(user)
+    }
 
-    fun getUserByName(name: String) = launch(
-        {
+    fun getUserByName(name: String): User {
+        val user = AppDatabase.getDatabase().userDao().getUserSync(name)
+        return user
+    }
+
+    fun getUser(name: String): Flow<User?> {
+        return flow {
+            // 使用挂起函数获取用户
             val result = (repository as UserRepository).getUserByName(name)
-            val users = mutableListOf(result)
-            _userLiveData.postValue(users)
-        }, {
-            "查询失败：${it.message}".logE()
+            // 通过 emit 发送数据到观察者
+            emit(result)
         }
-    )
+    }
+
+    fun getUserById(id: Long): Flow<User?> {
+        return flow {
+            val result = (repository as UserRepository).getUserById(id)
+            emit(result)
+        }
+    }
+
+    fun getUserAsync(name: String): Deferred<User?> {
+        return viewModelScope.async {
+            (repository as UserRepository).getUserByName(name)
+        }
+    }
 
 
     fun getAllUsers() = launch(
@@ -59,6 +72,13 @@ class UserVM(private var repository: RoomRepository<User>) : BaseViewModel() {
             "查询所有失败：${it.message}".logE()
         }
     )
+
+    fun getAll(): Flow<List<User>> {
+        return flow {
+            val result = repository.queryAll()
+            emit(result)
+        }
+    }
 
 
     fun deleteAll() = launch(
