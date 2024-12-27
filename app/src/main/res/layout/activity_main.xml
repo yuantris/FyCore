@@ -33,6 +33,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="dialog" />
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/toast"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="toast" />
     </androidx.appcompat.widget.LinearLayoutCompat>
 
 

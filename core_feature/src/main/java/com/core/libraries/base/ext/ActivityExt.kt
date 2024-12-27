@@ -6,7 +6,24 @@ import android.content.Intent
 import android.os.Handler
 import android.os.Looper
 import androidx.fragment.app.Fragment
+import com.core.libraries.other.Toast
 
+fun Context.startActivity(clazz: Class<*>) {
+    val intent = Intent(this, clazz)
+    if (this !is Activity) {
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+    }
+    startActivity(intent)
+}
+/**
+ * 显示Toast
+ */
+fun Context.toast(message: String) {
+    Toast.Builder(this)
+        .setMessage(message)
+        .create()
+        .show()
+}
 
 /**
  * 将Activity移到前台，需将launchMode设置为SingleTop，否则会创建新实例

@@ -12,7 +12,7 @@ android {
         minSdk 24
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        consumerProguardFiles "consumer-rules.pro"
+        consumerProguardFiles "proguard-rules.pro"
     }
 
     sourceSets {
@@ -77,4 +77,8 @@ dependencies {
     // 标题栏框架：https://github.com/getActivity/TitleBar
     // api 'com.github.getActivity:TitleBar:10.5'
 
+    // ShapeView：https://github.com/getActivity/ShapeView
+    api libs.shapeView
+    // ShapeDrawable：https://github.com/getActivity/ShapeDrawable
+    api libs.shapedrawable
 }

@@ -20,6 +20,7 @@ import androidx.annotation.DrawableRes
 import androidx.core.content.ContextCompat
 import androidx.core.view.size
 import com.core.libraries.R
+import com.core.libraries.base.ext.getActivity
 
 class TitleBar @JvmOverloads constructor(
     context: Context,
@@ -73,7 +74,7 @@ class TitleBar @JvmOverloads constructor(
         // 左侧按钮
         leftButton = ImageView(context).apply {
             layoutParams =
-                FrameLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
+                LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
                     .apply {
                         gravity = Gravity.CENTER
                     }
@@ -157,7 +158,11 @@ class TitleBar @JvmOverloads constructor(
             setLeftButton(
                 if (leftIcon != 0) leftIcon
                 else R.drawable.bar_arrows_left_black
-            ) { onClickListener?.onBackClick() }
+            ) {
+                onClickListener?.onBackClick() ?: run {
+                    context.getActivity()?.finish()
+                }
+            }
 
             typedArray.recycle()
         }

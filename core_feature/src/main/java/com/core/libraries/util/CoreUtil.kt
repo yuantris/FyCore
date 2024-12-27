@@ -1,7 +1,19 @@
 package com.core.libraries.util
 
-import com.blankj.utilcode.util.FileUtils
+import android.app.Activity
+import android.content.Context
+import android.content.ContextWrapper
+import android.content.Intent
+import android.media.MediaScannerConnection
+import android.net.Uri
+import android.os.Environment
 import com.blankj.utilcode.util.TimeUtils
+import com.core.libraries.Android
+import com.core.libraries.base.ext.logD
+import com.core.libraries.base.ext.logI
+import java.io.File
+import java.io.FileInputStream
+import java.security.MessageDigest
 
 /**
 # ██████████
@@ -16,7 +28,7 @@ import com.blankj.utilcode.util.TimeUtils
  * @description
  * @author Yuan
  */
-object CoreUtil {
+class CoreUtil {
 
     class File {
         companion object {
@@ -42,6 +54,68 @@ object CoreUtil {
             fun generateNameNoExtension(prefix: String): String {
                 val dateFormat = TimeUtils.getSafeDateFormat("yyyyMMdd_HHmmss")
                 return "${prefix.uppercase()}_${TimeUtils.getNowString(dateFormat)}"
+            }
+
+            /**
+             * 刷新整个媒体库
+             * 该函数通过扫描全部路径来更新系统媒体库，以便媒体文件能够被系统识别和索引
+             */
+            fun refreshMediaLibrary() {
+                MediaScannerConnection.scanFile(
+                    Android.context,
+                    arrayOf(Environment.getExternalStorageDirectory().absolutePath),
+                    null
+                ) { path, uri ->
+                    // 扫描完成后的回调
+                    "Scanned $path:\nuri=$uri".logD()
+                    "Scanned succeed.".logI()
+                }
+
+            }
+
+            /**
+             * 计算文件的哈希值
+             *
+             * @param file 要计算哈希值的文件对象
+             * @param algorithm 哈希算法名称，默认为 "SHA-256"
+             * @return 文件的哈希值字符串
+             *
+             * 此函数读取指定文件的内容，并使用给定的算法计算文件的哈希值
+             * 如果文件不存在或不是文件类型，将抛出 IllegalArgumentException 异常
+             */
+            fun getFileHash(file: java.io.File, algorithm: String = "SHA-256"): String {
+                if (!file.exists() || !file.isFile) {
+                    throw IllegalArgumentException("Invalid file path")
+                }
+                val buffer = ByteArray(1024 * 4) // 4KB 缓冲区
+                val digest = MessageDigest.getInstance(algorithm)
+
+                FileInputStream(file).use { inputStream ->
+                    var bytesRead: Int
+                    while (inputStream.read(buffer).also { bytesRead = it } != -1) {
+                        digest.update(buffer, 0, bytesRead)
+                    }
+                }
+
+                return digest.digest().joinToString("") { "%02x".format(it) } // 转换为十六进制字符串
+            }
+
+        }
+    }
+
+    class Activity {
+        companion object {
+            /**
+             * 重启指定的 Activity
+             * 此函数通过结束当前 Activity 并使用相同的 Intent 重新启动它，从而实现重启 Activity 的效果
+             * @param activity 要重启的 Activity 实例
+             */
+            fun restartActivity(activity: android.app.Activity) {
+                val intent = activity.intent
+                activity.finish() // 结束当前 Activity
+                activity.overridePendingTransition(0, 0) // 去除过渡动画
+                activity.startActivity(intent) // 重新启动当前 Activity
+                activity.overridePendingTransition(0, 0) // 去除过渡动画
             }
         }
     }

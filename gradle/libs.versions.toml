@@ -12,6 +12,8 @@ room = "2.6.1"
 immersionbar = "3.2.2"
 utilcodex = "1.31.1"
 lottie = "6.4.0"
+shapeview = "9.3"
+shapedrawable = "3.3"
 
 [libraries]
 appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat" }
@@ -32,5 +34,7 @@ immersionbar = { module = "com.geyifeng.immersionbar:immersionbar", version.ref 
 immersionbar-ktx = { module = "com.geyifeng.immersionbar:immersionbar-ktx", version.ref = "immersionbar" }
 utilcodex = { module = "com.blankj:utilcodex", version.ref = "utilcodex" }
 lottie = { module = "com.airbnb.android:lottie", version.ref = "lottie" }
+shapeView = { module = "com.github.getActivity:ShapeView", version.ref = "shapeview" }
+shapedrawable = { module = "com.github.getActivity:ShapeDrawable", version.ref = "shapedrawable" }
 
 
