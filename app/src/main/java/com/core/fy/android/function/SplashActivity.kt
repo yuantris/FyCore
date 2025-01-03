@@ -7,6 +7,8 @@ import android.os.Bundle
 import com.core.fy.android.MainActivity
 import com.core.fy.android.databinding.ActivitySplashBinding
 import com.core.libraries.base.activity.ReflectBindingActivity
+import com.core.libraries.base.ext.startActivity
+import com.core.libraries.base.ext.startActivityNoAnim
 import com.gyf.immersionbar.BarHide
 import com.gyf.immersionbar.ImmersionBar
 
@@ -47,8 +49,7 @@ class SplashActivity : ReflectBindingActivity<ActivitySplashBinding>() {
         mBinding.lavSplashLottie.addAnimatorListener(object : AnimatorListenerAdapter() {
             override fun onAnimationEnd(animation: Animator) {
                 mBinding.lavSplashLottie.removeAnimatorListener(this)
-                startActivity(Intent(this@SplashActivity, MainActivity::class.java))
-                overridePendingTransition(0,0)
+                startActivityNoAnim(MainActivity::class.java)
                 finish()
             }
         })

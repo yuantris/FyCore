@@ -7,6 +7,7 @@ import com.core.fy.android.databinding.ActivityVisibilityBinding
 import com.core.libraries.base.activity.ReflectBindingActivity
 import com.core.libraries.base.ext.hide
 import com.core.libraries.base.ext.launchSafe
+import com.core.libraries.base.ext.launchSync
 import com.core.libraries.base.ext.onVisibilityChange
 import com.core.libraries.base.ext.setDebouncedClickListener
 import com.core.libraries.base.ext.setVisible
@@ -33,7 +34,7 @@ class VisibilityActivity : ReflectBindingActivity<ActivityVisibilityBinding>() {
             setDebouncedClickListener {
                 if (isVisible) {
                     hide()
-                    launchSafe {
+                    launchSync {
                         delay(1000)
                         show()
                     }

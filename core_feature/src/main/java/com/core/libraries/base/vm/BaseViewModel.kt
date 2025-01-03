@@ -1,185 +1,173 @@
 package com.core.libraries.base.vm
 
 import android.os.NetworkOnMainThreadException
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.LiveDataScope
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.liveData
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.core.libraries.base.ext.logE
-import com.core.libraries.enums.ViewStatus
-import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.onCompletion
+import kotlinx.coroutines.flow.onEach
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import kotlin.coroutines.CoroutineContext
 
-//可以在别名类指定类型，例如suspend CoroutineScope.() -> Unit -----但是此时的block不需要调用invoke 了，直接block（）
-typealias Block<T> = suspend (CoroutineScope) -> T
+typealias Block<T> = suspend CoroutineScope.() -> T
 typealias Error = suspend (e: Exception) -> Unit
 typealias Cancel = suspend (e: Exception) -> Unit
 typealias EmitBlock<T> = suspend LiveDataScope<T>.() -> T
 
-
 open class BaseViewModel : ViewModel() {
 
-    //封装页面状态的LiveData
-    val viewStatus: MutableLiveData<Enum<ViewStatus>> = MutableLiveData()
-
+    val status: MutableLiveData<ViewStatus> = MutableLiveData()
 
     /**
-     * 创建并执行协程
-     * @param block 协程中执行
-     * @param error 错误时执行
-     * @param cancel 错误时执行
-     * @param handleError 是否处理异常
-     * @return Job
+     * 通用协程启动器
      */
-    protected fun launch(
-        block: Block<Unit>,
-        error: Error? = null,
-        cancel: Cancel? = null,
+    protected fun <T> launch(
+        block: Block<T>,
+        onError: Error? = null,
+        onSuccess: ((T) -> Unit)? = null,
+        onCancel: Cancel? = null,
         handleError: Boolean = true,
         context: CoroutineContext = Dispatchers.Default
     ): Job = viewModelScope.launch(context) {
-        runCatching {
-            block(this)
-        }.onSuccess {
-            viewStatus.postValue(ViewStatus.SUCCESS)
-        }.onFailure { e ->
-            when (e) {
-                is CancellationException -> {
-                    cancel?.invoke(e)
-                }
-                else -> {
-                    val exception = e as? Exception ?: RuntimeException("Unknown error", e)
-                    if (handleError) {
-                        onError(exception)
-                    }
-                    error?.invoke(exception)
-                }
+        runCatching { block() }
+            .onSuccess { result ->
+                status.postValue(ViewStatus.SUCCESS)
+                onSuccess?.invoke(result)
             }
-        }
+            .onFailure { handleException(it, handleError, onError, onCancel) }
     }
 
-    protected fun launchScopedCoroutine(
-        block: Block<Unit>,
-        success: Block<Unit>,
-        error: Error? = null,
-        cancel: Cancel? = null,
-        handleError: Boolean = true,
-        context: CoroutineContext = Dispatchers.Default
-    ): Job = viewModelScope.launch(context) {
-        runCatching {
-            block(this)
-        }.onSuccess {
-            withContext(Dispatchers.Main) {
-                success(this)
-            }
-            viewStatus.postValue(ViewStatus.SUCCESS)
-        }.onFailure { e ->
-            when (e) {
-                is CancellationException -> {
-                    cancel?.invoke(e)
-                }
-
-                else -> {
-                    val exception = e as? Exception ?: RuntimeException("Unknown error", e)
-                    if (handleError) {
-                        onError(exception)
-                    }
-                    error?.invoke(exception)
-                }
-            }
-        }
+    /**
+     * LiveData 封装
+     */
+    fun <T> emit(
+        block: EmitBlock<T>,
+        onError: Error? = null,
+        onCancel: Cancel? = null,
+        handleError: Boolean = true
+    ): LiveData<T> = liveData {
+        runCatching { emit(block()) }
+            .onSuccess { status.postValue(ViewStatus.SUCCESS) }
+            .onFailure { handleException(it, handleError, onError, onCancel) }
     }
 
 
     /**
-     * @param dispatcher  设置线程，这里默认主线程是因为默认的方法通过suspend挂起有自身线程封闭机制，所以不需要创建多余的线程，预留字段，是为了给自己Jsoup框架子线程执行-防止崩溃
-     * @param block 协程中执行
-     * @return Deferred<T>
+     * 封装 Flow 的启动逻辑
+     *
+     * @param flowBlock 创建 Flow 的逻辑
+     * @param onSuccess 成功时的回调，接收 Flow 的结果
+     * @param onError 失败时的回调
+     * @param onComplete Flow 完成时的回调
+     * @param timeoutMillis 超时时间（毫秒），默认不限时
+     * @param flowOnDispatcher 切换 Flow 的执行线程，默认不切换
+     */
+    protected fun <T> flowLaunch(
+        flowBlock: suspend () -> Flow<T>,
+        onSuccess: (T) -> Unit,
+        onError: Error? = null,
+        onComplete: (() -> Unit)? = null,
+        timeoutMillis: Long? = null,
+        flowOnDispatcher: CoroutineDispatcher? = null
+    ): Job {
+        return viewModelScope.launch {
+            try {
+                val flow = flowBlock()
+                    .apply {
+                        if (flowOnDispatcher != null) {
+                            flowOn(flowOnDispatcher)
+                        }
+                    }
+                    .onCompletion {
+                        onComplete?.invoke()
+                    }
+                    .catch { exception ->
+                        (exception as? Exception)?.let {
+                            onError?.invoke(it)
+                            status.postValue(ViewStatus.ERROR)
+                        } ?: run {
+                            // 如果 exception 不是 Exception 类型，处理其他错误情况
+                            onError?.invoke(Exception("Unknown error"))
+                            status.postValue(ViewStatus.ERROR)
+                        }
+                    }
+
+                if (timeoutMillis != null) {
+                    // 带超时的 collect
+                    withTimeout(timeoutMillis) {
+                        flow.collect { result -> onSuccess(result) }
+                    }
+                } else {
+                    // 普通 collect
+                    flow.collect { result -> onSuccess(result) }
+                }
+
+                status.postValue(ViewStatus.SUCCESS)
+            } catch (e: TimeoutCancellationException) {
+                onError?.invoke(e)
+                status.postValue(ViewStatus.ERROR)
+            } catch (e: Exception) {
+                onError?.invoke(e)
+                status.postValue(ViewStatus.ERROR)
+            }
+        }
+    }
+
+
+
+    /**
+     * 异步任务
      */
     protected fun <T> async(
         dispatcher: CoroutineDispatcher = Dispatchers.Default,
         block: Block<T>
-    ): Deferred<T> = viewModelScope.async(dispatcher) { block.invoke(this) }
-
+    ): Deferred<T> = viewModelScope.async(dispatcher) { block() }
 
     /**
-     * 取消协程
-     * @param job 协程job
+     * 取消协程任务
      */
     protected fun cancelJob(job: Job?) {
-        if (job != null && job.isActive && !job.isCompleted && !job.isCancelled) {
-            job.cancel()
-        }
+        job?.takeIf { it.isActive }?.cancel()
     }
 
     /**
-     * 省去每次创建liveData的烦恼，利用liveData的包装创建，直接传入block发送道对应的页面（此时用livedata的协程作用域，不需要用viewModelScope，用的是liveDataScope）
-     *
+     * 错误处理逻辑
      */
-    fun <T> emit(
-        error: Error? = null,
-        cancel: Cancel? = null,
-        handleError: Boolean = true,
-        block: EmitBlock<T>
-    ): LiveData<T> = liveData {
-        runCatching {
-            emit(block())
-        }.onSuccess {
-            viewStatus.postValue(ViewStatus.SUCCESS)
-        }.onFailure { e ->
-            when (e) {
-                is CancellationException -> {
-                    cancel?.invoke(e)
-                }
-
-                else -> {
-                    val exception = e as? Exception ?: RuntimeException("Unknown error", e)
-                    if (handleError) {
-                        onError(exception)
-                    }
-                    error?.invoke(exception)
-                }
-            }
-        }
-    }
-
-    /**
-     * 统一处理错误
-     * @param e 异常
-     */
-    private fun onError(e: Exception) {
-        when (e) {
-            is ConnectException -> {
-                "网络连接失败".logE()
-                viewStatus.value = ViewStatus.ERROR
-            }
-
-            is SocketTimeoutException -> {
-                "网络请求超时".logE()
-                viewStatus.value = ViewStatus.ERROR
-            }
-
-            is NetworkOnMainThreadException -> {
-                "线程异常".logE()
-                viewStatus.value = ViewStatus.ERROR
-            }
-
+    private suspend fun handleException(
+        throwable: Throwable,
+        handleError: Boolean,
+        onError: Error?,
+        onCancel: Cancel?
+    ) {
+        when (throwable) {
+            is CancellationException -> onCancel?.invoke(throwable)
             else -> {
-                e.message?.logE()
-                viewStatus.value = ViewStatus.ERROR
+                val exception = throwable as? Exception ?: RuntimeException("Unknown error", throwable)
+                if (handleError) handleCommonError(exception)
+                onError?.invoke(exception)
             }
         }
     }
+
+    /**
+     * 通用错误处理
+     */
+    private fun handleCommonError(e: Exception) {
+        when (e) {
+            is ConnectException -> "网络连接失败".logE()
+            is SocketTimeoutException -> "网络请求超时".logE()
+            is NetworkOnMainThreadException -> "线程异常".logE()
+            else -> e.message?.logE()
+        }
+        status.postValue(ViewStatus.ERROR)
+    }
+}
+
+enum class ViewStatus {
+    SUCCESS,
+    ERROR
 }

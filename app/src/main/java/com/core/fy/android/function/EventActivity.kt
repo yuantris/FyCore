@@ -9,6 +9,7 @@ import com.core.libraries.base.event.FlowEventBus
 import com.core.libraries.base.event.flowOf
 import com.core.libraries.base.event.post
 import com.core.libraries.base.ext.launchSafe
+import com.core.libraries.base.ext.launchSync
 import com.core.libraries.base.ext.logD
 import com.core.libraries.base.ext.toast
 import kotlinx.coroutines.flow.collectLatest
@@ -21,7 +22,7 @@ class EventActivity : ReflectBindingActivity<ActivityEventBinding>() {
             fEvent.setOnClickListener {
                 //FEvent.post(ParentEvent.ChildEvent(), ParentEvent::class.java)
                 //FEvent.post(Event.ShowInit("234"))
-                launchSafe {
+                launchSync {
                     FEvent.emit(Event.Created("567"))
                 }
             }
@@ -33,7 +34,7 @@ class EventActivity : ReflectBindingActivity<ActivityEventBinding>() {
 
     override fun observers() {
         super.observers()
-        launchSafe {
+        launchSync {
             FEvent.flowOf<Event.Created<String>>().collectLatest { event ->
                 "flowOf ParentEvent -> $event".logD()
             }

@@ -82,7 +82,7 @@ fun <T> LifecycleOwner.flowStart(action: suspend () -> T): Flow<T> {
     }
 }
 
-fun LifecycleOwner.launchSafe(action: suspend () -> Unit) {
+fun LifecycleOwner.launchSync(action: suspend () -> Unit) {
     lifecycleScope.launch {
         try {
             action()
@@ -96,7 +96,7 @@ fun LifecycleOwner.launchSafe(action: suspend () -> Unit) {
     }
 }
 
-fun LifecycleOwner.launchSafeAsync(action: suspend () -> Unit) {
+fun LifecycleOwner.launchAsync(action: suspend () -> Unit) {
     lifecycleScope.launch(Dispatchers.Default) {
         try {
             action()

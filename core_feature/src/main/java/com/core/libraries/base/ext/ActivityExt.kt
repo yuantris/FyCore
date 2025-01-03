@@ -15,6 +15,11 @@ fun Context.startActivity(clazz: Class<*>) {
     }
     startActivity(intent)
 }
+
+fun Activity.startActivityNoAnim(clazz: Class<*>) {
+    startActivity(clazz)
+    overridePendingTransition(0,0)
+}
 /**
  * 显示Toast
  */

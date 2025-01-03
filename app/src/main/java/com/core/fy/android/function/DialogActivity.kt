@@ -43,12 +43,6 @@ class DialogActivity : ReflectBindingActivity<ActivityDialogBinding>() {
                 ToastUtil.show("关闭")
             }
             setTitleStyle(Typeface.BOLD)
-            setOnTitleClickListener(object : TitleBar.OnTitleClickListener {
-                override fun onBackClick() {
-                    finish()
-                }
-
-            })
         }
     }
 

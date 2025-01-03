@@ -23,16 +23,22 @@ class UserVM(private var repository: UserRepository) : BaseViewModel() {
     val userLiveData: LiveData<List<User>>
         get() = _userLiveData
 
-    fun insert(user: User) = launchAsync {
-        repository.insert(user)
+    fun insert(user: User) {
+        launch({
+            repository.insert(user)
+        })
     }
 
-    fun delete(user: User) = launchAsync {
-        repository.delete(user)
+    fun delete(user: User) {
+        launch({
+            repository.delete(user)
+        })
     }
 
-    fun update(user: User) = launchAsync {
-        repository.update(user)
+    fun update(user: User) {
+        launch({
+            repository.update(user)
+        })
     }
 
     fun getUserByName(name: String): User {
@@ -49,29 +55,43 @@ class UserVM(private var repository: UserRepository) : BaseViewModel() {
         }
     }
 
-    fun getUserById(id: Long): Flow<User?> {
-        return flow {
-            val result = repository.getUserById(id)
-            emit(result)
-        }
+    fun getUserById(id: Long) {
+        flowLaunch(
+            flowBlock = {
+                flow {
+                    emit(repository.getUserById(id))
+                }
+            },
+            onSuccess = { user ->
+                "获取用户成功：${user?.name}".logD()
+            },
+            onError = { error ->
+                "获取用户失败：${error.message}".logE()
+            }
+        )
     }
 
-    fun getUserAsync(name: String): Deferred<User?> {
-        return viewModelScope.async {
-            repository.getUserByName(name)
-        }
+
+
+    fun getUserAsync(id: Long) = async {
+        repository.getUserById(id)
     }
 
-
-    fun getAllUsers() = launch(
-        {
-            val result = repository.queryAll()
-            "查询所有：${result.size}".logD()
-            _userLiveData.postValue(result)
-        }, {
-            "查询所有失败：${it.message}".logE()
-        }
-    )
+    fun getAllUsers() {
+        launch(
+            block = {
+                val result = repository.queryAll()
+                "查询所有：${result.size}".logD()
+                result
+            },
+            onError = {
+                "查询所有失败：${it.message}".logE()
+            },
+            onSuccess = {
+                _userLiveData.postValue(it)
+            }
+        )
+    }
 
     fun getAll(): Flow<List<User>> {
         return flow {
@@ -82,11 +102,12 @@ class UserVM(private var repository: UserRepository) : BaseViewModel() {
 
 
     fun deleteAll() = launch(
-        {
+        block = {
             repository.deleteAll()
             val result = repository.queryAll()
             "删除后剩余：${result.size}".logD()
-        }, {
+        },
+        onError = {
             "删除所有失败：${it.message}".logE()
         }
     )
