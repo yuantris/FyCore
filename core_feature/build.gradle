@@ -74,8 +74,6 @@ dependencies {
 
     // https://github.com/Blankj/AndroidUtilCode
     api libs.utilcodex
-    // 标题栏框架：https://github.com/getActivity/TitleBar
-    // api 'com.github.getActivity:TitleBar:10.5'
 
     // ShapeView：https://github.com/getActivity/ShapeView
     api libs.shapeView

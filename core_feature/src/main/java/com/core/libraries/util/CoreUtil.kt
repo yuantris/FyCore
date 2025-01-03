@@ -11,6 +11,7 @@ import com.blankj.utilcode.util.TimeUtils
 import com.core.libraries.Android
 import com.core.libraries.base.ext.logD
 import com.core.libraries.base.ext.logI
+import com.core.libraries.constant.DateFormatPatterns
 import java.io.File
 import java.io.FileInputStream
 import java.security.MessageDigest
@@ -100,6 +101,32 @@ class CoreUtil {
                 return digest.digest().joinToString("") { "%02x".format(it) } // 转换为十六进制字符串
             }
 
+        }
+    }
+
+    class Time {
+        companion object {
+            fun getNowTime(pattern: String = DateFormatPatterns.yyyyMMddHHmmss): String {
+                return TimeUtils.getNowString(TimeUtils.getSafeDateFormat(pattern))
+            }
+
+            /**
+             * 获取当前时间戳
+             *
+             * @return 返回当前时间戳，单位为毫秒
+             */
+            fun getCurrentTimestamp(): Long {
+                return System.currentTimeMillis()
+            }
+
+            /**
+             * 获取当前时间戳（以字符串形式返回）
+             *
+             * @return 返回当前时间戳的字符串形式，单位为毫秒
+             */
+            fun getCurrentTimestampString(): String {
+                return getCurrentTimestamp().toString()
+            }
         }
     }
 

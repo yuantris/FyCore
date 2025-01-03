@@ -20,7 +20,9 @@ import com.core.libraries.base.ext.logD
 import com.core.libraries.base.ext.logI
 import com.core.libraries.base.ext.startActivity
 import com.core.libraries.base.ext.toast
+import com.core.libraries.other.Toast
 import com.core.libraries.util.CoreUtil
+import com.core.libraries.util.ToastUtil
 import kotlinx.coroutines.flow.collectLatest
 
 class MainActivity : ReflectBindingActivity<ActivityMainBinding>() {
@@ -29,9 +31,11 @@ class MainActivity : ReflectBindingActivity<ActivityMainBinding>() {
     override fun initial(savedInstanceState: Bundle?) {
         super.initial(savedInstanceState)
         val filename = CoreUtil.File.generateNameNoExtension("mp3")
+        val nowTime = CoreUtil.Time.getNowTime()
         //ToastUtil.show("filename: $filename")
         launchSafeAsync {
             toast("filename: $filename")
+            ToastUtil.show("nowTime: $nowTime")
         }
     }
 
@@ -61,7 +65,6 @@ class MainActivity : ReflectBindingActivity<ActivityMainBinding>() {
 
     override fun onResume() {
         super.onResume()
-
 
     }
 

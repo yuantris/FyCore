@@ -4,9 +4,6 @@ plugins {
     id 'kotlin-kapt'
 }
 
-// apply from: 'resguard.gradle'
-// apply from: 'repackage.gradle'
-
 android {
     namespace 'com.core.fy.android'
     compileSdk 34

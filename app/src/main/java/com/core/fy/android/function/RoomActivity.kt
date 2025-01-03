@@ -60,8 +60,6 @@ class RoomActivity : ReflectBindingActivity<ActivityRoomBinding>() {
 
         // userVM.getAllUsers()
         // userVM.deleteAll()
-
-        userVM.getTableName().logE()
     }
 
     override fun setListener() {

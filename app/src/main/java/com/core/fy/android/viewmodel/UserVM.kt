@@ -90,6 +90,4 @@ class UserVM(private var repository: UserRepository) : BaseViewModel() {
             "删除所有失败：${it.message}".logE()
         }
     )
-
-    fun getTableName() = repository.dao.getTableName()
 }

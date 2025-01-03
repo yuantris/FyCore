@@ -1,10 +1,11 @@
 package com.core.libraries.base.ext
 
 import android.util.Log
+import com.core.libraries.Android
 
 const val TAG = "FyCore_"
 
-var isLog = true
+var isLog = Android.debug
 
 private enum class LEVEL {
     V, D, I, W, E
@@ -47,5 +48,5 @@ private fun getActualStackTraceElement(): StackTraceElement {
 
 // 格式化日志输出内容
 private fun formatLogMessage(stackTraceElement: StackTraceElement, message: String): String {
-    return "(${stackTraceElement.fileName}:${stackTraceElement.lineNumber}) <${stackTraceElement.methodName}>---> $message"
+    return "(${stackTraceElement.fileName}:${stackTraceElement.lineNumber}) <${stackTraceElement.methodName}> $message"
 }

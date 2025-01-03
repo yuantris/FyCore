@@ -3,7 +3,7 @@ package com.core.libraries.base.room
 import androidx.sqlite.db.SimpleSQLiteQuery
 import com.core.libraries.base.ext.logD
 
-abstract class RoomRepository<T : Any, D : BaseDao<T>>(val dao: D) {
+abstract class RoomRepository<T : Any, D : BaseDao<T>>(val dao: D) : BaseRepository() {
 
     suspend fun insert(item: T) {
         dao.insert(item)
