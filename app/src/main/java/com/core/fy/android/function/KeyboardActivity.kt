@@ -4,8 +4,10 @@ import android.os.Bundle
 import android.util.Log
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.core.fy.android.databinding.ActivityKeyboardBinding
+import com.core.libraries.Android
 import com.core.libraries.base.activity.ReflectBindingActivity
 import com.core.libraries.other.keyboard.KeyboardObserver
+import com.core.libraries.view.TitleBar
 
 /**
 # ██████████
@@ -22,7 +24,7 @@ import com.core.libraries.other.keyboard.KeyboardObserver
  */
 class KeyboardActivity : ReflectBindingActivity<ActivityKeyboardBinding>() {
     private val TAG by lazy { "KeyboardActivity_" }
-    private val observer by lazy { KeyboardObserver.create(this, true) }
+    private val observer by lazy { KeyboardObserver.create(this, showDebug = Android.debug) }
     override fun initial(savedInstanceState: Bundle?) {
         super.initial(savedInstanceState)
         observer.watch()
@@ -30,11 +32,6 @@ class KeyboardActivity : ReflectBindingActivity<ActivityKeyboardBinding>() {
 
     override fun setListener() {
         super.setListener()
-        mBinding.apply {
-            titleBar.setLeftButton(null) {
-                finish()
-            }
-        }
         observer.addCallback(object : KeyboardObserver.Callback {
             override fun onKeyboardHeightChanged(height: Int) {
                 Log.d(TAG, "onKeyboardHeightChanged height=$height")
