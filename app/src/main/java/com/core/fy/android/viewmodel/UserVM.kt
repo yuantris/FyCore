@@ -18,7 +18,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 
-class UserVM(private var repository: RoomRepository<User>) : BaseViewModel() {
+class UserVM(private var repository: UserRepository) : BaseViewModel() {
     private val _userLiveData = MutableLiveData<List<User>>()
     val userLiveData: LiveData<List<User>>
         get() = _userLiveData
@@ -36,14 +36,14 @@ class UserVM(private var repository: RoomRepository<User>) : BaseViewModel() {
     }
 
     fun getUserByName(name: String): User {
-        val user = AppDatabase.getDatabase().userDao().getUserSync(name)
+        val user = repository.dao.getUserSync(name)
         return user
     }
 
     fun getUser(name: String): Flow<User?> {
         return flow {
             // 使用挂起函数获取用户
-            val result = (repository as UserRepository).getUserByName(name)
+            val result = repository.getUserByName(name)
             // 通过 emit 发送数据到观察者
             emit(result)
         }
@@ -51,14 +51,14 @@ class UserVM(private var repository: RoomRepository<User>) : BaseViewModel() {
 
     fun getUserById(id: Long): Flow<User?> {
         return flow {
-            val result = (repository as UserRepository).getUserById(id)
+            val result = repository.getUserById(id)
             emit(result)
         }
     }
 
     fun getUserAsync(name: String): Deferred<User?> {
         return viewModelScope.async {
-            (repository as UserRepository).getUserByName(name)
+            repository.getUserByName(name)
         }
     }
 
@@ -83,7 +83,7 @@ class UserVM(private var repository: RoomRepository<User>) : BaseViewModel() {
 
     fun deleteAll() = launch(
         {
-            (repository as UserRepository).deleteAll()
+            repository.deleteAll()
             val result = repository.queryAll()
             "删除后剩余：${result.size}".logD()
         }, {

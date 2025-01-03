@@ -1,9 +1,7 @@
 package com.core.fy.android.function
 
 import android.os.Bundle
-import android.view.Gravity
 import androidx.activity.viewModels
-import androidx.lifecycle.lifecycleScope
 import com.core.fy.android.databinding.ActivityRoomBinding
 import com.core.fy.android.room.AppDatabase
 import com.core.fy.android.room.UserVMFactory
@@ -17,20 +15,15 @@ import com.core.libraries.base.ext.logD
 import com.core.libraries.base.ext.logE
 import com.core.libraries.base.ext.logI
 import com.core.libraries.base.ext.logW
-import com.core.libraries.base.ext.viewModel
 import com.core.libraries.enums.ViewStatus
 import com.core.libraries.util.CoreUtil
-import com.core.libraries.util.LogUtils
 import com.core.libraries.util.ToastUtil
 import com.core.libraries.view.TitleBar
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collectLatest
-import java.time.Instant
 
 class RoomActivity : ReflectBindingActivity<ActivityRoomBinding>() {
 
     private val userVM by viewModels<UserVM> {
-        UserVMFactory(UserRepository.getInstance())
+        UserVMFactory(UserRepository.singletonCreate())
     }
 
     override fun initial(savedInstanceState: Bundle?) {

@@ -38,6 +38,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="toast" />
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/view_visibility"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="view_visibility" />
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/event"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Event" />
     </androidx.appcompat.widget.LinearLayoutCompat>
 
 
