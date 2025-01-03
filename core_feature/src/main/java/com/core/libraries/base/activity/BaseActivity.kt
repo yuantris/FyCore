@@ -7,6 +7,8 @@ import androidx.appcompat.app.AppCompatActivity
 import com.core.libraries.R
 import com.core.libraries.base.action.TitleBarAction
 import com.core.libraries.base.ext.BarColor
+import com.core.libraries.base.ext.isNotNull
+import com.core.libraries.base.ext.isNull
 import com.core.libraries.base.ext.logD
 import com.core.libraries.view.TitleBar
 import com.gyf.immersionbar.ImmersionBar
@@ -23,13 +25,6 @@ abstract class BaseActivity : AppCompatActivity(), TitleBarAction {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(contentViewBind())
-        //window.transparentStatusBar()
-//        window.setupImmersiveBars(
-//            this,
-//            getStatusBarColor(),
-//            getNavigationBarColor()
-//        )
-
         initial(savedInstanceState)
         setListener()
         observers()
@@ -38,10 +33,9 @@ abstract class BaseActivity : AppCompatActivity(), TitleBarAction {
 
     protected open fun initial(savedInstanceState: Bundle?) {
         val titleBar = getTitleBar()
-        // titleBar?.setOnTitleBarListener(this)
         getStatusBarConfig().init()
         // 设置标题栏沉浸
-        if (titleBar != null) {
+        titleBar.isNotNull {
             ImmersionBar.setTitleBar(this, titleBar)
         }
     }
@@ -57,7 +51,7 @@ abstract class BaseActivity : AppCompatActivity(), TitleBarAction {
      * 获取状态栏沉浸的配置对象
      */
     open fun getStatusBarConfig(): ImmersionBar {
-        if (immersionBar == null) {
+        immersionBar.isNull {
             immersionBar = createStatusBarConfig()
         }
         return immersionBar!!
@@ -83,9 +77,7 @@ abstract class BaseActivity : AppCompatActivity(), TitleBarAction {
     }
 
     override fun getTitleBar(): TitleBar? {
-        if (titleBar == null) {
-            titleBar = obtainTitleBar(findViewById(Window.ID_ANDROID_CONTENT))
-        }
+        titleBar.isNull { titleBar = obtainTitleBar(findViewById(Window.ID_ANDROID_CONTENT)) }
         "titleBar= ${titleBar == null}".logD(TAG)
         return titleBar
     }
