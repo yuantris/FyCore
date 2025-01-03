@@ -6,7 +6,11 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import com.core.fy.android.databinding.ActivityKeyboardBinding
 import com.core.libraries.Android
 import com.core.libraries.base.activity.ReflectBindingActivity
+import com.core.libraries.base.ext.logD
+import com.core.libraries.base.ext.logV
+import com.core.libraries.helper.ValidHelper
 import com.core.libraries.other.keyboard.KeyboardObserver
+import com.core.libraries.util.LogUtils.logD
 import com.core.libraries.view.TitleBar
 
 /**
@@ -28,6 +32,16 @@ class KeyboardActivity : ReflectBindingActivity<ActivityKeyboardBinding>() {
     override fun initial(savedInstanceState: Bundle?) {
         super.initial(savedInstanceState)
         observer.watch()
+
+        "ValidHelper start".logV()
+        ValidHelper.create().asString()
+            .build("1") {
+                if (it) {
+                    "isFile".logD()
+                } else {
+                    "isNotFile".logD()
+                }
+            }
     }
 
     override fun setListener() {

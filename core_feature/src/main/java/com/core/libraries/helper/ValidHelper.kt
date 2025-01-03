@@ -76,6 +76,11 @@ class ValidHelper private constructor() {
      */
     fun asString(): ValidHelper {
         // 可在此处扩展 String 的基础校验条件
+        addCondition { input ->
+            input is String &&
+                    input.isNotBlank() &&
+                    input.isNotEmpty()
+        }
         return this
     }
 
@@ -90,8 +95,13 @@ class ValidHelper private constructor() {
     /**
      * 最终执行校验，返回校验结果
      */
-    fun build(input: Any): Boolean {
-        return conditions.all { it.test(input) }
+    fun build(
+        input: Any,
+        onResult: ((Boolean) -> Unit)? = null
+    ): Boolean {
+        val isVerified = conditions.all { it.test(input) }
+        onResult?.invoke(isVerified)
+        return isVerified
     }
 
     companion object {
