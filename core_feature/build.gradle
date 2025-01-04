@@ -2,11 +2,14 @@ plugins {
     id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
     id 'kotlin-kapt'
+    id 'maven-publish'
 }
+
+version '0.0.4'
 
 android {
     namespace 'com.core.libraries'
-    compileSdk 34
+    compileSdk 33
 
     defaultConfig {
         minSdk 24
@@ -27,7 +30,7 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled true
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -79,4 +82,26 @@ dependencies {
     api libs.shapeView
     // ShapeDrawable：https://github.com/getActivity/ShapeDrawable
     api libs.shapedrawable
+}
+
+afterEvaluate {
+    publishing {
+        publications {
+            plugin(MavenPublication) {
+                from components.release
+                groupId = 'com.core.libraries'
+                artifactId = 'FyCore'
+                version = project.version
+            }
+        }
+        repositories {
+            maven {
+                url = 'https://packages.aliyun.com/67789758cdfeb44ae202deb7/maven/2512815-release-ndmhzu'
+                credentials {
+                    username = '63d4d579378edb0fd9aa3b2d'
+                    password = 'nXJxEWiiObre'
+                }
+            }
+        }
+    }
 }

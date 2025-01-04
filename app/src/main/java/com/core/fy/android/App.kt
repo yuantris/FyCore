@@ -2,7 +2,6 @@ package com.core.fy.android
 
 import android.app.Application
 import com.core.libraries.Android
-import com.core.libraries.other.keyboard.SoftKeyboardGlobal
 
 /**
 # ██████████
