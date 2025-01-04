@@ -29,9 +29,8 @@ class RoomActivity : ReflectBindingActivity<ActivityRoomBinding>() {
         super.initial(savedInstanceState)
 
         launchSync {
-            userVM.getUserAsync(1).let { user ->
-                user.await().let {
-                    "查询到：${it?.name}，details：${it?.age}".logD()
+            userVM.getUserAsync(1).await().let {
+                "查询到：${it?.name}，details：${it?.age}".logD()
 //                if (it != null) {
 //                    it.age = 10085
 //                    userVM.update(it)
@@ -42,21 +41,18 @@ class RoomActivity : ReflectBindingActivity<ActivityRoomBinding>() {
 //                    "插入年龄为${origin.age}岁的用户".logI()
 //                }
 
-                    // 先判断是否为空，如果不为空则更新，否则插入
-                    it?.let { user ->
-                        user.name = CoreUtil.File.generateNameNoExtension("name")
-                        user.age = 100
-                        userVM.update(user)
-                        "查询到：${user.name}，details已更新为：${user.age}".logD()
-                    } ?: run {
-                        "查询为空".logE()
-                        val origin = User(name = "fy", age = 16)
-                        userVM.insert(origin)
-                        "插入年龄为${origin.age}岁的用户".logI()
-                    }
+                // 先判断是否为空，如果不为空则更新，否则插入
+                it?.let { user ->
+                    user.name = CoreUtil.File.generateNameNoExtension("name")
+                    user.age = 100
+                    userVM.update(user)
+                    "查询到：${user.name}，details已更新为：${user.age}".logD()
+                } ?: run {
+                    "查询为空".logE()
+                    val origin = User(name = "fy", age = 16)
+                    userVM.insert(origin)
+                    "插入年龄为${origin.age}岁的用户".logI()
                 }
-
-
             }
         }
 
@@ -111,7 +107,7 @@ class RoomActivity : ReflectBindingActivity<ActivityRoomBinding>() {
                     launchAsync {
                         bean.age = 19
                         AppDatabase.getDatabase().userDao().update(bean)
-                        val byNameNext = AppDatabase.getDatabase().userDao().getUserById(bean.id)
+                        val byNameNext = userVM.getUserAsync(bean.id).await()
                         "根据名字查询到用户：${byNameNext?.name}，年龄：${byNameNext?.age}".logI()
                     }
                     mBinding.dataShow.text = bean.age.toString()

@@ -10,12 +10,6 @@ import com.core.libraries.base.room.BaseDao
 interface UserDao : BaseDao<User> {
     override fun getTableName(): String = User.TABLE_NAME
 
-    @Query("SELECT * FROM ${User.TABLE_NAME} WHERE id = :userId")
-    suspend fun getUserById(userId: Long): User?
-
-    @Query("SELECT * FROM ${User.TABLE_NAME} WHERE name = :name")
-    suspend fun getUserByName(name: String): User?
-
     @Query("SELECT * FROM ${User.TABLE_NAME} WHERE name = :name")
     fun getUserSync(name: String): User
 

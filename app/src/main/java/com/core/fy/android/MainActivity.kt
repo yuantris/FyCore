@@ -1,7 +1,6 @@
 package com.core.fy.android
 
 import android.os.Bundle
-import androidx.lifecycle.Lifecycle
 import com.core.fy.android.databinding.ActivityMainBinding
 import com.core.fy.android.function.CustomToastActivity
 import com.core.fy.android.function.DialogActivity
@@ -14,13 +13,11 @@ import com.core.libraries.base.event.Event
 import com.core.libraries.base.event.FEvent
 import com.core.libraries.base.event.FlowEventBus
 import com.core.libraries.base.event.flowOf
-import com.core.libraries.base.ext.launchSafe
-import com.core.libraries.base.ext.launchSafeAsync
+import com.core.libraries.base.ext.launchAsync
+import com.core.libraries.base.ext.launchSync
 import com.core.libraries.base.ext.logD
-import com.core.libraries.base.ext.logI
 import com.core.libraries.base.ext.startActivity
 import com.core.libraries.base.ext.toast
-import com.core.libraries.other.Toast
 import com.core.libraries.util.CoreUtil
 import com.core.libraries.util.ToastUtil
 import kotlinx.coroutines.flow.collectLatest
@@ -31,11 +28,8 @@ class MainActivity : ReflectBindingActivity<ActivityMainBinding>() {
     override fun initial(savedInstanceState: Bundle?) {
         super.initial(savedInstanceState)
         val filename = CoreUtil.File.generateNameNoExtension("mp3")
-        val nowTime = CoreUtil.Time.getNowTime()
-        //ToastUtil.show("filename: $filename")
-        launchSafeAsync {
+        launchAsync {
             toast("filename: $filename")
-            ToastUtil.show("nowTime: $nowTime")
         }
     }
 
@@ -63,18 +57,13 @@ class MainActivity : ReflectBindingActivity<ActivityMainBinding>() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-
-    }
-
     override fun observers() {
         FlowEventBus.observe<Event.Created<String>>(this) {
             "mainactivity showInit -> ${it.data}".logD()
             toast(it.data)
         }
 
-        launchSafe {
+        launchSync {
             FEvent.flowOf<Event.Created<String>>().collectLatest { event ->
                 "flowOf mainactivity -> $event".logD()
             }

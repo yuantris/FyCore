@@ -28,6 +28,10 @@ interface BaseDao<T : Any> {
     @RawQuery
     suspend fun getAll(query: SupportSQLiteQuery): List<T>
 
+    // 根据条件查询数据
+    @RawQuery
+    suspend fun findByCondition(query: SupportSQLiteQuery): T?
+
     fun getTableName(): String
 }
 

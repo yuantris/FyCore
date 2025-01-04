@@ -3,6 +3,7 @@ package com.core.libraries.base.activity
 import android.os.Bundle
 import android.view.View
 import android.view.Window
+import androidx.annotation.CallSuper
 import androidx.appcompat.app.AppCompatActivity
 import com.core.libraries.R
 import com.core.libraries.base.action.TitleBarAction
@@ -30,7 +31,7 @@ abstract class BaseActivity : AppCompatActivity(), TitleBarAction {
         observers()
     }
 
-
+    @CallSuper
     protected open fun initial(savedInstanceState: Bundle?) {
         val titleBar = getTitleBar()
         getStatusBarConfig().init()

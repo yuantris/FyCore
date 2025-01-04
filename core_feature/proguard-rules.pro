@@ -22,3 +22,24 @@
 
 # ShapeView：https://github.com/getActivity/ShapeView
 -keep class com.hjq.shape.** {*;}
+
+# Room Database 保留规则
+-keep class androidx.room.** { *; }
+
+# 保留 Room 实体类的主构造函数和所有字段
+-keepclassmembers class * extends androidx.room.RoomDatabase {
+    public <init>(...);
+}
+
+# 保留 DAOs（Data Access Object）接口
+-keep interface * extends androidx.room.Dao {
+    <methods>;
+}
+
+# 保留数据库实体类的构造方法，避免混淆
+-keep class * extends androidx.room.Entity {
+    <init>(...);
+}
+
+# 保留 Kotlin 数据类和默认构造函数，避免混淆
+-keep class **.data.** { *; }

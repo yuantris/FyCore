@@ -3,8 +3,6 @@ package com.core.libraries.base.ext
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Rect
-import android.graphics.drawable.GradientDrawable
-import android.os.Build
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup

@@ -2,6 +2,7 @@ package com.core.libraries.base.ext
 
 import android.app.Activity
 import android.content.Context
+import android.content.ContextWrapper
 import android.content.Intent
 import android.os.Handler
 import android.os.Looper
@@ -16,10 +17,26 @@ fun Context.startActivity(clazz: Class<*>) {
     startActivity(intent)
 }
 
-fun Activity.startActivityNoAnim(clazz: Class<*>) {
+fun Activity.startNoTransition(clazz: Class<*>, finish: Boolean = true) {
     startActivity(clazz)
-    overridePendingTransition(0,0)
+    overridePendingTransition(0, 0)
+    if (finish) finish()
 }
+
+/**
+ * @return 上下文中的Activity对象
+ */
+fun Context.getActivity(): Activity? {
+    var context = this
+    while (context is ContextWrapper) {
+        if (context is Activity) {
+            return context
+        }
+        context = context.baseContext
+    }
+    return null
+}
+
 /**
  * 显示Toast
  */
@@ -46,7 +63,7 @@ fun <T> T.postUI(action: () -> Unit) {
     val mainHandler = MainLooper.handler
 
     // 如果当前已经是主线程，直接执行action
-    if (Looper.getMainLooper().thread == Thread.currentThread()) {
+    if (isMainThread()) {
         action()
         return
     }
@@ -74,7 +91,7 @@ fun <T> T.postDelayUI(duration: Long, action: () -> Unit) {
     val mainHandler = MainLooper.handler
 
     // 判断执行线程如果已经是主线程，直接使用Handler处理延迟
-    if (Looper.getMainLooper() == Looper.myLooper()) {
+    if (isMainThread()) {
         mainHandler.postDelayed({ action() }, duration)
         return
     }
@@ -104,5 +121,5 @@ object MainLooper {
 }
 
 fun isMainThread(): Boolean {
-    return Looper.getMainLooper() == Looper.myLooper()
+    return Looper.getMainLooper().thread == Thread.currentThread()
 }
