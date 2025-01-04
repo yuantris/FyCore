@@ -4,14 +4,10 @@ import android.os.Bundle
 import android.util.Log
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.core.fy.android.databinding.ActivityKeyboardBinding
-import com.core.libraries.Android
-import com.core.libraries.base.activity.ReflectBindingActivity
+import com.core.libraries.base.activity.BaseInputActivity
 import com.core.libraries.base.ext.logD
 import com.core.libraries.base.ext.logV
-import com.core.libraries.helper.ValidHelper
-import com.core.libraries.other.keyboard.KeyboardObserver
-import com.core.libraries.util.LogUtils.logD
-import com.core.libraries.view.TitleBar
+import com.core.libraries.helper.valid.ValidHelper
 
 /**
 # ██████████
@@ -26,12 +22,15 @@ import com.core.libraries.view.TitleBar
  * @description
  * @author Yuan
  */
-class KeyboardActivity : ReflectBindingActivity<ActivityKeyboardBinding>() {
+class KeyboardActivity : BaseInputActivity<ActivityKeyboardBinding>() {
     private val TAG by lazy { "KeyboardActivity_" }
-    private val observer by lazy { KeyboardObserver.create(this, showDebug = Android.debug) }
+
+    override fun isShowKeyboardDebug(): Boolean {
+        return true
+    }
+
     override fun initial(savedInstanceState: Bundle?) {
         super.initial(savedInstanceState)
-        observer.watch()
 
         "ValidHelper start".logV()
         ValidHelper.create().asString()
@@ -46,15 +45,6 @@ class KeyboardActivity : ReflectBindingActivity<ActivityKeyboardBinding>() {
 
     override fun setListener() {
         super.setListener()
-        observer.addCallback(object : KeyboardObserver.Callback {
-            override fun onKeyboardHeightChanged(height: Int) {
-                Log.d(TAG, "onKeyboardHeightChanged height=$height")
-                val params = mBinding.etInput.layoutParams as ConstraintLayout.LayoutParams
-                params.bottomMargin = height
-                mBinding.etInput.layoutParams = params
-                // observer.unwatch()
-            }
-        })
 //        SoftKeyboardGlobal.addSoftKeyboardCallback(object :
 //            SoftKeyboardGlobal.SoftKeyboardCallback {
 //            override fun onOpen(height: Int) {
@@ -65,5 +55,12 @@ class KeyboardActivity : ReflectBindingActivity<ActivityKeyboardBinding>() {
 //                Log.d(TAG, "onClose")
 //            }
 //        })
+    }
+
+    override fun onKeyboardHeightChanged(height: Int) {
+        Log.d(TAG, "onKeyboardHeightChanged height=$height")
+        val params = mBinding.etInput.layoutParams as ConstraintLayout.LayoutParams
+        params.bottomMargin = height
+        mBinding.etInput.layoutParams = params
     }
 }

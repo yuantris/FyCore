@@ -40,8 +40,8 @@ android {
 dependencies {
 
     //implementation 'com.github.yuantris:FyCore:0.0.1'
-    implementation libs.fycore
-    //implementation project(':core_feature')
+    //implementation libs.fycore
+    implementation project(':core_feature')
 
     implementation libs.core.ktx
     implementation libs.appcompat
@@ -58,14 +58,3 @@ dependencies {
     kapt libs.room.compiler
     annotationProcessor libs.room.compiler
 }
-
-//configurations.configureEach {
-//    resolutionStrategy.eachDependency { DependencyResolveDetails details ->
-//        def requested = details.requested
-//        if (requested.group == 'org.jetbrains.kotlin') {
-//            if (requested.name.startsWith("kotlin")) {
-//                details.useVersion libs.versions.kotlin.version
-//            }
-//        }
-//    }
-//}

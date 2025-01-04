@@ -32,30 +32,30 @@ class TryCatchHelper {
 
         fun execute(
             block: () -> Unit,
-            catchBlock: (Exception) -> Unit
+            catch: (Exception) -> Unit
         ) {
             try {
                 block()
             } catch (e: Exception) {
-                catchBlock(e)
+                catch(e)
             }
         }
 
         inline fun <reified E : Throwable> execute(
             block: () -> Unit,
-            catchBlock: (E) -> Unit,
-            noinline finallyBlock: (() -> Unit)? = null
+            catch: (E) -> Unit,
+            noinline finally: (() -> Unit)? = null
         ) {
             try {
                 block()
             } catch (e: Throwable) {
                 if (e is E) {
-                    catchBlock(e)
+                    catch(e)
                 } else {
                     throw e
                 }
             } finally {
-                finallyBlock?.invoke()
+                finally?.invoke()
             }
         }
 

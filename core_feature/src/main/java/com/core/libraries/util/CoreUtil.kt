@@ -1,17 +1,23 @@
 package com.core.libraries.util
 
-import android.app.Activity
-import android.content.Context
-import android.content.ContextWrapper
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.media.MediaScannerConnection
 import android.net.Uri
 import android.os.Environment
+import android.os.StrictMode
+import android.os.StrictMode.VmPolicy
+import com.blankj.utilcode.util.ActivityUtils
 import com.blankj.utilcode.util.TimeUtils
+import com.blankj.utilcode.util.ToastUtils
 import com.core.libraries.Android
 import com.core.libraries.base.ext.logD
+import com.core.libraries.base.ext.logE
 import com.core.libraries.base.ext.logI
+import com.core.libraries.base.ext.verify
 import com.core.libraries.constant.DateFormatPatterns
+import com.core.libraries.constant.FileType
+import com.core.libraries.helper.TryCatchHelper
 import java.io.File
 import java.io.FileInputStream
 import java.security.MessageDigest
@@ -32,6 +38,7 @@ import java.security.MessageDigest
 class CoreUtil {
 
     class File {
+
         companion object {
             /**
              * 根据指定格式生成文件名
@@ -99,6 +106,50 @@ class CoreUtil {
                 }
 
                 return digest.digest().joinToString("") { "%02x".format(it) } // 转换为十六进制字符串
+            }
+
+            /**
+             * 打开这个文件
+             */
+            fun openFile(file: java.io.File) {
+                val intent = Intent()
+
+                intent.setAction(Intent.ACTION_VIEW)
+                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                intent.addCategory(Intent.CATEGORY_DEFAULT)
+
+                //文件的类型
+                val fileName = file.name
+                val type = FileType.MATCH_ARRAY
+                    .firstOrNull { fileName.endsWith(it[0], ignoreCase = true) }
+                    ?.get(1) ?: ""
+
+                TryCatchHelper.execute(
+                    block = {
+                        // 直接跳过权限
+                        val builder = VmPolicy.Builder()
+                        StrictMode.setVmPolicy(builder.build())
+                        val fileURI = Uri.fromFile(file)
+
+                        //设置intent的data和Type属性
+                        intent.setDataAndType(fileURI, type)
+                        Android.context.packageManager.resolveActivity(
+                            intent,
+                            PackageManager.MATCH_DEFAULT_ONLY
+                        ).verify {
+                            if (it) {
+                                ToastUtils.showShort("没有找到对应的应用程序来打开")
+                            } else {
+                                ActivityUtils.startActivity(intent, 0, 0)
+                            }
+                        }
+                    },
+                    catch = {
+                        ToastUtils.showShort("无法打开该格式文件")
+                        it.message?.logE()
+                    }
+                )
             }
 
         }
