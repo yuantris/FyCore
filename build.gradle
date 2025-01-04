@@ -4,7 +4,6 @@
 apply from: 'app/repositories.gradle'
 
 buildscript {
-    ext.kotlin_version = '1.7.20'
     repositories {
         maven {
             credentials {
@@ -25,9 +24,9 @@ buildscript {
         google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.3.1'
-        classpath 'com.zy.sdk.res.guard:gradle-plugin:1.6.03'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath libs.gradle
+        classpath libs.zy.gradle.plugin
+        classpath libs.kotlin.gradle.plugin
     }
 }
 

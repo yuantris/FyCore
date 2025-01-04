@@ -2,6 +2,8 @@
 appcompat = "1.6.1"
 core-ktx = "1.9.0"
 fycore = "0.0.4"
+android-gradle = "7.3.1"
+zy-gradle-plugin = "1.6.03"
 material = "1.6.0"
 junit = "4.13.2"
 ext-junit = "1.1.3"
@@ -17,6 +19,10 @@ shapeview = "9.3"
 shapedrawable = "3.3"
 
 [libraries]
+gradle = { module = "com.android.tools.build:gradle", version.ref = "android-gradle" }
+zy-gradle-plugin = { module = "com.zy.sdk.res.guard:gradle-plugin", version.ref = "zy-gradle-plugin" }
+kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin-version" }
+
 appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat" }
 core-ktx = { module = "androidx.core:core-ktx", version.ref = "core-ktx" }
 fycore = { module = "com.core.libraries:FyCore", version.ref = "fycore" }
