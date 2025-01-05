@@ -34,7 +34,7 @@ class TitleBar @JvmOverloads constructor(
     private val rightContainer: LinearLayout
 
     private val rightContainerChildSize = 2 // 默认右侧容器最多包含两个子 View
-    private val defaultVerticalPadding = dpToPx(6)
+    private val defaultVerticalPadding = dpToPx(10)
     private val buttonTouchPadding = dpToPx(8) // 按钮点击区域扩展
 
     private var onClickListener: OnTitleClickListener? = null
@@ -66,7 +66,7 @@ class TitleBar @JvmOverloads constructor(
             layoutParams =
                 LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT).apply {
                     gravity = Gravity.START or Gravity.CENTER_VERTICAL
-                    marginStart = dpToPx(8)
+                    marginStart = dpToPx(10)
                 }
         }
         addView(leftButtonContainer)
@@ -113,7 +113,7 @@ class TitleBar @JvmOverloads constructor(
             layoutParams =
                 LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT).apply {
                     gravity = Gravity.END or Gravity.CENTER_VERTICAL
-                    marginEnd = dpToPx(8)
+                    marginEnd = dpToPx(10)
                 }
         }
         addView(rightContainer)

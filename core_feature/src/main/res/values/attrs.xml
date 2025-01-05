@@ -7,4 +7,14 @@
         <!-- Drawable 高度 -->
         <attr name="drawableHeight" format="dimension" />
     </declare-styleable>
+
+    <declare-styleable name="CollapsingHeaderLayout">
+        <attr name="headerHeight" format="dimension" />
+        <attr name="headerTitle" format="string" />
+        <attr name="headerImageSrc" format="reference" />
+        <attr name="titleTextColor" format="color" />
+        <attr name="scrimColor" format="color" />
+        <attr name="scrimAnimationDuration" format="integer" />
+    </declare-styleable>
+
 </resources>

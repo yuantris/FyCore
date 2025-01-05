@@ -9,7 +9,6 @@
         android:id="@+id/title_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:bgColor="@color/transparent"
         app:titleLeftAlign="true"
         app:titleSize="@dimen/sp_16"
         app:titleText="自定义Toast" />

@@ -2,6 +2,7 @@ package com.core.fy.android
 
 import android.os.Bundle
 import com.core.fy.android.databinding.ActivityMainBinding
+import com.core.fy.android.function.CollapsingBarActivity
 import com.core.fy.android.function.CustomToastActivity
 import com.core.fy.android.function.DialogActivity
 import com.core.fy.android.function.EventActivity
@@ -53,6 +54,9 @@ class MainActivity : ReflectBindingActivity<ActivityMainBinding>() {
             }
             event.setOnClickListener {
                 startActivity(EventActivity::class.java)
+            }
+            collBar.setOnClickListener {
+                startActivity(CollapsingBarActivity::class.java)
             }
         }
     }
