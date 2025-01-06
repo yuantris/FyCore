@@ -20,7 +20,7 @@ class App : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        Android.init(this)
+        Android.initialize(this)
         // SoftKeyboardGlobal.install(this, false)
     }
 }

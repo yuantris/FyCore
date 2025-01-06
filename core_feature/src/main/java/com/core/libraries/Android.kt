@@ -27,7 +27,7 @@ class Android private constructor() {
         /**
          * 初始化FyCore全局APPLICATION上下文
          */
-        fun init(application: Application, debug: Boolean = true) {
+        fun initialize(application: Application, debug: Boolean = true) {
             if (::_context.isInitialized) {
                 throw IllegalStateException("Android context is already initialized")
             }

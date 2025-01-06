@@ -25,7 +25,7 @@ class CollapsingHeaderLayout @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : CoordinatorLayout(context, attrs, defStyleAttr) {
 
-    private val appBarLayout: AppBarLayout
+    private var appBarLayout: AppBarLayout
     private val collapsingToolbarLayout: CollapsingToolbarLayout
     private val toolbar: Toolbar
     private val headerImage: ImageView
@@ -38,6 +38,7 @@ class CollapsingHeaderLayout @JvmOverloads constructor(
     var titleTextColor: Int = Color.BLACK
     var scrimColor: Int = ContextCompat.getColor(context, android.R.color.holo_blue_dark)
     var scrimAnimationDuration: Long = 300L
+    var isBackShow: Boolean = true
 
     // 回调监听
     private var onScrollProgressListener: ((progress: Float) -> Unit)? = null
@@ -96,8 +97,6 @@ class CollapsingHeaderLayout @JvmOverloads constructor(
         addView(appBarLayout)
         addView(contentContainer)
 
-        collapsingToolbarLayout.bringChildToFront(toolbar)
-
         initAttributes(context, attrs)
         setupBackButton()
         applyStatusBarPadding()
@@ -133,7 +132,7 @@ class CollapsingHeaderLayout @JvmOverloads constructor(
                 headerImageResId
             )
             titleTextColor = typedArray.getColor(
-                R.styleable.CollapsingHeaderLayout_titleTextColor,
+                R.styleable.CollapsingHeaderLayout_headerTitleColor,
                 titleTextColor
             )
             scrimColor = typedArray.getColor(
@@ -145,10 +144,16 @@ class CollapsingHeaderLayout @JvmOverloads constructor(
                 scrimAnimationDuration.toInt()
             ).toLong()
 
+            isBackShow = typedArray.getBoolean(R.styleable.CollapsingHeaderLayout_isBackShow, true)
+
             typedArray.recycle()
         }
 
+        updateAppBarLayout()
+        setupBackButton()
         collapsingToolbarLayout.title = headerTitle
+        collapsingToolbarLayout.setCollapsedTitleTextColor(titleTextColor)
+        collapsingToolbarLayout.setExpandedTitleColor(titleTextColor)
         headerImage.setImageResource(headerImageResId)
         collapsingToolbarLayout.setContentScrimColor(scrimColor)
         collapsingToolbarLayout.scrimAnimationDuration = scrimAnimationDuration
@@ -156,25 +161,32 @@ class CollapsingHeaderLayout @JvmOverloads constructor(
     }
 
     private fun setupBackButton() {
-        if (true) {
+        if (isBackShow) {
             toolbar.setNavigationIcon(R.drawable.bar_arrows_left_black)
             toolbar.setNavigationOnClickListener {
                 "我已点击".logD()
                 context.getActivity()?.finish()
             }
+        } else {
+            toolbar.setNavigationIcon(null)
         }
     }
 
+    private fun updateAppBarLayout() {
+        appBarLayout.layoutParams = LayoutParams(
+            LayoutParams.MATCH_PARENT,
+            headerHeight
+        )
+    }
+
     private fun applyStatusBarPadding() {
-        if (true) {
-            val statusBarHeight = getStatusBarHeight()
-            toolbar.setPadding(
-                toolbar.paddingLeft,
-                statusBarHeight,
-                toolbar.paddingRight,
-                toolbar.paddingBottom
-            )
-        }
+        val statusBarHeight = getStatusBarHeight()
+        toolbar.setPadding(
+            toolbar.paddingLeft,
+            statusBarHeight,
+            toolbar.paddingRight,
+            toolbar.paddingBottom
+        )
     }
 
 

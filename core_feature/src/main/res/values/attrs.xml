@@ -12,9 +12,10 @@
         <attr name="headerHeight" format="dimension" />
         <attr name="headerTitle" format="string" />
         <attr name="headerImageSrc" format="reference" />
-        <attr name="titleTextColor" format="color" />
+        <attr name="headerTitleColor" format="color" />
         <attr name="scrimColor" format="color" />
         <attr name="scrimAnimationDuration" format="integer" />
+        <attr name="isBackShow" format="boolean" />
     </declare-styleable>
 
 </resources>

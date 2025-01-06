@@ -34,7 +34,7 @@ class TitleBar @JvmOverloads constructor(
     private val rightContainer: LinearLayout
 
     private val rightContainerChildSize = 2 // 默认右侧容器最多包含两个子 View
-    private val defaultVerticalPadding = dpToPx(10)
+    private val defaultVerticalPadding = dpToPx(7)
     private val buttonTouchPadding = dpToPx(8) // 按钮点击区域扩展
 
     private var onClickListener: OnTitleClickListener? = null

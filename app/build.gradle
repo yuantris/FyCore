@@ -37,11 +37,21 @@ android {
     }
 }
 
-dependencies {
+// 选择依赖版本
+// libs.versions.local.get()  本地模块
+// libs.versions.github.get() GitHub 版本
+// libs.versions.aliyun.get() 阿里云版本
+def version = libs.versions.local.get()
 
-    //implementation 'com.github.yuantris:FyCore:0.0.1'
-    //implementation libs.fycore
-    implementation project(':core_feature')
+ext {
+    fycoreDependencies = [
+            github: libs.fycore.github,
+            aliyun: libs.fycore.aliyun,
+            local : project(':core_feature')
+    ]
+}
+
+dependencies {
 
     implementation libs.core.ktx
     implementation libs.appcompat
@@ -49,6 +59,7 @@ dependencies {
     testImplementation libs.junit
     androidTestImplementation libs.ext.junit
     androidTestImplementation libs.espresso.core
+    implementation fycoreDependencies[version]
 
     // 动画解析库：https://github.com/airbnb/lottie-android
     // 动画资源：https://lottiefiles.com、https://icons8.com/animated-icons

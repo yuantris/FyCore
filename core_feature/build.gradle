@@ -5,8 +5,6 @@ plugins {
     id 'maven-publish'
 }
 
-version '0.0.4'
-
 android {
     namespace 'com.core.libraries'
     compileSdk 33
@@ -71,6 +69,9 @@ dependencies {
     kapt libs.room.compiler
     annotationProcessor libs.room.compiler
 
+    // https://github.com/liangjingkanji/BRV
+    api libs.brv
+
     // https://github.com/gyf-dev/ImmersionBar
     api libs.immersionbar
     api libs.immersionbar.ktx
@@ -83,6 +84,9 @@ dependencies {
     // ShapeDrawable：https://github.com/getActivity/ShapeDrawable
     api libs.shapedrawable
 }
+
+/*当前版本*/
+version libs.versions.fycore.get()
 
 afterEvaluate {
     publishing {

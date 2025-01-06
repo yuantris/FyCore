@@ -1,18 +1,19 @@
 package com.core.fy.android.room
 
-import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.core.fy.android.App
+import com.core.fy.android.room.dao.FunctionDao
 import com.core.fy.android.room.dao.UserDao
 import com.core.fy.android.room.entity.User
 import com.core.libraries.Android
 
-@Database(entities = [User::class], version = 1, exportSchema = false)
+@Database(entities = [User::class, Function::class],
+    version = 1, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun userDao(): UserDao
+    abstract fun functionDao(): FunctionDao
 
     companion object {
         @Volatile

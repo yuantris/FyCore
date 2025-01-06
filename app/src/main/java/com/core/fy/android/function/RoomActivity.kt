@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import com.core.fy.android.databinding.ActivityRoomBinding
 import com.core.fy.android.room.AppDatabase
-import com.core.fy.android.room.UserVMFactory
+import com.core.fy.android.room.VMFactory
 import com.core.fy.android.room.entity.User
 import com.core.fy.android.room.repository.UserRepository
 import com.core.fy.android.viewmodel.UserVM
@@ -22,7 +22,7 @@ import com.core.libraries.util.ToastUtil
 class RoomActivity : ReflectBindingActivity<ActivityRoomBinding>() {
 
     private val userVM by viewModels<UserVM> {
-        UserVMFactory(UserRepository.singletonCreate())
+        VMFactory(UserRepository.singletonCreate())
     }
 
     override fun initial(savedInstanceState: Bundle?) {
