@@ -23,6 +23,9 @@ import com.core.libraries.base.room.BaseDao
 interface FunctionDao : BaseDao<Function> {
     override fun getTableName(): String = Function.TABLE_NAME
 
-    @Query("SELECT * FROM function_table ORDER BY position ASC")
+    @Query("SELECT * FROM ${Function.TABLE_NAME} ORDER BY position ASC")
     fun getFunctionList(): List<Function>?
+
+    @Query("SELECT * FROM ${Function.TABLE_NAME} WHERE design = :design LIMIT 1")
+    fun getFunctionWithDesign(design: String): Function?
 }

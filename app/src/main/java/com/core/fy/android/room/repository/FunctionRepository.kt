@@ -1,5 +1,6 @@
 package com.core.fy.android.room.repository
 
+import com.core.fy.android.MainActivity.Design
 import com.core.fy.android.room.AppDatabase
 import com.core.fy.android.room.dao.FunctionDao
 import com.core.fy.android.room.entity.Function
@@ -26,9 +27,9 @@ class FunctionRepository :
     }
 
     companion object {
-        private var instance: UserRepository? = null
+        private var instance: FunctionRepository? = null
         fun singletonCreate() = instance ?: synchronized(this) {
-            instance ?: UserRepository().also { instance = it }
+            instance ?: FunctionRepository().also { instance = it }
         }
     }
 }

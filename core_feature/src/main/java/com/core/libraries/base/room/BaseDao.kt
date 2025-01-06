@@ -32,6 +32,7 @@ interface BaseDao<T : Any> {
     @RawQuery
     suspend fun findByCondition(query: SupportSQLiteQuery): T?
 
+    @RequiresOverride
     fun getTableName(): String
 }
 

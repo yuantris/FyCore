@@ -21,12 +21,12 @@ import com.drake.brv.item.ItemDrag
  */
 @Entity(tableName = Function.TABLE_NAME)
 data class Function(
-    var position: Int = 0,
     var design: String = MainActivity.Design.KEYBOARD.function,
     override var itemOrientationDrag: Int = ItemOrientation.ALL
 ) : ItemDrag {
     @PrimaryKey(autoGenerate = true)
     var id: Long = 0
+    var position: Int = 0
 
     companion object {
         const val TABLE_NAME = "function_table"

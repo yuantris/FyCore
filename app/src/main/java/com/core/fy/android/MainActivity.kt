@@ -2,7 +2,9 @@ package com.core.fy.android
 
 import android.os.Bundle
 import androidx.activity.viewModels
+import androidx.databinding.DataBindingUtil.getBinding
 import androidx.recyclerview.widget.ItemTouchHelper
+import com.blankj.utilcode.util.DeviceUtils.getModel
 import com.core.fy.android.databinding.ActivityMainBinding
 import com.core.fy.android.databinding.ItemFunctionBinding
 import com.core.fy.android.function.CollapsingBarActivity
@@ -23,18 +25,23 @@ import com.core.libraries.base.event.FEvent
 import com.core.libraries.base.event.FlowEventBus
 import com.core.libraries.base.event.flowOf
 import com.core.libraries.base.ext.BarColor
+import com.core.libraries.base.ext.launchAsync
 import com.core.libraries.base.ext.launchSync
 import com.core.libraries.base.ext.logD
 import com.core.libraries.base.ext.logI
 import com.core.libraries.base.ext.onClick
 import com.core.libraries.base.ext.startActivity
 import com.core.libraries.base.ext.toast
+import com.core.libraries.base.ext.withMainContext
 import com.drake.brv.BindingAdapter
 import com.drake.brv.listener.DefaultItemTouchCallback
 import com.drake.brv.utils.divider
 import com.drake.brv.utils.grid
+import com.drake.brv.utils.models
 import com.drake.brv.utils.setup
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.withContext
 
 class MainActivity : ReflectBindingActivity<ActivityMainBinding>() {
 
@@ -52,17 +59,6 @@ class MainActivity : ReflectBindingActivity<ActivityMainBinding>() {
         VMFactory(FunctionRepository.singletonCreate())
     }
 
-    private val list by lazy {
-        listOf(
-            Function(0, Design.KEYBOARD.function),
-            Function(1, Design.ROOM.function),
-            Function(2, Design.DIALOG.function),
-            Function(3, Design.TOAST.function),
-            Function(4, Design.VIEW_VISIBILITY.function),
-            Function(5, Design.EVENT.function),
-            Function(6, Design.COLL_BAR.function),
-        )
-    }
 
     override fun getStatusBarColor(): BarColor {
         return BarColor.WHITE
@@ -70,57 +66,83 @@ class MainActivity : ReflectBindingActivity<ActivityMainBinding>() {
 
     override fun initial(savedInstanceState: Bundle?) {
         super.initial(savedInstanceState)
-        launchSync {
-            functionVM.repository.getAllList()?.let {
-                if (it.isEmpty()){
-                    functionVM.repository.dao.insertAll(list)
+        launchAsync {
+            functionVM.getAllList().await()?.let {} ?: run {
+                functionVM.repository.dao.insertAll(functionVM.list)
+            }
+
+            val functions = functionVM.getAllList().await()
+
+            if ((functions?.size ?: 0) <= functionVM.list.size) {
+                functionVM.list.forEachIndexed { index, item ->
+                    val existItem = functionVM.getFunctionWithDesign(item.design).await()
+                    existItem?.let {
+                        it.position = index
+                        "详情更新：${it.design} ${it.position}".logD()
+                        functionVM.repository.update(it)
+                    } ?: run {
+                        functionVM.repository.insert(item)
+                    }
+
+                }
+            } else {
+                // 找出在 functions 中但不在 list 中的元素
+                val onlyInFunctions =
+                    functions?.filter { it.design !in functionVM.list.map { bean -> bean.design } }
+                onlyInFunctions?.forEach {
+                    functionVM.repository.delete(it)
                 }
             }
-        }
-        mBinding.rv.apply {
-            grid(3).divider {
-                setDrawable(R.drawable.divider_horizontal)
-                startVisible = false
-                endVisible = false
-            }.setup {
-                addType<Function>(R.layout.item_function)
-                itemTouchHelper = ItemTouchHelper(object : DefaultItemTouchCallback() {
-                    override fun onDrag(
-                        source: BindingAdapter.BindingViewHolder,
-                        target: BindingAdapter.BindingViewHolder
-                    ) {
-                        super.onDrag(source, target)
-                        ("source: ${source.getModel<Function>().design},position: ${source.modelPosition} " +
-                                "\ntarget: ${target.getModel<Function>().design},position: ${target.modelPosition}").logI()
-                        models?.iterator()?.let {
-                            while (it.hasNext()) {
-                                val model = it.next()
-                                if (model is Function) {
-                                    val temp = model.design
-                                    temp.logD()
+
+            withContext(Dispatchers.Main) {
+                mBinding.rv.apply {
+                    grid(3).divider {
+                        setDrawable(R.drawable.divider_horizontal)
+                        startVisible = false
+                        endVisible = false
+                    }.setup {
+                        addType<Function>(R.layout.item_function)
+                        itemTouchHelper = ItemTouchHelper(object : DefaultItemTouchCallback() {
+                            override fun onDrag(
+                                source: BindingAdapter.BindingViewHolder,
+                                target: BindingAdapter.BindingViewHolder
+                            ) {
+                                launchAsync {
+                                    models?.forEachIndexed { index, model ->
+                                        if (model is Function) {
+                                            model.position = index
+                                            // 更新位置信息
+                                            functionVM.repository.dao.update(model)
+                                        }
+                                    }
+                                }
+                            }
+                        })
+                        onBind {
+                            val binding = getBinding<ItemFunctionBinding>()
+                            val data = getModel<Function>()
+                            binding.item.text = data.design
+                            binding.item.onClick {
+                                when (data.design) {
+                                    Design.KEYBOARD.function -> startActivity(KeyboardActivity::class.java)
+                                    Design.ROOM.function -> startActivity(RoomActivity::class.java)
+                                    Design.DIALOG.function -> startActivity(DialogActivity::class.java)
+                                    Design.TOAST.function -> startActivity(CustomToastActivity::class.java)
+                                    Design.VIEW_VISIBILITY.function -> startActivity(
+                                        VisibilityActivity::class.java
+                                    )
+
+                                    Design.EVENT.function -> startActivity(EventActivity::class.java)
+                                    Design.COLL_BAR.function -> startActivity(CollapsingBarActivity::class.java)
                                 }
                             }
                         }
-                    }
-                })
-                onBind {
-                    val binding = getBinding<ItemFunctionBinding>()
-                    val data = getModel<Function>()
-                    binding.item.text = data.design
-                    binding.item.onClick {
-                        when (data.design) {
-                            Design.KEYBOARD.function -> startActivity(KeyboardActivity::class.java)
-                            Design.ROOM.function -> startActivity(RoomActivity::class.java)
-                            Design.DIALOG.function -> startActivity(DialogActivity::class.java)
-                            Design.TOAST.function -> startActivity(CustomToastActivity::class.java)
-                            Design.VIEW_VISIBILITY.function -> startActivity(VisibilityActivity::class.java)
-                            Design.EVENT.function -> startActivity(EventActivity::class.java)
-                            Design.COLL_BAR.function -> startActivity(CollapsingBarActivity::class.java)
-                        }
-                    }
+                    }.models = if (functions.isNullOrEmpty()) functionVM.list else functions
                 }
-            }.models = list
+            }
         }
+
+
     }
 
     override fun observers() {
