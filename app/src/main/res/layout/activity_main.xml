@@ -17,9 +17,14 @@
         <com.core.fy.android.widget.XCollapsingToolbarLayout
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_256"
+            app:collapsedTitleGravity="center"
+            app:collapsedTitleTextColor="@color/white"
             app:contentScrim="#f34c68"
             app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
-            app:scrimVisibleHeightTrigger="@dimen/dp_100">
+            app:scrimVisibleHeightTrigger="@dimen/dp_100"
+            app:title="@string/app_name"
+            app:titleCollapseMode="scale"
+            app:titleEnabled="true">
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:layout_width="match_parent"
@@ -39,7 +44,10 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_home_tab"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/item_tab" />
 
     </com.google.android.material.appbar.AppBarLayout>
 

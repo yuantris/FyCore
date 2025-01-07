@@ -1,47 +1,86 @@
 package com.core.fy.android
 
 import android.os.Bundle
-import android.view.ViewGroup
-import androidx.databinding.adapters.ViewBindingAdapter.setPadding
+import android.widget.FrameLayout.LayoutParams
+import androidx.core.content.ContextCompat
+import androidx.databinding.DataBindingUtil.getBinding
+import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager.widget.ViewPager.OnPageChangeListener
 import com.blankj.utilcode.util.BarUtils
+import com.blankj.utilcode.util.DeviceUtils.getModel
 import com.core.fy.android.databinding.ActivityMainBinding
 import com.core.fy.android.databinding.ItemTabBinding
 import com.core.fy.android.interfaces.FragmentPagerAdapter
 import com.core.fy.android.model.Tab
-import com.core.fy.android.ui.HomeFragment
+import com.core.fy.android.ui.fragment.HomeFragment
 import com.core.libraries.base.activity.ReflectBindingActivity
 import com.core.libraries.base.ext.BarColor
+import com.core.libraries.base.ext.hide
+import com.core.libraries.base.ext.logD
+import com.core.libraries.base.ext.show
 import com.core.libraries.base.fragment.BaseFragment
+import com.drake.brv.BindingAdapter
 import com.drake.brv.utils.grid
+import com.drake.brv.utils.linear
 import com.drake.brv.utils.setup
+import com.google.android.material.appbar.CollapsingToolbarLayout
 
-class MainActivity : ReflectBindingActivity<ActivityMainBinding>() {
+class MainActivity : ReflectBindingActivity<ActivityMainBinding>(), OnPageChangeListener {
 
     private val list: List<Tab> = listOf(
         Tab("功能"),
+        Tab("待开发"),
     )
+
+    // 当前选中的tab
+    private var selectIndex = 0
+    private var adapter: BindingAdapter? = null
 
     override fun initial(savedInstanceState: Bundle?) {
         super.initial(savedInstanceState)
-//        binding.toolbar.apply {
-//            layoutParams = ViewGroup.LayoutParams(
-//                ViewGroup.LayoutParams.MATCH_PARENT,
-//                BarUtils.getStatusBarHeight() + BarUtils.getActionBarHeight()
-//            )
-//        }
-        val pagerAdapter = FragmentPagerAdapter<BaseFragment<*>>(this).apply {
+        binding.toolbar.apply {
+            layoutParams = CollapsingToolbarLayout.LayoutParams(
+                LayoutParams.MATCH_PARENT,
+                BarUtils.getStatusBarHeight() + BarUtils.getActionBarHeight()
+            )
+        }
+        FragmentPagerAdapter<BaseFragment<*>>(this).apply {
+            addFragment(HomeFragment())
             addFragment(HomeFragment())
             binding.vpHomePager.adapter = this
         }
 
-        binding.rvHomeTab.grid(2).setup {
-            addType<Tab>(R.layout.item_tab)
-            onBind {
-                val binding = getBinding<ItemTabBinding>()
-                val data = getModel<Tab>()
-                binding.tvTabDesignTitle.text = data.type
+        adapter = binding.rvHomeTab
+            .grid(2)
+            .setup {
+                addType<Tab>(R.layout.item_tab)
+                onBind {
+                    val binding = getBinding<ItemTabBinding>()
+                    val data = getModel<Tab>()
+                    binding.tvTabDesignTitle.text = data.type
+                    if (selectIndex == modelPosition) {
+                        binding.tvTabDesignTitle.setTextColor(
+                            ContextCompat.getColor(context, R.color.common_accent_color)
+                        )
+                        binding.vTabDesignLine.show()
+                    } else {
+                        binding.tvTabDesignTitle.setTextColor(
+                            ContextCompat.getColor(context, R.color.black25)
+                        )
+                        binding.vTabDesignLine.hide()
+                    }
+                }
+
+                onClick(R.id.item_root) {
+                    val index = modelPosition
+                    binding.vpHomePager.setCurrentItem(index, true)
+                }
             }
-        }.models = list
+        adapter?.models = list
+    }
+
+    override fun setListener() {
+        binding.vpHomePager.addOnPageChangeListener(this)
     }
 
     override fun observers() {
@@ -50,5 +89,14 @@ class MainActivity : ReflectBindingActivity<ActivityMainBinding>() {
     override fun getStatusBarColor(): BarColor {
         return BarColor.WHITE
     }
+
+    override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
+
+    override fun onPageSelected(position: Int) {
+        selectIndex = position
+        adapter?.notifyDataSetChanged()
+    }
+
+    override fun onPageScrollStateChanged(state: Int) {}
 
 }

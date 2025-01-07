@@ -48,5 +48,5 @@ private fun getActualStackTraceElement(): StackTraceElement {
 
 // 格式化日志输出内容
 private fun formatLogMessage(stackTraceElement: StackTraceElement, message: String): String {
-    return "(${stackTraceElement.fileName}:${stackTraceElement.lineNumber}) <${stackTraceElement.methodName}> $message"
+    return "(${stackTraceElement.fileName}:${stackTraceElement.lineNumber}) <${stackTraceElement.methodName}> \n$message"
 }

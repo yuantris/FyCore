@@ -1,6 +1,7 @@
 package com.core.libraries.base.room
 
 import com.core.libraries.base.ext.TAG
+import com.core.libraries.util.CoreUtil
 import com.core.libraries.util.LogUtils
 
 /**
@@ -18,6 +19,6 @@ import com.core.libraries.util.LogUtils
  */
 open class BaseRepository {
     init {
-        LogUtils.logD(TAG, "BaseRepository init")
+        LogUtils.logV(TAG, "Repository init: ${CoreUtil.Time.getNowTime()}")
     }
 }

@@ -1,4 +1,4 @@
-package com.core.fy.android.ui
+package com.core.fy.android.ui.fragment
 
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -18,11 +18,10 @@ import com.core.fy.android.room.VMFactory
 import com.core.fy.android.room.entity.Function
 import com.core.fy.android.room.repository.FunctionRepository
 import com.core.fy.android.viewmodel.FunctionVM
-import com.core.libraries.base.ext.BarColor
 import com.core.libraries.base.ext.launchAsync
+import com.core.libraries.base.ext.logD
 import com.core.libraries.base.ext.onClick
 import com.core.libraries.base.ext.startActivity
-import com.core.libraries.base.fragment.HomeBindingFragment
 import com.core.libraries.base.fragment.ReflectBindingFragment
 import com.drake.brv.BindingAdapter
 import com.drake.brv.listener.DefaultItemTouchCallback
@@ -105,5 +104,9 @@ class HomeFragment : ReflectBindingFragment<FragmentHomeBinding, MainActivity>()
             }
             binding.state.showContent()
         }
+    }
+
+    override fun onFragmentResume(first: Boolean) {
+        "是否首次调用：$first".logD()
     }
 }

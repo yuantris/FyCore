@@ -60,12 +60,15 @@ dependencies {
     androidTestImplementation libs.espresso.core
 
     api libs.activity.ktx
+    api libs.recyclerview
     api libs.lifecycle.livedata.ktx
     api libs.lifecycle.viewmodel.ktx
     api libs.lifecycle.runtime.ktx
+    api libs.navigation.fragment.ktx
+    api libs.navigation.ui.ktx
     implementation libs.kotlin.reflect
 
-    implementation libs.room.ktx
+    compileOnly libs.room.ktx
     kapt libs.room.compiler
     annotationProcessor libs.room.compiler
 
