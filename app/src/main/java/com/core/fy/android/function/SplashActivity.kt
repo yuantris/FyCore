@@ -45,9 +45,9 @@ class SplashActivity : ReflectBindingActivity<ActivitySplashBinding>() {
     override fun setListener() {
         super.setListener()
         // 设置动画监听
-        mBinding.lavSplashLottie.addAnimatorListener(object : AnimatorListenerAdapter() {
+        binding.lavSplashLottie.addAnimatorListener(object : AnimatorListenerAdapter() {
             override fun onAnimationEnd(animation: Animator) {
-                mBinding.lavSplashLottie.removeAnimatorListener(this)
+                binding.lavSplashLottie.removeAnimatorListener(this)
                 startNoTransition(MainActivity::class.java, finish = true)
             }
         })

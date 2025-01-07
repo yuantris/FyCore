@@ -30,7 +30,7 @@ class CustomToastActivity : ReflectBindingActivity<ActivityCustomToastBinding>()
 
     override fun setListener() {
         super.setListener()
-        mBinding.apply {
+        binding.apply {
             showTop.setOnClickListener {
                 Toast.Builder(this@CustomToastActivity)
                     .setMessage("自定义Toast")

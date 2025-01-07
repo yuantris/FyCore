@@ -18,7 +18,7 @@ class EventActivity : ReflectBindingActivity<ActivityEventBinding>() {
 
     override fun setListener() {
         super.setListener()
-        mBinding.apply {
+        binding.apply {
             fEvent.setOnClickListener {
                 //FEvent.post(ParentEvent.ChildEvent(), ParentEvent::class.java)
                 //FEvent.post(Event.ShowInit("234"))

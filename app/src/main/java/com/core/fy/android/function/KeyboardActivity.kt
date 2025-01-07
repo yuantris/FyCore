@@ -59,8 +59,8 @@ class KeyboardActivity : BaseInputActivity<ActivityKeyboardBinding>() {
 
     override fun onKeyboardHeightChanged(height: Int) {
         Log.d(TAG, "onKeyboardHeightChanged height=$height")
-        val params = mBinding.etInput.layoutParams as ConstraintLayout.LayoutParams
+        val params = binding.etInput.layoutParams as ConstraintLayout.LayoutParams
         params.bottomMargin = height
-        mBinding.etInput.layoutParams = params
+        binding.etInput.layoutParams = params
     }
 }

@@ -23,14 +23,14 @@ abstract class BaseReflectBindingDialog<VB : ViewBinding>(
     var gravity: Int = Gravity.CENTER
 ) : Dialog(context, themeResId) {
 
-    lateinit var mBinding: VB
+    lateinit var binding: VB
     private var animator: ObjectAnimator? = null
     private var isReverse = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mBinding = inflateWithGeneric(this, layoutInflater)
-        setContentView(mBinding.root)
+        binding = inflateWithGeneric(this, layoutInflater)
+        setContentView(binding.root)
         // 按空白处不能取消动画
         setCanceledOnTouchOutside(isOutSide)
         // 按返回键不消失

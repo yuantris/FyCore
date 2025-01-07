@@ -4,7 +4,7 @@
     android:orientation="vertical"
     android:layout_height="match_parent">
 
-    <com.core.libraries.view.TitleBar
+    <com.core.libraries.widget.layout.TitleBar
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/title_bar"/>

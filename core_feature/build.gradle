@@ -70,7 +70,9 @@ dependencies {
     annotationProcessor libs.room.compiler
 
     // https://github.com/liangjingkanji/BRV
-    api libs.brv
+    api (libs.brv) {
+        exclude group: 'com.github.liangjingkanji', module: 'StateLayout'
+    }
 
     // https://github.com/gyf-dev/ImmersionBar
     api libs.immersionbar

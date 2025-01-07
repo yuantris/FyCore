@@ -11,7 +11,7 @@ import com.core.libraries.base.ext.BarColor
 import com.core.libraries.base.ext.isNotNull
 import com.core.libraries.base.ext.isNull
 import com.core.libraries.base.ext.logD
-import com.core.libraries.view.TitleBar
+import com.core.libraries.widget.layout.TitleBar
 import com.gyf.immersionbar.ImmersionBar
 
 abstract class BaseActivity : AppCompatActivity(), TitleBarAction {

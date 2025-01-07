@@ -1,4 +1,4 @@
-package com.core.libraries.view
+package com.core.libraries.widget.layout
 
 import android.content.Context
 import android.content.res.ColorStateList

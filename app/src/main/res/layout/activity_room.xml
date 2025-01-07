@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".function.RoomActivity">
 
-    <com.core.libraries.view.TitleBar
+    <com.core.libraries.widget.layout.TitleBar
         android:id="@+id/title_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

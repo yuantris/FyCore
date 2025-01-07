@@ -1,9 +1,7 @@
 package com.core.fy.android.function
 
-import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
-import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
 import com.core.fy.android.R
 import com.core.fy.android.databinding.ActivityDialogBinding
@@ -11,8 +9,6 @@ import com.core.fy.android.ui.WaitDialog
 import com.core.libraries.base.activity.ReflectBindingActivity
 import com.core.libraries.base.dialog.BaseDialog
 import com.core.libraries.util.ToastUtil
-import com.core.libraries.view.TitleBar
-import com.gyf.immersionbar.ImmersionBar
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -35,7 +31,7 @@ class DialogActivity : ReflectBindingActivity<ActivityDialogBinding>() {
         super.initial(savedInstanceState)
         waitDialog = WaitDialog.Builder(this).create()
         // 设置标题，左对齐
-        mBinding.titleBar.apply {
+        binding.titleBar.apply {
 //            addRightButtonImage(R.drawable.bar_arrows_left_white) {
 //                Toast.makeText(this@DialogActivity, "关闭", Toast.LENGTH_SHORT).show()
 //            }
@@ -48,7 +44,7 @@ class DialogActivity : ReflectBindingActivity<ActivityDialogBinding>() {
 
     override fun setListener() {
         super.setListener()
-        mBinding.apply {
+        binding.apply {
             show.setOnClickListener {
                 lifecycleScope.launch {
                     waitDialog.show()

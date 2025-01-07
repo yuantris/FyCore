@@ -1,3 +1,5 @@
+@file:Suppress("UNCHECKED_CAST")
+
 package com.core.libraries.base.ext
 
 import android.app.Activity

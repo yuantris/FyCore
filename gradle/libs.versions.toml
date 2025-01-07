@@ -8,6 +8,7 @@ aliyun = "aliyun"
 appcompat = "1.6.1"
 core-ktx = "1.9.0"
 android-gradle = "7.3.1"
+multistatepage = "2.0.5"
 zy-gradle-plugin = "1.6.03"
 material = "1.6.0"
 junit = "4.13.2"
@@ -47,6 +48,7 @@ kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref =
 room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
 room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
 brv = { module = "com.github.liangjingkanji:BRV", version.ref = "brv" }
+multistatepage = { module = "com.github.Zhao-Yan-Yan:MultiStatePage", version.ref = "multistatepage" }
 immersionbar = { module = "com.geyifeng.immersionbar:immersionbar", version.ref = "immersionbar" }
 immersionbar-ktx = { module = "com.geyifeng.immersionbar:immersionbar-ktx", version.ref = "immersionbar" }
 utilcodex = { module = "com.blankj:utilcodex", version.ref = "utilcodex" }

@@ -19,7 +19,7 @@ class VisibilityActivity : ReflectBindingActivity<ActivityVisibilityBinding>() {
 
     override fun initial(savedInstanceState: Bundle?) {
         super.initial(savedInstanceState)
-        mBinding.imageView.onVisibilityChange { _, isVisible ->
+        binding.imageView.onVisibilityChange { _, isVisible ->
             if (isVisible) {
                 toast("ImageView is visible")
             } else {
@@ -30,7 +30,7 @@ class VisibilityActivity : ReflectBindingActivity<ActivityVisibilityBinding>() {
 
     override fun setListener() {
         super.setListener()
-        with(mBinding.imageView){
+        with(binding.imageView){
             setDebouncedClickListener {
                 if (isVisible) {
                     hide()

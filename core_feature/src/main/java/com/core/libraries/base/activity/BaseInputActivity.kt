@@ -29,11 +29,11 @@ abstract class BaseInputActivity<VB : ViewBinding> : BaseActivity(), KeyboardObs
             showDebug = isShowKeyboardDebug()
         )
     }
-    lateinit var mBinding: VB
+    lateinit var binding: VB
 
     override fun contentViewBind(): View? {
-        mBinding = inflateBindingWithGeneric(layoutInflater)
-        return mBinding.root
+        binding = inflateBindingWithGeneric(layoutInflater)
+        return binding.root
     }
 
     open fun isShowKeyboardDebug(): Boolean {

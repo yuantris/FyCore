@@ -1,9 +1,8 @@
-package com.core.libraries.view
+package com.core.libraries.widget.layout
 
 import android.content.Context
 import android.graphics.Color
 import android.util.AttributeSet
-import android.util.Log
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
@@ -15,7 +14,6 @@ import com.core.libraries.R
 import com.core.libraries.base.ext.dp2px
 import com.core.libraries.base.ext.getActivity
 import com.core.libraries.base.ext.logD
-import com.core.libraries.base.ext.sp2px
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.CollapsingToolbarLayout
 

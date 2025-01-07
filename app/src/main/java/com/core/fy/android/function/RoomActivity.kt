@@ -60,7 +60,7 @@ class RoomActivity : ReflectBindingActivity<ActivityRoomBinding>() {
 
     override fun setListener() {
         super.setListener()
-        mBinding.apply {
+        binding.apply {
             add.setOnClickListener {
                 launchAsync {
                     val user = User(name = name.text.toString(), age = age.text.toString().toInt())
@@ -110,10 +110,10 @@ class RoomActivity : ReflectBindingActivity<ActivityRoomBinding>() {
                         val byNameNext = userVM.getUserAsync(bean.id).await()
                         "根据名字查询到用户：${byNameNext?.name}，年龄：${byNameNext?.age}".logI()
                     }
-                    mBinding.dataShow.text = bean.age.toString()
+                    binding.dataShow.text = bean.age.toString()
                 }
             } else {
-                mBinding.dataShow.text = "暂无数据"
+                binding.dataShow.text = "暂无数据"
             }
         }
 

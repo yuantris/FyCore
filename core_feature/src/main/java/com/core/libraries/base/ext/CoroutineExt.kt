@@ -88,7 +88,7 @@ fun LifecycleOwner.launchSync(action: suspend () -> Unit) {
             action()
         } catch (e: CancellationException) {
             // 处理协程取消
-            "协程取消".logE()
+            "协程取消: $e".logE()
         } catch (e: Exception) {
             // 处理其他异常
             "Exception: ${e.message}".logE()

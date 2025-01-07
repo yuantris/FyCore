@@ -1,4 +1,4 @@
-package com.core.libraries.view
+package com.core.libraries.widget.view
 
 import android.content.Context
 import android.graphics.Canvas

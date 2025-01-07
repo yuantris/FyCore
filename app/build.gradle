@@ -61,6 +61,9 @@ dependencies {
     androidTestImplementation libs.espresso.core
     implementation fycoreDependencies[version]
 
+    api 'androidx.navigation:navigation-fragment-ktx:2.5.1'
+    api 'androidx.navigation:navigation-ui-ktx:2.5.1'
+
     // 动画解析库：https://github.com/airbnb/lottie-android
     // 动画资源：https://lottiefiles.com、https://icons8.com/animated-icons
     implementation libs.lottie

@@ -21,21 +21,22 @@ object FlowEventBus {
     }
 
     // 发送事件
-    fun post(event: Event, delay: Long = 0) {
+    fun post(event: Event, tag: String = event.javaClass.simpleName, delay: Long = 0) {
         MainScope().launch {
             delay(delay)
-            getFlow(event.javaClass.simpleName).emit(event)
+            getFlow(tag).emit(event)
         }
     }
 
     // 订阅事件
     inline fun <reified T : Event> observe(
         lifecycleOwner: LifecycleOwner,
+        tag: String = T::class.java.simpleName,
         minState: Lifecycle.State = Lifecycle.State.CREATED,
         dispatcher: CoroutineDispatcher = Dispatchers.Main,
         crossinline onReceived: (T) -> Unit
     ) = lifecycleOwner.lifecycleScope.launch(dispatcher) {
-        getFlow(T::class.java.simpleName).collectLatest {
+        getFlow(key = tag).collectLatest {
             lifecycleOwner.lifecycle.whenStateAtLeast(minState) {
                 if (it is T) onReceived(it)
             }

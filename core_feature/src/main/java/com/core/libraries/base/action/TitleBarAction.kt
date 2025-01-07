@@ -1,7 +1,7 @@
 package com.core.libraries.base.action
 
 import android.view.ViewGroup
-import com.core.libraries.view.TitleBar
+import com.core.libraries.widget.layout.TitleBar
 
 interface TitleBarAction{
 

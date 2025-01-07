@@ -17,6 +17,11 @@ fun Context.startActivity(clazz: Class<*>) {
     startActivity(intent)
 }
 
+fun Fragment.startActivity(clazz: Class<*>) {
+    val intent = Intent(requireContext(), clazz)
+    startActivity(intent)
+}
+
 fun Activity.startNoTransition(clazz: Class<*>, finish: Boolean = true) {
     startActivity(clazz)
     overridePendingTransition(0, 0)

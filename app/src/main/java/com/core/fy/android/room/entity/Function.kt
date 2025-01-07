@@ -3,6 +3,7 @@ package com.core.fy.android.room.entity
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.core.fy.android.MainActivity
+import com.core.fy.android.viewmodel.FunctionVM
 import com.drake.brv.annotaion.ItemOrientation
 import com.drake.brv.item.ItemDrag
 
@@ -21,7 +22,7 @@ import com.drake.brv.item.ItemDrag
  */
 @Entity(tableName = Function.TABLE_NAME)
 data class Function(
-    var design: String = MainActivity.Design.KEYBOARD.function,
+    var design: FunctionVM.Design = FunctionVM.Design.KEYBOARD,
     override var itemOrientationDrag: Int = ItemOrientation.ALL
 ) : ItemDrag {
     @PrimaryKey(autoGenerate = true)

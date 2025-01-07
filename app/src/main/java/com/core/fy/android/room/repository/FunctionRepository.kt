@@ -1,6 +1,5 @@
 package com.core.fy.android.room.repository
 
-import com.core.fy.android.MainActivity.Design
 import com.core.fy.android.room.AppDatabase
 import com.core.fy.android.room.dao.FunctionDao
 import com.core.fy.android.room.entity.Function
