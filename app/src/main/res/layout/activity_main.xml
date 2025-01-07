@@ -17,14 +17,12 @@
         <com.core.fy.android.widget.XCollapsingToolbarLayout
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_256"
-            app:collapsedTitleGravity="center"
+            app:collapsedTitleGravity="bottom|center_horizontal"
             app:collapsedTitleTextColor="@color/white"
             app:contentScrim="#f34c68"
             app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
             app:scrimVisibleHeightTrigger="@dimen/dp_100"
-            app:title="@string/app_name"
-            app:titleCollapseMode="scale"
-            app:titleEnabled="true">
+            app:title="@string/app_name">
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:layout_width="match_parent"
@@ -36,6 +34,7 @@
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
+                android:paddingBottom="10dp"
                 android:layout_height="?android:attr/actionBarSize"
                 app:layout_collapseMode="pin" />
 
