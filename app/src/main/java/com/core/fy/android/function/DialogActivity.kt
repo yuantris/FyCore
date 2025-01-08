@@ -2,6 +2,7 @@ package com.core.fy.android.function
 
 import android.graphics.Typeface
 import android.os.Bundle
+import android.widget.TextView
 import androidx.lifecycle.lifecycleScope
 import com.core.fy.android.R
 import com.core.fy.android.databinding.ActivityDialogBinding
@@ -26,15 +27,14 @@ import kotlinx.coroutines.launch
  * @author Yuan
  */
 class DialogActivity : ReflectBindingActivity<ActivityDialogBinding>() {
-    private lateinit var waitDialog: BaseDialog
+    private val dialog by lazy {
+        WaitDialog.Builder(this)
+    }
+
     override fun initial(savedInstanceState: Bundle?) {
         super.initial(savedInstanceState)
-        waitDialog = WaitDialog.Builder(this).create()
         // 设置标题，左对齐
         binding.titleBar.apply {
-//            addRightButtonImage(R.drawable.bar_arrows_left_white) {
-//                Toast.makeText(this@DialogActivity, "关闭", Toast.LENGTH_SHORT).show()
-//            }
             addRightButtonImage(R.drawable.ic_launcher_background) {
                 ToastUtil.show("关闭")
             }
@@ -47,14 +47,16 @@ class DialogActivity : ReflectBindingActivity<ActivityDialogBinding>() {
         binding.apply {
             show.setOnClickListener {
                 lifecycleScope.launch {
-                    waitDialog.show()
+                    dialog.setMessage("正在加载中").show()
+                    delay(2000)
+                    dialog.setMessage("加载完成")
                     delay(3000)
-                    waitDialog.dismiss()
+                    dialog.dismiss()
                 }
             }
 
             dismiss.setOnClickListener {
-                waitDialog.dismiss()
+                dialog.dismiss()
             }
         }
     }

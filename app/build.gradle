@@ -39,14 +39,14 @@ android {
 
 // 选择依赖版本
 // libs.versions.local.get()  本地模块
-// libs.versions.github.get() GitHub 版本
-// libs.versions.aliyun.get() 阿里云版本
+// libs.versions.jitpack.get() GitHub Jitpack版本
+// libs.versions.package.get() GitHub package版本
 def version = libs.versions.local.get()
 
 ext {
     fycoreDependencies = [
-            github: libs.fycore.github,
-            aliyun: libs.fycore.aliyun,
+            jitpack: libs.fycore.github,
+            package: libs.fycore.git.package,
             local : project(':core_feature')
     ]
 }

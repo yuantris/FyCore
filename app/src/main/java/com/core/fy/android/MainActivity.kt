@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.ViewPager.OnPageChangeListener
 import com.blankj.utilcode.util.BarUtils
 import com.blankj.utilcode.util.DeviceUtils.getModel
+import com.blankj.utilcode.util.SizeUtils
 import com.core.fy.android.databinding.ActivityMainBinding
 import com.core.fy.android.databinding.ItemTabBinding
 import com.core.fy.android.interfaces.FragmentPagerAdapter
@@ -17,6 +18,8 @@ import com.core.libraries.base.activity.ReflectBindingActivity
 import com.core.libraries.base.ext.BarColor
 import com.core.libraries.base.ext.hide
 import com.core.libraries.base.ext.logD
+import com.core.libraries.base.ext.logE
+import com.core.libraries.base.ext.px2dp
 import com.core.libraries.base.ext.show
 import com.core.libraries.base.fragment.BaseFragment
 import com.drake.brv.BindingAdapter
@@ -38,12 +41,7 @@ class MainActivity : ReflectBindingActivity<ActivityMainBinding>(), OnPageChange
 
     override fun initial(savedInstanceState: Bundle?) {
         super.initial(savedInstanceState)
-        binding.toolbar.apply {
-            layoutParams = CollapsingToolbarLayout.LayoutParams(
-                LayoutParams.MATCH_PARENT,
-                BarUtils.getStatusBarHeight() + BarUtils.getActionBarHeight()
-            )
-        }
+
         FragmentPagerAdapter<BaseFragment<*>>(this).apply {
             addFragment(HomeFragment())
             addFragment(HomeFragment())

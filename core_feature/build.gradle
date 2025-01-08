@@ -93,23 +93,29 @@ dependencies {
 /*当前版本*/
 version libs.versions.fycore.get()
 
-afterEvaluate {
-    publishing {
-        publications {
-            plugin(MavenPublication) {
+publishing {
+    publications {
+        // register 和 create 都类似，这里用 create
+        create("lib-base", MavenPublication) {
+            // 配置信息，使用: classpath("groupId:artifactId:version") (不能有空格)
+            groupId = "com.core.libraries"
+            artifactId = "fycore"
+            version = project.version
+
+            // 这条要加上，不然不会包含代码文件
+            afterEvaluate {
                 from components.release
-                groupId = 'com.core.libraries'
-                artifactId = 'FyCore'
-                version = project.version
             }
         }
-        repositories {
-            maven {
-                url = 'https://packages.aliyun.com/67789758cdfeb44ae202deb7/maven/2512815-release-ndmhzu'
-                credentials {
-                    username = '63d4d579378edb0fd9aa3b2d'
-                    password = 'nXJxEWiiObre'
-                }
+    }
+    repositories {
+        // 远程仓库
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/yuantris/FyCore")
+            credentials {
+                username = 'yuantris'
+                password = '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'
             }
         }
     }

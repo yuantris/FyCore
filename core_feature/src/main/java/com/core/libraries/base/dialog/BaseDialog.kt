@@ -45,6 +45,13 @@ open class BaseDialog(context: Context, @StyleRes themeResId: Int = R.style.Base
     }
 
     /**
+     * 更新View根布局内容
+     */
+    open fun <T : View> updateView(@IdRes id: Int): T? {
+        return getContentView()?.findViewById(id)
+    }
+
+    /**
      * 设置 Dialog 宽度
      */
     open fun setWidth(width: Int) {
@@ -137,7 +144,10 @@ open class BaseDialog(context: Context, @StyleRes themeResId: Int = R.style.Base
         removeCallbacks()
         val focusView: View? = currentFocus
         if (focusView != null) {
-            getSystemService(InputMethodManager::class.java).hideSoftInputFromWindow(focusView.windowToken, 0)
+            getSystemService(InputMethodManager::class.java).hideSoftInputFromWindow(
+                focusView.windowToken,
+                0
+            )
         }
         super.dismiss()
     }
@@ -186,9 +196,12 @@ open class BaseDialog(context: Context, @StyleRes themeResId: Int = R.style.Base
      *
      * @param listener       按键监听器对象
      */
-    @Deprecated("请使用 {@link #setOnKeyListener(BaseDialog.OnKeyListener)}", ReplaceWith(
-        "super.setOnKeyListener(listener)",
-        "androidx.appcompat.app.AppCompatDialog"))
+    @Deprecated(
+        "请使用 {@link #setOnKeyListener(BaseDialog.OnKeyListener)}", ReplaceWith(
+            "super.setOnKeyListener(listener)",
+            "androidx.appcompat.app.AppCompatDialog"
+        )
+    )
     override fun setOnKeyListener(listener: DialogInterface.OnKeyListener?) {
         super.setOnKeyListener(listener)
     }
@@ -517,7 +530,8 @@ open class BaseDialog(context: Context, @StyleRes themeResId: Int = R.style.Base
          */
         open fun setGravity(gravity: Int): B {
             // 适配布局反方向
-            this.gravity = Gravity.getAbsoluteGravity(gravity, getResources().configuration.layoutDirection)
+            this.gravity =
+                Gravity.getAbsoluteGravity(gravity, getResources().configuration.layoutDirection)
             if (isCreated()) {
                 dialog?.setGravity(gravity)
             }
@@ -706,7 +720,8 @@ open class BaseDialog(context: Context, @StyleRes themeResId: Int = R.style.Base
             }
             clickArray!!.put(id, listener as OnClickListener<View>)
             if (isCreated()) {
-                dialog?.findViewById<View?>(id)?.setOnClickListener(ViewClickWrapper(dialog, listener))
+                dialog?.findViewById<View?>(id)
+                    ?.setOnClickListener(ViewClickWrapper(dialog, listener))
             }
             return this as B
         }
@@ -776,8 +791,8 @@ open class BaseDialog(context: Context, @StyleRes themeResId: Int = R.style.Base
                 clickArray?.let { array ->
                     var i = 0
                     while (i < array.size()) {
-                        contentView!!.findViewById<View?>(array.keyAt(i))?.
-                        setOnClickListener(ViewClickWrapper(dialog, array.valueAt(i)))
+                        contentView!!.findViewById<View?>(array.keyAt(i))
+                            ?.setOnClickListener(ViewClickWrapper(dialog, array.valueAt(i)))
                         i++
                     }
                 }
@@ -906,7 +921,10 @@ open class BaseDialog(context: Context, @StyleRes themeResId: Int = R.style.Base
     /**
      * Dialog 生命周期绑定
      */
-    private class DialogLifecycle(private var activity: Activity?, private var dialog: BaseDialog?) :
+    private class DialogLifecycle(
+        private var activity: Activity?,
+        private var dialog: BaseDialog?
+    ) :
         ActivityLifecycleCallbacks, OnShowListener, OnDismissListener {
 
         companion object {
@@ -1051,7 +1069,8 @@ open class BaseDialog(context: Context, @StyleRes themeResId: Int = R.style.Base
      */
     private class ViewClickWrapper constructor(
         private val dialog: BaseDialog?,
-        private val listener: OnClickListener<View>?) : View.OnClickListener {
+        private val listener: OnClickListener<View>?
+    ) : View.OnClickListener {
 
         override fun onClick(view: View) {
             listener?.onClick(dialog, view)
@@ -1097,7 +1116,8 @@ open class BaseDialog(context: Context, @StyleRes themeResId: Int = R.style.Base
     /**
      * 按键监听包装类
      */
-    private class KeyListenerWrapper constructor(private val listener: OnKeyListener?) : DialogInterface.OnKeyListener {
+    private class KeyListenerWrapper constructor(private val listener: OnKeyListener?) :
+        DialogInterface.OnKeyListener {
 
         override fun onKey(dialog: DialogInterface?, keyCode: Int, event: KeyEvent?): Boolean {
             // 在横竖屏切换后监听对象会为空
@@ -1127,7 +1147,8 @@ open class BaseDialog(context: Context, @StyleRes themeResId: Int = R.style.Base
      */
     private class ShowPostDelayedWrapper constructor(
         private val runnable: Runnable?,
-        private val delayMillis: Long) : OnShowListener {
+        private val delayMillis: Long
+    ) : OnShowListener {
 
         override fun onShow(dialog: BaseDialog?) {
             if (runnable == null) {
@@ -1143,7 +1164,8 @@ open class BaseDialog(context: Context, @StyleRes themeResId: Int = R.style.Base
      */
     private class ShowPostAtTimeWrapper constructor(
         private val runnable: Runnable,
-        private val uptimeMillis: Long) : OnShowListener {
+        private val uptimeMillis: Long
+    ) : OnShowListener {
 
         override fun onShow(dialog: BaseDialog?) {
             dialog?.removeOnShowListener(this)

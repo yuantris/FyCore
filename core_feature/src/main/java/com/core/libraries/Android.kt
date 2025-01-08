@@ -1,6 +1,8 @@
 package com.core.libraries
 
 import android.app.Application
+import android.content.res.Resources
+import android.util.TypedValue
 import kotlin.properties.Delegates
 
 class Android private constructor() {

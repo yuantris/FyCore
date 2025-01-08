@@ -7,9 +7,10 @@
     android:layout_gravity="center"
     android:gravity="center"
     android:orientation="vertical"
-    app:cardBackgroundColor="@color/black85"
+    app:cardBackgroundColor="#1d1d1d"
     app:cardCornerRadius="@dimen/dp_15"
-    app:cardElevation="0px"
+    app:cardElevation="@dimen/dp_10"
+    app:cardUseCompatPadding="true"
     tools:context=".ui.WaitDialog">
 
     <LinearLayout

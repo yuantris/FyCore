@@ -47,11 +47,11 @@ allprojects {
             url 'https://packages.aliyun.com/maven/repository/2081012-snapshot-SS3pDx/'
         }
         maven {
+            url = uri("https://maven.pkg.github.com/yuantris/FyCore")
             credentials {
-                username '63d4d579378edb0fd9aa3b2d'
-                password 'nXJxEWiiObre'
+                username = 'yuantris'
+                password = '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'
             }
-            url 'https://packages.aliyun.com/67789758cdfeb44ae202deb7/maven/2512815-release-ndmhzu'
         }
         maven { url 'https://jitpack.io' }
         mavenCentral()
