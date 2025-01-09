@@ -1,14 +1,11 @@
 package com.core.fy.android.function
 
-import androidx.lifecycle.Lifecycle
 import com.core.fy.android.databinding.ActivityEventBinding
 import com.core.libraries.base.activity.ReflectBindingActivity
 import com.core.libraries.base.event.Event
 import com.core.libraries.base.event.FEvent
 import com.core.libraries.base.event.FlowEventBus
 import com.core.libraries.base.event.flowOf
-import com.core.libraries.base.event.post
-import com.core.libraries.base.ext.launchSafe
 import com.core.libraries.base.ext.launchSync
 import com.core.libraries.base.ext.logD
 import com.core.libraries.base.ext.toast
@@ -28,6 +25,11 @@ class EventActivity : ReflectBindingActivity<ActivityEventBinding>() {
             }
             flowEvent.setOnClickListener {
                 FlowEventBus.post(Event.Created("123"))
+            }
+
+            ivImg.setOnLongClickListener {
+
+                false
             }
         }
     }

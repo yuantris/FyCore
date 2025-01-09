@@ -89,6 +89,13 @@ class PressEffectImageView @JvmOverloads constructor(
         return true // 自定义触摸逻辑已经处理完成
     }
 
+    override fun performClick(): Boolean {
+        // 确保调用父类的实现
+        super.performClick()
+        return true
+
+    }
+
 
     // 设置圆角半径
     fun setCornerRadius(radius: Float) {

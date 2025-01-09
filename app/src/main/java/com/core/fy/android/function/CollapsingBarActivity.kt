@@ -9,8 +9,6 @@ import com.core.libraries.base.ext.toast
 class CollapsingBarActivity : ReflectBindingActivity<ActivityCollapsingBarBinding>() {
     override fun initial(savedInstanceState: Bundle?) {
         super.initial(savedInstanceState)
-        binding.ivImg.setDebouncedClickListener {
-            toast("点击")
-        }
+
     }
 }

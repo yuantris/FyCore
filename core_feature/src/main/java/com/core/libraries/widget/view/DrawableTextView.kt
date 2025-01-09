@@ -10,8 +10,7 @@ import com.core.libraries.R
 // 支持限定 Drawable 大小的 TextView
 class DrawableTextView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
-) :
-    AppCompatTextView(context, attrs, defStyleAttr) {
+) : AppCompatTextView(context, attrs, defStyleAttr) {
 
     private var drawableWidth: Int
     private var drawableHeight: Int

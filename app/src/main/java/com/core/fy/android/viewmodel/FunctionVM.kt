@@ -27,6 +27,7 @@ class FunctionVM(var repository: FunctionRepository) : BaseViewModel() {
     enum class Design(val function: String) {
         KEYBOARD("键盘"),
         云创控件("云创控件"),
+        单文字点击的TextView("单文字点击的TextView"),
         ROOM("room"),
         DIALOG("dialog"),
         TOAST("toast"),
@@ -47,6 +48,7 @@ class FunctionVM(var repository: FunctionRepository) : BaseViewModel() {
         listOf(
             Function(Design.KEYBOARD),
             Function(Design.云创控件),
+            Function(Design.单文字点击的TextView),
             Function(Design.ROOM),
             Function(Design.DIALOG),
             Function(Design.TOAST),

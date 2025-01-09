@@ -6,6 +6,7 @@ import com.core.fy.android.MainActivity
 import com.core.fy.android.R
 import com.core.fy.android.databinding.FragmentHomeBinding
 import com.core.fy.android.databinding.ItemFunctionBinding
+import com.core.fy.android.function.ClickTextActivity
 import com.core.fy.android.function.CollapsingBarActivity
 import com.core.fy.android.function.CustomToastActivity
 import com.core.fy.android.function.DialogActivity
@@ -24,6 +25,7 @@ import com.core.libraries.base.ext.logD
 import com.core.libraries.base.ext.onClick
 import com.core.libraries.base.ext.startActivity
 import com.core.libraries.base.fragment.ReflectBindingFragment
+import com.core.libraries.other.Toast
 import com.drake.brv.BindingAdapter
 import com.drake.brv.listener.DefaultItemTouchCallback
 import com.drake.brv.utils.divider
@@ -91,6 +93,7 @@ class HomeFragment : ReflectBindingFragment<FragmentHomeBinding, MainActivity>()
                             when (data.design) {
                                 FunctionVM.Design.KEYBOARD -> startActivity(KeyboardActivity::class.java)
                                 FunctionVM.Design.云创控件 -> startActivity(ImgTextActivity::class.java)
+                                FunctionVM.Design.单文字点击的TextView -> startActivity(ClickTextActivity::class.java)
                                 FunctionVM.Design.ROOM -> startActivity(RoomActivity::class.java)
                                 FunctionVM.Design.DIALOG -> startActivity(DialogActivity::class.java)
                                 FunctionVM.Design.TOAST -> startActivity(CustomToastActivity::class.java)
@@ -99,6 +102,13 @@ class HomeFragment : ReflectBindingFragment<FragmentHomeBinding, MainActivity>()
                                 FunctionVM.Design.VIEW_VISIBILITY -> startActivity(
                                     VisibilityActivity::class.java
                                 )
+                                else -> {
+                                    // do nothing
+                                    Toast.Builder(requireContext())
+                                        .setMessage("该添加点击事件了")
+                                        .create()
+                                        .show()
+                                }
                             }
                         }
                     }
