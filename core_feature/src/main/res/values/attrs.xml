@@ -24,4 +24,20 @@
         <attr name="loading_layout" format="reference" />
     </declare-styleable>
 
+    <declare-styleable name="CustomImageView">
+        <attr name="backgroundImage" format="reference" />
+        <attr name="text" format="string" />
+        <attr name="layout_topToTop" format="boolean" />
+        <attr name="layout_bottomToBottom" format="boolean" />
+        <attr name="layout_startToStart" format="boolean" />
+        <attr name="layout_endToEnd" format="boolean" />
+        <attr name="layout_marginTop" format="dimension" />
+        <attr name="layout_marginBottom" format="dimension" />
+        <attr name="layout_marginStart" format="dimension" />
+        <attr name="layout_marginEnd" format="dimension" />
+        <attr name="textSize" format="dimension" />
+        <attr name="textColor" format="color" />
+    </declare-styleable>
+
+
 </resources>

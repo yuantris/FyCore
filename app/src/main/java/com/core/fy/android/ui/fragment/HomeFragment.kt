@@ -10,6 +10,7 @@ import com.core.fy.android.function.CollapsingBarActivity
 import com.core.fy.android.function.CustomToastActivity
 import com.core.fy.android.function.DialogActivity
 import com.core.fy.android.function.EventActivity
+import com.core.fy.android.function.ImgTextActivity
 import com.core.fy.android.function.KeyboardActivity
 import com.core.fy.android.function.RoomActivity
 import com.core.fy.android.function.VisibilityActivity
@@ -45,7 +46,7 @@ import com.drake.brv.utils.setup
 class HomeFragment : ReflectBindingFragment<FragmentHomeBinding, MainActivity>() {
 
     private val functionVM by viewModels<FunctionVM> {
-        VMFactory(FunctionRepository.singletonCreate())
+        VMFactory(FunctionRepository.create())
     }
 
 
@@ -76,7 +77,7 @@ class HomeFragment : ReflectBindingFragment<FragmentHomeBinding, MainActivity>()
                                     if (model is Function) {
                                         model.position = index
                                         // 更新位置信息
-                                        functionVM.repository.update(model)
+                                        functionVM.repository.dao.update(model)
                                     }
                                 }
                             }
@@ -89,6 +90,7 @@ class HomeFragment : ReflectBindingFragment<FragmentHomeBinding, MainActivity>()
                         binding.item.onClick {
                             when (data.design) {
                                 FunctionVM.Design.KEYBOARD -> startActivity(KeyboardActivity::class.java)
+                                FunctionVM.Design.云创控件 -> startActivity(ImgTextActivity::class.java)
                                 FunctionVM.Design.ROOM -> startActivity(RoomActivity::class.java)
                                 FunctionVM.Design.DIALOG -> startActivity(DialogActivity::class.java)
                                 FunctionVM.Design.TOAST -> startActivity(CustomToastActivity::class.java)

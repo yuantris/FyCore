@@ -9,7 +9,7 @@ android {
     compileSdk 33
 
     defaultConfig {
-        applicationId "com.core.libraries"
+        applicationId "com.core.fy.android"
         minSdk 24
         targetSdk 33
         versionCode 1

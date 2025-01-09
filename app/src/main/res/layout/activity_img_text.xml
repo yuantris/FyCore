@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <com.core.libraries.widget.layout.TitleBar
+        android:id="@+id/title_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <com.core.libraries.widget.view.CustomImageView
+        android:id="@+id/civ_img"
+        android:layout_width="@dimen/dp_200"
+        android:layout_height="@dimen/dp_200"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/dp_40"
+        app:backgroundImage="@drawable/splash_1"
+        app:layout_bottomToBottom="true"
+        app:layout_marginBottom="@dimen/dp_40"
+        app:layout_marginStart="@dimen/dp_30"
+        app:layout_startToStart="true"
+        app:text="内容测试"
+        app:textColor="@color/pink"
+        app:textSize="18sp" />
+</LinearLayout>

@@ -18,9 +18,12 @@
         android:theme="@style/Theme.FyCore">
 
         <activity
-            android:name=".function.CollapsingBarActivity"
+            android:name=".function.ImgTextActivity"
             android:exported="false"/>
 
+        <activity
+            android:name=".function.CollapsingBarActivity"
+            android:exported="false"/>
 
         <activity
             android:name=".function.EventActivity"
@@ -29,7 +32,6 @@
         <activity
             android:name=".function.VisibilityActivity"
             android:exported="false"/>
-
 
         <activity
             android:name=".function.CustomToastActivity"

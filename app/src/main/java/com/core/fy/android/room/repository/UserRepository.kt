@@ -6,15 +6,15 @@ import com.core.fy.android.room.entity.User
 import com.core.libraries.base.room.RoomRepository
 
 class UserRepository : RoomRepository<User, UserDao>
-    (AppDatabase.getDatabase().userDao()) {
+    (AppDatabase.getInstance().userDao()) {
 
     suspend fun getUserByName(name: String) = queryByCondition("name = ?", listOf(name))
     suspend fun getUserById(id: Long) = queryByCondition("id = ?", listOf(id))
-    suspend fun deleteAll() = dao.deleteAll()
+    suspend fun deleteAll() = dao.clear()
 
     companion object {
         private var instance: UserRepository? = null
-        fun singletonCreate() = instance ?: synchronized(this) {
+        fun create() = instance ?: synchronized(this) {
             instance ?: UserRepository().also { instance = it }
         }
     }

@@ -13,6 +13,7 @@ import com.core.fy.android.databinding.ActivityMainBinding
 import com.core.fy.android.databinding.ItemTabBinding
 import com.core.fy.android.interfaces.FragmentPagerAdapter
 import com.core.fy.android.model.Tab
+import com.core.fy.android.ui.fragment.BlankFragment
 import com.core.fy.android.ui.fragment.HomeFragment
 import com.core.libraries.base.activity.ReflectBindingActivity
 import com.core.libraries.base.ext.BarColor
@@ -44,7 +45,7 @@ class MainActivity : ReflectBindingActivity<ActivityMainBinding>(), OnPageChange
 
         FragmentPagerAdapter<BaseFragment<*>>(this).apply {
             addFragment(HomeFragment())
-            addFragment(HomeFragment())
+            addFragment(BlankFragment())
             binding.vpHomePager.adapter = this
         }
 

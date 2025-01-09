@@ -21,7 +21,6 @@ import com.core.libraries.base.room.BaseDao
  */
 @Dao
 interface FunctionDao : BaseDao<Function> {
-    override fun getTableName(): String = Function.TABLE_NAME
 
     @Query("SELECT * FROM ${Function.TABLE_NAME} ORDER BY position ASC")
     fun getFunctionList(): List<Function>?

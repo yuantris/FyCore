@@ -22,7 +22,7 @@ import com.core.libraries.util.ToastUtil
 class RoomActivity : ReflectBindingActivity<ActivityRoomBinding>() {
 
     private val userVM by viewModels<UserVM> {
-        VMFactory(UserRepository.singletonCreate())
+        VMFactory(UserRepository.create())
     }
 
     override fun initial(savedInstanceState: Bundle?) {
@@ -31,15 +31,6 @@ class RoomActivity : ReflectBindingActivity<ActivityRoomBinding>() {
         launchSync {
             userVM.getUserAsync(1).await().let {
                 "查询到：${it?.name}，details：${it?.age}".logD()
-//                if (it != null) {
-//                    it.age = 10085
-//                    userVM.update(it)
-//                } else {
-//                    "查询为空".logE()
-//                    val origin = User(name = "fy", age = 16)
-//                    userVM.insert(origin)
-//                    "插入年龄为${origin.age}岁的用户".logI()
-//                }
 
                 // 先判断是否为空，如果不为空则更新，否则插入
                 it?.let { user ->
@@ -106,7 +97,7 @@ class RoomActivity : ReflectBindingActivity<ActivityRoomBinding>() {
 
                     launchAsync {
                         bean.age = 19
-                        AppDatabase.getDatabase().userDao().update(bean)
+                        AppDatabase.getInstance().userDao().update(bean)
                         val byNameNext = userVM.getUserAsync(bean.id).await()
                         "根据名字查询到用户：${byNameNext?.name}，年龄：${byNameNext?.age}".logI()
                     }

@@ -48,7 +48,7 @@ open class BaseDialog(context: Context, @StyleRes themeResId: Int = R.style.Base
      * 更新View根布局内容
      */
     open fun <T : View> updateView(@IdRes id: Int): T? {
-        return getContentView()?.findViewById(id)
+        return findViewById(id)
     }
 
     /**

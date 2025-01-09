@@ -14,6 +14,5 @@ interface UserDao : BaseDao<User> {
     fun getUserSync(name: String): User
 
     @Query("DELETE FROM ${User.TABLE_NAME}")
-    suspend fun deleteAll()
-
+    suspend fun clear()
 }

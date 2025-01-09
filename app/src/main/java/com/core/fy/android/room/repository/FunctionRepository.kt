@@ -19,7 +19,7 @@ import com.core.libraries.base.room.RoomRepository
  * @author Yuan
  */
 class FunctionRepository :
-    RoomRepository<Function, FunctionDao>(AppDatabase.getDatabase().functionDao()) {
+    RoomRepository<Function, FunctionDao>(AppDatabase.getInstance().functionDao()) {
 
     fun getAllList(): List<Function>? {
         return dao.getFunctionList()
@@ -27,7 +27,7 @@ class FunctionRepository :
 
     companion object {
         private var instance: FunctionRepository? = null
-        fun singletonCreate() = instance ?: synchronized(this) {
+        fun create() = instance ?: synchronized(this) {
             instance ?: FunctionRepository().also { instance = it }
         }
     }

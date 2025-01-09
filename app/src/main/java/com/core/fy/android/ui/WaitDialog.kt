@@ -3,6 +3,8 @@ package com.core.fy.android.ui
 import android.animation.ValueAnimator
 import android.content.Context
 import android.view.View
+import android.view.animation.Animation
+import android.view.animation.OvershootInterpolator
 import android.widget.TextView
 import androidx.annotation.StringRes
 import com.core.fy.android.R
@@ -18,7 +20,7 @@ class WaitDialog {
 
         init {
             setContentView(R.layout.wait_dialog)
-            setAnimStyle(AnimAction.ANIM_TOAST)
+            setAnimStyle(AnimAction.ANIM_DEFAULT)
             setBackgroundDimEnabled(false)
             setCancelable(false)
         }
@@ -31,6 +33,29 @@ class WaitDialog {
             messageView?.text = text
             messageView?.visibility = if (text == null) View.GONE else View.VISIBLE
             animateRootViewSize()
+        }
+
+        override fun show() {
+            animateRootViewAppearing()
+            super.show()
+        }
+
+        private fun animateRootViewAppearing() {
+            val rootView = getContentView() ?: return
+
+            // 设置初始状态：缩小到 0
+            rootView.scaleX = 0f
+            rootView.scaleY = 0f
+            rootView.alpha = 0f
+
+            // 开始动画：从小变大，且逐渐显现
+            rootView.animate()
+                .scaleX(1f)
+                .scaleY(1f)
+                .alpha(1f)
+                .setDuration(300) // 动画时长
+                .setInterpolator(OvershootInterpolator()) // 弹性插值器，视觉更自然
+                .start()
         }
 
         private fun animateRootViewSize() {

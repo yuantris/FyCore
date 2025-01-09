@@ -25,19 +25,19 @@ class UserVM(private var repository: UserRepository) : BaseViewModel() {
 
     fun insert(user: User) {
         launch({
-            repository.insert(user)
+            repository.dao.insert(user)
         })
     }
 
     fun delete(user: User) {
         launch({
-            repository.delete(user)
+            repository.dao.delete(user)
         })
     }
 
     fun update(user: User) {
         launch({
-            repository.update(user)
+            repository.dao.update(user)
         })
     }
 

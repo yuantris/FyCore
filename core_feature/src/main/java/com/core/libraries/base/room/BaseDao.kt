@@ -13,16 +13,22 @@ import androidx.sqlite.db.SupportSQLiteQuery
 interface BaseDao<T : Any> {
 
     @Insert(onConflict = OnConflictStrategy.NONE)
-    suspend fun insert(entity: T)
+    suspend fun insert(entity: T): Long
 
     @Insert(onConflict = OnConflictStrategy.NONE)
-    suspend fun insertAll(entities: List<T>)
+    suspend fun insertAll(entities: List<T>): List<Long>
 
     @Update
-    suspend fun update(entity: T)
+    suspend fun update(entity: T): Int
+
+    @Update
+    suspend fun updateAll(entities: List<T>): Int
 
     @Delete
-    suspend fun delete(entity: T)
+    suspend fun delete(entity: T): Int
+
+    @Delete
+    suspend fun deleteAll(entities: List<T>): Int
 
     // 获取所有数据
     @RawQuery
@@ -32,7 +38,17 @@ interface BaseDao<T : Any> {
     @RawQuery
     suspend fun findByCondition(query: SupportSQLiteQuery): T?
 
+    // 执行任意 SQL
+    @RawQuery
+    suspend fun executeQuery(query: SupportSQLiteQuery): Int
+
+    /**
+     * 获取当前数据表的名称。子类必须重写此方法，
+     * 返回该表的名称，以便执行动态的 SQL 查询操作。
+     */
     @RequiresOverride
-    fun getTableName(): String
+    fun getTableName(): String {
+        throw NotImplementedError("Subclasses must override getTableName()")
+    }
 }
 

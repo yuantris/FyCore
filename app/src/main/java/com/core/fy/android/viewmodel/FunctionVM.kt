@@ -4,6 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import com.core.fy.android.room.entity.Function
 import com.core.fy.android.room.repository.FunctionRepository
 import com.core.libraries.base.ext.logD
+import com.core.libraries.base.ext.logI
 import com.core.libraries.base.vm.BaseViewModel
 
 /**
@@ -25,6 +26,7 @@ class FunctionVM(var repository: FunctionRepository) : BaseViewModel() {
 
     enum class Design(val function: String) {
         KEYBOARD("键盘"),
+        云创控件("云创控件"),
         ROOM("room"),
         DIALOG("dialog"),
         TOAST("toast"),
@@ -44,6 +46,7 @@ class FunctionVM(var repository: FunctionRepository) : BaseViewModel() {
     val list by lazy {
         listOf(
             Function(Design.KEYBOARD),
+            Function(Design.云创控件),
             Function(Design.ROOM),
             Function(Design.DIALOG),
             Function(Design.TOAST),
@@ -60,29 +63,41 @@ class FunctionVM(var repository: FunctionRepository) : BaseViewModel() {
                     repository.dao.insertAll(list)
                     repository.getAllList()
                 }
-                if ((allList?.size ?: 0) < list.size) {
-                    list.forEachIndexed { index, function ->
-                        val functionWithDesign =
-                            repository.dao.getFunctionWithDesign(function.design.function)
-                        functionWithDesign?.let {
-                            it.position = index
-                            repository.update(it)
-                        } ?: run {
-                            repository.insert(function)
+                "allList: ${allList?.size}".logD()
+                val allListSize = allList?.size ?: 0
+                val designsInList = list.map { it.design }
+                val designsInListSet = designsInList.toSet()
+                when {
+                    allListSize < list.size -> {
+                        val functionsToInsert = mutableListOf<Function>()
+                        val functionsToUpdate = mutableListOf<Function>()
+
+                        list.forEachIndexed { index, function ->
+                            val functionWithDesign =
+                                repository.dao.getFunctionWithDesign(function.design.function)
+                            if (functionWithDesign != null) {
+                                functionWithDesign.position = index
+                                functionsToUpdate.add(functionWithDesign)
+                            } else {
+                                functionsToInsert.add(function)
+                            }
                         }
+
+                        repository.dao.updateAll(functionsToUpdate)
+                        repository.dao.insertAll(functionsToInsert)
                     }
-                } else if ((allList?.size ?: 0) > list.size) {
-                    val onlyInAllList =
-                        allList?.filter { it.design !in list.map { bean -> bean.design } }
-                    onlyInAllList?.forEach {
-                        repository.delete(it)
+
+                    allListSize > list.size -> {
+                        val onlyInAllList = allList?.filter { it.design !in designsInListSet }
+                        onlyInAllList?.let { repository.dao.deleteAll(it) }
                     }
+
+                    else -> emptyList<Function>()
                 }
-                allList
             },
             onSuccess = {
                 // 更新列表
-                data.postValue(it)
+                data.postValue(repository.getAllList())
             },
             onError = {
                 it.message?.logD()
