@@ -18,6 +18,10 @@
         android:theme="@style/Theme.FyCore">
 
         <activity
+            android:name=".function.TTSActivity"
+            android:exported="false"/>
+
+        <activity
             android:name=".function.ClickTextActivity"
             android:exported="false"/>
 

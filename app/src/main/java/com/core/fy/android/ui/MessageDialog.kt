@@ -5,13 +5,14 @@ import android.view.View
 import android.widget.TextView
 import androidx.annotation.StringRes
 import com.core.fy.android.R
+import com.core.libraries.base.action.AnimAction
 import com.core.libraries.base.dialog.BaseDialog
 import com.core.libraries.base.dialog.CommonDialog
 
 
 class MessageDialog {
 
-    class Builder constructor(context: Context) : CommonDialog.Builder<Builder>(context) {
+    class Builder(context: Context) : CommonDialog.Builder<Builder>(context) {
 
         private val messageView: TextView? by lazy { findViewById(R.id.tv_message_message) }
 
@@ -58,18 +59,5 @@ class MessageDialog {
                 }
             }
         }
-    }
-
-    interface OnListener {
-
-        /**
-         * 点击确定时回调
-         */
-        fun onConfirm(dialog: BaseDialog?)
-
-        /**
-         * 点击取消时回调
-         */
-        fun onCancel(dialog: BaseDialog?) {}
     }
 }

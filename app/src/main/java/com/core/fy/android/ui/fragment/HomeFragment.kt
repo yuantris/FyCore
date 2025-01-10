@@ -14,6 +14,7 @@ import com.core.fy.android.function.EventActivity
 import com.core.fy.android.function.ImgTextActivity
 import com.core.fy.android.function.KeyboardActivity
 import com.core.fy.android.function.RoomActivity
+import com.core.fy.android.function.TTSActivity
 import com.core.fy.android.function.VisibilityActivity
 import com.core.fy.android.interfaces.LeastAnimationStateChangedHandler
 import com.core.fy.android.room.VMFactory
@@ -102,6 +103,7 @@ class HomeFragment : ReflectBindingFragment<FragmentHomeBinding, MainActivity>()
                                 FunctionVM.Design.VIEW_VISIBILITY -> startActivity(
                                     VisibilityActivity::class.java
                                 )
+                                FunctionVM.Design.TTS -> startActivity(TTSActivity::class.java)
                                 else -> {
                                     // do nothing
                                     Toast.Builder(requireContext())

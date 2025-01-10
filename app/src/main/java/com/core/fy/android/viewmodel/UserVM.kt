@@ -55,22 +55,19 @@ class UserVM(private var repository: UserRepository) : BaseViewModel() {
         }
     }
 
-    fun getUserById(id: Long) {
+    fun getUserById(id: Long, onSuccess: (User?) -> Unit) {
         flowLaunch(
             flowBlock = {
                 flow {
                     emit(repository.getUserById(id))
                 }
             },
-            onSuccess = { user ->
-                "获取用户成功：${user?.name}".logD()
-            },
+            onSuccess = onSuccess,
             onError = { error ->
                 "获取用户失败：${error.message}".logE()
             }
         )
     }
-
 
 
     fun getUserAsync(id: Long) = async {

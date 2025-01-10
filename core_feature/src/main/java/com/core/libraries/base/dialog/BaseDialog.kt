@@ -152,60 +152,12 @@ open class BaseDialog(context: Context, @StyleRes themeResId: Int = R.style.Base
         super.dismiss()
     }
 
-    /**
-     * 设置一个显示监听器
-     *
-     * @param listener       显示监听器对象
-     */
-    @Deprecated("请使用 {@link #addOnShowListener(BaseDialog.OnShowListener)}}")
-    override fun setOnShowListener(listener: DialogInterface.OnShowListener?) {
-        if (listener == null) {
-            return
-        }
-        addOnShowListener(ShowListenerWrapper(listener))
-    }
-
-    /**
-     * 设置一个取消监听器
-     *
-     * @param listener       取消监听器对象
-     */
-    @Deprecated("请使用 {@link #addOnCancelListener(BaseDialog.OnCancelListener)}")
-    override fun setOnCancelListener(listener: DialogInterface.OnCancelListener?) {
-        if (listener == null) {
-            return
-        }
-        addOnCancelListener(CancelListenerWrapper(listener))
-    }
-
-    /**
-     * 设置一个销毁监听器
-     *
-     * @param listener       销毁监听器对象
-     */
-    @Deprecated("请使用 {@link #addOnDismissListener(BaseDialog.OnDismissListener)}")
-    override fun setOnDismissListener(listener: DialogInterface.OnDismissListener?) {
-        if (listener == null) {
-            return
-        }
-        addOnDismissListener(DismissListenerWrapper(listener))
-    }
 
     /**
      * 设置一个按键监听器
      *
      * @param listener       按键监听器对象
      */
-    @Deprecated(
-        "请使用 {@link #setOnKeyListener(BaseDialog.OnKeyListener)}", ReplaceWith(
-            "super.setOnKeyListener(listener)",
-            "androidx.appcompat.app.AppCompatDialog"
-        )
-    )
-    override fun setOnKeyListener(listener: DialogInterface.OnKeyListener?) {
-        super.setOnKeyListener(listener)
-    }
-
     open fun setOnKeyListener(listener: OnKeyListener?) {
         super.setOnKeyListener(KeyListenerWrapper(listener))
     }
@@ -729,7 +681,6 @@ open class BaseDialog(context: Context, @StyleRes themeResId: Int = R.style.Base
         /**
          * 创建
          */
-        @Suppress("RtlHardcoded")
         open fun create(): BaseDialog {
             // 判断布局是否为空
             if (contentView == null) {
@@ -1067,7 +1018,7 @@ open class BaseDialog(context: Context, @StyleRes themeResId: Int = R.style.Base
     /**
      * 点击事件包装类
      */
-    private class ViewClickWrapper constructor(
+    private class ViewClickWrapper(
         private val dialog: BaseDialog?,
         private val listener: OnClickListener<View>?
     ) : View.OnClickListener {
@@ -1080,7 +1031,7 @@ open class BaseDialog(context: Context, @StyleRes themeResId: Int = R.style.Base
     /**
      * 显示监听包装类
      */
-    private class ShowListenerWrapper constructor(referent: DialogInterface.OnShowListener?) :
+    private class ShowListenerWrapper(referent: DialogInterface.OnShowListener?) :
         SoftReference<DialogInterface.OnShowListener?>(referent), OnShowListener {
 
         override fun onShow(dialog: BaseDialog?) {
@@ -1092,7 +1043,7 @@ open class BaseDialog(context: Context, @StyleRes themeResId: Int = R.style.Base
     /**
      * 取消监听包装类
      */
-    private class CancelListenerWrapper constructor(referent: DialogInterface.OnCancelListener?) :
+    private class CancelListenerWrapper(referent: DialogInterface.OnCancelListener?) :
         SoftReference<DialogInterface.OnCancelListener?>(referent), OnCancelListener {
 
         override fun onCancel(dialog: BaseDialog?) {
@@ -1104,7 +1055,7 @@ open class BaseDialog(context: Context, @StyleRes themeResId: Int = R.style.Base
     /**
      * 销毁监听包装类
      */
-    private class DismissListenerWrapper constructor(referent: DialogInterface.OnDismissListener?) :
+    private class DismissListenerWrapper(referent: DialogInterface.OnDismissListener?) :
         SoftReference<DialogInterface.OnDismissListener?>(referent), OnDismissListener {
 
         override fun onDismiss(dialog: BaseDialog?) {
@@ -1116,7 +1067,7 @@ open class BaseDialog(context: Context, @StyleRes themeResId: Int = R.style.Base
     /**
      * 按键监听包装类
      */
-    private class KeyListenerWrapper constructor(private val listener: OnKeyListener?) :
+    private class KeyListenerWrapper(private val listener: OnKeyListener?) :
         DialogInterface.OnKeyListener {
 
         override fun onKey(dialog: DialogInterface?, keyCode: Int, event: KeyEvent?): Boolean {
@@ -1131,7 +1082,7 @@ open class BaseDialog(context: Context, @StyleRes themeResId: Int = R.style.Base
     /**
      * post 任务包装类
      */
-    private class ShowPostWrapper constructor(private val runnable: Runnable?) : OnShowListener {
+    private class ShowPostWrapper(private val runnable: Runnable?) : OnShowListener {
 
         override fun onShow(dialog: BaseDialog?) {
             if (runnable == null) {
@@ -1145,7 +1096,7 @@ open class BaseDialog(context: Context, @StyleRes themeResId: Int = R.style.Base
     /**
      * postDelayed 任务包装类
      */
-    private class ShowPostDelayedWrapper constructor(
+    private class ShowPostDelayedWrapper(
         private val runnable: Runnable?,
         private val delayMillis: Long
     ) : OnShowListener {
@@ -1162,7 +1113,7 @@ open class BaseDialog(context: Context, @StyleRes themeResId: Int = R.style.Base
     /**
      * postAtTime 任务包装类
      */
-    private class ShowPostAtTimeWrapper constructor(
+    private class ShowPostAtTimeWrapper(
         private val runnable: Runnable,
         private val uptimeMillis: Long
     ) : OnShowListener {

@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:layoutAnimation="@anim/layout_fall_down"
+    tools:layoutAnimation="@null">
 
     <com.core.libraries.widget.layout.TitleBar
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content" />
 
     <com.core.libraries.widget.view.ClickableTextView
         android:id="@+id/ct_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text=" 望君烟水阔，挥手泪沾巾。\n
-飞鸟没何处，青山空向人。\n
-长江一帆远，落日五湖春。\n
-谁见汀洲上，相思愁白苹。"
+        android:text="@string/poetry"
         android:textColor="#000000"
         android:textSize="20sp" />
 </FrameLayout>

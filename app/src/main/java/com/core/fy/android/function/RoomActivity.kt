@@ -14,6 +14,7 @@ import com.core.libraries.base.ext.launchSync
 import com.core.libraries.base.ext.logD
 import com.core.libraries.base.ext.logE
 import com.core.libraries.base.ext.logI
+import com.core.libraries.base.ext.logW
 import com.core.libraries.base.ext.toast
 import com.core.libraries.base.vm.ViewStatus
 import com.core.libraries.util.CoreUtil
@@ -28,8 +29,12 @@ class RoomActivity : ReflectBindingActivity<ActivityRoomBinding>() {
     override fun initial(savedInstanceState: Bundle?) {
         super.initial(savedInstanceState)
 
+        userVM.getUserById(1) {
+            "查询到：${it?.name}，details：${it?.age}".logW()
+        }
+
         launchSync {
-            userVM.getUserAsync(1).await().let {
+            userVM.getUserAsync(1).let {
                 "查询到：${it?.name}，details：${it?.age}".logD()
 
                 // 先判断是否为空，如果不为空则更新，否则插入
@@ -98,7 +103,7 @@ class RoomActivity : ReflectBindingActivity<ActivityRoomBinding>() {
                     launchAsync {
                         bean.age = 19
                         AppDatabase.getInstance().userDao().update(bean)
-                        val byNameNext = userVM.getUserAsync(bean.id).await()
+                        val byNameNext = userVM.getUserAsync(bean.id)
                         "根据名字查询到用户：${byNameNext?.name}，年龄：${byNameNext?.age}".logI()
                     }
                     binding.dataShow.text = bean.age.toString()

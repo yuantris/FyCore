@@ -17,6 +17,7 @@ import android.widget.TextView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
 import com.core.libraries.base.ext.logD
+import java.util.regex.Pattern
 
 class ClickableTextView @JvmOverloads constructor(
     context: Context,
@@ -33,13 +34,28 @@ class ClickableTextView @JvmOverloads constructor(
         highlightColor = ContextCompat.getColor(context, android.R.color.transparent)
     }
 
+    /**
+     * 格式化文本，在标点符号后加入换行符，并去掉其他位置的换行符
+     */
+    private fun formatTextWithNewLines(text: String?): String {
+        // 去除所有换行符
+        val noNewLines = text?.replace("\\n".toRegex(), "")
+
+        // 在标点符号后加入换行符
+        val punctuationPattern = Pattern.compile("[.,!?;:。！？，；：]")
+        val matcher = punctuationPattern.matcher(noNewLines.toString())
+        val formattedText = matcher.replaceAll("$0\n")
+
+        return formattedText
+    }
+
     fun setOnLetterClickListener(listener: (CharSequence, Int) -> Unit) {
         this.onLetterClickListener = listener
         updateTextSpans()
     }
 
     override fun setText(text: CharSequence?, type: BufferType?) {
-        super.setText(text, type)
+        super.setText(formatTextWithNewLines(text.toString()), type)
         updateTextSpans()
     }
 
@@ -54,7 +70,7 @@ class ClickableTextView @JvmOverloads constructor(
                     override fun onClick(widget: View) {
                         removeHighlight() // 移除之前高亮
                         val backgroundColorSpan = BackgroundColorSpan(
-                            ContextCompat.getColor(context, android.R.color.holo_blue_light)
+                            ContextCompat.getColor(context, android.R.color.transparent)
                         )
                         clickedSpans?.add(backgroundColorSpan)
                         spannableBuilder.setSpan(

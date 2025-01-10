@@ -125,7 +125,9 @@ open class BaseViewModel : ViewModel() {
     protected fun <T> async(
         dispatcher: CoroutineDispatcher = Dispatchers.Default,
         block: Block<T>
-    ): Deferred<T> = viewModelScope.async(dispatcher) { block() }
+    ): T = runBlocking {
+        viewModelScope.async(dispatcher) { block() }.await()
+    }
 
     /**
      * 取消协程任务
