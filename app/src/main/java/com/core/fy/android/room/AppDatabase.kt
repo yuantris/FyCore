@@ -1,6 +1,5 @@
 package com.core.fy.android.room
 
-import android.util.Log
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
@@ -10,9 +9,6 @@ import com.core.fy.android.room.dao.UserDao
 import com.core.fy.android.room.entity.Function
 import com.core.fy.android.room.entity.User
 import com.core.libraries.Android
-import com.core.libraries.base.ext.logD
-import java.util.concurrent.Executor
-import java.util.concurrent.Executors
 
 @Database(
     entities = [User::class, Function::class],

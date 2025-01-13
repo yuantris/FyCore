@@ -15,17 +15,19 @@ import com.core.fy.android.function.ImgTextActivity
 import com.core.fy.android.function.KeyboardActivity
 import com.core.fy.android.function.RoomActivity
 import com.core.fy.android.function.TTSActivity
+import com.core.fy.android.function.TestPageActivity
 import com.core.fy.android.function.VisibilityActivity
+import com.core.fy.android.function.read.ReadBookActivity
 import com.core.fy.android.interfaces.LeastAnimationStateChangedHandler
 import com.core.fy.android.room.VMFactory
 import com.core.fy.android.room.entity.Function
 import com.core.fy.android.room.repository.FunctionRepository
 import com.core.fy.android.viewmodel.FunctionVM
-import com.core.libraries.base.ext.launchAsync
-import com.core.libraries.base.ext.logD
-import com.core.libraries.base.ext.onClick
-import com.core.libraries.base.ext.startActivity
-import com.core.libraries.base.fragment.ReflectBindingFragment
+import com.core.libraries.common.util.ext.tool.launchAsync
+import com.core.libraries.common.util.ext.tool.logD
+import com.core.libraries.common.util.ext.ui.onClick
+import com.core.libraries.common.util.ext.ui.startActivity
+import com.core.libraries.common.base.fragment.ReflectBindingFragment
 import com.core.libraries.other.Toast
 import com.drake.brv.BindingAdapter
 import com.drake.brv.listener.DefaultItemTouchCallback
@@ -104,6 +106,7 @@ class HomeFragment : ReflectBindingFragment<FragmentHomeBinding, MainActivity>()
                                     VisibilityActivity::class.java
                                 )
                                 FunctionVM.Design.TTS -> startActivity(TTSActivity::class.java)
+                                FunctionVM.Design.READ -> startActivity(ReadBookActivity::class.java)
                                 else -> {
                                     // do nothing
                                     Toast.Builder(requireContext())

@@ -1,7 +1,9 @@
 package com.core.fy.android
 
 import android.app.Application
+import com.core.fy.android.help.LifecycleHelp
 import com.core.libraries.Android
+import com.core.libraries.common.base.activity.RestartActivity
 
 /**
 # ██████████
@@ -20,6 +22,8 @@ class App : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        // 设置重启对象Activity
+        RestartActivity.homeActivity = MainActivity::class.java
         Android.initialize(this)
         // SoftKeyboardGlobal.install(this, false)
     }

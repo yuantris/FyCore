@@ -5,9 +5,8 @@ import android.view.View
 import android.widget.TextView
 import androidx.annotation.StringRes
 import com.core.fy.android.R
-import com.core.libraries.base.action.AnimAction
-import com.core.libraries.base.dialog.BaseDialog
-import com.core.libraries.base.dialog.CommonDialog
+import com.core.libraries.common.base.dialog.BaseDialog
+import com.core.libraries.common.base.dialog.CommonDialog
 
 
 class MessageDialog {

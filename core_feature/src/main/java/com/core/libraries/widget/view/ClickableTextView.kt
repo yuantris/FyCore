@@ -3,7 +3,6 @@ package com.core.libraries.widget.view
 import android.content.Context
 import android.graphics.Rect
 import android.text.Spannable
-import android.text.SpannableString
 import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.method.LinkMovementMethod
@@ -16,7 +15,7 @@ import android.view.View
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
-import com.core.libraries.base.ext.logD
+import com.core.libraries.common.util.ext.tool.logD
 import java.util.regex.Pattern
 
 class ClickableTextView @JvmOverloads constructor(

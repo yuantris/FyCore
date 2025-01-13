@@ -3,9 +3,8 @@ package com.core.fy.android.viewmodel
 import androidx.lifecycle.MutableLiveData
 import com.core.fy.android.room.entity.Function
 import com.core.fy.android.room.repository.FunctionRepository
-import com.core.libraries.base.ext.logD
-import com.core.libraries.base.ext.logI
-import com.core.libraries.base.vm.BaseViewModel
+import com.core.libraries.common.util.ext.tool.logD
+import com.core.libraries.common.base.vm.BaseViewModel
 
 /**
 # ██████████
@@ -28,6 +27,7 @@ class FunctionVM(var repository: FunctionRepository) : BaseViewModel() {
         KEYBOARD("键盘"),
         云创控件("云创控件"),
         单文字点击的TextView("单文字点击的TextView"),
+        READ("开源阅读控件"),
         TTS("TTS"),
         ROOM("room"),
         DIALOG("dialog"),
@@ -50,6 +50,7 @@ class FunctionVM(var repository: FunctionRepository) : BaseViewModel() {
             Function(Design.KEYBOARD),
             Function(Design.云创控件),
             Function(Design.单文字点击的TextView),
+            Function(Design.READ),
             Function(Design.TTS),
             Function(Design.ROOM),
             Function(Design.DIALOG),

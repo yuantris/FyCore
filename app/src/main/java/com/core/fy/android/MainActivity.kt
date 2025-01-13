@@ -1,33 +1,26 @@
 package com.core.fy.android
 
 import android.os.Bundle
-import android.widget.FrameLayout.LayoutParams
 import androidx.core.content.ContextCompat
-import androidx.databinding.DataBindingUtil.getBinding
-import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.ViewPager.OnPageChangeListener
-import com.blankj.utilcode.util.BarUtils
-import com.blankj.utilcode.util.DeviceUtils.getModel
-import com.blankj.utilcode.util.SizeUtils
+import com.blankj.utilcode.util.ActivityUtils
 import com.core.fy.android.databinding.ActivityMainBinding
 import com.core.fy.android.databinding.ItemTabBinding
 import com.core.fy.android.interfaces.FragmentPagerAdapter
 import com.core.fy.android.model.Tab
 import com.core.fy.android.ui.fragment.BlankFragment
 import com.core.fy.android.ui.fragment.HomeFragment
-import com.core.libraries.base.activity.ReflectBindingActivity
-import com.core.libraries.base.ext.BarColor
-import com.core.libraries.base.ext.hide
-import com.core.libraries.base.ext.logD
-import com.core.libraries.base.ext.logE
-import com.core.libraries.base.ext.px2dp
-import com.core.libraries.base.ext.show
-import com.core.libraries.base.fragment.BaseFragment
+import com.core.libraries.common.base.activity.CrashActivity
+import com.core.libraries.common.base.activity.ReflectBindingActivity
+import com.core.libraries.common.util.ext.ui.BarColor
+import com.core.libraries.common.util.ext.ui.hide
+import com.core.libraries.common.util.ext.ui.show
+import com.core.libraries.common.base.fragment.BaseFragment
+import com.core.libraries.common.helper.LifecycleHelp
+import com.core.libraries.common.util.ext.tool.logD
 import com.drake.brv.BindingAdapter
 import com.drake.brv.utils.grid
-import com.drake.brv.utils.linear
 import com.drake.brv.utils.setup
-import com.google.android.material.appbar.CollapsingToolbarLayout
 
 class MainActivity : ReflectBindingActivity<ActivityMainBinding>(), OnPageChangeListener {
 
@@ -76,6 +69,12 @@ class MainActivity : ReflectBindingActivity<ActivityMainBinding>(), OnPageChange
                 }
             }
         adapter?.models = list
+    }
+
+    override fun onResume() {
+        super.onResume()
+        val existActivity = LifecycleHelp.isExistActivity(CrashActivity::class.java)
+        "Crash 是否销毁 $existActivity".logD()
     }
 
     override fun setListener() {

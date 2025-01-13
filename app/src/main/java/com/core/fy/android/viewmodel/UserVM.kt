@@ -2,21 +2,13 @@ package com.core.fy.android.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
-import com.core.fy.android.room.AppDatabase
-import com.core.fy.android.room.dao.UserDao
 import com.core.fy.android.room.entity.User
 import com.core.fy.android.room.repository.UserRepository
-import com.core.libraries.base.ext.launchAsync
-import com.core.libraries.base.ext.logD
-import com.core.libraries.base.ext.logE
-import com.core.libraries.base.room.RoomRepository
-import com.core.libraries.base.vm.BaseViewModel
-import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.async
+import com.core.libraries.common.util.ext.tool.logD
+import com.core.libraries.common.util.ext.tool.logE
+import com.core.libraries.common.base.vm.BaseViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.launch
 
 class UserVM(private var repository: UserRepository) : BaseViewModel() {
     private val _userLiveData = MutableLiveData<List<User>>()

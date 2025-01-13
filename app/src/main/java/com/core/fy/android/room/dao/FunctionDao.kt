@@ -1,10 +1,9 @@
 package com.core.fy.android.room.dao
 
 import androidx.room.Dao
-import androidx.room.Insert
 import androidx.room.Query
 import com.core.fy.android.room.entity.Function
-import com.core.libraries.base.room.BaseDao
+import com.core.libraries.common.base.room.BaseDao
 
 /**
 # ██████████

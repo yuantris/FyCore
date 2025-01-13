@@ -2,11 +2,12 @@ plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
     id 'kotlin-kapt'
+    id 'kotlin-parcelize'
 }
 
 android {
     namespace 'com.core.fy.android'
-    compileSdk 33
+    compileSdk 34
 
     defaultConfig {
         applicationId "com.core.fy.android"
@@ -61,11 +62,41 @@ dependencies {
     androidTestImplementation libs.espresso.core
     implementation fycoreDependencies[version]
 
+
+    implementation libs.room.ktx
+    //noinspection KaptUsageInsteadOfKsp
+    kapt libs.room.compiler
+    annotationProcessor libs.room.compiler
+
+    //media
+    implementation(libs.media.media)
+    // For media playback using ExoPlayer
+    implementation(libs.media3.exoplayer)
+    // For exposing and controlling media sessions
+    //implementation "androidx.media3:media3-session:$media3_version"
+
+    //Glide
+    implementation(libs.glide)
+
+    // https://github.com/liangjingkanji/BRV
+    implementation (libs.brv) {
+        exclude group: 'com.github.liangjingkanji', module: 'StateLayout'
+    }
+
     // 动画解析库：https://github.com/airbnb/lottie-android
     // 动画资源：https://lottiefiles.com、https://icons8.com/animated-icons
     implementation libs.lottie
+    implementation libs.xxpermissions
 
-    implementation libs.room.ktx
-    kapt libs.room.compiler
-    annotationProcessor libs.room.compiler
+    // https://github.com/gyf-dev/ImmersionBar
+    implementation libs.immersionbar
+    implementation libs.immersionbar.ktx
+
+    // https://github.com/Blankj/AndroidUtilCode
+    implementation libs.utilcodex
+
+    // ShapeView：https://github.com/getActivity/ShapeView
+    implementation libs.shapeView
+    // ShapeDrawable：https://github.com/getActivity/ShapeDrawable
+    implementation libs.shapedrawable
 }

@@ -20,7 +20,7 @@ import androidx.annotation.DrawableRes
 import androidx.core.content.ContextCompat
 import androidx.core.view.size
 import com.core.libraries.R
-import com.core.libraries.base.ext.getActivity
+import com.core.libraries.common.util.ext.ui.getActivity
 
 class TitleBar @JvmOverloads constructor(
     context: Context,

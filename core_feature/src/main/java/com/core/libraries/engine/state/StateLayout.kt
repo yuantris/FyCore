@@ -17,7 +17,7 @@ import android.widget.FrameLayout
 import androidx.annotation.IdRes
 import androidx.annotation.LayoutRes
 import com.core.libraries.R
-import com.core.libraries.base.ext.setDebouncedClickListener
+import com.core.libraries.common.util.ext.ui.setDebouncedClickListener
 import com.core.libraries.engine.state.Status.*
 
 /**

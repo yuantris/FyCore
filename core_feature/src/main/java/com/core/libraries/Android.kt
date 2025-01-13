@@ -3,6 +3,8 @@ package com.core.libraries
 import android.app.Application
 import android.content.res.Resources
 import android.util.TypedValue
+import com.core.libraries.common.helper.LifecycleHelp
+import com.core.libraries.other.CrashHandler
 import kotlin.properties.Delegates
 
 class Android private constructor() {
@@ -35,6 +37,8 @@ class Android private constructor() {
             }
             _debug = debug
             _context = application
+            CrashHandler.register(application)
+            application.registerActivityLifecycleCallbacks(LifecycleHelp)
         }
     }
 }

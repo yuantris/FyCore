@@ -1,10 +1,9 @@
 package com.core.fy.android.function
 
 import android.os.Bundle
-import androidx.databinding.adapters.TextViewBindingAdapter.setText
 import com.core.fy.android.databinding.ActivityClickTextBinding
 import com.core.fy.android.ui.MessageDialog
-import com.core.libraries.base.activity.ReflectBindingActivity
+import com.core.libraries.common.base.activity.ReflectBindingActivity
 import java.util.regex.Pattern
 
 class ClickTextActivity : ReflectBindingActivity<ActivityClickTextBinding>() {

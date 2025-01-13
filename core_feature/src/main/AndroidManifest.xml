@@ -1,4 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <application>
+        <!-- 崩溃展示（必须在独立进程） -->
+        <activity
+            android:name=".common.base.activity.CrashActivity"
+            android:launchMode="singleTop"
+            android:process=":crash"
+            android:screenOrientation="landscape" />
+
+        <!-- 重启应用（必须在独立进程） -->
+        <activity
+            android:name=".common.base.activity.RestartActivity"
+            android:launchMode="singleTop"
+            android:process=":restart" />
+    </application>
 </manifest>

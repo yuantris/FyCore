@@ -6,4 +6,13 @@
     <color name="teal_200">#FF03DAC5</color>
     <color name="teal_700">#FF018786</color>
 
+    <color name="transparent10">#10000000</color>
+    <color name="transparent20">#20000000</color>
+    <color name="transparent30">#30000000</color>
+    <color name="transparent50">#50000000</color>
+
+    <color name="background">#FAFAFA</color>
+    <color name="divider">#66666666</color>
+    <color name="primaryText">#de000000</color>
+    <color name="background_menu">@color/md_grey_200</color>
 </resources>

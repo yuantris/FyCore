@@ -3,13 +3,12 @@ package com.core.fy.android.ui
 import android.animation.ValueAnimator
 import android.content.Context
 import android.view.View
-import android.view.animation.Animation
 import android.view.animation.OvershootInterpolator
 import android.widget.TextView
 import androidx.annotation.StringRes
 import com.core.fy.android.R
-import com.core.libraries.base.action.AnimAction
-import com.core.libraries.base.dialog.BaseDialog
+import com.core.libraries.common.base.action.AnimAction
+import com.core.libraries.common.base.dialog.BaseDialog
 
 
 class WaitDialog {

@@ -1,14 +1,14 @@
 package com.core.fy.android.function
 
 import com.core.fy.android.databinding.ActivityEventBinding
-import com.core.libraries.base.activity.ReflectBindingActivity
-import com.core.libraries.base.event.Event
-import com.core.libraries.base.event.FEvent
-import com.core.libraries.base.event.FlowEventBus
-import com.core.libraries.base.event.flowOf
-import com.core.libraries.base.ext.launchSync
-import com.core.libraries.base.ext.logD
-import com.core.libraries.base.ext.toast
+import com.core.libraries.common.base.activity.ReflectBindingActivity
+import com.core.libraries.common.base.event.Event
+import com.core.libraries.common.base.event.FEvent
+import com.core.libraries.common.base.event.FlowEventBus
+import com.core.libraries.common.base.event.flowOf
+import com.core.libraries.common.util.ext.tool.launchSync
+import com.core.libraries.common.util.ext.tool.logD
+import com.core.libraries.common.util.ext.ui.toast
 import kotlinx.coroutines.flow.collectLatest
 
 class EventActivity : ReflectBindingActivity<ActivityEventBinding>() {

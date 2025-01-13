@@ -2,9 +2,8 @@ package com.core.fy.android.room.dao
 
 import androidx.room.Dao
 import androidx.room.Query
-import androidx.room.Update
 import com.core.fy.android.room.entity.User
-import com.core.libraries.base.room.BaseDao
+import com.core.libraries.common.base.room.BaseDao
 
 @Dao
 interface UserDao : BaseDao<User> {

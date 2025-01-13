@@ -2,7 +2,7 @@ package com.core.fy.android.ui.fragment
 
 import com.core.fy.android.MainActivity
 import com.core.fy.android.databinding.FragmentBlankBinding
-import com.core.libraries.base.fragment.ReflectBindingFragment
+import com.core.libraries.common.base.fragment.ReflectBindingFragment
 
 /**
 # ██████████

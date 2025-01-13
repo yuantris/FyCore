@@ -2,4 +2,35 @@
     <string name="app_name">FyCore</string>
 
     <string name="poetry">望君烟水阔，挥手泪沾巾。飞鸟没何处，青山空向人。长江一帆远，落日五湖春。谁见汀洲上，相思愁白苹。</string>
+
+    <string name="show">显示</string>
+    <string name="hide">隐藏</string>
+    <string name="hide_when_status_bar_show">状态栏显示时隐藏</string>
+    <string name="data_loading">加载数据中…</string>
+    <string name="keep_swipe_tip">继续滑动以加载下一章…</string>
+    <string name="tts_init_failed">TTS 初始化失败！</string>
+
+    <string name="content">内容</string>
+    <string name="book_source">书源</string>
+    <string name="brightness_auto">自动亮度 %s</string>
+    <string name="adjust_pos">调整位置</string>
+    <string name="search_content">全文搜索</string>
+    <string name="auto_next_page">自动翻页</string>
+    <string name="auto_next_page_stop">停止自动翻页</string>
+    <string name="replace_rule_title">替换净化</string>
+    <string name="dark_theme">深色模式</string>
+    <string name="previous_chapter">上一章</string>
+    <string name="next_chapter">下一章</string>
+    <string name="chapter_list">目录</string>
+    <string name="read_aloud">朗读</string>
+    <string name="interface_setting">界面</string>
+    <string name="setting">设置</string>
+
+    <string name="login">登录</string>
+    <string name="chapter_pay">购买</string>
+    <string name="edit_book_source">编辑书源</string>
+    <string name="disable_book_source">禁用书源</string>
+
+    <string name="select_end">文本选择结束位置</string>
+    <string name="select_start">文本选择开始位置</string>
 </resources>

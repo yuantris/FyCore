@@ -11,9 +11,9 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
 import com.blankj.utilcode.util.BarUtils.getStatusBarHeight
 import com.core.libraries.R
-import com.core.libraries.base.ext.dp2px
-import com.core.libraries.base.ext.getActivity
-import com.core.libraries.base.ext.logD
+import com.core.libraries.common.util.ext.tool.dp2px
+import com.core.libraries.common.util.ext.ui.getActivity
+import com.core.libraries.common.util.ext.tool.logD
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.CollapsingToolbarLayout
 

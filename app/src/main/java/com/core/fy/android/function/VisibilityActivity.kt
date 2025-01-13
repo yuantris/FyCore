@@ -1,18 +1,16 @@
 package com.core.fy.android.function
 
 import android.os.Bundle
-import android.view.View
 import androidx.core.view.isVisible
 import com.core.fy.android.databinding.ActivityVisibilityBinding
-import com.core.libraries.base.activity.ReflectBindingActivity
-import com.core.libraries.base.ext.hide
-import com.core.libraries.base.ext.launchSafe
-import com.core.libraries.base.ext.launchSync
-import com.core.libraries.base.ext.onVisibilityChange
-import com.core.libraries.base.ext.setDebouncedClickListener
-import com.core.libraries.base.ext.setVisible
-import com.core.libraries.base.ext.show
-import com.core.libraries.base.ext.toast
+import com.core.libraries.common.base.activity.ReflectBindingActivity
+import com.core.libraries.common.util.ext.ui.hide
+import com.core.libraries.common.util.ext.tool.launchSync
+import com.core.libraries.common.util.ext.ui.onVisibilityChange
+import com.core.libraries.common.util.ext.ui.setDebouncedClickListener
+import com.core.libraries.common.util.ext.ui.setVisible
+import com.core.libraries.common.util.ext.ui.show
+import com.core.libraries.common.util.ext.ui.toast
 import kotlinx.coroutines.delay
 
 class VisibilityActivity : ReflectBindingActivity<ActivityVisibilityBinding>() {

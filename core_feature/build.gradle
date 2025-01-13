@@ -7,7 +7,7 @@ plugins {
 
 android {
     namespace 'com.core.libraries'
-    compileSdk 33
+    compileSdk 34
 
     defaultConfig {
         minSdk 24
@@ -61,6 +61,8 @@ dependencies {
 
     api libs.activity.ktx
     api libs.recyclerview
+    api libs.preference.ktx
+    api libs.google.gson
     api libs.lifecycle.livedata.ktx
     api libs.lifecycle.viewmodel.ktx
     api libs.lifecycle.runtime.ktx
@@ -72,22 +74,27 @@ dependencies {
     kapt libs.room.compiler
     annotationProcessor libs.room.compiler
 
+    //Glide
+    compileOnly(libs.glide)
+
     // https://github.com/liangjingkanji/BRV
-    api (libs.brv) {
+    compileOnly(libs.brv) {
         exclude group: 'com.github.liangjingkanji', module: 'StateLayout'
     }
 
+    compileOnly libs.xxpermissions
+
     // https://github.com/gyf-dev/ImmersionBar
-    api libs.immersionbar
-    api libs.immersionbar.ktx
+    compileOnly libs.immersionbar
+    compileOnly libs.immersionbar.ktx
 
     // https://github.com/Blankj/AndroidUtilCode
-    api libs.utilcodex
+    compileOnly libs.utilcodex
 
     // ShapeView：https://github.com/getActivity/ShapeView
-    api libs.shapeView
+    compileOnly libs.shapeView
     // ShapeDrawable：https://github.com/getActivity/ShapeDrawable
-    api libs.shapedrawable
+    compileOnly libs.shapedrawable
 }
 
 /*当前版本*/

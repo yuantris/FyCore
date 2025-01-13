@@ -13,14 +13,21 @@ appcompat = "1.6.1"
 core-ktx = "1.9.0"
 recyclerview = "1.3.2"
 material = "1.6.0"
+google-gson = "2.8.9"
 junit = "4.13.2"
 ext-junit = "1.1.3"
 espresso-core = "3.4.0"
 activity-ktx = "1.6.0"
 lifecycle-ktx = "2.5.1"
+preference = "1.2.1"
 room = "2.5.2"
+media = "1.7.0"
+media3 = "1.4.1"
+
 brv = "1.6.1"
+glide = "4.16.0"
 immersionbar = "3.2.2"
+xxpermissions = "18.5"
 utilcodex = "1.31.1"
 lottie = "6.4.0"
 shapeview = "9.3"
@@ -41,19 +48,28 @@ material = { module = "com.google.android.material:material", version.ref = "mat
 junit = { module = "junit:junit", version.ref = "junit" }
 ext-junit = { module = "androidx.test.ext:junit", version.ref = "ext-junit" }
 espresso-core = { module = "androidx.test.espresso:espresso-core", version.ref = "espresso-core" }
+google-gson = { module = "com.google.code.gson:gson", version.ref = "google-gson" }
 activity-ktx = { module = "androidx.activity:activity-ktx", version.ref = "activity-ktx" }
 recyclerview = { module = "androidx.recyclerview:recyclerview", version.ref = "recyclerview" }
 navigation-fragment-ktx = { module = "androidx.navigation:navigation-fragment-ktx", version.ref = "lifecycle-ktx" }
 navigation-ui-ktx = { module = "androidx.navigation:navigation-ui-ktx", version.ref = "lifecycle-ktx" }
 lifecycle-livedata-ktx = { module = "androidx.lifecycle:lifecycle-livedata-ktx", version.ref = "lifecycle-ktx" }
+preference-ktx = { module = "androidx.preference:preference-ktx", version.ref = "preference" }
 lifecycle-viewmodel-ktx = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "lifecycle-ktx" }
 lifecycle-runtime-ktx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "lifecycle-ktx" }
 kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin-version" }
 room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
 room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
+
+media-media = { module = "androidx.media:media", version.ref = "media" }
+media3-datasource-okhttp = { module = "androidx.media3:media3-datasource-okhttp", version.ref = "media3" }
+media3-exoplayer = { module = "androidx.media3:media3-exoplayer", version.ref = "media3" }
+
 brv = { module = "com.github.liangjingkanji:BRV", version.ref = "brv" }
+glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
 immersionbar = { module = "com.geyifeng.immersionbar:immersionbar", version.ref = "immersionbar" }
 immersionbar-ktx = { module = "com.geyifeng.immersionbar:immersionbar-ktx", version.ref = "immersionbar" }
+xxpermissions = { module = "com.github.getActivity:XXPermissions", version.ref = "xxpermissions" }
 utilcodex = { module = "com.blankj:utilcodex", version.ref = "utilcodex" }
 lottie = { module = "com.airbnb.android:lottie", version.ref = "lottie" }
 shapeView = { module = "com.github.getActivity:ShapeView", version.ref = "shapeview" }

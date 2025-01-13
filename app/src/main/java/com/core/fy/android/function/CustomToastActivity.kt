@@ -3,9 +3,7 @@ package com.core.fy.android.function
 import android.os.Bundle
 import android.view.Gravity
 import com.core.fy.android.databinding.ActivityCustomToastBinding
-import com.core.libraries.base.activity.ReflectBindingActivity
-import com.core.libraries.base.ext.getActivity
-import com.core.libraries.base.ext.logD
+import com.core.libraries.common.base.activity.ReflectBindingActivity
 import com.core.libraries.other.Toast
 
 /**
