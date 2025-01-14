@@ -8,8 +8,8 @@ import com.core.fy.android.function.read.model.ReadBook
 import com.core.fy.android.function.read.page.ContentTextView
 import com.core.fy.android.function.read.page.entities.TextLine
 import com.core.fy.android.function.read.page.entities.TextLine.Companion.emptyTextLine
-import com.core.libraries.common.util.ext.appCtx
-import com.core.libraries.common.util.tools.toastOnUi
+import io.core.common.util.ext.appCtx
+import io.core.common.util.tools.toastOnUi
 
 /**
  * 图片列

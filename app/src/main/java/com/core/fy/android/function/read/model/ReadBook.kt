@@ -12,10 +12,10 @@ import com.core.fy.android.function.read.bean.BookProgress
 import com.core.fy.android.room.entity.BookChapter
 import com.core.fy.android.room.entity.ReadRecord
 import com.core.fy.android.function.read.services.BaseReadAloudService
-import com.core.libraries.common.helper.coroutine.Coroutine
-import com.core.libraries.common.util.ext.appCtx
-import com.core.libraries.common.util.log.AppLog
-import com.core.libraries.common.util.tools.globalExecutor
+import io.core.common.helper.coroutine.Coroutine
+import io.core.common.util.ext.appCtx
+import io.core.common.util.log.AppLog
+import io.core.common.util.tools.globalExecutor
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Job

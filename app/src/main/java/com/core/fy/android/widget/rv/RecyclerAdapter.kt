@@ -9,10 +9,10 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
-import com.core.libraries.common.helper.coroutine.Coroutine
-import com.core.libraries.common.util.ext.cool.withTimeoutOrNullAsync
-import com.core.libraries.common.util.ext.ui.onLongClick
-import com.core.libraries.common.util.tools.buildMainHandler
+import io.core.common.helper.coroutine.Coroutine
+import io.core.common.util.ext.cool.withTimeoutOrNullAsync
+import io.core.common.util.ext.ui.onLongClick
+import io.core.common.util.tools.buildMainHandler
 import kotlinx.coroutines.ensureActive
 import java.util.Collections
 

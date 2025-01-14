@@ -5,12 +5,12 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <com.core.libraries.widget.layout.TitleBar
+    <io.core.widget.layout.TitleBar
         android:id="@+id/title_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <com.core.libraries.widget.view.CustomImageView
+    <io.core.widget.view.CustomImageView
         android:id="@+id/civ_img"
         android:layout_width="@dimen/dp_200"
         android:layout_height="@dimen/dp_200"

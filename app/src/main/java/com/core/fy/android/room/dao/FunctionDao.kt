@@ -3,7 +3,7 @@ package com.core.fy.android.room.dao
 import androidx.room.Dao
 import androidx.room.Query
 import com.core.fy.android.room.entity.Function
-import com.core.libraries.common.base.room.BaseDao
+import io.core.common.base.room.BaseDao
 
 /**
 # ██████████

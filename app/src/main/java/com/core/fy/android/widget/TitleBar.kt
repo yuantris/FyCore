@@ -18,11 +18,11 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.children
 import com.core.fy.android.R
-import com.core.libraries.common.util.ext.cool.dpToPx
-import com.core.libraries.common.util.ext.ui.activity
-import com.core.libraries.common.util.ext.ui.bottomPadding
-import com.core.libraries.common.util.ext.ui.getCompatColor
-import com.core.libraries.common.util.ext.ui.topPadding
+import io.core.common.util.ext.cool.dpToPx
+import io.core.common.util.ext.ui.activity
+import io.core.common.util.ext.ui.bottomPadding
+import io.core.common.util.ext.ui.getCompatColor
+import io.core.common.util.ext.ui.topPadding
 import com.google.android.material.appbar.AppBarLayout
 
 @Suppress("unused", "MemberVisibilityCanBePrivate")

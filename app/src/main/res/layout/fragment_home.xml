@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.core.libraries.engine.state.StateLayout
+    <io.core.engine.state.StateLayout
         android:id="@+id/state"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -15,5 +15,5 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:padding="@dimen/dp_5" />
-    </com.core.libraries.engine.state.StateLayout>
+    </io.core.engine.state.StateLayout>
 </FrameLayout>

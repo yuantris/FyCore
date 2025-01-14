@@ -5,9 +5,9 @@ import android.view.View
 import com.airbnb.lottie.LottieAnimationView
 import com.airbnb.lottie.LottieDrawable
 import com.core.fy.android.R
-import com.core.libraries.engine.state.StateChangedHandler
-import com.core.libraries.engine.state.StateLayout
-import com.core.libraries.engine.state.Status
+import io.core.engine.state.StateChangedHandler
+import io.core.engine.state.StateLayout
+import io.core.engine.state.Status
 
 /**
  * 适用于骨骼图动画, 能保证动画至少完整执行一次动画或者显示最短时间, 避免屏幕闪烁

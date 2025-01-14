@@ -40,7 +40,7 @@ gradle = { module = "com.android.tools.build:gradle", version.ref = "android-gra
 zy-gradle-plugin = { module = "com.zy.sdk.res.guard:gradle-plugin", version.ref = "zy-gradle-plugin" }
 kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin-version" }
 # 线上仓库
-fycore-git-package = { module = "com.core.libraries:fycore", version.ref = "fycore" }
+fycore-git-package = { module = "io.core:fylibs", version.ref = "fycore" }
 fycore-github = { module = "com.github.yuantris:FyCore", version.ref = "fycore" }
 # 依赖仓库列表
 appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat" }

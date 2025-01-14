@@ -9,8 +9,8 @@ import com.core.fy.android.function.read.page.entities.PageDirection
 import com.core.fy.android.help.CanvasRecorderFactory
 import com.core.fy.android.help.config.AppConfig
 import com.core.fy.android.help.config.ReadBookConfig
-import com.core.libraries.Android
-import com.core.libraries.common.helper.canvasrecorder.recordIfNeeded
+import io.core.Android
+import io.core.common.helper.canvasrecorder.recordIfNeeded
 
 /**
  * 自动翻页

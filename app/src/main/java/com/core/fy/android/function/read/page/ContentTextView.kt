@@ -21,9 +21,9 @@ import com.core.fy.android.function.read.page.provider.ChapterProvider
 import com.core.fy.android.function.read.page.provider.TextPageFactory
 import com.core.fy.android.help.config.AppConfig
 import com.core.fy.android.room.entity.Bookmark
-import com.core.libraries.common.util.ext.cool.dpToPx
-import com.core.libraries.common.util.ext.ui.activity
-import com.core.libraries.common.util.tools.toastOnUi
+import io.core.common.util.ext.cool.dpToPx
+import io.core.common.util.ext.ui.activity
+import io.core.common.util.tools.toastOnUi
 import java.util.concurrent.Executors
 import kotlin.math.max
 import kotlin.math.min

@@ -21,10 +21,10 @@
 #-renamesourcefileattribute SourceFile
 
 ## 保留类的原始结构，避免被移除或混淆
-#-keep class com.core.libraries.** { *; }
+#-keep class io.core.** { *; }
 #
 ## 保留子类和子包，防止相关逻辑被移除
-#-keepclassmembers class com.core.libraries.** { *; }
+#-keepclassmembers class io.core.** { *; }
 #
 ## 保留所有协程相关类和 Lambda 类，防止混淆
 #-keep class kotlinx.coroutines.** { *; }
@@ -34,7 +34,7 @@
 #-keep class kotlin.coroutines.Continuation { *; }
 #
 ## 保留 Kotlin Lambda 生成的类
-#-keep class com.core.libraries.**$$Lambda$* { *; }
+#-keep class io.core.**$$Lambda$* { *; }
 #
 ## 保留 suspend 函数的签名
 #-keepclassmembers class * {
@@ -86,7 +86,7 @@
 # ShapeView：https://github.com/getActivity/ShapeView
 -keep class com.hjq.shape.** {*;}
 
--dontwarn com.core.libraries.engine.livebus.**
--keep class com.core.libraries.engine.livebus.** { *; }
+-dontwarn io.core.engine.livebus.**
+-keep class io.core.engine.livebus.** { *; }
 -keep class androidx.lifecycle.** { *; }
 -keep class androidx.arch.core.** { *; }

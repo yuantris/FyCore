@@ -5,7 +5,7 @@ import com.core.fy.android.databinding.ActivityTestPageBinding
 import com.core.fy.android.function.read.page.ContentTextView
 import com.core.fy.android.function.read.page.delegate.PageDelegate
 import com.core.fy.android.function.read.page.provider.TextPageFactory
-import com.core.libraries.common.base.component.activity.ReflectBindingActivity
+import io.core.common.base.component.activity.ReflectBindingActivity
 
 /**
 # ██████████

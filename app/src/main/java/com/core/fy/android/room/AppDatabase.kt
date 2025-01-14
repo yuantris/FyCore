@@ -8,7 +8,7 @@ import com.core.fy.android.room.dao.FunctionDao
 import com.core.fy.android.room.dao.UserDao
 import com.core.fy.android.room.entity.Function
 import com.core.fy.android.room.entity.User
-import com.core.libraries.Android
+import io.core.Android
 
 @Database(
     entities = [User::class, Function::class],

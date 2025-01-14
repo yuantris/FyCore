@@ -1,7 +1,7 @@
 package com.core.fy.android.help
 
 import android.graphics.Paint
-import com.core.libraries.common.helper.objectpool.BaseSafeObjectPool
+import io.core.common.helper.objectpool.BaseSafeObjectPool
 
 object PaintPool : BaseSafeObjectPool<Paint>(8) {
 

@@ -18,9 +18,9 @@ import com.core.fy.android.help.CanvasRecorderFactory
 import com.core.fy.android.help.PaintPool
 import com.core.fy.android.help.config.AppConfig
 import com.core.fy.android.help.config.ReadBookConfig
-import com.core.libraries.common.helper.canvasrecorder.recordIfNeeded
-import com.core.libraries.common.util.ext.appCtx
-import com.core.libraries.common.util.ext.cool.dpToPx
+import io.core.common.helper.canvasrecorder.recordIfNeeded
+import io.core.common.util.ext.appCtx
+import io.core.common.util.ext.cool.dpToPx
 import java.text.DecimalFormat
 import kotlin.math.min
 

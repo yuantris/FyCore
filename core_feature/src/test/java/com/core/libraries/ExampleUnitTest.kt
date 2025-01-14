@@ -1,4 +1,4 @@
-package com.core.libraries
+package io.core
 
 import org.junit.Test
 

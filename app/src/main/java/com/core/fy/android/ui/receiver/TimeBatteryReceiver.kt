@@ -5,8 +5,8 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.BatteryManager
-import com.core.libraries.common.base.event.channel.sendEvent
-import com.core.libraries.common.util.ext.cool.postEvent
+import io.core.common.base.event.channel.sendEvent
+import io.core.common.util.ext.cool.postEvent
 
 
 class TimeBatteryReceiver : BroadcastReceiver() {

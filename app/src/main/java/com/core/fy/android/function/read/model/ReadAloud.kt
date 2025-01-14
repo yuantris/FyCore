@@ -7,11 +7,11 @@ import com.core.fy.android.constants.IntentAction
 import com.core.fy.android.help.config.AppConfig
 import com.core.fy.android.function.read.services.BaseReadAloudService
 import com.core.fy.android.function.read.services.TTSReadAloudService
-import com.core.libraries.common.util.ext.appCtx
-import com.core.libraries.common.util.ext.ui.startForegroundServiceCompat
-import com.core.libraries.common.util.log.AppLog
-import com.core.libraries.common.util.log.LogUtils
-import com.core.libraries.common.util.tools.toastOnUi
+import io.core.common.util.ext.appCtx
+import io.core.common.util.ext.ui.startForegroundServiceCompat
+import io.core.common.util.log.AppLog
+import io.core.common.util.log.LogUtils
+import io.core.common.util.tools.toastOnUi
 
 object ReadAloud {
     private var aloudClass: Class<*> = getReadAloudClass()

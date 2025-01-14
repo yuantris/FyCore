@@ -11,10 +11,10 @@ import com.core.fy.android.help.isEpub
 import com.core.fy.android.help.isMobi
 import com.core.fy.android.help.isPdf
 import com.core.fy.android.room.entity.Book
-import com.core.libraries.common.util.ext.appCtx
-import com.core.libraries.common.util.log.AppLog.putDebug
-import com.core.libraries.common.util.tools.BitmapUtils
-import com.core.libraries.common.util.tools.toastOnUi
+import io.core.common.util.ext.appCtx
+import io.core.common.util.log.AppLog.putDebug
+import io.core.common.util.tools.BitmapUtils
+import io.core.common.util.tools.toastOnUi
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.withContext
 import java.io.File

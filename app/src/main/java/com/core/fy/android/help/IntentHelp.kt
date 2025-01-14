@@ -3,8 +3,8 @@ package com.core.fy.android.help
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import com.core.libraries.Android
-import com.core.libraries.common.util.ext.ui.toast
+import io.core.Android
+import io.core.common.util.ext.ui.toast
 
 @Suppress("unused")
 object IntentHelp {

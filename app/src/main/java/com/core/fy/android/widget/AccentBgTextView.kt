@@ -6,9 +6,9 @@ import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatTextView
 import com.core.fy.android.R
 import com.core.fy.android.help.Selector
-import com.core.libraries.common.util.ext.cool.dpToPx
-import com.core.libraries.common.util.ext.ui.getCompatColor
-import com.core.libraries.common.util.tools.ColorUtils
+import io.core.common.util.ext.cool.dpToPx
+import io.core.common.util.ext.ui.getCompatColor
+import io.core.common.util.tools.ColorUtils
 
 class AccentBgTextView @JvmOverloads constructor(
     context: Context,

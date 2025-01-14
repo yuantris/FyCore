@@ -12,8 +12,8 @@ import com.core.fy.android.help.LifecycleHelp
 import com.core.fy.android.help.config.AppConfig
 import com.core.fy.android.function.read.services.AudioPlayService
 import com.core.fy.android.function.read.services.BaseReadAloudService
-import com.core.libraries.common.util.ext.ui.getPrefBoolean
-import com.core.libraries.common.util.log.LogUtils
+import io.core.common.util.ext.ui.getPrefBoolean
+import io.core.common.util.log.LogUtils
 
 
 /**

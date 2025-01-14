@@ -10,8 +10,8 @@ import androidx.media3.datasource.cache.SimpleCache
 import androidx.media3.exoplayer.DefaultLoadControl
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
-import com.core.libraries.common.util.ext.appCtx
-import com.core.libraries.common.util.ext.cool.GSON
+import io.core.common.util.ext.appCtx
+import io.core.common.util.ext.cool.GSON
 import com.google.gson.reflect.TypeToken
 import java.io.File
 

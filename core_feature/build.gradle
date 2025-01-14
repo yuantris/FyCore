@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace 'com.core.libraries'
+    namespace 'io.core'
     compileSdk 34
 
     defaultConfig {
@@ -55,6 +55,7 @@ dependencies {
     implementation libs.core.ktx
     implementation libs.appcompat
     implementation libs.material
+    implementation(libs.flexbox)
     testImplementation libs.junit
     androidTestImplementation libs.ext.junit
     androidTestImplementation libs.espresso.core
@@ -71,6 +72,7 @@ dependencies {
     implementation libs.kotlin.reflect
 
     compileOnly libs.room.ktx
+    //noinspection KaptUsageInsteadOfKsp
     kapt libs.room.compiler
     annotationProcessor libs.room.compiler
 
@@ -105,8 +107,8 @@ publishing {
         // register 和 create 都类似，这里用 create
         create("lib-base", MavenPublication) {
             // 配置信息，使用: classpath("groupId:artifactId:version") (不能有空格)
-            groupId = "com.core.libraries"
-            artifactId = "fycore"
+            groupId = "io.core"
+            artifactId = "fylibs"
             version = project.version
 
             // 这条要加上，不然不会包含代码文件

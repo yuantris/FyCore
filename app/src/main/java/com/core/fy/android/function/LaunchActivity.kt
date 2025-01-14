@@ -5,7 +5,7 @@ import android.os.Bundle
 import androidx.lifecycle.lifecycleScope
 import com.core.fy.android.MainActivity
 import com.core.fy.android.databinding.ActivityLaunchBinding
-import com.core.libraries.common.base.component.activity.ReflectBindingActivity
+import io.core.common.base.component.activity.ReflectBindingActivity
 import com.gyf.immersionbar.BarHide
 import com.gyf.immersionbar.ImmersionBar
 import kotlinx.coroutines.delay

@@ -8,17 +8,17 @@ import com.core.fy.android.room.VMFactory
 import com.core.fy.android.room.entity.User
 import com.core.fy.android.room.repository.UserRepository
 import com.core.fy.android.viewmodel.UserVM
-import com.core.libraries.common.base.component.activity.ReflectBindingActivity
-import com.core.libraries.common.util.ext.cool.launchAsync
-import com.core.libraries.common.util.ext.cool.launchSync
-import com.core.libraries.common.util.log.logD
-import com.core.libraries.common.util.log.logE
-import com.core.libraries.common.util.log.logI
-import com.core.libraries.common.util.log.logW
-import com.core.libraries.common.util.ext.ui.toast
-import com.core.libraries.common.base.vm.ViewStatus
-import com.core.libraries.common.util.CoreUtil
-import com.core.libraries.common.util.ToastUtil
+import io.core.common.base.component.activity.ReflectBindingActivity
+import io.core.common.util.ext.cool.launchAsync
+import io.core.common.util.ext.cool.launchSync
+import io.core.common.util.log.logD
+import io.core.common.util.log.logE
+import io.core.common.util.log.logI
+import io.core.common.util.log.logW
+import io.core.common.util.ext.ui.toast
+import io.core.common.base.vm.ViewStatus
+import io.core.common.util.CoreUtil
+import io.core.common.util.ToastUtil
 
 class RoomActivity : ReflectBindingActivity<ActivityRoomBinding>() {
 

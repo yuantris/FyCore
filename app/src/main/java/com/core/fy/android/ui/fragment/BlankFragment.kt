@@ -5,11 +5,11 @@ import com.core.fy.android.MainActivity
 import com.core.fy.android.constants.AppConst.timeFormat
 import com.core.fy.android.databinding.FragmentBlankBinding
 import com.core.fy.android.ui.receiver.TimeBatteryReceiver
-import com.core.libraries.common.base.fragment.ReflectBindingFragment
-import com.core.libraries.common.util.log.logD
-import com.core.libraries.common.util.log.logI
-import com.core.libraries.common.util.ext.cool.observeEvent
-import com.core.libraries.engine.livebus.core.Console
+import io.core.common.base.fragment.ReflectBindingFragment
+import io.core.common.util.log.logD
+import io.core.common.util.log.logI
+import io.core.common.util.ext.cool.observeEvent
+import io.core.engine.livebus.core.Console
 import java.util.Date
 
 /**

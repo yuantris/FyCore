@@ -8,8 +8,8 @@ import androidx.room.Ignore
 import androidx.room.Index
 import com.core.fy.android.help.RuleBigDataHelp
 import com.core.fy.android.model.RuleDataInterface
-import com.core.libraries.common.util.ext.cool.GSON
-import com.core.libraries.common.util.ext.cool.fromJsonObject
+import io.core.common.util.ext.cool.GSON
+import io.core.common.util.ext.cool.fromJsonObject
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 

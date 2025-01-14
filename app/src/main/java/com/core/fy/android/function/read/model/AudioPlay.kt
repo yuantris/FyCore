@@ -8,8 +8,8 @@ import com.core.fy.android.constants.Status
 import com.core.fy.android.room.entity.Book
 import com.core.fy.android.room.entity.BookChapter
 import com.core.fy.android.function.read.services.AudioPlayService
-import com.core.libraries.common.helper.coroutine.Coroutine
-import com.core.libraries.common.util.ext.appCtx
+import io.core.common.helper.coroutine.Coroutine
+import io.core.common.util.ext.appCtx
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancelChildren

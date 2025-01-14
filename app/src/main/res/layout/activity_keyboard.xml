@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".function.KeyboardActivity">
 
-    <com.core.libraries.widget.layout.TitleBar
+    <io.core.widget.layout.TitleBar
         android:id="@+id/title_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

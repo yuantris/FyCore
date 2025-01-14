@@ -32,9 +32,9 @@ import com.core.fy.android.function.read.page.provider.TextPageFactory
 import com.core.fy.android.help.config.AppConfig
 import com.core.fy.android.help.config.ReadBookConfig
 import com.core.fy.android.help.throttle
-import com.core.libraries.common.helper.canvasrecorder.pools.BitmapPool
-import com.core.libraries.common.util.ext.ui.activity
-import com.core.libraries.common.util.ext.ui.invisible
+import io.core.common.helper.canvasrecorder.pools.BitmapPool
+import io.core.common.util.ext.ui.activity
+import io.core.common.util.ext.ui.invisible
 import java.text.BreakIterator
 import java.util.Locale
 import kotlin.math.abs

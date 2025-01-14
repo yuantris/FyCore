@@ -25,12 +25,12 @@ import com.core.fy.android.databinding.PopupActionMenuBinding
 import com.core.fy.android.help.config.AppConfig
 import com.core.fy.android.widget.rv.ItemViewHolder
 import com.core.fy.android.widget.rv.RecyclerAdapter
-import com.core.libraries.common.util.ext.cool.isAbsUrl
-import com.core.libraries.common.util.ext.ui.getPrefBoolean
-import com.core.libraries.common.util.ext.ui.gone
-import com.core.libraries.common.util.ext.ui.visible
-import com.core.libraries.common.util.log.printOnDebug
-import com.core.libraries.common.util.tools.toastOnUi
+import io.core.common.util.ext.cool.isAbsUrl
+import io.core.common.util.ext.ui.getPrefBoolean
+import io.core.common.util.ext.ui.gone
+import io.core.common.util.ext.ui.visible
+import io.core.common.util.log.printOnDebug
+import io.core.common.util.tools.toastOnUi
 
 @SuppressLint("RestrictedApi")
 class TextActionMenu(private val context: Context, private val callBack: CallBack) :

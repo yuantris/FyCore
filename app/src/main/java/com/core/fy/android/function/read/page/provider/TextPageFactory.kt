@@ -5,7 +5,7 @@ import com.core.fy.android.function.read.model.ReadBook
 import com.core.fy.android.function.read.page.api.DataSource
 import com.core.fy.android.function.read.page.api.PageFactory
 import com.core.fy.android.function.read.page.entities.TextPage
-import com.core.libraries.Android
+import io.core.Android
 
 
 class TextPageFactory(dataSource: DataSource) : PageFactory<TextPage>(dataSource) {

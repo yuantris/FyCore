@@ -10,13 +10,13 @@ import com.core.fy.android.function.read.model.ReadAloud
 import com.core.fy.android.function.read.model.ReadBook
 import com.core.fy.android.help.MediaHelp
 import com.core.fy.android.help.config.AppConfig
-import com.core.libraries.common.helper.coroutine.Coroutine
-import com.core.libraries.common.util.ext.cool.GSON
-import com.core.libraries.common.util.ext.cool.fromJsonObject
-import com.core.libraries.common.util.ext.ui.servicePendingIntent
-import com.core.libraries.common.util.log.AppLog
-import com.core.libraries.common.util.log.LogUtils
-import com.core.libraries.common.util.tools.toastOnUi
+import io.core.common.helper.coroutine.Coroutine
+import io.core.common.util.ext.cool.GSON
+import io.core.common.util.ext.cool.fromJsonObject
+import io.core.common.util.ext.ui.servicePendingIntent
+import io.core.common.util.log.AppLog
+import io.core.common.util.log.LogUtils
+import io.core.common.util.tools.toastOnUi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.ensureActive
 

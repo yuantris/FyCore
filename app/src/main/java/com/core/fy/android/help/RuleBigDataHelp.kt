@@ -1,9 +1,9 @@
 package com.core.fy.android.help
 
-import com.core.libraries.Android
-import com.core.libraries.common.util.ext.cool.getFile
-import com.core.libraries.common.util.ext.ui.externalFiles
-import com.core.libraries.common.util.tools.FileUtils
+import io.core.Android
+import io.core.common.util.ext.cool.getFile
+import io.core.common.util.ext.ui.externalFiles
+import io.core.common.util.tools.FileUtils
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.withContext
 

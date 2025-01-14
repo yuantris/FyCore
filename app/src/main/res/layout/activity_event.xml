@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <com.core.libraries.widget.layout.TitleBar
+    <io.core.widget.layout.TitleBar
         android:id="@+id/title_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
@@ -21,7 +21,7 @@
         android:layout_height="wrap_content"
         android:text="FlowEventBus" />
 
-    <com.core.libraries.widget.layout.EffectFrameLayout
+    <io.core.widget.layout.EffectFrameLayout
         android:id="@+id/iv_img"
         android:layout_width="@dimen/dp_100"
         android:layout_height="@dimen/dp_100"
@@ -31,7 +31,7 @@
         android:clickable="true"
         android:focusable="true">
 
-    </com.core.libraries.widget.layout.EffectFrameLayout>
+    </io.core.widget.layout.EffectFrameLayout>
 
 
 </LinearLayout>

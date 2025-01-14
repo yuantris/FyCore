@@ -13,8 +13,8 @@ import androidx.annotation.ColorInt
 import androidx.appcompat.widget.AppCompatTextView
 import com.core.fy.android.help.CanvasRecorderFactory
 import com.core.fy.android.help.config.AppConfig
-import com.core.libraries.common.helper.canvasrecorder.recordIfNeededThenDraw
-import com.core.libraries.common.util.ext.cool.dpToPx
+import io.core.common.helper.canvasrecorder.recordIfNeededThenDraw
+import io.core.common.util.ext.cool.dpToPx
 
 class BatteryView @JvmOverloads constructor(
     context: Context,

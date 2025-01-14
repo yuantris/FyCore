@@ -7,8 +7,8 @@ import android.view.animation.OvershootInterpolator
 import android.widget.TextView
 import androidx.annotation.StringRes
 import com.core.fy.android.R
-import com.core.libraries.common.base.action.AnimAction
-import com.core.libraries.common.base.dialog.BaseDialog
+import io.core.common.base.action.AnimAction
+import io.core.common.base.dialog.BaseDialog
 
 
 class WaitDialog {

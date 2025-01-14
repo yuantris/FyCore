@@ -26,20 +26,20 @@ import com.core.fy.android.help.config.ReadBookConfig
 import com.core.fy.android.help.getPrimaryTextColor
 import com.core.fy.android.util.loadAnimation
 import com.core.fy.android.widget.seekbar.SeekBarChangeListener
-import com.core.libraries.common.util.ext.cool.dpToPx
-import com.core.libraries.common.util.ext.ui.activity
-import com.core.libraries.common.util.ext.ui.applyNavigationBarPadding
-import com.core.libraries.common.util.ext.ui.getCompatColor
-import com.core.libraries.common.util.ext.ui.getPrefBoolean
-import com.core.libraries.common.util.ext.ui.gone
-import com.core.libraries.common.util.ext.ui.invisible
-import com.core.libraries.common.util.ext.ui.onClick
-import com.core.libraries.common.util.ext.ui.onLongClick
-import com.core.libraries.common.util.ext.ui.putPrefBoolean
-import com.core.libraries.common.util.ext.ui.visible
-import com.core.libraries.common.util.tools.ColorUtils
-import com.core.libraries.common.util.view.ConstraintModify
-import com.core.libraries.common.util.view.modifyBegin
+import io.core.common.util.ext.cool.dpToPx
+import io.core.common.util.ext.ui.activity
+import io.core.common.util.ext.ui.applyNavigationBarPadding
+import io.core.common.util.ext.ui.getCompatColor
+import io.core.common.util.ext.ui.getPrefBoolean
+import io.core.common.util.ext.ui.gone
+import io.core.common.util.ext.ui.invisible
+import io.core.common.util.ext.ui.onClick
+import io.core.common.util.ext.ui.onLongClick
+import io.core.common.util.ext.ui.putPrefBoolean
+import io.core.common.util.ext.ui.visible
+import io.core.common.util.tools.ColorUtils
+import io.core.common.util.view.ConstraintModify
+import io.core.common.util.view.modifyBegin
 
 /**
  * 阅读界面菜单

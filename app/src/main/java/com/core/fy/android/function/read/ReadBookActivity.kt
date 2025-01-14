@@ -22,18 +22,18 @@ import com.core.fy.android.function.read.page.provider.TextPageFactory
 import com.core.fy.android.help.config.AppConfig
 import com.core.fy.android.help.config.ReadBookConfig
 import com.core.fy.android.room.entity.Book
-import com.core.libraries.common.base.component.activity.ReflectBindingActivity
-import com.core.libraries.common.util.log.logD
-import com.core.libraries.common.util.ext.ui.MainLooper.handler
-import com.core.libraries.common.util.ext.ui.getCompatColor
-import com.core.libraries.common.util.ext.ui.getPrefString
-import com.core.libraries.common.util.ext.ui.invisible
-import com.core.libraries.common.util.ext.ui.keepScreenOn
-import com.core.libraries.common.util.ext.ui.navigationBarGravity
-import com.core.libraries.common.util.ext.ui.sysScreenOffTime
-import com.core.libraries.common.util.ext.ui.toast
-import com.core.libraries.common.util.ext.ui.visible
-import com.core.libraries.common.util.tools.toastOnUi
+import io.core.common.base.component.activity.ReflectBindingActivity
+import io.core.common.util.log.logD
+import io.core.common.util.ext.ui.MainLooper.handler
+import io.core.common.util.ext.ui.getCompatColor
+import io.core.common.util.ext.ui.getPrefString
+import io.core.common.util.ext.ui.invisible
+import io.core.common.util.ext.ui.keepScreenOn
+import io.core.common.util.ext.ui.navigationBarGravity
+import io.core.common.util.ext.ui.sysScreenOffTime
+import io.core.common.util.ext.ui.toast
+import io.core.common.util.ext.ui.visible
+import io.core.common.util.tools.toastOnUi
 import kotlinx.coroutines.launch
 
 /**

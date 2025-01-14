@@ -3,7 +3,7 @@ package com.core.fy.android.room.repository
 import com.core.fy.android.room.AppDatabase
 import com.core.fy.android.room.dao.FunctionDao
 import com.core.fy.android.room.entity.Function
-import com.core.libraries.common.base.room.RoomRepository
+import io.core.common.base.room.RoomRepository
 
 /**
 # ██████████

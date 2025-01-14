@@ -6,11 +6,11 @@
     android:layoutAnimation="@anim/layout_fall_down"
     tools:layoutAnimation="@null">
 
-    <com.core.libraries.widget.layout.TitleBar
+    <io.core.widget.layout.TitleBar
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <com.core.libraries.widget.view.ClickableTextView
+    <io.core.widget.view.ClickableTextView
         android:id="@+id/ct_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

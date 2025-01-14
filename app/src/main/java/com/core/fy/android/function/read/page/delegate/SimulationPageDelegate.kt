@@ -15,7 +15,7 @@ import android.view.MotionEvent
 import com.core.fy.android.function.read.page.ReadView
 import com.core.fy.android.function.read.page.entities.PageDirection
 import com.core.fy.android.help.config.ReadBookConfig
-import com.core.libraries.common.util.ext.ui.screenshot
+import io.core.common.util.ext.ui.screenshot
 import kotlin.math.abs
 import kotlin.math.atan2
 import kotlin.math.cos
