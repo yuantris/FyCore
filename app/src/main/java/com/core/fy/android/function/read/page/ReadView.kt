@@ -33,7 +33,6 @@ import com.core.fy.android.help.config.AppConfig
 import com.core.fy.android.help.config.ReadBookConfig
 import com.core.fy.android.help.throttle
 import com.core.libraries.common.helper.canvasrecorder.pools.BitmapPool
-import com.core.libraries.common.util.ext.tool.logD
 import com.core.libraries.common.util.ext.ui.activity
 import com.core.libraries.common.util.ext.ui.invisible
 import java.text.BreakIterator
@@ -108,7 +107,6 @@ class ReadView(context: Context, attrs: AttributeSet) :
     val isAutoPage get() = autoPager.isRunning
 
     init {
-        "走了吗".logD()
         addView(nextPage)
         addView(curPage)
         addView(prevPage)

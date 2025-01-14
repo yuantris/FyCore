@@ -159,7 +159,7 @@ abstract class PageDelegate(protected val readView: ReadView) {
         val hasPrev = readView.pageFactory.hasPrev()
         if (!hasPrev) {
             if (!snackBar.isShown) {
-                //snackBar.setText(R.string.no_prev_page)
+                snackBar.setText(R.string.no_prev_page)
                 snackBar.show()
             }
         }
@@ -174,7 +174,7 @@ abstract class PageDelegate(protected val readView: ReadView) {
         if (!hasNext) {
             readView.callBack.autoPageStop()
             if (!snackBar.isShown) {
-                //snackBar.setText(R.string.no_next_page)
+                snackBar.setText(R.string.no_next_page)
                 snackBar.show()
             }
         }

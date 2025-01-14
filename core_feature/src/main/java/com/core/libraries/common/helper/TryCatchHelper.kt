@@ -1,6 +1,6 @@
 package com.core.libraries.common.helper
 
-import com.core.libraries.common.util.ext.tool.TAG
+import com.core.libraries.common.util.log.TAG
 import com.core.libraries.common.util.log.LogUtils
 import java.util.function.Supplier
 import kotlin.coroutines.CoroutineContext

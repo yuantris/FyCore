@@ -4,7 +4,7 @@ import android.app.Activity
 import android.app.Application
 import android.app.Service
 import android.os.Bundle
-import com.core.libraries.common.base.BaseService
+import com.core.libraries.common.base.component.service.BaseService
 import com.core.libraries.common.util.log.LogUtils
 import java.lang.ref.WeakReference
 

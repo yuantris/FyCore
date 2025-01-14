@@ -1,6 +1,6 @@
 package com.core.libraries.common.base.room
 
-import com.core.libraries.common.util.ext.tool.TAG
+import com.core.libraries.common.util.log.TAG
 import com.core.libraries.common.util.CoreUtil
 import com.core.libraries.common.util.log.LogUtils
 

@@ -1,9 +1,8 @@
 package com.core.fy.android.help.config
 
 import com.core.libraries.common.util.ext.appCtx
-import com.core.libraries.common.util.ext.tool.GSON
-import com.core.libraries.common.util.ext.tool.fromJsonArray
-import com.core.libraries.common.util.ext.tool.fromJsonObject
+import com.core.libraries.common.util.ext.cool.GSON
+import com.core.libraries.common.util.ext.cool.fromJsonArray
 import java.io.File
 
 object DefaultData {

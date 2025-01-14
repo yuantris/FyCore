@@ -1,0 +1,37 @@
+package com.core.fy.android.ui.receiver
+
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
+import android.os.BatteryManager
+import com.core.libraries.common.base.event.channel.sendEvent
+import com.core.libraries.common.util.ext.cool.postEvent
+
+
+class TimeBatteryReceiver : BroadcastReceiver() {
+
+    val TIME_CHANGED = "timeChanged"
+    val BATTERY_CHANGED = "batteryChanged"
+
+    val filter = IntentFilter().apply {
+        addAction(Intent.ACTION_TIME_TICK)
+        addAction(Intent.ACTION_BATTERY_CHANGED)
+    }
+
+    override fun onReceive(context: Context, intent: Intent) {
+        when (intent.action) {
+            Intent.ACTION_TIME_TICK -> {
+                sendEvent("", TIME_CHANGED)
+                postEvent(TIME_CHANGED, "")
+            }
+
+            Intent.ACTION_BATTERY_CHANGED -> {
+                val level = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1)
+                sendEvent(level, BATTERY_CHANGED)
+                postEvent(BATTERY_CHANGED, level)
+            }
+        }
+    }
+
+}

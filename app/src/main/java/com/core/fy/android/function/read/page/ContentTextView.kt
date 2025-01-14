@@ -2,11 +2,11 @@ package com.core.fy.android.function.read.page
 
 import android.content.Context
 import android.graphics.Canvas
-import android.graphics.Color
 import android.graphics.Paint
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
+import com.core.fy.android.R
 import com.core.fy.android.function.read.model.ReadBook
 import com.core.fy.android.function.read.page.delegate.PageDelegate
 import com.core.fy.android.function.read.page.entities.TextLine
@@ -21,8 +21,7 @@ import com.core.fy.android.function.read.page.provider.ChapterProvider
 import com.core.fy.android.function.read.page.provider.TextPageFactory
 import com.core.fy.android.help.config.AppConfig
 import com.core.fy.android.room.entity.Bookmark
-import com.core.libraries.common.util.ext.tool.dpToPx
-import com.core.libraries.common.util.ext.tool.logD
+import com.core.libraries.common.util.ext.cool.dpToPx
 import com.core.libraries.common.util.ext.ui.activity
 import com.core.libraries.common.util.tools.toastOnUi
 import java.util.concurrent.Executors
@@ -36,7 +35,7 @@ class ContentTextView(context: Context, attrs: AttributeSet?) : View(context, at
     var selectAble = AppConfig.textSelectAble
     val selectedPaint by lazy {
         Paint().apply {
-            color = Color.parseColor("#FF0000")
+            color = context.getColor(R.color.btn_bg_press_2)
             style = Paint.Style.FILL
         }
     }
@@ -67,7 +66,6 @@ class ContentTextView(context: Context, attrs: AttributeSet?) : View(context, at
     }
 
     init {
-        "ContentTextView走了".logD()
         callBack = activity as CallBack
     }
 
@@ -97,8 +95,7 @@ class ContentTextView(context: Context, attrs: AttributeSet?) : View(context, at
         if (longScreenshot) {
             canvas.translate(0f, scrollY.toFloat())
         }
-        // TODO: 之后处理
-        // check(!visibleRect.isEmpty) { "visibleRect 为空" }
+        check(!visibleRect.isEmpty) { "visibleRect 为空" }
         canvas.clipRect(visibleRect)
         drawPage(canvas)
     }

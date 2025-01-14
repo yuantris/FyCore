@@ -11,9 +11,9 @@ import com.blankj.utilcode.util.ActivityUtils
 import com.blankj.utilcode.util.TimeUtils
 import com.blankj.utilcode.util.ToastUtils
 import com.core.libraries.Android
-import com.core.libraries.common.util.ext.tool.logD
-import com.core.libraries.common.util.ext.tool.logE
-import com.core.libraries.common.util.ext.tool.logI
+import com.core.libraries.common.util.log.logD
+import com.core.libraries.common.util.log.logE
+import com.core.libraries.common.util.log.logI
 import com.core.libraries.common.util.ext.verify
 import com.core.libraries.constant.DateFormatPatterns
 import com.core.libraries.constant.FileType

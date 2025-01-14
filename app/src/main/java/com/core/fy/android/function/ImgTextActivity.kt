@@ -3,7 +3,7 @@ package com.core.fy.android.function
 import android.os.Bundle
 import com.core.fy.android.R
 import com.core.fy.android.databinding.ActivityImgTextBinding
-import com.core.libraries.common.base.activity.ReflectBindingActivity
+import com.core.libraries.common.base.component.activity.ReflectBindingActivity
 import com.core.libraries.common.util.ext.ui.toast
 
 /**

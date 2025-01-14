@@ -29,7 +29,7 @@ import com.core.fy.android.function.read.receiver.MediaButtonReceiver
 import com.core.fy.android.help.ExoPlayerHelper
 import com.core.fy.android.help.MediaHelp
 import com.core.fy.android.help.config.AppConfig
-import com.core.libraries.common.base.BaseService
+import com.core.libraries.common.base.component.service.BaseService
 import com.core.libraries.common.helper.coroutine.Coroutine
 import com.core.libraries.common.helper.glide.ImageLoader
 import com.core.libraries.common.util.ext.appCtx

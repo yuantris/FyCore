@@ -14,14 +14,14 @@ import androidx.appcompat.widget.AppCompatTextView
 import com.core.fy.android.help.CanvasRecorderFactory
 import com.core.fy.android.help.config.AppConfig
 import com.core.libraries.common.helper.canvasrecorder.recordIfNeededThenDraw
-import com.core.libraries.common.util.ext.tool.dpToPx
+import com.core.libraries.common.util.ext.cool.dpToPx
 
 class BatteryView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null
 ) : AppCompatTextView(context, attrs) {
     private val batteryTypeface by lazy {
-        Typeface.createFromAsset(context.assets, "font/number.ttf")
+        Typeface.DEFAULT
     }
     private val batteryPaint = Paint()
     private val outFrame = Rect()

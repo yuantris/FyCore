@@ -7,6 +7,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.isActive
 import java.util.WeakHashMap
 import kotlin.coroutines.CoroutineContext
 
@@ -30,12 +31,14 @@ import kotlin.coroutines.CoroutineContext
 @PublishedApi
 internal open class ChannelScope() : CoroutineScope {
 
-    override val coroutineContext: CoroutineContext = Dispatchers.Main.immediate + SupervisorJob()
-
     // 使用 WeakHashMap 管理 Observer
     companion object {
         private val lifecycleObservers = WeakHashMap<LifecycleOwner, LifecycleEventObserver>()
     }
+
+    private val job = SupervisorJob()
+
+    override val coroutineContext: CoroutineContext = Dispatchers.Main.immediate + job
 
     constructor(
         lifecycleOwner: LifecycleOwner,
@@ -46,9 +49,11 @@ internal open class ChannelScope() : CoroutineScope {
             val observer = object : LifecycleEventObserver {
                 override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
                     if (lifeEvent == event) {
-                        cancel()
-                        lifecycleOwner.lifecycle.removeObserver(this) // 手动移除
-                        lifecycleObservers.remove(lifecycleOwner) // 从 WeakHashMap 中移除
+                        if (job.isActive) {  // 确保协程处于活跃状态
+                            job.cancel()
+                            lifecycleOwner.lifecycle.removeObserver(this)
+                            lifecycleObservers.remove(lifecycleOwner)
+                        }
                     }
                 }
             }

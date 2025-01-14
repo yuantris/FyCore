@@ -25,6 +25,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/title_bar_addition"
             android:layout_width="match_parent"
+            android:visibility="gone"
             android:layout_height="wrap_content">
 
             <TextView

@@ -1,9 +1,8 @@
 package com.core.fy.android
 
 import android.app.Application
-import com.core.fy.android.help.LifecycleHelp
 import com.core.libraries.Android
-import com.core.libraries.common.base.activity.RestartActivity
+import com.core.libraries.common.base.component.activity.RestartActivity
 
 /**
 # ██████████

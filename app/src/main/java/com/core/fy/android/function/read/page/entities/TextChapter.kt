@@ -6,7 +6,7 @@ import com.core.fy.android.function.read.page.provider.TextChapterLayout
 import com.core.fy.android.help.BookContent
 import com.core.fy.android.room.entity.Book
 import com.core.fy.android.room.entity.BookChapter
-import com.core.libraries.common.util.ext.tool.fastBinarySearchBy
+import com.core.libraries.common.util.ext.cool.fastBinarySearchBy
 import kotlinx.coroutines.CoroutineScope
 import kotlin.math.abs
 import kotlin.math.min

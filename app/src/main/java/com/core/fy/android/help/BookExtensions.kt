@@ -6,16 +6,8 @@ import android.net.Uri
 import android.os.Build
 import androidx.annotation.RequiresApi
 import com.core.fy.android.constants.BookType
-import com.core.fy.android.help.config.AppConfig
 import com.core.fy.android.room.entity.BaseBook
 import com.core.fy.android.room.entity.Book
-import com.core.libraries.Android
-import com.core.libraries.common.util.ext.tool.FileDoc
-import com.core.libraries.common.util.ext.tool.inputStream
-import com.core.libraries.common.util.ext.tool.isUri
-import com.core.libraries.common.util.log.AppLog
-import com.core.libraries.common.util.tools.toastOnUi
-import java.io.File
 import java.time.LocalDate
 import java.time.Period.between
 import java.util.concurrent.ConcurrentHashMap

@@ -8,7 +8,6 @@ import android.os.Build
 import android.text.Layout
 import android.text.StaticLayout
 import android.text.TextPaint
-import com.core.fy.android.constants.AppPattern
 import com.core.fy.android.function.read.model.ImageProvider
 import com.core.fy.android.function.read.model.ReadBook
 import com.core.fy.android.function.read.page.entities.TextChapter
@@ -24,12 +23,11 @@ import com.core.fy.android.help.textHeight
 import com.core.fy.android.room.entity.Book
 import com.core.fy.android.room.entity.BookChapter
 import com.core.libraries.common.util.ext.appCtx
-import com.core.libraries.common.util.ext.tool.dpToPx
-import com.core.libraries.common.util.ext.tool.fastSum
-import com.core.libraries.common.util.ext.tool.isContentScheme
-import com.core.libraries.common.util.ext.tool.logD
-import com.core.libraries.common.util.ext.tool.spToPx
-import com.core.libraries.common.util.ext.tool.splitNotBlank
+import com.core.libraries.common.util.ext.cool.dpToPx
+import com.core.libraries.common.util.ext.cool.fastSum
+import com.core.libraries.common.util.ext.cool.isContentScheme
+import com.core.libraries.common.util.log.logD
+import com.core.libraries.common.util.ext.cool.spToPx
 import com.core.libraries.common.util.ext.ui.isPad
 import com.core.libraries.common.util.tools.RealPathUtil
 import kotlinx.coroutines.CoroutineScope
@@ -679,17 +677,17 @@ object ChapterProvider {
      * 更新样式
      */
     fun upStyle() {
-        // typeface = getTypeface(ReadBookConfig.textFont)
-//        getPaints(typeface).let {
-//            titlePaint = it.first
-//            contentPaint = it.second
-//        }
+         typeface = getTypeface(ReadBookConfig.textFont)
+        getPaints(typeface).let {
+            titlePaint = it.first
+            contentPaint = it.second
+        }
         //间距
-        lineSpacingExtra = 10f
-        paragraphSpacing = 10
-        titleTopSpacing = 10.dpToPx()
-        titleBottomSpacing = 10.dpToPx()
-        val bodyIndent = "ReadBookConfig.paragraphIndent"
+        lineSpacingExtra = ReadBookConfig.lineSpacingExtra / 10f
+        paragraphSpacing = ReadBookConfig.paragraphSpacing
+        titleTopSpacing = ReadBookConfig.titleTopSpacing.dpToPx()
+        titleBottomSpacing = ReadBookConfig.titleBottomSpacing.dpToPx()
+        val bodyIndent = ReadBookConfig.paragraphIndent
         var indentWidth = StaticLayout.getDesiredWidth(bodyIndent, contentPaint)
         if (Build.VERSION.SDK_INT >= 35) {
             indentWidth += contentPaint.letterSpacing * contentPaint.textSize

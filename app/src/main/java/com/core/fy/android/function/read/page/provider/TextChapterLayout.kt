@@ -7,7 +7,6 @@ import android.text.StaticLayout
 import android.text.TextPaint
 import com.core.fy.android.constants.AppPattern
 import com.core.fy.android.function.read.model.ImageProvider
-import com.core.fy.android.function.read.model.ReadBook
 import com.core.fy.android.function.read.page.entities.TextChapter
 import com.core.fy.android.function.read.page.entities.TextLine
 import com.core.fy.android.function.read.page.entities.TextPage
@@ -19,9 +18,9 @@ import com.core.fy.android.help.config.AppConfig
 import com.core.fy.android.help.config.ReadBookConfig
 import com.core.fy.android.room.entity.Book
 import com.core.fy.android.room.entity.BookChapter
-import com.core.libraries.common.util.ext.tool.dpToPx
-import com.core.libraries.common.util.ext.tool.fastSum
-import com.core.libraries.common.util.ext.tool.splitNotBlank
+import com.core.libraries.common.util.ext.cool.dpToPx
+import com.core.libraries.common.util.ext.cool.fastSum
+import com.core.libraries.common.util.ext.cool.splitNotBlank
 import com.core.libraries.common.helper.coroutine.Coroutine
 import com.core.libraries.common.util.log.AppLog
 import kotlinx.coroutines.CancellationException

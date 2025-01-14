@@ -9,9 +9,9 @@ import androidx.lifecycle.Lifecycle
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestBuilder
 import com.core.libraries.common.util.ext.appCtx
-import com.core.libraries.common.util.ext.tool.isAbsUrl
-import com.core.libraries.common.util.ext.tool.isContentScheme
-import com.core.libraries.common.util.ext.tool.isDataUrl
+import com.core.libraries.common.util.ext.cool.isAbsUrl
+import com.core.libraries.common.util.ext.cool.isContentScheme
+import com.core.libraries.common.util.ext.cool.isDataUrl
 import java.io.File
 
 //https://bumptech.github.io/glide/doc/generatedapi.html

@@ -13,21 +13,17 @@ import androidx.room.TypeConverters
 import com.core.fy.android.constants.AppPattern
 import com.core.fy.android.constants.BookType
 import com.core.fy.android.constants.PageAnim
-import com.core.fy.android.function.read.model.ReadBook
-import com.core.fy.android.help.config.AppConfig
 import com.core.fy.android.help.config.ReadBookConfig
-import com.core.fy.android.help.isEpub
 import com.core.fy.android.help.isImage
 import com.core.fy.android.help.isPdf
 import com.core.fy.android.help.simulatedTotalChapterNum
-import com.core.libraries.common.util.ext.tool.GSON
-import com.core.libraries.common.util.ext.tool.fromJsonObject
+import com.core.libraries.common.util.ext.cool.GSON
+import com.core.libraries.common.util.ext.cool.fromJsonObject
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 import java.nio.charset.Charset
 import java.time.LocalDate
 import kotlin.math.max
-import kotlin.math.min
 
 @Parcelize
 @TypeConverters(Book.Converters::class)

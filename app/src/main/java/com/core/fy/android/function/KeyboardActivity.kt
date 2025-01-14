@@ -4,9 +4,9 @@ import android.os.Bundle
 import android.util.Log
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.core.fy.android.databinding.ActivityKeyboardBinding
-import com.core.libraries.common.base.activity.BaseInputActivity
-import com.core.libraries.common.util.ext.tool.logD
-import com.core.libraries.common.util.ext.tool.logV
+import com.core.libraries.common.base.component.activity.BaseInputActivity
+import com.core.libraries.common.util.log.logD
+import com.core.libraries.common.util.log.logV
 import com.core.libraries.common.helper.valid.ValidHelper
 
 /**

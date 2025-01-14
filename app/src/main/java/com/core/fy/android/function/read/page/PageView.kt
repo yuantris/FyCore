@@ -8,6 +8,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.isGone
 import androidx.core.view.isInvisible
 import com.core.fy.android.R
+import com.core.fy.android.constants.AppConst.timeFormat
 import com.core.fy.android.databinding.ViewBookPageBinding
 import com.core.fy.android.function.read.ReadBookActivity
 import com.core.fy.android.function.read.model.ReadBook
@@ -18,12 +19,11 @@ import com.core.fy.android.function.read.page.provider.ChapterProvider
 import com.core.fy.android.help.config.ReadBookConfig
 import com.core.fy.android.help.config.ReadTipConfig
 import com.core.fy.android.room.entity.Bookmark
-import com.core.libraries.common.util.ext.tool.dpToPx
+import com.core.libraries.common.util.ext.cool.dpToPx
 import com.core.libraries.common.util.ext.ui.activity
 import com.core.libraries.common.util.ext.ui.applyStatusBarPadding
 import com.core.libraries.common.util.ext.ui.gone
 import com.core.libraries.common.util.ext.ui.setTextIfNotEqual
-import java.text.SimpleDateFormat
 import java.util.Date
 
 /**
@@ -57,7 +57,7 @@ class PageView(context: Context) : FrameLayout(context) {
 
     init {
         if (!isInEditMode) {
-             upStyle()
+            upStyle()
             binding.vwStatusBar.applyStatusBarPadding()
         }
     }
@@ -230,7 +230,7 @@ class PageView(context: Context) : FrameLayout(context) {
      * 更新背景
      */
     fun upBg() {
-        //binding.vwRoot.backgroundColor = ReadBookConfig.bgMeanColor
+        binding.vwRoot.setBackgroundColor(ReadBookConfig.bgMeanColor)
         binding.vwBg.background = ReadBookConfig.bg
         upBgAlpha()
     }
@@ -260,11 +260,6 @@ class PageView(context: Context) : FrameLayout(context) {
         tvBatteryP?.text = "$battery%"
         upTimeBattery()
     }
-
-    val timeFormat: SimpleDateFormat by lazy {
-        SimpleDateFormat("HH:mm")
-    }
-
     /**
      * 更新电池信息
      */

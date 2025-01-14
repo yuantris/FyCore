@@ -11,8 +11,8 @@ import com.core.fy.android.function.read.model.ReadBook
 import com.core.fy.android.help.MediaHelp
 import com.core.fy.android.help.config.AppConfig
 import com.core.libraries.common.helper.coroutine.Coroutine
-import com.core.libraries.common.util.ext.tool.GSON
-import com.core.libraries.common.util.ext.tool.fromJsonObject
+import com.core.libraries.common.util.ext.cool.GSON
+import com.core.libraries.common.util.ext.cool.fromJsonObject
 import com.core.libraries.common.util.ext.ui.servicePendingIntent
 import com.core.libraries.common.util.log.AppLog
 import com.core.libraries.common.util.log.LogUtils

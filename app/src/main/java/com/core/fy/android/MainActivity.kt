@@ -3,21 +3,20 @@ package com.core.fy.android
 import android.os.Bundle
 import androidx.core.content.ContextCompat
 import androidx.viewpager.widget.ViewPager.OnPageChangeListener
-import com.blankj.utilcode.util.ActivityUtils
 import com.core.fy.android.databinding.ActivityMainBinding
 import com.core.fy.android.databinding.ItemTabBinding
 import com.core.fy.android.interfaces.FragmentPagerAdapter
 import com.core.fy.android.model.Tab
 import com.core.fy.android.ui.fragment.BlankFragment
 import com.core.fy.android.ui.fragment.HomeFragment
-import com.core.libraries.common.base.activity.CrashActivity
-import com.core.libraries.common.base.activity.ReflectBindingActivity
+import com.core.libraries.common.base.component.activity.CrashActivity
+import com.core.libraries.common.base.component.activity.ReflectBindingActivity
 import com.core.libraries.common.util.ext.ui.BarColor
 import com.core.libraries.common.util.ext.ui.hide
 import com.core.libraries.common.util.ext.ui.show
 import com.core.libraries.common.base.fragment.BaseFragment
 import com.core.libraries.common.helper.LifecycleHelp
-import com.core.libraries.common.util.ext.tool.logD
+import com.core.libraries.common.util.log.logD
 import com.drake.brv.BindingAdapter
 import com.drake.brv.utils.grid
 import com.drake.brv.utils.setup
@@ -80,10 +79,6 @@ class MainActivity : ReflectBindingActivity<ActivityMainBinding>(), OnPageChange
     override fun setListener() {
         binding.vpHomePager.addOnPageChangeListener(this)
     }
-
-    override fun observers() {
-    }
-
     override fun getStatusBarColor(): BarColor {
         return BarColor.WHITE
     }

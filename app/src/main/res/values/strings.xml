@@ -23,6 +23,11 @@
     <string name="next_chapter">下一章</string>
     <string name="chapter_list">目录</string>
     <string name="read_aloud">朗读</string>
+    <string name="replace">替换</string>
+    <string name="bookmark">书签</string>
+    <string name="dict">字典</string>
+    <string name="browser">浏览器</string>
+    <string name="share">分享</string>
     <string name="interface_setting">界面</string>
     <string name="setting">设置</string>
 
@@ -33,4 +38,8 @@
 
     <string name="select_end">文本选择结束位置</string>
     <string name="select_start">文本选择开始位置</string>
+
+    <string name="more_menu">更多菜单</string>
+    <string name="no_prev_page">没有上一页</string>
+    <string name="no_next_page">没有下一页</string>
 </resources>

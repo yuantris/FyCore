@@ -2,7 +2,7 @@ package com.core.libraries.common.base.vm
 
 import android.os.NetworkOnMainThreadException
 import androidx.lifecycle.*
-import com.core.libraries.common.util.ext.tool.logE
+import com.core.libraries.common.util.log.logE
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch

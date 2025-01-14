@@ -18,8 +18,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.children
 import com.core.fy.android.R
-import com.core.fy.android.help.config.AppConfig
-import com.core.libraries.common.util.ext.tool.dpToPx
+import com.core.libraries.common.util.ext.cool.dpToPx
 import com.core.libraries.common.util.ext.ui.activity
 import com.core.libraries.common.util.ext.ui.bottomPadding
 import com.core.libraries.common.util.ext.ui.getCompatColor
@@ -156,14 +155,6 @@ class TitleBar @JvmOverloads constructor(
         }
 
         if (!isInEditMode) {
-//            if (fitStatusBar) {
-//                setPadding(paddingLeft, context.statusBarHeight, paddingRight, paddingBottom)
-//            }
-//
-//            if (fitNavigationBar) {
-//                setPadding(paddingLeft, paddingTop, paddingRight, context.navigationBarHeight)
-//            }
-
             if (fitStatusBar || fitNavigationBar) {
                 ViewCompat.setOnApplyWindowInsetsListener(this) { _, windowInsets ->
                     val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -180,7 +171,7 @@ class TitleBar @JvmOverloads constructor(
 //            if (AppConfig.isEInkMode) {
 //                setBackgroundResource(R.drawable.bg_eink_border_bottom)
 //            } else {
-                setBackgroundColor(context.getCompatColor(R.color.common_accent_color))
+                setBackgroundColor(context.getCompatColor(R.color.common_window_background_color))
 //            }
 
             stateListAnimator = null

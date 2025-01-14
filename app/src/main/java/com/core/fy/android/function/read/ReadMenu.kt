@@ -10,7 +10,6 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_NONE
 import android.view.animation.Animation
-import android.view.animation.AnimationUtils.loadAnimation
 import android.widget.FrameLayout
 import android.widget.SeekBar
 import androidx.appcompat.widget.PopupMenu
@@ -25,8 +24,9 @@ import com.core.fy.android.help.config.AppConfig
 import com.core.fy.android.help.config.LocalConfig
 import com.core.fy.android.help.config.ReadBookConfig
 import com.core.fy.android.help.getPrimaryTextColor
+import com.core.fy.android.util.loadAnimation
 import com.core.fy.android.widget.seekbar.SeekBarChangeListener
-import com.core.libraries.common.util.ext.tool.dpToPx
+import com.core.libraries.common.util.ext.cool.dpToPx
 import com.core.libraries.common.util.ext.ui.activity
 import com.core.libraries.common.util.ext.ui.applyNavigationBarPadding
 import com.core.libraries.common.util.ext.ui.getCompatColor
@@ -70,9 +70,9 @@ class ReadMenu @JvmOverloads constructor(
     private var bgColor: Int = if (immersiveMenu) {
         kotlin.runCatching {
             Color.parseColor(ReadBookConfig.durConfig.curBgStr())
-        }.getOrDefault(context.getCompatColor(R.color.blue))
+        }.getOrDefault(context.getCompatColor(R.color.common_window_background_color))
     } else {
-        context.getCompatColor(R.color.blue)
+        context.getCompatColor(R.color.common_window_background_color)
     }
     private var textColor: Int = if (immersiveMenu) {
         ReadBookConfig.durConfig.curTextColor()
@@ -114,20 +114,8 @@ class ReadMenu @JvmOverloads constructor(
 
         @SuppressLint("RtlHardcoded")
         override fun onAnimationEnd(animation: Animation) {
-//            val navigationBarHeight =
-//                if (ReadBookConfig.hideNavigationBar) {
-//                    activity?.navigationBarHeight ?: 0
-//                } else {
-//                    0
-//                }
             binding.run {
                 vwMenuBg.setOnClickListener { runMenuOut() }
-//                root.padding = 0
-//                when (activity?.navigationBarGravity) {
-//                    Gravity.BOTTOM -> root.bottomPadding = navigationBarHeight
-//                    Gravity.LEFT -> root.leftPadding = navigationBarHeight
-//                    Gravity.RIGHT -> root.rightPadding = navigationBarHeight
-//                }
             }
             callBack.upSystemUiVisibility()
             if (!LocalConfig.readMenuHelpVersionIsLast) {
@@ -220,9 +208,9 @@ class ReadMenu @JvmOverloads constructor(
             seekBrightness.progress = AppConfig.readBrightness
         }
         if (AppConfig.showReadTitleBarAddition) {
-            titleBarAddition.visible()
+            //titleBarAddition.visible()
         } else {
-            titleBarAddition.gone()
+            //titleBarAddition.gone()
         }
         upBrightnessVwPos()
         /**
@@ -326,6 +314,9 @@ class ReadMenu @JvmOverloads constructor(
 
     private fun bindEvent() = binding.run {
         vwMenuBg.setOnClickListener { runMenuOut() }
+        titleBar.setNavigationOnClickListener {
+            activity?.finish()
+        }
         titleBar.toolbar.setOnClickListener {
             callBack.openBookInfoActivity()
         }
@@ -393,7 +384,7 @@ class ReadMenu @JvmOverloads constructor(
 
         })
         vwBrightnessPosAdjust.setOnClickListener {
-            //AppConfig.brightnessVwPos = !AppConfig.brightnessVwPos
+            AppConfig.brightnessVwPos = !AppConfig.brightnessVwPos
             upBrightnessVwPos()
         }
         //阅读进度

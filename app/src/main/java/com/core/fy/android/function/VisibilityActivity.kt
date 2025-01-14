@@ -3,9 +3,9 @@ package com.core.fy.android.function
 import android.os.Bundle
 import androidx.core.view.isVisible
 import com.core.fy.android.databinding.ActivityVisibilityBinding
-import com.core.libraries.common.base.activity.ReflectBindingActivity
+import com.core.libraries.common.base.component.activity.ReflectBindingActivity
 import com.core.libraries.common.util.ext.ui.hide
-import com.core.libraries.common.util.ext.tool.launchSync
+import com.core.libraries.common.util.ext.cool.launchSync
 import com.core.libraries.common.util.ext.ui.onVisibilityChange
 import com.core.libraries.common.util.ext.ui.setDebouncedClickListener
 import com.core.libraries.common.util.ext.ui.setVisible

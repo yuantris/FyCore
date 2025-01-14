@@ -9,7 +9,7 @@ import android.view.View
 import android.view.WindowManager
 import android.widget.TextView
 import com.core.libraries.R
-import com.core.libraries.common.util.ext.tool.logE
+import com.core.libraries.common.util.log.logE
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job

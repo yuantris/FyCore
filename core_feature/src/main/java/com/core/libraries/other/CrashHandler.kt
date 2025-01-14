@@ -4,8 +4,8 @@ import android.app.*
 import android.content.*
 import android.os.Process
 import com.core.libraries.Android
-import com.core.libraries.common.base.activity.CrashActivity
-import com.core.libraries.common.base.activity.RestartActivity
+import com.core.libraries.common.base.component.activity.CrashActivity
+import com.core.libraries.common.base.component.activity.RestartActivity
 import kotlin.system.exitProcess
 
 class CrashHandler private constructor(private val application: Application) :

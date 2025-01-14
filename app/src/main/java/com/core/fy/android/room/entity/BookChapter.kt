@@ -6,18 +6,10 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Ignore
 import androidx.room.Index
-import com.blankj.utilcode.util.NetworkUtils
-import com.core.fy.android.R
-import com.core.fy.android.constants.AppPattern
 import com.core.fy.android.help.RuleBigDataHelp
-import com.core.fy.android.help.config.AppConfig
 import com.core.fy.android.model.RuleDataInterface
-import com.core.libraries.common.util.ext.appCtx
-import com.core.libraries.common.util.ext.tool.GSON
-import com.core.libraries.common.util.ext.tool.fromJsonObject
-import com.core.libraries.common.util.log.AppLog
-import com.core.libraries.common.util.tools.toastOnUi
-import kotlinx.coroutines.CancellationException
+import com.core.libraries.common.util.ext.cool.GSON
+import com.core.libraries.common.util.ext.cool.fromJsonObject
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 

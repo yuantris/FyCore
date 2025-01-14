@@ -6,7 +6,7 @@ import androidx.lifecycle.lifecycleScope
 import com.core.fy.android.R
 import com.core.fy.android.databinding.ActivityDialogBinding
 import com.core.fy.android.ui.WaitDialog
-import com.core.libraries.common.base.activity.ReflectBindingActivity
+import com.core.libraries.common.base.component.activity.ReflectBindingActivity
 import com.core.libraries.common.util.ToastUtil
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch

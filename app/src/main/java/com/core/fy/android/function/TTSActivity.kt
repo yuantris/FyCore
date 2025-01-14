@@ -9,8 +9,8 @@ import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
 import android.util.Log
 import com.core.fy.android.databinding.ActivityTtsBinding
-import com.core.libraries.common.base.activity.ReflectBindingActivity
-import com.core.libraries.common.util.ext.tool.logE
+import com.core.libraries.common.base.component.activity.ReflectBindingActivity
+import com.core.libraries.common.util.log.logE
 import java.util.Locale
 
 /**

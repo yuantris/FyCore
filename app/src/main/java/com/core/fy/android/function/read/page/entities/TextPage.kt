@@ -18,9 +18,9 @@ import com.core.fy.android.help.CanvasRecorderFactory
 import com.core.fy.android.help.PaintPool
 import com.core.fy.android.help.config.AppConfig
 import com.core.fy.android.help.config.ReadBookConfig
-import com.core.libraries.Android
-import com.core.libraries.common.util.ext.tool.dpToPx
 import com.core.libraries.common.helper.canvasrecorder.recordIfNeeded
+import com.core.libraries.common.util.ext.appCtx
+import com.core.libraries.common.util.ext.cool.dpToPx
 import java.text.DecimalFormat
 import kotlin.math.min
 
@@ -31,8 +31,8 @@ import kotlin.math.min
 @Suppress("unused", "MemberVisibilityCanBePrivate")
 data class TextPage(
     var index: Int = 0,
-    var text: String = Android.context.getString(R.string.data_loading),
-    var title: String = Android.context.getString(R.string.data_loading),
+    var text: String = appCtx.getString(R.string.data_loading),
+    var title: String = appCtx.getString(R.string.data_loading),
     private val textLines: ArrayList<TextLine> = arrayListOf(),
     var chapterSize: Int = 0,
     var chapterIndex: Int = 0,

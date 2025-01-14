@@ -3,7 +3,6 @@ package com.core.libraries.common.util.log
 import android.util.Log
 import com.core.libraries.Android
 import com.core.libraries.BuildConfig
-import com.core.libraries.common.util.ext.tool.TAG
 import com.core.libraries.common.util.tools.toastOnUi
 
 object AppLog {

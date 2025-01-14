@@ -181,4 +181,10 @@ object AppConfig {
             appCtx.putPrefBoolean(PreferKey.showReadTitleAddition, value)
         }
 
+    var contentSelectSpeakMod: Int
+        get() = appCtx.getPrefInt(PreferKey.contentSelectSpeakMod)
+        set(value) {
+            appCtx.putPrefInt(PreferKey.contentSelectSpeakMod, value)
+        }
+
 }

@@ -15,7 +15,7 @@ import android.view.View
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
-import com.core.libraries.common.util.ext.tool.logD
+import com.core.libraries.common.util.log.logD
 import java.util.regex.Pattern
 
 class ClickableTextView @JvmOverloads constructor(
