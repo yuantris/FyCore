@@ -9,6 +9,7 @@ import io.core.common.base.fragment.ReflectBindingFragment
 import io.core.common.util.log.logD
 import io.core.common.util.log.logI
 import io.core.common.util.ext.cool.observeEvent
+import io.core.common.util.ext.ui.onClick
 import io.core.engine.livebus.core.Console
 import java.util.Date
 
@@ -33,6 +34,9 @@ class BlankFragment : ReflectBindingFragment<FragmentBlankBinding, MainActivity>
     override fun initView() {
         super.initView()
         context?.registerReceiver(timeBatteryReceiver, timeBatteryReceiver.filter)
+        binding.time.onClick {
+            throw RuntimeException("ssssssss")
+        }
     }
 
     override fun initData() {

@@ -21,9 +21,9 @@ class App : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        // 设置重启对象Activity
-        RestartActivity.homeActivity = MainActivity::class.java
         Android.initialize(this)
+        // 设置重启对象Activity
+        Android.homeActivity = MainActivity::class.java
         // SoftKeyboardGlobal.install(this, false)
     }
 }

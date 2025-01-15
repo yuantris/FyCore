@@ -20,6 +20,8 @@ import io.core.common.util.log.logD
 import com.drake.brv.BindingAdapter
 import com.drake.brv.utils.grid
 import com.drake.brv.utils.setup
+import io.core.common.base.component.dialog.CrashLogsDialog
+import io.core.common.util.ext.ui.showDialogFragment
 
 class MainActivity : ReflectBindingActivity<ActivityMainBinding>(), OnPageChangeListener {
 
@@ -72,8 +74,6 @@ class MainActivity : ReflectBindingActivity<ActivityMainBinding>(), OnPageChange
 
     override fun onResume() {
         super.onResume()
-        val existActivity = LifecycleHelp.isExistActivity(CrashActivity::class.java)
-        "Crash 是否销毁 $existActivity".logD()
     }
 
     override fun setListener() {

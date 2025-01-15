@@ -1,12 +1,11 @@
 [versions]
 # 定义 FyCore 库的发布版本与依赖来源
-fycore = "0.0.6"
+fycore = "0.0.7"
 local = "local"
 jitpack = "jitpack"
 package = "package"
 # --------- # --------- #
 android-gradle = "7.3.1"
-zy-gradle-plugin = "1.6.03"
 kotlin-version = "1.7.20"
 
 appcompat = "1.6.1"
@@ -37,7 +36,6 @@ shapedrawable = "3.3"
 [libraries]
 # 项目build.gradle 所需依赖信息
 gradle = { module = "com.android.tools.build:gradle", version.ref = "android-gradle" }
-zy-gradle-plugin = { module = "com.zy.sdk.res.guard:gradle-plugin", version.ref = "zy-gradle-plugin" }
 kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin-version" }
 # 线上仓库
 fycore-git-package = { module = "io.core:fylibs", version.ref = "fycore" }

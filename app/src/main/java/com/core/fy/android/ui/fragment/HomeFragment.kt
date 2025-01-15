@@ -33,6 +33,7 @@ import com.drake.brv.listener.DefaultItemTouchCallback
 import com.drake.brv.utils.divider
 import com.drake.brv.utils.grid
 import com.drake.brv.utils.setup
+import io.core.common.util.log.logV
 
 /**
 # ██████████
@@ -123,6 +124,6 @@ class HomeFragment : ReflectBindingFragment<FragmentHomeBinding, MainActivity>()
     }
 
     override fun onFragmentResume(first: Boolean) {
-        "是否首次调用：$first".logD()
+        "是否首次调用：$first".logV()
     }
 }

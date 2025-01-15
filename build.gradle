@@ -25,7 +25,6 @@ buildscript {
     }
     dependencies {
         classpath libs.gradle
-        classpath libs.zy.gradle.plugin
         classpath libs.kotlin.gradle.plugin
     }
 }

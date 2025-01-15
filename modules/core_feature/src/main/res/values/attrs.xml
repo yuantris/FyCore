@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 支持限定 Drawable 大小的 TextView -->
+    <declare-styleable name="DrawableTextView">
+        <!-- Drawable 宽度 -->
+        <attr name="drawableWidth" format="dimension" />
+        <!-- Drawable 高度 -->
+        <attr name="drawableHeight" format="dimension" />
+    </declare-styleable>
+
+    <declare-styleable name="CollapsingHeaderLayout">
+        <attr name="headerHeight" format="dimension" />
+        <attr name="headerTitle" format="string" />
+        <attr name="headerImageSrc" format="reference" />
+        <attr name="headerTitleColor" format="color" />
+        <attr name="scrimColor" format="color" />
+        <attr name="scrimAnimationDuration" format="integer" />
+        <attr name="isBackShow" format="boolean" />
+    </declare-styleable>
+
+    <declare-styleable name="StateLayout">
+        <attr name="empty_layout" format="reference" />
+        <attr name="error_layout" format="reference" />
+        <attr name="loading_layout" format="reference" />
+    </declare-styleable>
+
+    <declare-styleable name="CustomImageView">
+        <attr name="backgroundImage" format="reference" />
+        <attr name="text" format="string" />
+        <attr name="layout_topToTop" format="boolean" />
+        <attr name="layout_bottomToBottom" format="boolean" />
+        <attr name="layout_startToStart" format="boolean" />
+        <attr name="layout_endToEnd" format="boolean" />
+        <attr name="layout_marginTop" format="dimension" />
+        <attr name="layout_marginBottom" format="dimension" />
+        <attr name="layout_marginStart" format="dimension" />
+        <attr name="layout_marginEnd" format="dimension" />
+        <attr name="textSize" format="dimension" />
+        <attr name="textColor" format="color" />
+    </declare-styleable>
+
+    <declare-styleable name="FastScroller">
+        <attr name="fadeScrollbar" format="boolean" />
+        <attr name="showBubble" format="boolean" />
+        <attr name="showTrack" format="boolean" />
+        <attr name="trackColor" format="color" />
+        <attr name="handleColor" format="color" />
+        <attr name="bubbleColor" format="color" />
+        <attr name="bubbleTextColor" format="color" />
+    </declare-styleable>
+
+    <declare-styleable name="RotateLoading">
+        <attr name="loading_width" format="dimension" />
+        <attr name="loading_color" format="color" />
+        <attr name="shadow_position" format="integer" />
+        <attr name="loading_speed" format="integer" />
+    </declare-styleable>
+
+    <attr name="radius" format="dimension" />
+    <declare-styleable name="BadgeView">
+        <attr name="radius" />
+        <attr name="up_flat_angle" format="boolean" />
+    </declare-styleable>
+
+
+
+</resources>
