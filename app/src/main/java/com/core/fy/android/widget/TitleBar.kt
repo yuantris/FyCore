@@ -1,5 +1,6 @@
 package com.core.fy.android.widget
 
+import android.app.Activity
 import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.PorterDuff
@@ -180,11 +181,6 @@ class TitleBar @JvmOverloads constructor(
         a.recycle()
     }
 
-    override fun onAttachedToWindow() {
-        super.onAttachedToWindow()
-        attachToActivity()
-    }
-
     fun setNavigationOnClickListener(clickListener: ((View) -> Unit)) {
         toolbar.setNavigationOnClickListener(clickListener)
     }
@@ -251,15 +247,6 @@ class TitleBar @JvmOverloads constructor(
 //            val topPadding = if (!isInMultiWindowMode && fullScreen) context.statusBarHeight else 0
 //            setPadding(paddingLeft, topPadding, paddingRight, paddingBottom)
 //        }
-    }
-
-    private fun attachToActivity() {
-        if (attachToActivity) {
-            activity?.let {
-                it.setSupportActionBar(toolbar)
-                it.supportActionBar?.setDisplayHomeAsUpEnabled(displayHomeAsUp)
-            }
-        }
     }
 
 }

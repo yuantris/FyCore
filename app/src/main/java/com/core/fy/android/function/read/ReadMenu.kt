@@ -314,7 +314,7 @@ class ReadMenu @JvmOverloads constructor(
 
     private fun bindEvent() = binding.run {
         vwMenuBg.setOnClickListener { runMenuOut() }
-        titleBar.setNavigationOnClickListener {
+        titleBar.toolbar.setNavigationOnClickListener {
             activity?.finish()
         }
         titleBar.toolbar.setOnClickListener {

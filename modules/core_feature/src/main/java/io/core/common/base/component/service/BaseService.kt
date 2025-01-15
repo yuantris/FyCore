@@ -1,16 +1,24 @@
 package io.core.common.base.component.service
 
 import android.content.Intent
+import android.os.Build
 import android.os.IBinder
 import androidx.annotation.CallSuper
 import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.lifecycleScope
+import com.hjq.permissions.Permission
+import com.hjq.permissions.XXPermissions
+import io.core.R
 import io.core.common.helper.LifecycleHelp
 import io.core.common.helper.coroutine.Coroutine
+import io.core.common.util.ext.ui.getActivity
+import io.core.common.util.ext.ui.startService
 import io.core.common.util.log.LogUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.isActive
+import java.security.Permissions
 import kotlin.coroutines.CoroutineContext
 
 abstract class BaseService : LifecycleService() {
@@ -72,20 +80,14 @@ abstract class BaseService : LifecycleService() {
      * 检测通知权限和后台权限
      */
     private fun checkPermission() {
-//        PermissionsCompat.Builder()
-//            .addPermissions(Permissions.POST_NOTIFICATIONS)
-//            .rationale(R.string.notification_permission_rationale)
-//            .onGranted {
-//                if (lifecycleScope.isActive) {
-//                    startForegroundNotification()
-//                }
-//            }
-//            .request()
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-//            PermissionsCompat.Builder()
-//                .addPermissions(Permissions.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS)
-//                .rationale(R.string.ignore_battery_permission_rationale)
-//                .request()
-//        }
+        LifecycleHelp.getTopActivity()?.let {
+            XXPermissions.with(it)
+                .permission(Permission.POST_NOTIFICATIONS)
+                .request { _, _ ->
+                    if (lifecycleScope.isActive) {
+                        startForegroundNotification()
+                    }
+                }
+        }
     }
 }

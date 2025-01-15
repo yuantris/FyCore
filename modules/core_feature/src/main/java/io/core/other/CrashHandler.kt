@@ -2,22 +2,19 @@ package io.core.other
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.app.*
-import android.content.*
+import android.app.Application
+import android.content.Context
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
-import android.net.Uri
 import android.os.Build
 import android.os.Debug
 import android.os.Environment
 import android.os.Process
 import android.webkit.WebSettings
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import io.core.Android
 import io.core.common.base.component.activity.CrashActivity
 import io.core.common.base.component.activity.RestartActivity
-import io.core.common.exception.NoStackTraceException
-import io.core.common.util.FileDoc
 import io.core.common.util.ext.appCtx
 import io.core.common.util.ext.cool.createFolderReplace
 import io.core.common.util.ext.cool.getFile

@@ -5,14 +5,13 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.BatteryManager
+import com.core.fy.android.constants.EventKey.BATTERY_CHANGED
+import com.core.fy.android.constants.EventKey.TIME_CHANGED
 import io.core.common.base.event.channel.sendEvent
 import io.core.common.util.ext.cool.postEvent
 
 
 class TimeBatteryReceiver : BroadcastReceiver() {
-
-    val TIME_CHANGED = "timeChanged"
-    val BATTERY_CHANGED = "batteryChanged"
 
     val filter = IntentFilter().apply {
         addAction(Intent.ACTION_TIME_TICK)
@@ -22,13 +21,13 @@ class TimeBatteryReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         when (intent.action) {
             Intent.ACTION_TIME_TICK -> {
-                sendEvent("", TIME_CHANGED)
+                // sendEvent("", TIME_CHANGED)
                 postEvent(TIME_CHANGED, "")
             }
 
             Intent.ACTION_BATTERY_CHANGED -> {
                 val level = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1)
-                sendEvent(level, BATTERY_CHANGED)
+                // sendEvent(level, BATTERY_CHANGED)
                 postEvent(BATTERY_CHANGED, level)
             }
         }

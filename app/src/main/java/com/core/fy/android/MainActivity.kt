@@ -1,27 +1,32 @@
 package com.core.fy.android
 
+import android.content.Context
+import android.content.DialogInterface
 import android.os.Bundle
+import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.core.content.ContextCompat
 import androidx.viewpager.widget.ViewPager.OnPageChangeListener
 import com.core.fy.android.databinding.ActivityMainBinding
 import com.core.fy.android.databinding.ItemTabBinding
+import com.core.fy.android.function.read.model.AudioPlay
 import com.core.fy.android.interfaces.FragmentPagerAdapter
 import com.core.fy.android.model.Tab
 import com.core.fy.android.ui.fragment.BlankFragment
 import com.core.fy.android.ui.fragment.HomeFragment
-import io.core.common.base.component.activity.CrashActivity
-import io.core.common.base.component.activity.ReflectBindingActivity
-import io.core.common.util.ext.ui.BarColor
-import io.core.common.util.ext.ui.hide
-import io.core.common.util.ext.ui.show
-import io.core.common.base.fragment.BaseFragment
-import io.core.common.helper.LifecycleHelp
-import io.core.common.util.log.logD
 import com.drake.brv.BindingAdapter
 import com.drake.brv.utils.grid
 import com.drake.brv.utils.setup
-import io.core.common.base.component.dialog.CrashLogsDialog
-import io.core.common.util.ext.ui.showDialogFragment
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import io.core.common.base.component.activity.ReflectBindingActivity
+import io.core.common.base.fragment.BaseFragment
+import io.core.common.helper.dialogs.alert
+import io.core.common.util.ext.addCallback
+import io.core.common.util.ext.ui.BarColor
+import io.core.common.util.ext.ui.hide
+import io.core.common.util.ext.ui.show
+import io.core.common.util.ext.ui.startService
+
 
 class MainActivity : ReflectBindingActivity<ActivityMainBinding>(), OnPageChangeListener {
 
@@ -74,11 +79,21 @@ class MainActivity : ReflectBindingActivity<ActivityMainBinding>(), OnPageChange
 
     override fun onResume() {
         super.onResume()
+
     }
 
     override fun setListener() {
         binding.vpHomePager.addOnPageChangeListener(this)
+        onBackPressedDispatcher.addCallback(this) {
+            alert("温馨提示", "是否退出应用？") {
+                cancelButton {}
+                okButton {
+                    finish()
+                }
+            }
+        }
     }
+
     override fun getStatusBarColor(): BarColor {
         return BarColor.WHITE
     }

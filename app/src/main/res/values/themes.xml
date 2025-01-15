@@ -1,6 +1,6 @@
 <resources>
     <!-- Base application theme. -->
-    <style name="Theme.FyCore" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <style name="Theme.FyCore" parent="Theme.Material3.Light.NoActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/purple_500</item>
         <item name="colorPrimaryVariant">@color/purple_700</item>
@@ -16,8 +16,12 @@
         <item name="android:windowBackground">@color/common_window_background_color</item>
         <!-- 应用的强调色，CheckBox RadioButton Switch 等一般控件的选中效果默认采用该颜色 -->
         <item name="colorAccent">@color/common_accent_color</item>
+        <!-- 默认文本颜色，Button、TextView 的文字颜色 -->
+        <item name="android:textColor">@color/common_text_color</item>
         <!-- 默认提示颜色，Button、TextView 的提示文字颜色 -->
         <item name="android:textColorHint">@color/common_text_hint_color</item>
+        <!-- ActionMode 的颜色 -->
+        <item name="actionModeBackground">@color/common_primary_color</item>
     </style>
 
     <style name="Theme.FyCore.Splash" parent="Theme.FyCore">

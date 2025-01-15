@@ -43,7 +43,6 @@ class RestartActivity : AppCompatActivity() {
 
         fun restart(context: Context) {
             homeActivity?.let {
-                // 如果是未登录的情况下跳转到闪屏页
                 val intent = Intent(context, homeActivity)
                 if (context !is Activity) {
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)

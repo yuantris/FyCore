@@ -3,6 +3,7 @@ package io.core.common.helper
 import android.app.Activity
 import android.app.Application
 import android.app.Service
+import android.os.Build
 import android.os.Bundle
 import io.core.common.base.component.service.BaseService
 import io.core.common.util.log.LogUtils
@@ -22,6 +23,15 @@ object LifecycleHelp : Application.ActivityLifecycleCallbacks {
 
     fun activitySize(): Int {
         return activities.size
+    }
+
+    fun getTopActivity(): Activity? {
+        // 判断活动栈是否为空
+        return activities.lastOrNull()?.get()?.takeIf { isActivityAlive(it) }
+    }
+
+    private fun isActivityAlive(activity: Activity?): Boolean {
+        return activity != null && !activity.isFinishing && !activity.isDestroyed
     }
 
     /**

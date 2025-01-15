@@ -3,13 +3,18 @@ package com.core.fy.android.function.read.model
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import com.core.fy.android.R
+import com.core.fy.android.constants.EventKey
 import com.core.fy.android.constants.IntentAction
 import com.core.fy.android.constants.Status
 import com.core.fy.android.room.entity.Book
 import com.core.fy.android.room.entity.BookChapter
 import com.core.fy.android.function.read.services.AudioPlayService
+import com.google.common.eventbus.EventBus
 import io.core.common.helper.coroutine.Coroutine
 import io.core.common.util.ext.appCtx
+import io.core.common.util.ext.cool.postEvent
+import io.core.common.util.ext.ui.startService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancelChildren
@@ -31,6 +36,7 @@ object AudioPlay : CoroutineScope by MainScope() {
     var durPlayUrl = ""
     var durAudioSize = 0
     var inBookshelf = false
+
     //var bookSource: BookSource? = null
     val loadingChapters = arrayListOf<Int>()
 
@@ -66,7 +72,7 @@ object AudioPlay : CoroutineScope by MainScope() {
         durPlayUrl = ""
         durAudioSize = 0
         upDurChapter()
-        // postEvent(EventBus.AUDIO_BUFFER_PROGRESS, 0)
+        postEvent(EventKey.AUDIO_BUFFER_PROGRESS, 0)
     }
 
     private fun addLoading(index: Int): Boolean {
@@ -149,18 +155,18 @@ object AudioPlay : CoroutineScope by MainScope() {
      * 播放当前章节
      */
     fun play() {
-//        context.startService<AudioPlayService> {
-//            action = IntentAction.play
-//        }
+        context.startService<AudioPlayService> {
+            action = IntentAction.play
+        }
     }
 
     /**
      * 从头播放新章节
      */
     private fun playNew() {
-//        context.startService<AudioPlayService> {
-//            action = IntentAction.playNew
-//        }
+        context.startService<AudioPlayService> {
+            action = IntentAction.playNew
+        }
     }
 
     /**
@@ -170,41 +176,41 @@ object AudioPlay : CoroutineScope by MainScope() {
         //val book = book ?: return
         //durChapter = appDb.bookChapterDao.getChapter(book.bookUrl, durChapterIndex)
         //durAudioSize = durChapter?.end?.toInt() ?: 0
-        //postEvent(EventBus.AUDIO_SUB_TITLE, durChapter?.title ?: appCtx.getString(R.string.data_loading))
-        //postEvent(EventBus.AUDIO_SIZE, durAudioSize)
-        //postEvent(EventBus.AUDIO_PROGRESS, durChapterPos)
+        postEvent(EventKey.AUDIO_SUB_TITLE, durChapter?.title ?: appCtx.getString(R.string.data_loading))
+        postEvent(EventKey.AUDIO_SIZE, durAudioSize)
+        postEvent(EventKey.AUDIO_PROGRESS, durChapterPos)
     }
 
     fun pause(context: Context) {
         if (AudioPlayService.isRun) {
-//            context.startService<AudioPlayService> {
-//                action = IntentAction.pause
-//            }
+            context.startService<AudioPlayService> {
+                action = IntentAction.pause
+            }
         }
     }
 
     fun resume(context: Context) {
         if (AudioPlayService.isRun) {
-//            context.startService<AudioPlayService> {
-//                action = IntentAction.resume
-//            }
+            context.startService<AudioPlayService> {
+                action = IntentAction.resume
+            }
         }
     }
 
     fun stop() {
         if (AudioPlayService.isRun) {
-//            context.startService<AudioPlayService> {
-//                action = IntentAction.stop
-//            }
+            context.startService<AudioPlayService> {
+                action = IntentAction.stop
+            }
         }
     }
 
     fun adjustSpeed(adjust: Float) {
         if (AudioPlayService.isRun) {
-//            context.startService<AudioPlayService> {
-//                action = IntentAction.adjustSpeed
-//                putExtra("adjust", adjust)
-//            }
+            context.startService<AudioPlayService> {
+                action = IntentAction.adjustSpeed
+                putExtra("adjust", adjust)
+            }
         }
     }
 
@@ -212,10 +218,10 @@ object AudioPlay : CoroutineScope by MainScope() {
         durChapterPos = position
         saveRead()
         if (AudioPlayService.isRun) {
-//            context.startService<AudioPlayService> {
-//                action = IntentAction.adjustProgress
-//                putExtra("position", position)
-//            }
+            context.startService<AudioPlayService> {
+                action = IntentAction.adjustProgress
+                putExtra("position", position)
+            }
         }
     }
 
@@ -262,7 +268,7 @@ object AudioPlay : CoroutineScope by MainScope() {
             context.startService(intent)
         } else {
             AudioPlayService.timeMinute = minute
-            //postEvent(EventBus.AUDIO_DS, minute)
+            postEvent(EventKey.AUDIO_DS, minute)
         }
     }
 
@@ -274,9 +280,9 @@ object AudioPlay : CoroutineScope by MainScope() {
 
     fun stopPlay() {
         if (AudioPlayService.isRun) {
-//            context.startService<AudioPlayService> {
-//                action = IntentAction.stopPlay
-//            }
+            context.startService<AudioPlayService> {
+                action = IntentAction.stopPlay
+            }
         }
     }
 

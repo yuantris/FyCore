@@ -21,4 +21,6 @@ object AppConst {
     val timeFormat: SimpleDateFormat by lazy {
         SimpleDateFormat("HH:mm")
     }
+    const val channelIdReadAloud = "channel_read_aloud_fy"
+
 }

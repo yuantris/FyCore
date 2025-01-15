@@ -63,6 +63,7 @@ abstract class BaseFragment<A : BaseActivity> : Fragment() {
             loading = true
             initData()
             onFragmentResume(true)
+            observers()
             return
         }
 
@@ -107,6 +108,7 @@ abstract class BaseFragment<A : BaseActivity> : Fragment() {
 
     protected open fun initView() {}
     protected open fun initData() {}
+    protected open fun observers() {}
 
     /**
      * Fragment 可见回调
