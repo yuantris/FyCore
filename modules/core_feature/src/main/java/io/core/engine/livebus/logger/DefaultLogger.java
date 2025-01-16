@@ -7,7 +7,7 @@ import java.util.logging.Level;
 
 public class DefaultLogger implements Logger {
 
-    private static final String TAG = "[LiveEventBus]";
+    public static final String TAG = "[LiveBus]";
 
     @Override
     public void log(Level level, String msg) {

@@ -32,71 +32,9 @@ object ExoPlayerHelper {
     }
 
     fun createHttpExoPlayer(context: Context): ExoPlayer {
-        return ExoPlayer.Builder(context).setLoadControl(
-            DefaultLoadControl.Builder().setBufferDurationsMs(
-                DefaultLoadControl.DEFAULT_MIN_BUFFER_MS,
-                DefaultLoadControl.DEFAULT_MAX_BUFFER_MS,
-                DefaultLoadControl.DEFAULT_BUFFER_FOR_PLAYBACK_MS / 10,
-                DefaultLoadControl.DEFAULT_BUFFER_FOR_PLAYBACK_AFTER_REBUFFER_MS / 10
-            ).build()
-
-        ).setMediaSourceFactory(
-            DefaultMediaSourceFactory(context)
-                //.setDataSourceFactory(resolvingDataSource)
-                .setLiveTargetOffsetMs(5000)
-        ).build()
+        return ExoPlayer.Builder(context).build()
     }
 
-
-
-//
-//    private val resolvingDataSource: ResolvingDataSource.Factory by lazy {
-//        ResolvingDataSource.Factory(cacheDataSourceFactory) {
-//            var res = it
-//
-//            if (it.uri.toString().contains(SPLIT_TAG)) {
-//                val urls = it.uri.toString().split(SPLIT_TAG)
-//                val url = urls[0]
-//                res = res.withUri(Uri.parse(url))
-//                try {
-//                    val headers: Map<String, String> = GSON.fromJson(urls[1], mapType)
-//                    okhttpDataFactory.setDefaultRequestProperties(headers)
-//                } catch (_: Exception) {
-//                }
-//            }
-//
-//            res
-//
-//        }
-//    }
-
-
-//    /**
-//     * 支持缓存的DataSource.Factory
-//     */
-//    private val cacheDataSourceFactory by lazy {
-//        //使用自定义的CacheDataSource以支持设置UA
-//        return@lazy CacheDataSource.Factory()
-//            .setCache(cache)
-//            .setUpstreamDataSourceFactory(okhttpDataFactory)
-//            .setCacheReadDataSourceFactory(FileDataSource.Factory())
-//            .setCacheWriteDataSinkFactory(
-//                CacheDataSink.Factory()
-//                    .setCache(cache)
-//                    .setFragmentSize(CacheDataSink.DEFAULT_FRAGMENT_SIZE)
-//            )
-//    }
-
-//    /**
-//     * Okhttp DataSource.Factory
-//     */
-//    private val okhttpDataFactory by lazy {
-//        val client = okHttpClient.newBuilder()
-//            .callTimeout(0, TimeUnit.SECONDS)
-//            .build()
-//        OkHttpDataSource.Factory(client)
-//            .setCacheControl(CacheControl.Builder().maxAge(1, TimeUnit.DAYS).build())
-//    }
 
     /**
      * Exoplayer 内置的缓存

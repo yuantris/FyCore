@@ -21,6 +21,7 @@ import io.core.common.util.ext.cool.toReadPfd
 import io.core.common.util.ext.cool.toWritePfd
 import io.core.common.util.ext.cool.writeBytes
 import io.core.common.util.ext.cool.writeText
+import io.core.common.util.ext.currentTimeMillis
 import io.core.common.util.ext.downloadManager
 import io.core.common.util.tools.DocumentUtils
 import io.core.common.util.tools.FileUtils
@@ -28,7 +29,6 @@ import java.io.File
 import java.io.InputStream
 import java.io.OutputStream
 import java.nio.charset.Charset
-
 
 data class FileDoc(
     val name: String,
@@ -358,7 +358,7 @@ fun DocumentFile.readBytes(context: Context): ByteArray {
 
 fun DocumentFile.checkWrite(): Boolean {
     return try {
-        val filename = System.currentTimeMillis().toString()
+        val filename = currentTimeMillis.toString()
         createFile(FileUtils.getMimeType(filename), filename)?.let {
             it.openOutputStream()?.let { out ->
                 out.use { }

@@ -4,6 +4,8 @@ import android.os.Bundle
 import com.core.fy.android.R
 import com.core.fy.android.databinding.ActivityImgTextBinding
 import io.core.common.base.component.activity.ReflectBindingActivity
+import io.core.common.util.ext.ifNotNull
+import io.core.common.util.ext.ui.getCompatDrawable
 import io.core.common.util.ext.ui.toast
 
 /**
@@ -24,9 +26,17 @@ class ImgTextActivity : ReflectBindingActivity<ActivityImgTextBinding>() {
     override fun initial(savedInstanceState: Bundle?) {
         super.initial(savedInstanceState)
 
+        getString("title").ifNotNull {
+            binding.titleBar.setTitle(it)
+        }
+
         binding.apply {
-            civImg.setBackgroundImage(resources.getDrawable(R.drawable.ic_launcher_background))
-            civImg.setActiveBackground(resources.getDrawable(R.drawable.splash_1))
+            getCompatDrawable(R.drawable.ic_launcher_background)?.let {
+                civImg.setBackgroundImage(it)
+            }
+            getCompatDrawable(R.drawable.splash_1).ifNotNull {
+                civImg.setActiveBackground(it)
+            }
             civImg.setOnClickListener {
                 toast("点击了")
             }

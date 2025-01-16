@@ -6,6 +6,7 @@ import androidx.annotation.IntDef
 import io.core.Android
 import io.core.common.util.ext.cool.ConvertUtils
 import io.core.common.util.ext.cool.cnCompare
+import io.core.common.util.ext.currentTimeMillis
 import io.core.common.util.ext.ui.externalCache
 import io.core.common.util.log.printOnDebug
 import java.io.*
@@ -335,7 +336,7 @@ object FileUtils {
      */
     private fun deleteResolveEBUSY(file: File): Boolean {
         // Before you delete a Directory or File: rename it!
-        val to = File(file.absolutePath + System.currentTimeMillis())
+        val to = File(file.absolutePath + currentTimeMillis)
 
         file.renameTo(to)
         return to.delete()

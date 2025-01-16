@@ -5,6 +5,7 @@ package io.core.common.util.ext.cool
 import android.net.Uri
 import io.core.common.util.FileDoc
 import io.core.common.util.FileDocFilter
+import io.core.common.util.ext.currentTimeMillis
 import io.core.common.util.tools.FileUtils
 import java.io.File
 import java.io.FileOutputStream
@@ -74,7 +75,7 @@ fun File.createFolderReplace(): File {
 
 fun File.checkWrite(): Boolean {
     return try {
-        val filename = System.currentTimeMillis().toString()
+        val filename = currentTimeMillis.toString()
         val file = FileUtils.createFileIfNotExist(this, filename)
         file.outputStream().use { }
         file.delete()

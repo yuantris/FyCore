@@ -3,22 +3,22 @@ package com.core.fy.android.function
 import android.os.Bundle
 import androidx.activity.viewModels
 import com.core.fy.android.databinding.ActivityRoomBinding
-import com.core.fy.android.room.AppDatabase
 import com.core.fy.android.room.VMFactory
+import com.core.fy.android.room.appDb
 import com.core.fy.android.room.entity.User
 import com.core.fy.android.room.repository.UserRepository
 import com.core.fy.android.viewmodel.UserVM
 import io.core.common.base.component.activity.ReflectBindingActivity
+import io.core.common.base.vm.ViewStatus
+import io.core.common.util.CoreUtil
+import io.core.common.util.ToastUtil
 import io.core.common.util.ext.cool.launchAsync
 import io.core.common.util.ext.cool.launchSync
+import io.core.common.util.ext.ui.toast
 import io.core.common.util.log.logD
 import io.core.common.util.log.logE
 import io.core.common.util.log.logI
 import io.core.common.util.log.logW
-import io.core.common.util.ext.ui.toast
-import io.core.common.base.vm.ViewStatus
-import io.core.common.util.CoreUtil
-import io.core.common.util.ToastUtil
 
 class RoomActivity : ReflectBindingActivity<ActivityRoomBinding>() {
 
@@ -102,7 +102,7 @@ class RoomActivity : ReflectBindingActivity<ActivityRoomBinding>() {
 
                     launchAsync {
                         bean.age = 19
-                        AppDatabase.getInstance().userDao().update(bean)
+                        appDb.userDao().update(bean)
                         val byNameNext = userVM.getUserAsync(bean.id)
                         "根据名字查询到用户：${byNameNext?.name}，年龄：${byNameNext?.age}".logI()
                     }

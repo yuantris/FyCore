@@ -1,4 +1,4 @@
-package io.core.common.util.view
+package io.core.common.util.layout
 
 import androidx.annotation.IdRes
 import androidx.constraintlayout.widget.ConstraintLayout

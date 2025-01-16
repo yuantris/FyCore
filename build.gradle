@@ -8,16 +8,9 @@ buildscript {
         maven {
             credentials {
                 username '63d4d579378edb0fd9aa3b2d'
-                password ']NMEqopV(RUs'
+                password 'nXJxEWiiObre'
             }
-            url 'https://packages.aliyun.com/maven/repository/2081012-release-FVvGXU/'
-        }
-        maven {
-            credentials {
-                username '63d4d579378edb0fd9aa3b2d'
-                password ']NMEqopV(RUs'
-            }
-            url 'https://packages.aliyun.com/maven/repository/2081012-snapshot-SS3pDx/'
+            url 'https://packages.aliyun.com/67789758cdfeb44ae202deb7/maven/2512815-release-ndmhzu'
         }
         maven { url 'https://jitpack.io' }
         mavenCentral()
@@ -34,16 +27,9 @@ allprojects {
         maven {
             credentials {
                 username '63d4d579378edb0fd9aa3b2d'
-                password ']NMEqopV(RUs'
+                password 'nXJxEWiiObre'
             }
-            url 'https://packages.aliyun.com/maven/repository/2081012-release-FVvGXU/'
-        }
-        maven {
-            credentials {
-                username '63d4d579378edb0fd9aa3b2d'
-                password ']NMEqopV(RUs'
-            }
-            url 'https://packages.aliyun.com/maven/repository/2081012-snapshot-SS3pDx/'
+            url 'https://packages.aliyun.com/67789758cdfeb44ae202deb7/maven/2512815-release-ndmhzu'
         }
         maven {
             url = uri("https://maven.pkg.github.com/yuantris/FyCore")

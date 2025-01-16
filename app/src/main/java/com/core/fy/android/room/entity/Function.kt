@@ -2,10 +2,12 @@ package com.core.fy.android.room.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import androidx.room.TypeConverter
 import com.core.fy.android.MainActivity
 import com.core.fy.android.viewmodel.FunctionVM
 import com.drake.brv.annotaion.ItemOrientation
 import com.drake.brv.item.ItemDrag
+import kotlinx.parcelize.Parcelize
 
 /**
 # ██████████

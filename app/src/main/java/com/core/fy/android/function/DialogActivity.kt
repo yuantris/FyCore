@@ -7,7 +7,10 @@ import com.core.fy.android.R
 import com.core.fy.android.databinding.ActivityDialogBinding
 import com.core.fy.android.ui.WaitDialog
 import io.core.common.base.component.activity.ReflectBindingActivity
+import io.core.common.helper.dialogs.alert
+import io.core.common.util.CoreUtil
 import io.core.common.util.ToastUtil
+import io.core.common.util.ext.ui.toast
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -34,7 +37,12 @@ class DialogActivity : ReflectBindingActivity<ActivityDialogBinding>() {
         // 设置标题，左对齐
         binding.titleBar.apply {
             addRightButtonImage(R.drawable.ic_launcher_background) {
-                ToastUtil.show("关闭")
+                alert("温馨提示") {
+                    setMessage("确定关闭吗？")
+                    okButton {
+                        CoreUtil.toast("已关闭")
+                    }
+                }
             }
             setTitleStyle(Typeface.BOLD)
         }

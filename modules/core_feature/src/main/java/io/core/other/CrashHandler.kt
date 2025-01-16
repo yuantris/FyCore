@@ -18,6 +18,7 @@ import io.core.common.base.component.activity.RestartActivity
 import io.core.common.util.ext.appCtx
 import io.core.common.util.ext.cool.createFolderReplace
 import io.core.common.util.ext.cool.getFile
+import io.core.common.util.ext.currentTimeMillis
 import io.core.common.util.ext.ui.externalCache
 import io.core.common.util.tools.FileUtils
 import java.io.PrintWriter
@@ -94,12 +95,12 @@ class CrashHandler private constructor(private val application: Application) :
             val result = writer.toString()
             sb.append(result)
             val crashLog = sb.toString()
-            val timestamp = System.currentTimeMillis()
+            val timestamp = currentTimeMillis
             val time = format.format(Date())
             val fileName = "crash-$time-$timestamp.log"
             kotlin.runCatching {
                 appCtx.externalCacheDir?.let { rootFile ->
-                    val exceedTimeMillis = System.currentTimeMillis() - TimeUnit.DAYS.toMillis(7)
+                    val exceedTimeMillis = currentTimeMillis - TimeUnit.DAYS.toMillis(7)
                     rootFile.getFile("crash").listFiles()?.forEach {
                         if (it.lastModified() < exceedTimeMillis) {
                             it.delete()
@@ -134,9 +135,9 @@ class CrashHandler private constructor(private val application: Application) :
                 .getFile("heapDump")
             heapDir.createFolderReplace()
             val fileName = if (manually) {
-                "heap-dump-manually-${System.currentTimeMillis()}.hprof"
+                "heap-dump-manually-${currentTimeMillis}.hprof"
             } else {
-                "heap-dump-${System.currentTimeMillis()}.hprof"
+                "heap-dump-${currentTimeMillis}.hprof"
             }
             val heapFile = heapDir.getFile(fileName)
             val heapDumpName = heapFile.absolutePath
@@ -159,7 +160,7 @@ class CrashHandler private constructor(private val application: Application) :
         val sharedPreferences: SharedPreferences = application.getSharedPreferences(
             CRASH_FILE_NAME, Context.MODE_PRIVATE
         )
-        val currentCrashTime: Long = System.currentTimeMillis()
+        val currentCrashTime: Long = currentTimeMillis
         val lastCrashTime: Long = sharedPreferences.getLong(KEY_CRASH_TIME, 0)
         // 记录当前崩溃的时间，以便下次崩溃时进行比对
         sharedPreferences.edit().putLong(KEY_CRASH_TIME, currentCrashTime).commit()

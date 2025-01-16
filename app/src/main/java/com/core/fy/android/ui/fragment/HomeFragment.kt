@@ -22,18 +22,17 @@ import com.core.fy.android.room.VMFactory
 import com.core.fy.android.room.entity.Function
 import com.core.fy.android.room.repository.FunctionRepository
 import com.core.fy.android.viewmodel.FunctionVM
-import io.core.common.util.ext.cool.launchAsync
-import io.core.common.util.log.logD
-import io.core.common.util.ext.ui.onClick
-import io.core.common.util.ext.ui.startActivity
-import io.core.common.base.fragment.ReflectBindingFragment
-import io.core.other.Toast
 import com.drake.brv.BindingAdapter
 import com.drake.brv.listener.DefaultItemTouchCallback
 import com.drake.brv.utils.divider
 import com.drake.brv.utils.grid
 import com.drake.brv.utils.setup
+import io.core.common.base.fragment.ReflectBindingFragment
+import io.core.common.util.ext.cool.launchAsync
+import io.core.common.util.ext.ui.onClick
+import io.core.common.util.ext.ui.startActivity
 import io.core.common.util.log.logV
+import io.core.other.Toast
 
 /**
 # ██████████
@@ -94,19 +93,22 @@ class HomeFragment : ReflectBindingFragment<FragmentHomeBinding, MainActivity>()
                         binding.item.text = data.design.function
                         binding.item.onClick {
                             when (data.design) {
-                                FunctionVM.Design.KEYBOARD -> startActivity(KeyboardActivity::class.java)
-                                FunctionVM.Design.云创控件 -> startActivity(ImgTextActivity::class.java)
-                                FunctionVM.Design.单文字点击的TextView -> startActivity(ClickTextActivity::class.java)
-                                FunctionVM.Design.ROOM -> startActivity(RoomActivity::class.java)
-                                FunctionVM.Design.DIALOG -> startActivity(DialogActivity::class.java)
-                                FunctionVM.Design.TOAST -> startActivity(CustomToastActivity::class.java)
-                                FunctionVM.Design.EVENT -> startActivity(EventActivity::class.java)
-                                FunctionVM.Design.COLL_BAR -> startActivity(CollapsingBarActivity::class.java)
-                                FunctionVM.Design.VIEW_VISIBILITY -> startActivity(
-                                    VisibilityActivity::class.java
-                                )
-                                FunctionVM.Design.TTS -> startActivity(TTSActivity::class.java)
-                                FunctionVM.Design.READ -> startActivity(ReadBookActivity::class.java)
+                                FunctionVM.Design.KEYBOARD -> startActivity<KeyboardActivity>()
+                                FunctionVM.Design.云创控件 -> {
+                                    startActivity<ImgTextActivity> {
+                                        putExtra("title", "云创控件")
+                                        putExtra("url", "当前的Url")
+                                    }
+                                }
+                                FunctionVM.Design.单文字点击的TextView -> startActivity<ClickTextActivity>()
+                                FunctionVM.Design.ROOM -> startActivity<RoomActivity>()
+                                FunctionVM.Design.DIALOG -> startActivity<DialogActivity>()
+                                FunctionVM.Design.TOAST -> startActivity<CustomToastActivity>()
+                                FunctionVM.Design.EVENT -> startActivity<EventActivity>()
+                                FunctionVM.Design.COLL_BAR -> startActivity<CollapsingBarActivity>()
+                                FunctionVM.Design.VIEW_VISIBILITY -> startActivity<VisibilityActivity>()
+                                FunctionVM.Design.TTS -> startActivity<TTSActivity>()
+                                FunctionVM.Design.READ -> startActivity<ReadBookActivity>()
                                 else -> {
                                     // do nothing
                                     Toast.Builder(requireContext())

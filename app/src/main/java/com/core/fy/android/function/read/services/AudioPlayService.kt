@@ -123,7 +123,7 @@ class AudioPlayService : BaseService(),
     private var upNotificationJob: Coroutine<*>? = null
     private var upPlayProgressJob: Job? = null
     private var playSpeed: Float = 1f
-    private var cover: Bitmap = ImageUtils.getBitmap(R.drawable.info_ic)
+    private var cover: Bitmap = ImageUtils.getBitmap(R.drawable.ic_daytime)
 
     override fun onCreate() {
         super.onCreate()
@@ -574,8 +574,6 @@ class AudioPlayService : BaseService(),
         if (nSubtitle.isNullOrEmpty()) {
             nSubtitle = getString(R.string.audio_play_s)
         }
-        nTitle.logV()
-        nSubtitle.logV()
         val builder = NotificationCompat
             .Builder(this@AudioPlayService, AppConst.channelIdReadAloud)
             .setSmallIcon(R.drawable.ic_volume_up)

@@ -1,8 +1,10 @@
 package io.core.common.util.ext
 
+import android.annotation.SuppressLint
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.OnBackPressedDispatcher
 import androidx.lifecycle.LifecycleOwner
+import androidx.recyclerview.widget.RecyclerView
 
 /**
 # ██████████
@@ -18,22 +20,30 @@ import androidx.lifecycle.LifecycleOwner
  * @author Yuan
  */
 
-fun Any?.isNotNull(action: () -> Unit) {
-    if (this != null) {
-        action()
-    }
+inline fun <T> T?.ifNotNull(action: (T) -> Unit) {
+    if (this != null) action(this)
 }
 
-fun Any?.isNull(action: () -> Unit) {
+inline fun Any?.ifNull(action: () -> Unit) {
     if (this == null) {
         action()
     }
 }
-
-fun Any?.verify(action: (isNull: Boolean) -> Unit) {
-    action(this == null)
+inline fun Any?.verify(fail: () -> Unit = {}, success: () -> Unit = {}) {
+    if (this == null) fail() else success()
 }
 
+@SuppressLint("NotifyDataSetChanged")
+fun RecyclerView.Adapter<*>.notifyAllDataChanged() {
+    this.notifyDataSetChanged()
+}
+
+val currentTimeMillis: Long
+    get() = System.currentTimeMillis()
+
+/**
+ * 返回键回调
+ */
 fun OnBackPressedDispatcher.addCallback(
     owner: LifecycleOwner? = null,
     enabled: Boolean = true,

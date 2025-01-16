@@ -1,6 +1,6 @@
 package com.core.fy.android.room.repository
 
-import com.core.fy.android.room.AppDatabase
+import com.core.fy.android.room.appDb
 import com.core.fy.android.room.dao.FunctionDao
 import com.core.fy.android.room.entity.Function
 import io.core.common.base.room.RoomRepository
@@ -19,7 +19,7 @@ import io.core.common.base.room.RoomRepository
  * @author Yuan
  */
 class FunctionRepository :
-    RoomRepository<Function, FunctionDao>(AppDatabase.getInstance().functionDao()) {
+    RoomRepository<Function, FunctionDao>(appDb.functionDao()) {
 
     fun getAllList(): List<Function>? {
         return dao.getFunctionList()

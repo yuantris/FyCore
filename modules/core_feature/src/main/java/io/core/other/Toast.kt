@@ -4,11 +4,13 @@ import android.app.Activity
 import android.content.Context
 import android.graphics.PixelFormat
 import android.view.Gravity
-import android.view.LayoutInflater
 import android.view.View
 import android.view.WindowManager
 import android.widget.TextView
 import io.core.R
+import io.core.common.util.ext.ifNotNull
+import io.core.common.util.ext.ui.layout2View
+import io.core.common.util.ext.windowManager
 import io.core.common.util.log.logE
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -28,10 +30,6 @@ class Toast private constructor(
     private val offsetY: Int
 ) {
 
-    private val inflater: LayoutInflater by lazy {
-        context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-    }
-
     private var easyToastView: WeakReference<View>? = null
     private var mToastJob: Job? = null
 
@@ -43,10 +41,9 @@ class Toast private constructor(
         }
 
         cancel()
-        val windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
 
         if (easyToastView?.get() == null) {
-            easyToastView = WeakReference(inflater.inflate(R.layout.layout_blut_toast, null))
+            easyToastView = WeakReference(context.layout2View(R.layout.layout_blut_toast))
         }
 
         val textView = easyToastView?.get()?.findViewById<TextView>(R.id.tv_message)
@@ -70,7 +67,7 @@ class Toast private constructor(
                         view.alpha = 0f // 初始透明度
                         view.scaleX = 0.95f // 初始缩放比例
                         view.scaleY = 0.95f
-                        windowManager.addView(view, params)
+                        context.windowManager.addView(view, params)
 
                         // 添加动画：淡入
                         view.animate()
@@ -90,38 +87,41 @@ class Toast private constructor(
             mutex.withLock {
                 delay(duration.toLong())
                 // 添加动画：淡出并销毁
-                easyToastView?.get()?.animate()
-                    ?.alpha(0f)
-                    ?.scaleX(0.95f)
-                    ?.scaleY(0.95f)
-                    ?.setDuration(300)
-                    ?.withEndAction {
-                        destroy()
-                    }
-                    ?.start()
+                easyToastView?.get()?.apply {
+                    this.animate()
+                        .alpha(0f)
+                        .scaleX(0.95f)
+                        .scaleY(0.95f)
+                        .setDuration(300)
+                        .withEndAction {
+                            destroy()
+                        }
+                        .start()
+                }
             }
         }
     }
 
     fun cancel() {
         mToastJob?.cancel()
-        easyToastView?.get()?.animate()
-            ?.alpha(0f)
-            ?.scaleX(0.95f)
-            ?.scaleY(0.95f)
-            ?.setDuration(300)
-            ?.withEndAction {
-                destroy()
-            }
-            ?.start()
+        easyToastView?.get().ifNotNull {
+            it.animate()
+                .alpha(0f)
+                .scaleX(0.95f)
+                .scaleY(0.95f)
+                .setDuration(300)
+                .withEndAction {
+                    destroy()
+                }
+                .start()
+        }
     }
 
     private fun destroy() {
         CoroutineScope(Dispatchers.Main).launch {
-            val windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
             easyToastView?.get()?.let {
                 if (it.parent != null) {
-                    windowManager.removeViewImmediate(it)
+                    context.windowManager.removeViewImmediate(it)
                 }
             }
             easyToastView = null

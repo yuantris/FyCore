@@ -57,11 +57,9 @@ class BlankFragment : ReflectBindingFragment<FragmentBlankBinding, MainActivity>
         super.initData()
         observeEventSticky<String>(TIME_CHANGED) {
             binding.time.text = timeFormat.format(Date(System.currentTimeMillis()))
-            Console.getInfo().logD()
         }
         observeEvent<Int>(BATTERY_CHANGED) {
             binding.battery.text = "当前电量：$it%"
-            Console.getInfo().logI()
         }
     }
 }

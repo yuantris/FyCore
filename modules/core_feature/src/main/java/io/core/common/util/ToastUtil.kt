@@ -2,6 +2,7 @@ package io.core.common.util
 
 import android.widget.Toast
 import io.core.Android
+import io.core.common.util.ext.appCtx
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
@@ -24,7 +25,7 @@ object ToastUtil : CoroutineScope by MainScope() {
             currentToast?.cancel()
 
             // 创建新的Toast实例
-            currentToast = Toast.makeText(Android.context, message, duration).apply {
+            currentToast = Toast.makeText(appCtx, message, duration).apply {
                 show()
             }
         }

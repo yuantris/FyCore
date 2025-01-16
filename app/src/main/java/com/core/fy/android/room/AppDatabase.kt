@@ -9,6 +9,14 @@ import com.core.fy.android.room.dao.UserDao
 import com.core.fy.android.room.entity.Function
 import com.core.fy.android.room.entity.User
 import io.core.Android
+import io.core.common.util.ext.appCtx
+
+val appDb by lazy {
+    Room.databaseBuilder(appCtx, AppDatabase::class.java, AppDatabase.DATABASE_NAME)
+        .fallbackToDestructiveMigration() //如果数据库升级失败了，删除重新创建
+        .enableMultiInstanceInvalidation() //多进程查询支持
+        .build()
+}
 
 @Database(
     entities = [User::class, Function::class],
@@ -21,22 +29,6 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun functionDao(): FunctionDao
 
     companion object {
-
-        @Volatile
-        private var INSTANCE: AppDatabase? = null
-
-        fun getInstance(): AppDatabase {
-            return INSTANCE ?: synchronized(this) {
-                val instance = Room.databaseBuilder(
-                    Android.context,
-                    AppDatabase::class.java,
-                    "app_database"
-                ).fallbackToDestructiveMigration() //如果数据库升级失败了，删除重新创建
-                    .enableMultiInstanceInvalidation() //多进程查询支持
-                    .build()
-                INSTANCE = instance
-                instance
-            }
-        }
+        const val DATABASE_NAME = "app_database.db"
     }
 }

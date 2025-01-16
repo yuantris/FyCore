@@ -3,6 +3,7 @@ package io.core.common.util.log
 import android.util.Log
 import io.core.Android
 import io.core.BuildConfig
+import io.core.common.util.ext.currentTimeMillis
 import io.core.common.util.tools.toastOnUi
 
 object AppLog {
@@ -25,7 +26,7 @@ object AppLog {
         } else {
             LogUtils.logD(TAG, "$message\n${throwable.stackTraceToString()}")
         }
-        mLogs.add(0, Triple(System.currentTimeMillis(), message, throwable))
+        mLogs.add(0, Triple(currentTimeMillis, message, throwable))
         if (BuildConfig.DEBUG) {
             val stackTrace = Thread.currentThread().stackTrace
             Log.e(stackTrace[3].className, message, throwable)
@@ -41,7 +42,7 @@ object AppLog {
         if (mLogs.size > 100) {
             mLogs.removeLastOrNull()
         }
-        mLogs.add(0, Triple(System.currentTimeMillis(), message, throwable))
+        mLogs.add(0, Triple(currentTimeMillis, message, throwable))
         if (BuildConfig.DEBUG) {
             val stackTrace = Thread.currentThread().stackTrace
             Log.e(stackTrace[3].className, message, throwable)

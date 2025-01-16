@@ -27,17 +27,20 @@ import android.os.Build
 import android.os.Process
 import androidx.preference.PreferenceManager
 import android.provider.Settings
+import android.view.View
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
+import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
 import androidx.core.content.edit
+import io.core.common.util.ext.layoutInflater
 import io.core.common.util.log.printOnDebug
 import java.io.File
 import kotlin.system.exitProcess
 
 inline fun <reified A : Activity> Context.startActivity(configIntent: Intent.() -> Unit = {}) {
     val intent = Intent(this, A::class.java)
-    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+    if (this !is Activity) intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
     intent.apply(configIntent)
     startActivity(intent)
 }
@@ -160,6 +163,9 @@ fun Context.putPrefStringSet(key: String, value: MutableSet<String>) =
 fun Context.removePref(key: String) =
     defaultSharedPreferences.edit { remove(key) }
 
+fun Context.layout2View(@LayoutRes layout: Int): View {
+    return layoutInflater.inflate(layout, null)
+}
 
 fun Context.getCompatColor(@ColorRes id: Int): Int = ContextCompat.getColor(this, id)
 
@@ -235,7 +241,6 @@ val Context.isPad: Boolean
     get() {
         return (resources.configuration.screenLayout and Configuration.SCREENLAYOUT_SIZE_MASK) >= Configuration.SCREENLAYOUT_SIZE_LARGE
     }
-
 
 val Context.channel: String
     get() {

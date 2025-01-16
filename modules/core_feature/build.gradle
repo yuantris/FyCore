@@ -55,7 +55,7 @@ dependencies {
     implementation libs.core.ktx
     implementation libs.appcompat
     implementation libs.material
-    implementation(libs.flexbox)
+    implementation (libs.flexbox)
     testImplementation libs.junit
     androidTestImplementation libs.ext.junit
     androidTestImplementation libs.espresso.core
@@ -70,61 +70,84 @@ dependencies {
     api libs.navigation.fragment.ktx
     api libs.navigation.ui.ktx
     implementation libs.kotlin.reflect
+    implementation libs.kotlinx.coroutines.core
+    implementation libs.kotlinx.coroutines.android
 
     compileOnly libs.room.ktx
     //noinspection KaptUsageInsteadOfKsp
     kapt libs.room.compiler
     annotationProcessor libs.room.compiler
 
-    //Glide
+    // Glide
     compileOnly(libs.glide)
+    // 权限请求框架
+    compileOnly libs.xxpermissions
 
     // https://github.com/liangjingkanji/BRV
     compileOnly(libs.brv) {
         exclude group: 'com.github.liangjingkanji', module: 'StateLayout'
     }
 
-    compileOnly libs.xxpermissions
-
     // https://github.com/gyf-dev/ImmersionBar
     compileOnly libs.immersionbar
     compileOnly libs.immersionbar.ktx
-
     // https://github.com/Blankj/AndroidUtilCode
     compileOnly libs.utilcodex
-
     // ShapeView：https://github.com/getActivity/ShapeView
     compileOnly libs.shapeView
     // ShapeDrawable：https://github.com/getActivity/ShapeDrawable
     compileOnly libs.shapedrawable
+
 }
 
-/*当前版本*/
-version libs.versions.fycore.get()
+///*当前版本*/
+//version libs.versions.fycore.get()
+//
+//publishing {
+//    publications {
+//        // register 和 create 都类似，这里用 create
+//        create("lib-base", MavenPublication) {
+//            // 配置信息，使用: classpath("groupId:artifactId:version") (不能有空格)
+//            groupId = "io.core"
+//            artifactId = "fylibs"
+//            version = project.version
+//
+//            // 这条要加上，不然不会包含代码文件
+//            afterEvaluate {
+//                from components.release
+//            }
+//        }
+//    }
+//    repositories {
+//        // 远程仓库
+//        maven {
+//            name = "GitHubPackages"
+//            url = uri("https://maven.pkg.github.com/yuantris/FyCore")
+//            credentials {
+//                username = 'yuantris'
+//                password = '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'
+//            }
+//        }
+//    }
+//}
 
-publishing {
-    publications {
-        // register 和 create 都类似，这里用 create
-        create("lib-base", MavenPublication) {
-            // 配置信息，使用: classpath("groupId:artifactId:version") (不能有空格)
-            groupId = "io.core"
-            artifactId = "fylibs"
-            version = project.version
-
-            // 这条要加上，不然不会包含代码文件
-            afterEvaluate {
+afterEvaluate {
+    publishing {
+        publications {
+            plugin(MavenPublication) {
                 from components.release
+                groupId = 'io.core'
+                artifactId = 'fylibs'
+                version = '0.1.1'
             }
         }
-    }
-    repositories {
-        // 远程仓库
-        maven {
-            name = "GitHubPackages"
-            url = uri("https://maven.pkg.github.com/yuantris/FyCore")
-            credentials {
-                username = 'yuantris'
-                password = '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'
+        repositories {
+            maven {
+                url = 'https://packages.aliyun.com/67789758cdfeb44ae202deb7/maven/2512815-release-ndmhzu'
+                credentials {
+                    username = '63d4d579378edb0fd9aa3b2d'
+                    password = 'nXJxEWiiObre'
+                }
             }
         }
     }

@@ -9,6 +9,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.os.Parcelable
 import android.util.DisplayMetrics
 import android.view.Gravity
 import android.view.View
@@ -22,6 +23,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import io.core.other.Toast
+import java.io.Serializable
 
 inline fun <reified T : DialogFragment> AppCompatActivity.showDialogFragment(
     arguments: Bundle.() -> Unit = {}
@@ -168,21 +170,9 @@ val Activity.navigationBarGravity: Int
         return gravity ?: Gravity.BOTTOM
     }
 
-fun Context.startActivity(clazz: Class<*>) {
-    val intent = Intent(this, clazz)
-    if (this !is Activity) {
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
-    }
-    startActivity(intent)
-}
-
-fun Fragment.startActivity(clazz: Class<*>) {
-    val intent = Intent(requireContext(), clazz)
-    startActivity(intent)
-}
-
+@Suppress("DEPRECATION")
 fun Activity.startNoTransition(clazz: Class<*>, finish: Boolean = true) {
-    startActivity(clazz)
+    startActivity(Intent(this, clazz))
     overridePendingTransition(0, 0)
     if (finish) finish()
 }

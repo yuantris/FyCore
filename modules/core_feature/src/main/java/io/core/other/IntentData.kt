@@ -1,5 +1,7 @@
 package io.core.other
 
+import io.core.common.util.ext.currentTimeMillis
+
 object IntentData {
 
     private val bigData: MutableMap<String, Any> = mutableMapOf()
@@ -14,7 +16,7 @@ object IntentData {
 
     @Synchronized
     fun put(data: Any?): String {
-        val key = System.currentTimeMillis().toString()
+        val key = currentTimeMillis.toString()
         data?.let {
             bigData[key] = data
         }

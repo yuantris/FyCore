@@ -5,15 +5,17 @@ import android.view.View
 import android.view.Window
 import androidx.annotation.CallSuper
 import androidx.appcompat.app.AppCompatActivity
+import com.gyf.immersionbar.ImmersionBar
 import io.core.R
 import io.core.common.base.action.BundleAction
 import io.core.common.base.action.TitleBarAction
+import io.core.common.exception.NoStackTraceException
+import io.core.common.util.ext.addCallback
+import io.core.common.util.ext.ifNotNull
+import io.core.common.util.ext.ifNull
 import io.core.common.util.ext.ui.BarColor
-import io.core.common.util.ext.isNotNull
-import io.core.common.util.ext.isNull
 import io.core.common.util.log.logD
 import io.core.widget.layout.TitleBar
-import com.gyf.immersionbar.ImmersionBar
 
 abstract class BaseActivity : AppCompatActivity(), TitleBarAction, BundleAction {
     private val TAG by lazy { "BaseActivity_" }
@@ -23,6 +25,9 @@ abstract class BaseActivity : AppCompatActivity(), TitleBarAction, BundleAction 
 
     /** 状态栏沉浸 */
     private var immersionBar: ImmersionBar? = null
+
+    /** 是否接管返回键 */
+    private var isTakeOverBackPressed = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,13 +42,31 @@ abstract class BaseActivity : AppCompatActivity(), TitleBarAction, BundleAction 
         val titleBar = getTitleBar()
         getStatusBarConfig().init()
         // 设置标题栏沉浸
-        titleBar.isNotNull {
-            ImmersionBar.setTitleBar(this, titleBar)
+        titleBar.ifNotNull {
+            ImmersionBar.setTitleBar(this, it)
+        }
+        // 设置返回键拦截
+        onBackPressedDispatcher.addCallback(this, enabled = isTakeOverBackPressed) {
+            onBackPressedCall()
         }
     }
 
     protected open fun setListener() {}
     protected open fun observers() {}
+
+    /**
+     * 设置是否接管返回键，默认不接管，如果要接管，请重写onBackPressedCall方法，
+     * 并在initial方法super之前setTakeOverBackPressed(true)
+     */
+    protected open fun onBackPressedCall() {}
+
+    /**
+     * 设置是否接管返回键，默认不接管
+     * TODO 在initial方法super之前调用生效
+     */
+    open fun setTakeOverBackPressed(takeOverBackPressed: Boolean) {
+        isTakeOverBackPressed = takeOverBackPressed
+    }
 
     open fun contentViewBind(): View? {
         return null
@@ -53,7 +76,7 @@ abstract class BaseActivity : AppCompatActivity(), TitleBarAction, BundleAction 
      * 获取状态栏沉浸的配置对象
      */
     open fun getStatusBarConfig(): ImmersionBar {
-        immersionBar.isNull {
+        immersionBar.ifNull {
             immersionBar = createStatusBarConfig()
         }
         return immersionBar!!
@@ -79,7 +102,7 @@ abstract class BaseActivity : AppCompatActivity(), TitleBarAction, BundleAction 
     }
 
     override fun getTitleBar(): TitleBar? {
-        titleBar.isNull { titleBar = obtainTitleBar(findViewById(Window.ID_ANDROID_CONTENT)) }
+        titleBar.ifNull { titleBar = obtainTitleBar(findViewById(Window.ID_ANDROID_CONTENT)) }
         "titleBar= ${titleBar == null}".logD(TAG)
         return titleBar
     }

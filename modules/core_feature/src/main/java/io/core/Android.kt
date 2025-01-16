@@ -1,11 +1,10 @@
 package io.core
 
 import android.app.Application
-import android.content.res.Resources
-import android.util.TypedValue
 import io.core.common.helper.LifecycleHelp
+import io.core.engine.livebus.LiveEventBus
+import io.core.engine.livebus.logger.DefaultLogger
 import io.core.other.CrashHandler
-import kotlin.properties.Delegates
 
 object Android {
 
@@ -42,5 +41,12 @@ object Android {
         CrashHandler.register(application)
         // 注册Activity生命周期回调
         application.registerActivityLifecycleCallbacks(LifecycleHelp)
+        // LiveEventBus 初始化
+        LiveEventBus.config()
+            .lifecycleObserverAlwaysActive(true)
+            .autoClear(true)
+            .enableLogger(debug)
+            .setLogger(DefaultLogger())
     }
+
 }

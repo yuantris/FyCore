@@ -1,12 +1,13 @@
 [versions]
 # 定义 FyCore 库的发布版本与依赖来源
-fycore = "0.0.7"
+fycore = "0.1.1"
 local = "local"
 jitpack = "jitpack"
 package = "package"
 # --------- # --------- #
 android-gradle = "7.3.1"
 kotlin-version = "1.7.20"
+kotlinx-coroutines-android = "1.6.4"
 
 appcompat = "1.6.1"
 core-ktx = "1.9.0"
@@ -51,6 +52,8 @@ google-gson = { module = "com.google.code.gson:gson", version.ref = "google-gson
 flexbox = { module = "com.google.android.flexbox:flexbox", version.ref = "flexbox" }
 activity-ktx = { module = "androidx.activity:activity-ktx", version.ref = "activity-ktx" }
 recyclerview = { module = "androidx.recyclerview:recyclerview", version.ref = "recyclerview" }
+kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinx-coroutines-android" }
+kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines-android" }
 navigation-fragment-ktx = { module = "androidx.navigation:navigation-fragment-ktx", version.ref = "lifecycle-ktx" }
 navigation-ui-ktx = { module = "androidx.navigation:navigation-ui-ktx", version.ref = "lifecycle-ktx" }
 lifecycle-livedata-ktx = { module = "androidx.lifecycle:lifecycle-livedata-ktx", version.ref = "lifecycle-ktx" }

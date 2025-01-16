@@ -11,13 +11,14 @@ import com.blankj.utilcode.util.ActivityUtils
 import com.blankj.utilcode.util.TimeUtils
 import com.blankj.utilcode.util.ToastUtils
 import io.core.Android
+import io.core.common.helper.TryCatchHelper
+import io.core.common.util.ext.currentTimeMillis
+import io.core.common.util.ext.verify
 import io.core.common.util.log.logD
 import io.core.common.util.log.logE
 import io.core.common.util.log.logI
-import io.core.common.util.ext.verify
 import io.core.constant.DateFormatPatterns
 import io.core.constant.FileType
-import io.core.common.helper.TryCatchHelper
 import java.io.FileInputStream
 import java.security.MessageDigest
 
@@ -35,6 +36,12 @@ import java.security.MessageDigest
  * @author Yuan
  */
 class CoreUtil {
+
+    companion object {
+        fun toast(text: String) {
+            ToastUtil.show(text)
+        }
+    }
 
     class File {
 
@@ -136,13 +143,13 @@ class CoreUtil {
                         Android.context.packageManager.resolveActivity(
                             intent,
                             PackageManager.MATCH_DEFAULT_ONLY
-                        ).verify {
-                            if (it) {
-                                ToastUtils.showShort("没有找到对应的应用程序来打开")
-                            } else {
+                        ).verify(
+                            fail = {
+                                ToastUtils.showShort("无法打开该格式文件")
+                            },
+                            success = {
                                 ActivityUtils.startActivity(intent, 0, 0)
-                            }
-                        }
+                            })
                     },
                     catch = {
                         ToastUtils.showShort("无法打开该格式文件")
@@ -166,7 +173,7 @@ class CoreUtil {
              * @return 返回当前时间戳，单位为毫秒
              */
             fun getCurrentTimestamp(): Long {
-                return System.currentTimeMillis()
+                return currentTimeMillis
             }
 
             /**
@@ -187,6 +194,7 @@ class CoreUtil {
              * 此函数通过结束当前 Activity 并使用相同的 Intent 重新启动它，从而实现重启 Activity 的效果
              * @param activity 要重启的 Activity 实例
              */
+            @Suppress("DEPRECATION")
             fun restartActivity(activity: android.app.Activity) {
                 val intent = activity.intent
                 activity.finish() // 结束当前 Activity

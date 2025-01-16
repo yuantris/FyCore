@@ -13,7 +13,6 @@ import androidx.core.content.edit
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
-import io.core.R
 
 inline fun <reified T : DialogFragment> Fragment.showDialogFragment(
     arguments: Bundle.() -> Unit = {}
@@ -79,11 +78,6 @@ inline fun <reified T : Activity> Fragment.startActivity(
 ) {
     startActivity(Intent(requireContext(), T::class.java).apply(configIntent))
 }
-
-//fun Fragment.showHelp(fileName: String) {
-//    val mdText = String(requireContext().assets.open("web/help/md/${fileName}.md").readBytes())
-//    showDialogFragment(TextDialog(getString(R.string.help), mdText, TextDialog.Mode.MD))
-//}
 
 val Fragment.isCreated
     get() = lifecycle.currentState.isAtLeast(Lifecycle.State.CREATED)

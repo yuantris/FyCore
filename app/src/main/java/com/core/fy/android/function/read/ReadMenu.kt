@@ -38,8 +38,8 @@ import io.core.common.util.ext.ui.onLongClick
 import io.core.common.util.ext.ui.putPrefBoolean
 import io.core.common.util.ext.ui.visible
 import io.core.common.util.tools.ColorUtils
-import io.core.common.util.view.ConstraintModify
-import io.core.common.util.view.modifyBegin
+import io.core.common.util.layout.ConstraintModify
+import io.core.common.util.layout.modifyBegin
 
 /**
  * 阅读界面菜单

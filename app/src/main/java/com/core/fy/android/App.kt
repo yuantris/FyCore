@@ -1,8 +1,13 @@
 package com.core.fy.android
 
 import android.app.Application
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.os.Build
+import com.core.fy.android.constants.AppConst.channelIdReadAloud
 import io.core.Android
-import io.core.common.base.component.activity.RestartActivity
+import io.core.common.util.ext.notificationManager
 
 /**
 # ██████████
@@ -25,5 +30,32 @@ class App : Application() {
         // 设置重启对象Activity
         Android.homeActivity = MainActivity::class.java
         // SoftKeyboardGlobal.install(this, false)
+        createNotificationChannels()
+    }
+
+    /**
+     * 创建通知ID
+     */
+    private fun createNotificationChannels() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return
+
+        val readAloudChannel = NotificationChannel(
+            channelIdReadAloud,
+            getString(R.string.read_aloud),
+            NotificationManager.IMPORTANCE_DEFAULT
+        ).apply {
+            enableLights(false)
+            enableVibration(false)
+            setSound(null, null)
+            lockscreenVisibility = Notification.VISIBILITY_PUBLIC
+        }
+
+
+        //向notification manager 提交channel
+        notificationManager.createNotificationChannels(
+            listOf(
+                readAloudChannel
+            )
+        )
     }
 }

@@ -27,6 +27,7 @@ import android.widget.SeekBar
 import android.widget.TextView
 import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
+import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.menu.MenuPopupHelper
 import androidx.appcompat.widget.PopupMenu
@@ -40,10 +41,11 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.ViewPager
 import io.core.common.helper.canvasrecorder.CanvasRecorder
 import io.core.common.helper.canvasrecorder.record
+import io.core.common.util.ext.currentTimeMillis
 import io.core.common.util.ext.inputMethodManager
+import io.core.common.util.ext.layoutInflater
 import io.core.common.util.log.printOnDebug
 import java.lang.reflect.Field
-
 
 private tailrec fun getCompatActivity(context: Context?): AppCompatActivity? {
     return when (context) {
@@ -256,16 +258,16 @@ fun View.applyNavigationBarPadding(withInitialPadding: Boolean = false) {
         windowInsets
     }
 }
-//
-//fun View.applyNavigationBarMargin(withInitialMargin: Boolean = false) {
-//    val initialMargin = if (withInitialMargin) marginBottom else 0
-//    ViewCompat.setOnApplyWindowInsetsListener(this) { _, windowInsets ->
-//        val lp = layoutParams as ViewGroup.MarginLayoutParams
-//        lp.bottomMargin = initialMargin + windowInsets.navigationBarHeight
-//        layoutParams = lp
-//        windowInsets
-//    }
-//}
+
+fun View.applyNavigationBarMargin(withInitialMargin: Boolean = false) {
+    val initialMargin = if (withInitialMargin) marginBottom else 0
+    ViewCompat.setOnApplyWindowInsetsListener(this) { _, windowInsets ->
+        val lp = layoutParams as ViewGroup.MarginLayoutParams
+        lp.bottomMargin = initialMargin + windowInsets.navigationBarHeight
+        layoutParams = lp
+        windowInsets
+    }
+}
 
 fun View.setBackgroundKeepPadding(@DrawableRes backgroundResId: Int) {
     val paddingLeft = paddingLeft
@@ -387,7 +389,9 @@ fun View.onVisibilityChange(
                     v.viewTreeObserver.removeGlobalOnLayoutListener(layoutListener)
                 }
                 v.viewTreeObserver.removeOnWindowFocusChangeListener(focusChangeListener)
-                if(scrollListener !=null) v.viewTreeObserver.removeOnScrollChangedListener(scrollListener)
+                if (scrollListener != null) v.viewTreeObserver.removeOnScrollChangedListener(
+                    scrollListener
+                )
                 viewGroups.forEach { it.setOnHierarchyChangeListener(null) }
             }
             removeOnAttachStateChangeListener(this)
@@ -427,14 +431,13 @@ fun View.onClick(action: () -> Unit) {
 fun View.setDebouncedClickListener(debounceTime: Long = 500L, onClick: () -> Unit) {
     var lastClickTime = 0L
     setOnClickListener {
-        val currentTime = System.currentTimeMillis()
+        val currentTime = currentTimeMillis
         if (currentTime - lastClickTime > debounceTime) {
             onClick()
             lastClickTime = currentTime
         }
     }
 }
-
 
 
 // 简单的淡入动画
