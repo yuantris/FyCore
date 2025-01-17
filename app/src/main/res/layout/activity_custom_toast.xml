@@ -13,25 +13,25 @@
         app:titleSize="@dimen/sp_16"
         app:titleText="自定义Toast" />
 
-    <com.google.android.material.button.MaterialButton
+    <Button
         android:id="@+id/show_top"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="show_top" />
 
-    <com.google.android.material.button.MaterialButton
+    <Button
         android:id="@+id/show_center"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="show_center" />
 
-    <com.google.android.material.button.MaterialButton
+    <Button
         android:id="@+id/show_bottom"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="show_bottom" />
 
-    <com.google.android.material.button.MaterialButton
+    <Button
         android:id="@+id/cancel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

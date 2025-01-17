@@ -51,28 +51,28 @@
                 android:paddingHorizontal="10dp"
                 android:paddingTop="10dp">
 
-                <com.google.android.material.button.MaterialButton
+                <Button
                     android:id="@+id/add"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="增" />
 
-                <com.google.android.material.button.MaterialButton
+                <Button
                     android:id="@+id/del"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="删" />
 
-                <com.google.android.material.button.MaterialButton
+                <Button
                     android:id="@+id/update"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="改" />
 
-                <com.google.android.material.button.MaterialButton
+                <Button
                     android:id="@+id/find"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -86,28 +86,28 @@
                 android:orientation="horizontal"
                 android:padding="10dp">
 
-                <com.google.android.material.button.MaterialButton
+                <Button
                     android:id="@+id/find_all"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="查找所有" />
 
-                <com.google.android.material.button.MaterialButton
+                <Button
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="删"
                     android:visibility="invisible" />
 
-                <com.google.android.material.button.MaterialButton
+                <Button
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="改"
                     android:visibility="invisible" />
 
-                <com.google.android.material.button.MaterialButton
+                <Button
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"

@@ -6,16 +6,24 @@ import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.view.KeyEvent
 import android.view.View
+import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import io.core.R
+import io.core.common.util.ext.cool.dpToPx
+import io.core.common.util.ext.cool.spToPx
 import io.core.common.util.ext.ui.applyTint
 import io.core.common.util.ext.ui.getCompatColor
+import io.core.common.util.tools.DrawableBuilder
 
 internal class AndroidAlertBuilder(override val ctx: Context) : AlertBuilder<AlertDialog> {
 
     private val builder = MaterialAlertDialogBuilder(ctx)
+
+    override fun setBackground(drawable: Drawable) {
+        builder.background = drawable
+    }
 
     override fun setTitle(title: CharSequence) {
         builder.setTitle(title)
@@ -145,13 +153,7 @@ internal class AndroidAlertBuilder(override val ctx: Context) : AlertBuilder<Ale
         }
     }
 
-    override fun build(): AlertDialog {
-        val dialog = builder.create()
-        val compatColor = ctx.getCompatColor(R.color.common_text_color)
-        dialog.getButton(DialogInterface.BUTTON_POSITIVE)?.setTextColor(compatColor)
-        dialog.getButton(DialogInterface.BUTTON_NEGATIVE)?.setTextColor(compatColor)
-        return dialog
-    }
+    override fun build(): AlertDialog = builder.create()
 
     override fun show(): AlertDialog {
         val dialog = build()

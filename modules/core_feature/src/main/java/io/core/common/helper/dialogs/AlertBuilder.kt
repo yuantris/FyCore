@@ -15,6 +15,8 @@ import androidx.annotation.StringRes
 interface AlertBuilder<out D : DialogInterface> {
     val ctx: Context
 
+    fun setBackground(drawable: Drawable)
+
     fun setTitle(title: CharSequence)
 
     fun setTitle(titleResource: Int)

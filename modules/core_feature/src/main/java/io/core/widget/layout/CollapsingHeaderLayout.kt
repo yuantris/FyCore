@@ -11,11 +11,11 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
 import com.blankj.utilcode.util.BarUtils.getStatusBarHeight
 import io.core.R
-import io.core.common.util.ext.cool.dp2px
 import io.core.common.util.ext.ui.getActivity
 import io.core.common.util.log.logD
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.CollapsingToolbarLayout
+import io.core.common.util.ext.cool.dpToPx
 
 class CollapsingHeaderLayout @JvmOverloads constructor(
     context: Context,
@@ -30,7 +30,7 @@ class CollapsingHeaderLayout @JvmOverloads constructor(
     private val contentContainer: FrameLayout
 
     // 自定义属性
-    var headerHeight: Int = 300.dp2px(context)
+    var headerHeight: Int = 300.dpToPx()
     var headerTitle: String? = null
     var headerImageResId: Int = 0
     var titleTextColor: Int = Color.BLACK

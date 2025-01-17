@@ -3,8 +3,10 @@ package io.core.common.util.ext
 import android.annotation.SuppressLint
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.OnBackPressedDispatcher
+import androidx.annotation.ColorInt
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
+import com.hjq.shape.drawable.ShapeDrawable
 
 /**
 # ██████████
@@ -29,6 +31,7 @@ inline fun Any?.ifNull(action: () -> Unit) {
         action()
     }
 }
+
 inline fun Any?.verify(fail: () -> Unit = {}, success: () -> Unit = {}) {
     if (this == null) fail() else success()
 }

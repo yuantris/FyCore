@@ -21,7 +21,7 @@
         <!-- 默认提示颜色，Button、TextView 的提示文字颜色 -->
         <item name="android:textColorHint">@color/common_text_hint_color</item>
         <!-- ActionMode 的颜色 -->
-        <item name="actionModeBackground">@color/common_primary_color</item>
+        <!--<item name="actionModeBackground">@color/common_primary_color</item>-->
     </style>
 
     <style name="Theme.FyCore.Splash" parent="Theme.FyCore">

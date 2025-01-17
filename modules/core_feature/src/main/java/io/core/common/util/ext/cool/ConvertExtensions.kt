@@ -122,6 +122,10 @@ fun Int.dpToPx(): Int = this.toFloat().dpToPx().toInt()
 
 fun Int.spToPx(): Int = this.toFloat().spToPx().toInt()
 
+fun Int.pxToDp(): Int = this.toFloat().pxToDp().toInt()
+
+fun Int.pxToSp(): Int = this.toFloat().pxToSp().toInt()
+
 fun Float.dpToPx(): Float = android.util.TypedValue.applyDimension(
     android.util.TypedValue.COMPLEX_UNIT_DIP, this, Resources.getSystem().displayMetrics
 )
@@ -129,3 +133,8 @@ fun Float.dpToPx(): Float = android.util.TypedValue.applyDimension(
 fun Float.spToPx(): Float = android.util.TypedValue.applyDimension(
     android.util.TypedValue.COMPLEX_UNIT_SP, this, Resources.getSystem().displayMetrics
 )
+
+fun Float.pxToDp(): Float = this / Resources.getSystem().displayMetrics.density + 0.5f
+
+@Suppress("DEPRECATION")
+fun Float.pxToSp(): Float = this / Resources.getSystem().displayMetrics.scaledDensity + 0.5f

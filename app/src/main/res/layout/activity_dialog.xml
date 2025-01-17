@@ -23,16 +23,22 @@
         android:orientation="vertical"
         app:layout_constraintTop_toBottomOf="@+id/title_bar">
 
-        <com.google.android.material.button.MaterialButton
+        <Button
             android:id="@+id/show"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="显示" />
 
-        <com.google.android.material.button.MaterialButton
+        <Button
             android:id="@+id/dismiss"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="隐藏" />
+
+        <Button
+            android:id="@+id/bottom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="底部" />
     </androidx.appcompat.widget.LinearLayoutCompat>
 </androidx.constraintlayout.widget.ConstraintLayout>
