@@ -1,8 +1,12 @@
 ## FyCore
-> 项目初始化:
+> 项目初始化
+
 > `Android.initialize(this)`
-> `*// 设置重启对象*`
-> `*Activity*Android.homeActivity = MainActivity::class.*java*`
+>
+> `
+> // 设置重启对象
+> Android.homeActivity = MainActivity::class.java
+> `
 
 **注意事项**
 
