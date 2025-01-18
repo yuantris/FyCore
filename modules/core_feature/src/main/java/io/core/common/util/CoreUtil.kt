@@ -10,8 +10,8 @@ import android.os.StrictMode.VmPolicy
 import com.blankj.utilcode.util.ActivityUtils
 import com.blankj.utilcode.util.TimeUtils
 import com.blankj.utilcode.util.ToastUtils
-import io.core.Android
 import io.core.common.helper.TryCatchHelper
+import io.core.common.util.ext.appCtx
 import io.core.common.util.ext.currentTimeMillis
 import io.core.common.util.ext.verify
 import io.core.common.util.log.logD
@@ -76,7 +76,7 @@ class CoreUtil {
              */
             fun refreshMediaLibrary() {
                 MediaScannerConnection.scanFile(
-                    Android.context,
+                    appCtx,
                     arrayOf(Environment.getExternalStorageDirectory().absolutePath),
                     null
                 ) { path, uri ->
@@ -140,14 +140,14 @@ class CoreUtil {
 
                         //设置intent的data和Type属性
                         intent.setDataAndType(fileURI, type)
-                        Android.context.packageManager.resolveActivity(
+                        appCtx.packageManager.resolveActivity(
                             intent,
                             PackageManager.MATCH_DEFAULT_ONLY
                         ).verify(
-                            fail = {
+                            ifNull = {
                                 ToastUtils.showShort("无法打开该格式文件")
                             },
-                            success = {
+                            ifNotNull = {
                                 ActivityUtils.startActivity(intent, 0, 0)
                             })
                     },

@@ -1,6 +1,6 @@
 @file:Suppress("ObjectPropertyName", "EXPERIMENTAL_API_USAGE")
 @file:OptIn(ObsoleteCoroutinesApi::class)
-package io.core.common.base.event.channel
+package io.core.common.helper.event.channel
 
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
@@ -28,7 +28,8 @@ import kotlinx.coroutines.launch
 @PublishedApi
 internal var broadcastChannel = BroadcastChannel<ChannelEvent<Any>>(102400)
 
-// <editor-fold desc="发送">
+/*post<-->observe*/
+/*send<-->receive*/
 
 /**
  * 发送事件

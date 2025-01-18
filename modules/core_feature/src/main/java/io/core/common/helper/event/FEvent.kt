@@ -1,4 +1,4 @@
-package io.core.common.base.event
+package io.core.common.helper.event
 
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers

@@ -10,6 +10,7 @@ import androidx.documentfile.provider.DocumentFile
 import androidx.fragment.app.Fragment
 import io.core.Android
 import io.core.common.util.FileDoc
+import io.core.common.util.ext.appCtx
 import io.core.common.util.ext.ui.checkSelfUriPermission
 import io.core.common.util.log.AppLog
 import io.core.common.util.log.printOnDebug
@@ -297,7 +298,7 @@ fun Uri.toWritePfd(context: Context): Result<ParcelFileDescriptor> {
 
 
 fun Uri.canRead(): Boolean {
-    return Android.context.checkSelfUriPermission(
+    return appCtx.checkSelfUriPermission(
         this,
         Intent.FLAG_GRANT_READ_URI_PERMISSION
     ) == PackageManager.PERMISSION_GRANTED

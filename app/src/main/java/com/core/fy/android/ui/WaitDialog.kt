@@ -8,7 +8,7 @@ import android.widget.TextView
 import androidx.annotation.StringRes
 import com.core.fy.android.R
 import io.core.common.base.action.AnimAction
-import io.core.common.base.dialog.BaseDialog
+import io.core.common.base.component.dialog.BaseDialog
 
 
 class WaitDialog {

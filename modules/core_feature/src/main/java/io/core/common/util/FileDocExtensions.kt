@@ -9,7 +9,7 @@ import android.net.Uri
 import android.os.ParcelFileDescriptor
 import android.provider.DocumentsContract
 import androidx.documentfile.provider.DocumentFile
-import io.core.Android
+import io.core.common.util.ext.appCtx
 import io.core.common.util.ext.cool.checkWrite
 import io.core.common.util.ext.cool.inputStream
 import io.core.common.util.ext.cool.isContentScheme
@@ -45,11 +45,11 @@ data class FileDoc(
     val isContentScheme get() = uri.isContentScheme()
 
     fun readBytes(): ByteArray {
-        return uri.readBytes(Android.context)
+        return uri.readBytes(appCtx)
     }
 
     fun readText(): String {
-        return uri.readText(Android.context)
+        return uri.readText(appCtx)
     }
 
     fun asDocumentFile(): DocumentFile? {
@@ -62,9 +62,9 @@ data class FileDoc(
                         Uri::class.java
                     ).apply {
                         isAccessible = true
-                    }.newInstance(null, Android.context, uri) as DocumentFile
+                    }.newInstance(null, appCtx, uri) as DocumentFile
             } else {
-                DocumentFile.fromSingleUri(Android.context, uri)
+                DocumentFile.fromSingleUri(appCtx, uri)
             }
         }
         return null
@@ -82,7 +82,7 @@ data class FileDoc(
         fun fromUri(uri: Uri, isDir: Boolean): FileDoc {
             if (uri.isContentScheme()) {
                 val doc = if (isDir) {
-                    DocumentFile.fromTreeUri(Android.context, uri)!!
+                    DocumentFile.fromTreeUri(appCtx, uri)!!
                 } else if (uri.host == "downloads") {
                     val query = DownloadManager.Query()
                     query.setFilterById(uri.lastPathSegment!!.toLong())
@@ -90,13 +90,13 @@ data class FileDoc(
                         if (it.moveToFirst()) {
                             val lUriColum = it.getColumnIndex(DownloadManager.COLUMN_LOCAL_URI)
                             val lUri = it.getString(lUriColum)
-                            DocumentFile.fromSingleUri(Android.context, Uri.parse(lUri))!!
+                            DocumentFile.fromSingleUri(appCtx, Uri.parse(lUri))!!
                         } else {
-                            DocumentFile.fromSingleUri(Android.context, uri)!!
+                            DocumentFile.fromSingleUri(appCtx, uri)!!
                         }
                     }
                 } else {
-                    DocumentFile.fromSingleUri(Android.context, uri)!!
+                    DocumentFile.fromSingleUri(appCtx, uri)!!
                 }
                 return FileDoc(doc.name ?: "", isDir, doc.length(), doc.lastModified(), doc.uri)
             }
@@ -156,7 +156,7 @@ fun FileDoc.list(filter: FileDocFilter? = null): ArrayList<FileDoc>? {
             val docList = arrayListOf<FileDoc>()
             var cursor: Cursor? = null
             try {
-                cursor = Android.context.contentResolver.query(
+                cursor = appCtx.contentResolver.query(
                     childrenUri,
                     projection,
                     null,
@@ -253,19 +253,19 @@ fun FileDoc.createFolderIfNotExist(
 }
 
 fun FileDoc.openInputStream(): Result<InputStream> {
-    return uri.inputStream(Android.context)
+    return uri.inputStream(appCtx)
 }
 
 fun FileDoc.openOutputStream(): Result<OutputStream> {
-    return uri.outputStream(Android.context)
+    return uri.outputStream(appCtx)
 }
 
 fun FileDoc.openReadPfd(): Result<ParcelFileDescriptor> {
-    return uri.toReadPfd(Android.context)
+    return uri.toReadPfd(appCtx)
 }
 
 fun FileDoc.openWritePfd(): Result<ParcelFileDescriptor> {
-    return uri.toWritePfd(Android.context)
+    return uri.toWritePfd(appCtx)
 }
 
 fun FileDoc.exists(
@@ -290,7 +290,7 @@ fun FileDoc.exists(): Boolean {
 
 fun FileDoc.writeText(text: String) {
     if (uri.isContentScheme()) {
-        uri.writeText(Android.context, text)
+        uri.writeText(appCtx, text)
     } else {
         File(uri.path!!).writeText(text)
     }
@@ -322,12 +322,12 @@ fun DocumentFile.listFileDocs(filter: FileDocFilter? = null): ArrayList<FileDoc>
 
 @Throws(Exception::class)
 fun DocumentFile.openInputStream(): InputStream? {
-    return Android.context.contentResolver.openInputStream(uri)
+    return appCtx.contentResolver.openInputStream(uri)
 }
 
 @Throws(Exception::class)
 fun DocumentFile.openOutputStream(): OutputStream? {
-    return Android.context.contentResolver.openOutputStream(uri)
+    return appCtx.contentResolver.openOutputStream(uri)
 }
 
 @Throws(Exception::class)

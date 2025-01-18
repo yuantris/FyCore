@@ -1,4 +1,4 @@
-package io.core.common.base.dialog
+package io.core.common.base.component.dialog
 
 import android.app.Activity
 import android.app.Application.ActivityLifecycleCallbacks

@@ -12,13 +12,8 @@ import io.core.common.base.room.BaseRepository
 class VMFactory(private val repository: BaseRepository) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         when (modelClass) {
-            UserVM::class.java -> {
-                return UserVM(repository as UserRepository) as T
-            }
-
-            FunctionVM::class.java -> {
-                return FunctionVM(repository as FunctionRepository) as T
-            }
+            UserVM::class.java -> return UserVM(repository as UserRepository) as T
+            FunctionVM::class.java -> return FunctionVM(repository as FunctionRepository) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

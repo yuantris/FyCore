@@ -1,4 +1,4 @@
-package io.core.common.base.event
+package io.core.common.helper.event
 
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner

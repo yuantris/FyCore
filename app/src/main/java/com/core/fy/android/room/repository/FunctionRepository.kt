@@ -18,17 +18,10 @@ import io.core.common.base.room.RoomRepository
  * @description
  * @author Yuan
  */
-class FunctionRepository :
-    RoomRepository<Function, FunctionDao>(appDb.functionDao()) {
+object FunctionRepository : RoomRepository<Function, FunctionDao>(appDb.functionDao()) {
 
     fun getAllList(): List<Function>? {
         return dao.getFunctionList()
     }
 
-    companion object {
-        private var instance: FunctionRepository? = null
-        fun create() = instance ?: synchronized(this) {
-            instance ?: FunctionRepository().also { instance = it }
-        }
-    }
 }

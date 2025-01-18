@@ -271,7 +271,7 @@ inline val textClassificationManager: TextClassificationManager
 inline val wifiAwareManager: WifiAwareManager?
     @RequiresApi(26) get() = getSystemService(WIFI_AWARE_SERVICE)
 inline val autofillManager: AutofillManager
-    @RequiresApi(26) get() = Android.context.getSystemService(AutofillManager::class.java)
+    @RequiresApi(26) get() = appCtx.getSystemService(AutofillManager::class.java)
 
 inline val crossProfileApps: CrossProfileApps
     @RequiresApi(28) get() = getSystemService(CROSS_PROFILE_APPS_SERVICE)
@@ -280,15 +280,15 @@ inline val ipSecManager: IpSecManager @RequiresApi(28) get() = getSystemService(
 inline val wifiRttManager: WifiRttManager
     @RequiresApi(28) get() = getSystemService(WIFI_RTT_RANGING_SERVICE)
 inline val sliceManager: SliceManager
-    @RequiresApi(28) get() = Android.context.getSystemService(SliceManager::class.java)
+    @RequiresApi(28) get() = appCtx.getSystemService(SliceManager::class.java)
 
 inline val biometricManager: BiometricManager
     @RequiresApi(29) get() = getSystemService(BIOMETRIC_SERVICE)
 
 inline val roleManager: RoleManager @RequiresApi(29) get() = getSystemService(ROLE_SERVICE)
 inline val contentCaptureManager: ContentCaptureManager
-    @RequiresApi(29) get() = Android.context.getSystemService(ContentCaptureManager::class.java)
+    @RequiresApi(29) get() = appCtx.getSystemService(ContentCaptureManager::class.java)
 
 @Suppress("UNCHECKED_CAST")
 @PublishedApi
-internal fun <T> getSystemService(name: String) = Android.context.getSystemService(name) as T
+internal fun <T> getSystemService(name: String) = appCtx.getSystemService(name) as T

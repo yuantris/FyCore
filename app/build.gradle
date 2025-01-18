@@ -61,6 +61,7 @@ dependencies {
     testImplementation libs.junit
     androidTestImplementation libs.ext.junit
     androidTestImplementation libs.espresso.core
+    debugImplementation libs.leakcanary.android
     implementation fycoreDependencies[version]
 
     implementation libs.room.ktx

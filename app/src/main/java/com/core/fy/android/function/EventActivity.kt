@@ -1,61 +1,61 @@
 package com.core.fy.android.function
 
+import com.core.fy.android.R
 import com.core.fy.android.databinding.ActivityEventBinding
 import io.core.common.base.component.activity.ReflectBindingActivity
-import io.core.common.base.event.Event
-import io.core.common.base.event.FEvent
-import io.core.common.base.event.FlowEventBus
-import io.core.common.base.event.flowOf
+import io.core.common.helper.event.Event
+import io.core.common.helper.event.FEvent
+import io.core.common.helper.event.FlowEventBus
+import io.core.common.helper.event.flowOf
 import io.core.common.util.ext.cool.launchSync
+import io.core.common.util.ext.cool.observeEvent
+import io.core.common.util.ext.cool.postEvent
+import io.core.common.util.ext.currentTimeMillis
+import io.core.common.util.ext.ui.getCompatColor
+import io.core.common.util.ext.ui.onClick
 import io.core.common.util.log.logD
 import io.core.common.util.ext.ui.toast
+import io.core.common.util.tools.DrawableBuilder
 import kotlinx.coroutines.flow.collectLatest
 
 class EventActivity : ReflectBindingActivity<ActivityEventBinding>() {
 
+    private val _ratio = "3:1"
+
     override fun setListener() {
         super.setListener()
+        "个数：${binding.root.childCount}".logD()
         binding.apply {
             fEvent.setOnClickListener {
-                //FEvent.post(ParentEvent.ChildEvent(), ParentEvent::class.java)
-                //FEvent.post(Event.ShowInit("234"))
-                launchSync {
-                    FEvent.emit(Event.Created("567"))
-                }
+                postEvent(_ratio, 3)
             }
+
             flowEvent.setOnClickListener {
-                FlowEventBus.post(Event.Created("123"))
+                postEvent(_ratio, 2)
             }
 
-            ivImg.setOnLongClickListener {
-
-                false
+            ivImg.apply {
+                background =
+                    DrawableBuilder
+                        .setRadius(12f)
+                        .setSolidColor(context.getCompatColor(R.color.md_amber_A200))
+                        .build()
+                onClick {
+                    toast(currentTimeMillis.toString())
+                }
             }
         }
     }
 
     override fun observers() {
         super.observers()
-        launchSync {
-            FEvent.flowOf<Event.Created<String>>().collectLatest { event ->
-                "flowOf ParentEvent -> $event".logD()
+        observeEvent<Int>(_ratio) {
+            when (it) {
+                2 -> binding.ratioLayout.setSizeRatio(2f, 1f)
+                3 -> binding.ratioLayout.setSizeRatio(3f, 1f)
             }
-//            FEvent.flowOf<ParentEvent.ChildEvent>().collect { event ->
-//                "flowOf ParentEvent -> $event".logD()
-//            }
-        }
-        FlowEventBus.observe<Event.Created<String>>(this) {
-            "flowOf showInit -> ${it.data}".logD()
-            toast(it.data)
         }
     }
 
-    private data class SampleEvent(
-        val name: String = "Tome",
-    )
-
-    sealed interface ParentEvent {
-        data class ChildEvent(val name: String = "child") : ParentEvent
-    }
 }
 

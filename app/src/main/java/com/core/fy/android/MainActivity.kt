@@ -12,8 +12,10 @@ import com.drake.brv.BindingAdapter
 import com.drake.brv.utils.grid
 import com.drake.brv.utils.setup
 import io.core.common.base.component.activity.ReflectBindingActivity
-import io.core.common.base.fragment.BaseFragment
+import io.core.common.base.component.fragment.BaseFragment
+import io.core.common.helper.LifecycleHelp
 import io.core.common.helper.dialogs.alert
+import io.core.common.util.ext.exitApp
 import io.core.common.util.ext.notifyAllDataChanged
 import io.core.common.util.ext.ui.BarColor
 import io.core.common.util.ext.ui.getCompatColor
@@ -98,7 +100,7 @@ class MainActivity : ReflectBindingActivity<ActivityMainBinding>() {
         alert("温馨提示", "是否退出应用？") {
             cancelButton {}
             okButton {
-                finish()
+                exitApp()
             }
         }
     }

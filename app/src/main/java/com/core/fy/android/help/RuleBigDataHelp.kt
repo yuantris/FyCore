@@ -1,6 +1,7 @@
 package com.core.fy.android.help
 
 import io.core.Android
+import io.core.common.util.ext.appCtx
 import io.core.common.util.ext.cool.getFile
 import io.core.common.util.ext.ui.externalFiles
 import io.core.common.util.tools.FileUtils
@@ -9,7 +10,7 @@ import kotlinx.coroutines.withContext
 
 object RuleBigDataHelp {
 
-    private val ruleDataDir = FileUtils.createFolderIfNotExist(Android.context.externalFiles, "ruleData")
+    private val ruleDataDir = FileUtils.createFolderIfNotExist(appCtx.externalFiles, "ruleData")
     private val bookData = FileUtils.createFolderIfNotExist(ruleDataDir, "book")
     private val rssData = FileUtils.createFolderIfNotExist(ruleDataDir, "rss")
 

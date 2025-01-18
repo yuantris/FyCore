@@ -22,6 +22,7 @@ import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
+import io.core.common.util.tools.buildMainHandler
 import io.core.other.Toast
 import java.io.Serializable
 
@@ -170,6 +171,8 @@ val Activity.navigationBarGravity: Int
         return gravity ?: Gravity.BOTTOM
     }
 
+/////------------------------------------------------------------------------------------------------------/////
+
 @Suppress("DEPRECATION")
 fun Activity.startNoTransition(clazz: Class<*>, finish: Boolean = true) {
     startActivity(Intent(this, clazz))
@@ -271,7 +274,7 @@ fun <T> T.postDelayUI(duration: Long, action: () -> Unit) {
 }
 
 object MainLooper {
-    val handler: Handler by lazy { Handler(Looper.getMainLooper()) }
+    val handler: Handler by lazy { buildMainHandler() }
 }
 
 fun isMainThread(): Boolean {

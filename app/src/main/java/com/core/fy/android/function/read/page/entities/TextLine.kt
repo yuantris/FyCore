@@ -19,6 +19,7 @@ import io.core.Android
 import io.core.common.util.ext.cool.dpToPx
 import io.core.common.util.ext.ui.getCompatColor
 import io.core.common.helper.canvasrecorder.recordIfNeededThenDraw
+import io.core.common.util.ext.appCtx
 
 /**
  * 行信息
@@ -174,7 +175,7 @@ data class TextLine(
         }
         val textColor = if (isReadAloud) {
             //ThemeStore.accentColor
-            Android.context.getCompatColor(R.color.common_cancel_text_color)
+            appCtx.getCompatColor(R.color.common_cancel_text_color)
         } else {
             ReadBookConfig.textColor
         }

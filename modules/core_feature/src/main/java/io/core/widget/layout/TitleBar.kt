@@ -165,6 +165,16 @@ class TitleBar @JvmOverloads constructor(
             }
 
             typedArray.recycle()
+        } ?: run {
+            // 如果没有通过 XML 设置属性，使用默认值
+            setTitle("")
+            setBackgroundColor(Color.WHITE)
+            setTitleSize(18)
+            setLeftButton(R.drawable.bar_arrows_left_black) {
+                onClickListener?.onBackClick() ?: run {
+                    context.getActivity()?.finish()
+                }
+            }
         }
 
     }

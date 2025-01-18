@@ -1,4 +1,4 @@
-package io.core.common.base.event.channel
+package io.core.common.helper.event.channel
 
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
@@ -6,8 +6,6 @@ import androidx.lifecycle.LifecycleOwner
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.isActive
 import java.util.WeakHashMap
 import kotlin.coroutines.CoroutineContext
 

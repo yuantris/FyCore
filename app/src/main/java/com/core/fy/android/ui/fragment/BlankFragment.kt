@@ -8,15 +8,11 @@ import com.core.fy.android.constants.EventKey.BATTERY_CHANGED
 import com.core.fy.android.constants.EventKey.TIME_CHANGED
 import com.core.fy.android.databinding.FragmentBlankBinding
 import com.core.fy.android.ui.receiver.TimeBatteryReceiver
-import com.google.android.material.dialog.MaterialDialogs
-import io.core.common.base.fragment.ReflectBindingFragment
+import io.core.common.base.component.fragment.ReflectBindingFragment
 import io.core.common.helper.dialogs.alert
-import io.core.common.util.log.logD
-import io.core.common.util.log.logI
 import io.core.common.util.ext.cool.observeEvent
 import io.core.common.util.ext.cool.observeEventSticky
 import io.core.common.util.ext.ui.onClick
-import io.core.engine.livebus.core.Console
 import java.util.Date
 
 /**

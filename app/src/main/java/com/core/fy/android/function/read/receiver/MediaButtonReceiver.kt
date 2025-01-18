@@ -8,10 +8,10 @@ import com.core.fy.android.function.read.ReadBookActivity
 import com.core.fy.android.function.read.model.AudioPlay
 import com.core.fy.android.function.read.model.ReadAloud
 import com.core.fy.android.function.read.model.ReadBook
-import com.core.fy.android.help.LifecycleHelp
 import com.core.fy.android.help.config.AppConfig
 import com.core.fy.android.function.read.services.AudioPlayService
 import com.core.fy.android.function.read.services.BaseReadAloudService
+import io.core.common.helper.LifecycleHelp
 import io.core.common.util.ext.ui.getPrefBoolean
 import io.core.common.util.log.LogUtils
 

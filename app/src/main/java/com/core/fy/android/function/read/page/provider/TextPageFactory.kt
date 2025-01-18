@@ -6,11 +6,12 @@ import com.core.fy.android.function.read.page.api.DataSource
 import com.core.fy.android.function.read.page.api.PageFactory
 import com.core.fy.android.function.read.page.entities.TextPage
 import io.core.Android
+import io.core.common.util.ext.appCtx
 
 
 class TextPageFactory(dataSource: DataSource) : PageFactory<TextPage>(dataSource) {
 
-    private val keepSwipeTip = Android.context.getString(R.string.keep_swipe_tip)
+    private val keepSwipeTip = appCtx.getString(R.string.keep_swipe_tip)
 
     override fun hasPrev(): Boolean = with(dataSource) {
         return hasPrevChapter() || pageIndex > 0

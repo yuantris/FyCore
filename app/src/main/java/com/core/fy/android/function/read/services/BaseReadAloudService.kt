@@ -36,6 +36,7 @@ import io.core.Android
 import io.core.common.base.component.service.BaseService
 import io.core.common.helper.coroutine.Coroutine
 import io.core.common.helper.glide.ImageLoader
+import io.core.common.util.ext.appCtx
 import io.core.common.util.ext.audioManager
 import io.core.common.util.ext.powerManager
 import io.core.common.util.ext.telephonyManager
@@ -78,7 +79,7 @@ abstract class BaseReadAloudService : BaseService(),
 
     }
 
-    private val useWakeLock = Android.context.getPrefBoolean(PreferKey.readAloudWakeLock, false)
+    private val useWakeLock = appCtx.getPrefBoolean(PreferKey.readAloudWakeLock, false)
     private val wakeLock by lazy {
         powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "legado:ReadAloudService")
             .apply {
@@ -112,7 +113,7 @@ abstract class BaseReadAloudService : BaseService(),
     private var dsJob: Job? = null
     private var upNotificationJob: Coroutine<*>? = null
     private var cover: Bitmap =
-        BitmapFactory.decodeResource(Android.context.resources, R.drawable.info_ic)
+        BitmapFactory.decodeResource(appCtx.resources, R.drawable.info_ic)
     var pageChanged = false
     private var toLast = false
     var paragraphStartPos = 0

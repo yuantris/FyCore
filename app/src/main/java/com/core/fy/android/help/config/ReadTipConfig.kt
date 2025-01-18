@@ -3,6 +3,7 @@ package com.core.fy.android.help.config
 import android.content.Context
 import com.core.fy.android.R
 import io.core.Android
+import io.core.common.util.ext.appCtx
 
 @Suppress("ConstPropertyName")
 object ReadTipConfig {
@@ -24,11 +25,11 @@ object ReadTipConfig {
         none, bookName, chapterTitle, time, battery, batteryPercentage, page,
         totalProgress, totalProgress1, pageAndTotal, timeBattery, timeBatteryPercentage
     )
-    val tipNames get() = Android.context.resources.getStringArray(R.array.read_tip).toList()
+    val tipNames get() = appCtx.resources.getStringArray(R.array.read_tip).toList()
 
-    val tipColorNames get() = Android.context.resources.getStringArray(R.array.tip_color).toList()
+    val tipColorNames get() = appCtx.resources.getStringArray(R.array.tip_color).toList()
     val tipDividerColorNames
-        get() = Android.context.resources.getStringArray(R.array.tip_divider_color).toList()
+        get() = appCtx.resources.getStringArray(R.array.tip_divider_color).toList()
 
     var tipHeaderLeft: Int
         get() = ReadBookConfig.config.tipHeaderLeft

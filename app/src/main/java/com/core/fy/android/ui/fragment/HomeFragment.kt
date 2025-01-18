@@ -27,7 +27,7 @@ import com.drake.brv.listener.DefaultItemTouchCallback
 import com.drake.brv.utils.divider
 import com.drake.brv.utils.grid
 import com.drake.brv.utils.setup
-import io.core.common.base.fragment.ReflectBindingFragment
+import io.core.common.base.component.fragment.ReflectBindingFragment
 import io.core.common.util.ext.cool.launchAsync
 import io.core.common.util.ext.ui.onClick
 import io.core.common.util.ext.ui.startActivity
@@ -50,7 +50,7 @@ import io.core.other.Toast
 class HomeFragment : ReflectBindingFragment<FragmentHomeBinding, MainActivity>() {
 
     private val functionVM by viewModels<FunctionVM> {
-        VMFactory(FunctionRepository.create())
+        VMFactory(FunctionRepository)
     }
 
 
@@ -65,11 +65,7 @@ class HomeFragment : ReflectBindingFragment<FragmentHomeBinding, MainActivity>()
     override fun initData() {
         functionVM.data.observe(this) {
             binding.rv.apply {
-                grid(2).divider {
-                    setDrawable(R.drawable.divider_horizontal)
-                    startVisible = false
-                    endVisible = false
-                }.setup {
+                grid(2).setup {
                     addType<Function>(R.layout.item_function)
                     itemTouchHelper = ItemTouchHelper(object : DefaultItemTouchCallback() {
                         override fun onDrag(

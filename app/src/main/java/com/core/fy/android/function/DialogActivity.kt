@@ -8,6 +8,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
+import com.blankj.utilcode.util.ScreenUtils
+import com.blankj.utilcode.util.SizeUtils
 import com.core.fy.android.R
 import com.core.fy.android.databinding.ActivityDialogBinding
 import com.core.fy.android.help.config.ReadBookConfig.textSize
@@ -21,7 +23,9 @@ import io.core.common.util.ext.cool.spToPx
 import io.core.common.util.ext.ui.getActivity
 import io.core.common.util.ext.ui.getCompatColor
 import io.core.common.util.ext.ui.onClick
+import io.core.common.util.ext.ui.screenWidthDp
 import io.core.common.util.ext.ui.showDialogFragment
+import io.core.common.util.log.logD
 import io.core.common.util.tools.DrawableBuilder
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch

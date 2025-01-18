@@ -5,8 +5,8 @@ import android.view.View
 import android.widget.TextView
 import androidx.annotation.StringRes
 import com.core.fy.android.R
-import io.core.common.base.dialog.BaseDialog
-import io.core.common.base.dialog.CommonDialog
+import io.core.common.base.component.dialog.BaseDialog
+import io.core.common.base.component.dialog.CommonDialog
 
 
 class MessageDialog {

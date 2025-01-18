@@ -4,6 +4,7 @@ import android.os.Environment
 import android.webkit.MimeTypeMap
 import androidx.annotation.IntDef
 import io.core.Android
+import io.core.common.util.ext.appCtx
 import io.core.common.util.ext.cool.ConvertUtils
 import io.core.common.util.ext.cool.cnCompare
 import io.core.common.util.ext.currentTimeMillis
@@ -95,7 +96,7 @@ object FileUtils {
     }
 
     fun getCachePath(): String {
-        return Android.context.externalCache.absolutePath
+        return appCtx.externalCache.absolutePath
     }
 
     fun getSdCardPath(): String {

@@ -9,6 +9,9 @@ import androidx.lifecycle.Observer
 import io.core.engine.livebus.LiveEventBus
 import io.core.engine.livebus.core.Observable
 
+/*post<-->observe*/
+/*send<-->receive*/
+
 inline fun <reified EVENT> eventObservable(tag: String): Observable<EVENT> {
     return LiveEventBus.get(tag, EVENT::class.java)
 }

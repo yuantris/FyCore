@@ -17,7 +17,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-
 class TextDialog() : BaseDialogFragment(R.layout.dialog_text_view) {
 
     enum class Mode {

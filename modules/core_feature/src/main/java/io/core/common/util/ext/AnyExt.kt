@@ -3,10 +3,11 @@ package io.core.common.util.ext
 import android.annotation.SuppressLint
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.OnBackPressedDispatcher
-import androidx.annotation.ColorInt
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
-import com.hjq.shape.drawable.ShapeDrawable
+import io.core.common.helper.LifecycleHelp
+import io.core.common.util.ext.ui.postDelayUI
+import kotlin.system.exitProcess
 
 /**
 # ██████████
@@ -32,13 +33,28 @@ inline fun Any?.ifNull(action: () -> Unit) {
     }
 }
 
-inline fun Any?.verify(fail: () -> Unit = {}, success: () -> Unit = {}) {
-    if (this == null) fail() else success()
+inline fun <T> T?.verify(
+    ifNull: () -> Unit = {},
+    ifNotNull: (T) -> Unit = {}
+) {
+    if (this == null) {
+        ifNull()
+    } else {
+        ifNotNull(this)
+    }
 }
+
 
 @SuppressLint("NotifyDataSetChanged")
 fun RecyclerView.Adapter<*>.notifyAllDataChanged() {
     this.notifyDataSetChanged()
+}
+
+fun Any?.exitApp() {
+    LifecycleHelp.finishAllActivity()
+    postDelayUI(10) {
+        exitProcess(0)
+    }
 }
 
 val currentTimeMillis: Long
@@ -57,11 +73,14 @@ fun OnBackPressedDispatcher.addCallback(
             onBackPressed()
         }
     }
-    if (owner != null) {
-        addCallback(owner, callback)
-    } else {
-        addCallback(callback)
-    }
+    owner.verify(
+        ifNull = {
+            addCallback(callback)
+        },
+        ifNotNull = {
+            addCallback(it, callback)
+        }
+    )
     return callback
 }
 

@@ -64,6 +64,15 @@ object LifecycleHelp : Application.ActivityLifecycleCallbacks {
         }
     }
 
+    /**
+     * 关闭所有activity(class)
+     */
+    fun finishAllActivity() {
+        for (temp in activities) {
+            temp.get()?.finish()
+        }
+    }
+
     fun setOnAppFinishedListener(appFinishedListener: (() -> Unit)) {
         this.appFinishedListener = appFinishedListener
     }

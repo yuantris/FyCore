@@ -20,20 +20,25 @@ import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import android.content.res.ColorStateList
 import android.content.res.Configuration
+import android.graphics.Point
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.BatteryManager
 import android.os.Build
 import android.os.Process
-import androidx.preference.PreferenceManager
 import android.provider.Settings
 import android.view.View
+import android.view.WindowManager
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
 import androidx.core.content.edit
+import androidx.preference.PreferenceManager
+import com.blankj.utilcode.util.Utils
+import io.core.common.util.ext.cool.pxToDp
 import io.core.common.util.ext.layoutInflater
+import io.core.common.util.ext.windowManager
 import io.core.common.util.log.printOnDebug
 import java.io.File
 import kotlin.system.exitProcess
@@ -229,6 +234,55 @@ val Context.sysBattery: Int
         val iFilter = IntentFilter(Intent.ACTION_BATTERY_CHANGED)
         val batteryStatus = registerReceiver(null, iFilter)
         return batteryStatus?.getIntExtra(BatteryManager.EXTRA_LEVEL, -1) ?: -1
+    }
+
+val Context.screenRealWidthPx: Int
+    get() {
+        val point = Point()
+        windowManager.defaultDisplay.getRealSize(point)
+        return point.x
+    }
+
+val Context.screenWidthPx: Int
+    get() {
+        val point = Point()
+        windowManager.defaultDisplay.getSize(point)
+        return point.x
+    }
+
+val Context.screenRealHeightPx: Int
+    get() {
+        val point = Point()
+        windowManager.defaultDisplay.getRealSize(point)
+        return point.y
+    }
+
+
+val Context.screenHeightPx: Int
+    get() {
+        val point = Point()
+        windowManager.defaultDisplay.getSize(point)
+        return point.y
+    }
+
+val Context.screenRealWidthDp: Int
+    get() {
+        return screenRealWidthPx.pxToDp()
+    }
+
+val Context.screenRealHeightDp: Int
+    get() {
+        return screenRealHeightPx.pxToDp()
+    }
+
+val Context.screenWidthDp: Int
+    get() {
+        return screenWidthPx.pxToDp()
+    }
+
+val Context.screenHeightDp: Int
+    get() {
+        return screenHeightPx.pxToDp()
     }
 
 val Context.externalFiles: File

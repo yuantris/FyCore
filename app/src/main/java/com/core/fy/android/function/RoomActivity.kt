@@ -6,6 +6,7 @@ import com.core.fy.android.databinding.ActivityRoomBinding
 import com.core.fy.android.room.VMFactory
 import com.core.fy.android.room.appDb
 import com.core.fy.android.room.entity.User
+import com.core.fy.android.room.repository.FunctionRepository
 import com.core.fy.android.room.repository.UserRepository
 import com.core.fy.android.viewmodel.UserVM
 import io.core.common.base.component.activity.ReflectBindingActivity
@@ -23,7 +24,7 @@ import io.core.common.util.log.logW
 class RoomActivity : ReflectBindingActivity<ActivityRoomBinding>() {
 
     private val userVM by viewModels<UserVM> {
-        VMFactory(UserRepository.create())
+        VMFactory(UserRepository)
     }
 
     override fun initial(savedInstanceState: Bundle?) {

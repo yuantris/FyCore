@@ -9,6 +9,11 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.gyf.immersionbar.ImmersionBar
 
+enum class BarColor {
+    BLACK,
+    WHITE
+}
+
 fun Window.setupImmersiveBars(activity: AppCompatActivity, statusBarColor: BarColor, navigationBarColor: BarColor) {
 
     // 处理窗口 insets
@@ -24,11 +29,6 @@ fun Window.setupImmersiveBars(activity: AppCompatActivity, statusBarColor: BarCo
         .statusBarDarkFont(statusBarColor == BarColor.BLACK)
         .navigationBarDarkIcon(navigationBarColor == BarColor.BLACK)
         .init()
-}
-
-enum class BarColor {
-    BLACK,
-    WHITE
 }
 
 fun Window.transparentStatusBar() {

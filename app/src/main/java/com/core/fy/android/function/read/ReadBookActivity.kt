@@ -474,4 +474,14 @@ class ReadBookActivity : ReflectBindingActivity<ActivityBookReadBinding>(),
         textActionMenu.dismiss()
         binding.readView.cancelSelect()
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        textActionMenu.dismiss()
+        binding.readView.onDestroy()
+        ReadBook.unregister(this)
+        if (!ReadBook.inBookshelf && !isChangingConfigurations) {
+            // viewModel.removeFromBookshelf(null)
+        }
+    }
 }

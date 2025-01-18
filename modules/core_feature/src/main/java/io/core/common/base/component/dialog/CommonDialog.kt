@@ -1,6 +1,6 @@
 @file:Suppress("UNCHECKED_CAST","LeakingThis")
 
-package io.core.common.base.dialog
+package io.core.common.base.component.dialog
 
 import android.content.*
 import android.view.*

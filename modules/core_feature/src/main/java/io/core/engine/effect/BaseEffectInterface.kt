@@ -11,11 +11,11 @@ interface BaseEffectInterface {
 
     // 点击缩放效果
     fun startScaleEffect() {
-        ObjectAnimator.ofFloat(targetView, "scaleX", 0.9f).apply {
+        ObjectAnimator.ofFloat(targetView, "scaleX", 0.95f).apply {
             duration = 150
             start()
         }
-        ObjectAnimator.ofFloat(targetView, "scaleY", 0.9f).apply {
+        ObjectAnimator.ofFloat(targetView, "scaleY", 0.95f).apply {
             duration = 150
             start()
         }

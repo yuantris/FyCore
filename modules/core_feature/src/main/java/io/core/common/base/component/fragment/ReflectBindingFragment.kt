@@ -1,4 +1,4 @@
-package io.core.common.base.fragment
+package io.core.common.base.component.fragment
 
 import android.view.View
 import androidx.viewbinding.ViewBinding

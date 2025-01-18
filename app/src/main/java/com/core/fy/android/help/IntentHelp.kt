@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import io.core.Android
+import io.core.common.util.ext.appCtx
 import io.core.common.util.ext.ui.toast
 
 @Suppress("unused")
@@ -17,7 +18,7 @@ object IntentHelp {
         val intent = Intent(Intent.ACTION_VIEW)
         intent.data = uri
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        if (intent.resolveActivity(Android.context.packageManager) == null) {
+        if (intent.resolveActivity(appCtx.packageManager) == null) {
             return Intent.createChooser(intent, "请选择浏览器")
         }
         return intent
@@ -29,9 +30,9 @@ object IntentHelp {
             val intent = Intent()
             intent.action = "com.android.settings.TTS_SETTINGS"
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-            Android.context.startActivity(intent)
+            appCtx.startActivity(intent)
         }.onFailure {
-            Android.context.toast("无法跳转TTS")
+            appCtx.toast("无法跳转TTS")
         }
     }
 
@@ -42,7 +43,7 @@ object IntentHelp {
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
             context.startActivity(intent)
         }.onFailure {
-            Android.context.toast("无法打开设置")
+            appCtx.toast("无法打开设置")
         }
     }
 

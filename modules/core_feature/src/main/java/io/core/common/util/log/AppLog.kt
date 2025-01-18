@@ -3,6 +3,7 @@ package io.core.common.util.log
 import android.util.Log
 import io.core.Android
 import io.core.BuildConfig
+import io.core.common.util.ext.appCtx
 import io.core.common.util.ext.currentTimeMillis
 import io.core.common.util.tools.toastOnUi
 
@@ -16,15 +17,15 @@ object AppLog {
     fun put(message: String?, throwable: Throwable? = null, toast: Boolean = false) {
         message ?: return
         if (toast) {
-            Android.context.toastOnUi(message)
+            appCtx.toastOnUi(message)
         }
         if (mLogs.size > 100) {
             mLogs.removeLastOrNull()
         }
         if (throwable == null) {
-            LogUtils.logD(TAG, message)
+            message.logD(TAG)
         } else {
-            LogUtils.logD(TAG, "$message\n${throwable.stackTraceToString()}")
+            "$message\n${throwable.stackTraceToString()}".logE(TAG)
         }
         mLogs.add(0, Triple(currentTimeMillis, message, throwable))
         if (BuildConfig.DEBUG) {
@@ -37,7 +38,7 @@ object AppLog {
     fun putNotSave(message: String?, throwable: Throwable? = null, toast: Boolean = false) {
         message ?: return
         if (toast) {
-            Android.context.toastOnUi(message)
+            appCtx.toastOnUi(message)
         }
         if (mLogs.size > 100) {
             mLogs.removeLastOrNull()
@@ -55,9 +56,9 @@ object AppLog {
     }
 
     fun putDebug(message: String?, throwable: Throwable? = null) {
-//        if (AppConfig.recordLog) {
+        if (Android.debug) {
             put(message, throwable)
-//        }
+        }
     }
 
 }

@@ -20,6 +20,7 @@ import io.core.common.util.ext.cool.hexString
 import io.core.common.util.ext.ui.putPrefBoolean
 import io.core.common.util.ext.ui.putPrefInt
 import io.core.common.helper.coroutine.Coroutine
+import io.core.common.util.ext.appCtx
 import io.core.common.util.log.AppLog
 import io.core.common.util.tools.BitmapUtils
 import io.core.common.util.tools.FileUtils
@@ -36,8 +37,8 @@ import java.io.File
 object ReadBookConfig {
     const val configFileName = "readConfig.json"
     const val shareConfigFileName = "shareReadConfig.json"
-    val configFilePath = FileUtils.getPath(Android.context.filesDir, configFileName)
-    val shareConfigFilePath = FileUtils.getPath(Android.context.filesDir, shareConfigFileName)
+    val configFilePath = FileUtils.getPath(appCtx.filesDir, configFileName)
+    val shareConfigFilePath = FileUtils.getPath(appCtx.filesDir, shareConfigFileName)
     val configList: ArrayList<Config> = arrayListOf()
     lateinit var shareConfig: Config
     var durConfig
@@ -165,11 +166,11 @@ object ReadBookConfig {
     }
 
     //配置写入读取
-    var readBodyToLh = Android.context.getPrefBoolean(PreferKey.readBodyToLh, true)
-    var autoReadSpeed = Android.context.getPrefInt(PreferKey.autoReadSpeed, 10)
+    var readBodyToLh = appCtx.getPrefBoolean(PreferKey.readBodyToLh, true)
+    var autoReadSpeed = appCtx.getPrefInt(PreferKey.autoReadSpeed, 10)
         set(value) {
             field = value
-            Android.context.putPrefInt(PreferKey.autoReadSpeed, value)
+            appCtx.putPrefInt(PreferKey.autoReadSpeed, value)
         }
     var styleSelect: Int
         get() = if (isComic) comicStyleSelect else readStyleSelect
@@ -180,40 +181,40 @@ object ReadBookConfig {
                 readStyleSelect = value
             }
         }
-    var readStyleSelect = Android.context.getPrefInt(PreferKey.readStyleSelect)
+    var readStyleSelect = appCtx.getPrefInt(PreferKey.readStyleSelect)
         set(value) {
             field = value
-            if (Android.context.getPrefInt(PreferKey.readStyleSelect) != value) {
-                Android.context.putPrefInt(PreferKey.readStyleSelect, value)
+            if (appCtx.getPrefInt(PreferKey.readStyleSelect) != value) {
+                appCtx.putPrefInt(PreferKey.readStyleSelect, value)
             }
         }
-    var comicStyleSelect = Android.context.getPrefInt(PreferKey.comicStyleSelect, readStyleSelect)
+    var comicStyleSelect = appCtx.getPrefInt(PreferKey.comicStyleSelect, readStyleSelect)
         set(value) {
             field = value
-            if (Android.context.getPrefInt(PreferKey.comicStyleSelect) != value) {
-                Android.context.putPrefInt(PreferKey.comicStyleSelect, value)
+            if (appCtx.getPrefInt(PreferKey.comicStyleSelect) != value) {
+                appCtx.putPrefInt(PreferKey.comicStyleSelect, value)
             }
         }
-    var shareLayout = Android.context.getPrefBoolean(PreferKey.shareLayout)
+    var shareLayout = appCtx.getPrefBoolean(PreferKey.shareLayout)
         set(value) {
             field = value
-            if (Android.context.getPrefBoolean(PreferKey.shareLayout) != value) {
-                Android.context.putPrefBoolean(PreferKey.shareLayout, value)
+            if (appCtx.getPrefBoolean(PreferKey.shareLayout) != value) {
+                appCtx.putPrefBoolean(PreferKey.shareLayout, value)
             }
         }
 
     /**
      * 两端对齐
      */
-    val textFullJustify get() = Android.context.getPrefBoolean(PreferKey.textFullJustify, true)
+    val textFullJustify get() = appCtx.getPrefBoolean(PreferKey.textFullJustify, true)
 
     /**
      * 底部对齐
      */
-    val textBottomJustify get() = Android.context.getPrefBoolean(PreferKey.textBottomJustify, true)
-    var hideStatusBar = Android.context.getPrefBoolean(PreferKey.hideStatusBar)
-    var hideNavigationBar = Android.context.getPrefBoolean(PreferKey.hideNavigationBar)
-    var useZhLayout = Android.context.getPrefBoolean(PreferKey.useZhLayout)
+    val textBottomJustify get() = appCtx.getPrefBoolean(PreferKey.textBottomJustify, true)
+    var hideStatusBar = appCtx.getPrefBoolean(PreferKey.hideStatusBar)
+    var hideNavigationBar = appCtx.getPrefBoolean(PreferKey.hideNavigationBar)
+    var useZhLayout = appCtx.getPrefBoolean(PreferKey.useZhLayout)
 
     val config get() = if (shareLayout) shareConfig else durConfig
 
@@ -572,23 +573,23 @@ object ReadBookConfig {
 
         fun curBgDrawable(width: Int, height: Int): Drawable {
             if (width == 0 || height == 0) {
-                return ColorDrawable(Android.context.getCompatColor(R.color.background))
+                return ColorDrawable(appCtx.getCompatColor(R.color.background))
             }
             var bgDrawable: Drawable? = null
-            val resources = Android.context.resources
+            val resources = appCtx.resources
             try {
                 bgDrawable = when (curBgType()) {
                     0 -> ColorDrawable(Color.parseColor(curBgStr()))
                     1 -> {
                         val path = "bg" + File.separator + curBgStr()
-                        val bitmap = BitmapUtils.decodeAssetsBitmap(Android.context, path, width, height)
+                        val bitmap = BitmapUtils.decodeAssetsBitmap(appCtx, path, width, height)
                         BitmapDrawable(resources, bitmap?.resizeAndRecycle(width, height))
                     }
 
                     else -> {
                         val path = curBgStr().let {
                             if (it.contains(File.separator)) it
-                            else FileUtils.getPath(Android.context.externalFiles, "bg", curBgStr())
+                            else FileUtils.getPath(appCtx.externalFiles, "bg", curBgStr())
                         }
                         val bitmap = BitmapUtils.decodeBitmap(path, width, height)
                         BitmapDrawable(resources, bitmap?.resizeAndRecycle(width, height))
@@ -599,7 +600,7 @@ object ReadBookConfig {
             } catch (e: Exception) {
                 e.printOnDebug()
             }
-            return bgDrawable ?: ColorDrawable(Android.context.getCompatColor(R.color.background))
+            return bgDrawable ?: ColorDrawable(appCtx.getCompatColor(R.color.background))
         }
     }
 }
