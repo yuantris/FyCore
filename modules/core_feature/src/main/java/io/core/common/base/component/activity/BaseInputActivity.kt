@@ -3,9 +3,11 @@ package io.core.common.base.component.activity
 import android.os.Bundle
 import android.view.MotionEvent
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import androidx.viewbinding.ViewBinding
-import com.blankj.utilcode.util.KeyboardUtils
+import io.core.common.util.ext.inputMethodManager
+import io.core.common.util.ext.ui.hideSoftInput
 import io.core.common.util.ext.ui.inflateBindingWithGeneric
 import io.core.engine.keyboard.KeyboardObserver
 
@@ -52,7 +54,7 @@ abstract class BaseInputActivity<VB : ViewBinding> : BaseActivity(), KeyboardObs
         if (ev?.action == MotionEvent.ACTION_DOWN) {
             val v = currentFocus
             if (isShouldHideKeyboard(v, ev)) {
-                KeyboardUtils.hideSoftInput(this)
+                v?.hideSoftInput()
             }
         }
         return super.dispatchTouchEvent(ev)

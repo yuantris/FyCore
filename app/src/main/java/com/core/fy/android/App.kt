@@ -7,6 +7,7 @@ import android.app.NotificationManager
 import android.os.Build
 import com.core.fy.android.constants.AppConst.channelIdReadAloud
 import io.core.Android
+import io.core.common.CoreConfigs
 import io.core.common.util.ext.notificationManager
 
 /**
@@ -29,6 +30,8 @@ class App : Application() {
         Android.initialize(this)
         // 设置重启对象Activity
         Android.homeActivity = MainActivity::class.java
+
+        CoreConfigs.DIALOG_BUTTON_POSITIVE_COLOR = getColor(R.color.md_amber_A200)
         // SoftKeyboardGlobal.install(this, false)
         createNotificationChannels()
     }

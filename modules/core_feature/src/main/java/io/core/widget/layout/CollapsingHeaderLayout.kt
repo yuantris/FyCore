@@ -9,13 +9,13 @@ import android.widget.ImageView
 import androidx.appcompat.widget.Toolbar
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
-import com.blankj.utilcode.util.BarUtils.getStatusBarHeight
-import io.core.R
-import io.core.common.util.ext.ui.getActivity
-import io.core.common.util.log.logD
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.CollapsingToolbarLayout
+import io.core.R
 import io.core.common.util.ext.cool.dpToPx
+import io.core.common.util.ext.ui.getActivity
+import io.core.common.util.ext.ui.statusBarHeight
+import io.core.common.util.log.logD
 
 class CollapsingHeaderLayout @JvmOverloads constructor(
     context: Context,
@@ -75,7 +75,7 @@ class CollapsingHeaderLayout @JvmOverloads constructor(
                 CollapsingToolbarLayout.LayoutParams.MATCH_PARENT,
                 context.theme.obtainStyledAttributes(
                     intArrayOf(android.R.attr.actionBarSize)
-                ).getDimension(0, 0f).toInt() + getStatusBarHeight()
+                ).getDimension(0, 0f).toInt() + context.statusBarHeight
             ).apply {
                 collapseMode = CollapsingToolbarLayout.LayoutParams.COLLAPSE_MODE_PIN
             }
@@ -178,7 +178,7 @@ class CollapsingHeaderLayout @JvmOverloads constructor(
     }
 
     private fun applyStatusBarPadding() {
-        val statusBarHeight = getStatusBarHeight()
+        val statusBarHeight = context.statusBarHeight
         toolbar.setPadding(
             toolbar.paddingLeft,
             statusBarHeight,

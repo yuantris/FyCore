@@ -74,20 +74,6 @@ class DialogActivity : ReflectBindingActivity<ActivityDialogBinding>() {
                     okButton {
                         CoreUtil.toast("已关闭")
                     }
-                }.let {
-                    val compatColor = context.getCompatColor(R.color.md_amber_A200)
-                    it.getButton(DialogInterface.BUTTON_POSITIVE)?.setTextColor(compatColor)
-//                    // 修改消息文字属性
-//                    it.findViewById<TextView>(android.R.id.message)?.apply {
-//                        textSize = 18f   // 设置消息字体大小
-//                        setTextColor(
-//                            ContextCompat.getColor(
-//                                context,
-//                                R.color.md_blue_grey_400
-//                            )
-//                        )  // 设置消息文字颜色
-//                        // 你可以设置其他字体属性（如字体、样式等）
-//                    }
                 }
             }
             setTitleStyle(Typeface.BOLD)

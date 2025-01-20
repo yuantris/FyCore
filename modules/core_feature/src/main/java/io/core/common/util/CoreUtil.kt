@@ -5,18 +5,18 @@ import android.content.pm.PackageManager
 import android.media.MediaScannerConnection
 import android.net.Uri
 import android.os.Environment
+import android.os.Looper
 import android.os.StrictMode
 import android.os.StrictMode.VmPolicy
-import com.blankj.utilcode.util.ActivityUtils
-import com.blankj.utilcode.util.TimeUtils
-import com.blankj.utilcode.util.ToastUtils
 import io.core.common.helper.TryCatchHelper
 import io.core.common.util.ext.appCtx
 import io.core.common.util.ext.currentTimeMillis
+import io.core.common.util.ext.ui.getActivity
 import io.core.common.util.ext.verify
 import io.core.common.util.log.logD
 import io.core.common.util.log.logE
 import io.core.common.util.log.logI
+import io.core.common.util.tools.TimeUtils
 import io.core.constant.DateFormatPatterns
 import io.core.constant.FileType
 import java.io.FileInputStream
@@ -41,6 +41,10 @@ class CoreUtil {
         fun toast(text: String) {
             ToastUtil.show(text)
         }
+
+        fun isMainThread(): Boolean {
+            return Looper.myLooper() == Looper.getMainLooper()
+        }
     }
 
     class File {
@@ -54,8 +58,7 @@ class CoreUtil {
              * @return 返回生成的文件名
              */
             fun generateName(format: String): String {
-                val dateFormat = TimeUtils.getSafeDateFormat("yyyyMMdd_HHmmss")
-                return "${format.uppercase()}_${TimeUtils.getNowString(dateFormat)}.$format"
+                return "${format.uppercase()}_${TimeUtils.getNowString("yyyyMMdd_HHmmss")}.$format"
             }
 
             /**
@@ -66,8 +69,7 @@ class CoreUtil {
              * @return 返回生成的无后缀文件名
              */
             fun generateNameNoExtension(prefix: String): String {
-                val dateFormat = TimeUtils.getSafeDateFormat("yyyyMMdd_HHmmss")
-                return "${prefix.uppercase()}_${TimeUtils.getNowString(dateFormat)}"
+                return "${prefix.uppercase()}_${TimeUtils.getNowString("yyyyMMdd_HHmmss")}"
             }
 
             /**
@@ -145,14 +147,15 @@ class CoreUtil {
                             PackageManager.MATCH_DEFAULT_ONLY
                         ).verify(
                             ifNull = {
-                                ToastUtils.showShort("无法打开该格式文件")
+                                toast("无法打开该格式文件")
                             },
                             ifNotNull = {
-                                ActivityUtils.startActivity(intent, 0, 0)
+                                appCtx.startActivity(intent)
+                                appCtx.getActivity()?.overridePendingTransition(0, 0)
                             })
                     },
                     catch = {
-                        ToastUtils.showShort("无法打开该格式文件")
+                        toast("无法打开该格式文件")
                         it.message?.logE()
                     }
                 )
@@ -161,31 +164,6 @@ class CoreUtil {
         }
     }
 
-    class Time {
-        companion object {
-            fun getNowTime(pattern: String = DateFormatPatterns.yyyyMMddHHmmss): String {
-                return TimeUtils.getNowString(TimeUtils.getSafeDateFormat(pattern))
-            }
-
-            /**
-             * 获取当前时间戳
-             *
-             * @return 返回当前时间戳，单位为毫秒
-             */
-            fun getCurrentTimestamp(): Long {
-                return currentTimeMillis
-            }
-
-            /**
-             * 获取当前时间戳（以字符串形式返回）
-             *
-             * @return 返回当前时间戳的字符串形式，单位为毫秒
-             */
-            fun getCurrentTimestampString(): String {
-                return getCurrentTimestamp().toString()
-            }
-        }
-    }
 
     class Activity {
         companion object {

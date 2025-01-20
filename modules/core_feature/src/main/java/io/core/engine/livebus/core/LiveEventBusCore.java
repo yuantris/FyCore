@@ -18,9 +18,9 @@ import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 
-
-import com.blankj.utilcode.util.ThreadUtils;
 import io.core.Android;
+import io.core.common.util.CoreUtil;
+import io.core.common.util.tools.HandlerUtilsKt;
 import io.core.engine.livebus.ipc.consts.IpcConst;
 import io.core.engine.livebus.ipc.core.ProcessorManager;
 import io.core.engine.livebus.ipc.receiver.LebIpcReceiver;
@@ -148,7 +148,7 @@ public final class LiveEventBusCore {
         private final String key;
         private final LifecycleLiveData<T> liveData;
         private final Map<Observer, ObserverWrapper<T>> observerMap = new HashMap<>();
-        private final Handler mainHandler = new Handler(Looper.getMainLooper());
+        private final Handler mainHandler = HandlerUtilsKt.buildMainHandler();
 
         LiveEvent(@NonNull String key) {
             this.key = key;
@@ -162,7 +162,7 @@ public final class LiveEventBusCore {
          */
         @Override
         public void post(T value) {
-            if (ThreadUtils.isMainThread()) {
+            if (CoreUtil.Companion.isMainThread()) {
                 postInternal(value);
             } else {
                 mainHandler.post(new PostValueTask(value));
@@ -246,7 +246,7 @@ public final class LiveEventBusCore {
         @Override
         public void broadcast(final T value, final boolean foreground, final boolean onlyInApp) {
             if (Android.INSTANCE.getContext() != null) {
-                if (ThreadUtils.isMainThread()) {
+                if (CoreUtil.Companion.isMainThread()) {
                     broadcastInternal(value, foreground, onlyInApp);
                 } else {
                     mainHandler.post(new Runnable() {
@@ -269,7 +269,7 @@ public final class LiveEventBusCore {
          */
         @Override
         public void observe(@NonNull final LifecycleOwner owner, @NonNull final Observer<T> observer) {
-            if (ThreadUtils.isMainThread()) {
+            if (CoreUtil.Companion.isMainThread()) {
                 observeInternal(owner, observer);
             } else {
                 mainHandler.post(new Runnable() {
@@ -290,7 +290,7 @@ public final class LiveEventBusCore {
          */
         @Override
         public void observeSticky(@NonNull final LifecycleOwner owner, @NonNull final Observer<T> observer) {
-            if (ThreadUtils.isMainThread()) {
+            if (CoreUtil.Companion.isMainThread()) {
                 observeStickyInternal(owner, observer);
             } else {
                 mainHandler.post(new Runnable() {
@@ -309,7 +309,7 @@ public final class LiveEventBusCore {
          */
         @Override
         public void observeForever(@NonNull final Observer<T> observer) {
-            if (ThreadUtils.isMainThread()) {
+            if (CoreUtil.Companion.isMainThread()) {
                 observeForeverInternal(observer);
             } else {
                 mainHandler.post(new Runnable() {
@@ -329,7 +329,7 @@ public final class LiveEventBusCore {
          */
         @Override
         public void observeStickyForever(@NonNull final Observer<T> observer) {
-            if (ThreadUtils.isMainThread()) {
+            if (CoreUtil.Companion.isMainThread()) {
                 observeStickyForeverInternal(observer);
             } else {
                 mainHandler.post(new Runnable() {
@@ -348,7 +348,7 @@ public final class LiveEventBusCore {
          */
         @Override
         public void removeObserver(@NonNull final Observer<T> observer) {
-            if (ThreadUtils.isMainThread()) {
+            if (CoreUtil.Companion.isMainThread()) {
                 removeObserverInternal(observer);
             } else {
                 mainHandler.post(new Runnable() {

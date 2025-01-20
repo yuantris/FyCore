@@ -22,8 +22,6 @@ import android.widget.TextView
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.lifecycleScope
-import com.blankj.utilcode.util.AppUtils
-import com.blankj.utilcode.util.DeviceUtils.isTablet
 import io.core.R
 import io.core.common.util.log.logE
 import io.core.common.util.ext.ui.setDebouncedClickListener
@@ -31,6 +29,9 @@ import com.gyf.immersionbar.ImmersionBar
 import com.hjq.permissions.Permission
 import com.hjq.permissions.XXPermissions
 import io.core.common.base.component.dialog.CrashLogsDialog
+import io.core.common.util.ext.ui.appPackageName
+import io.core.common.util.ext.ui.appVersionCode
+import io.core.common.util.ext.ui.appVersionName
 import io.core.common.util.ext.ui.showDialogFragment
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -188,7 +189,6 @@ class CrashActivity : BaseActivity() {
         val builder: StringBuilder = StringBuilder()
         builder.append("设备品牌：\t").append(Build.BRAND)
             .append("\n设备型号：\t").append(Build.MODEL)
-            .append("\n设备类型：\t").append(if (isTablet()) "平板" else "手机")
 
         builder.append("\n屏幕宽高：\t").append(screenWidth).append(" x ").append(screenHeight)
             .append("\n屏幕密度：\t").append(displayMetrics.densityDpi)
@@ -200,8 +200,8 @@ class CrashActivity : BaseActivity() {
             .append("\nAPI 版本：\t").append(Build.VERSION.SDK_INT)
             .append("\nCPU 架构：\t").append(Build.SUPPORTED_ABIS[0])
 
-        builder.append("\n应用版本：\t").append(AppUtils.getAppVersionName())
-            .append("\n版本代码：\t").append(AppUtils.getAppVersionCode())
+        builder.append("\n应用版本：\t").append(appVersionName)
+            .append("\n版本代码：\t").append(appVersionCode)
 
         try {
             val dateFormat = SimpleDateFormat("MM-dd HH:mm", Locale.getDefault())

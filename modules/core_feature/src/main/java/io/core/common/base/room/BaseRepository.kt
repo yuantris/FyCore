@@ -3,6 +3,7 @@ package io.core.common.base.room
 import io.core.common.util.log.TAG
 import io.core.common.util.CoreUtil
 import io.core.common.util.log.LogUtils
+import io.core.common.util.tools.TimeUtils
 
 /**
 # ██████████
@@ -19,6 +20,6 @@ import io.core.common.util.log.LogUtils
  */
 open class BaseRepository {
     init {
-        LogUtils.logV(TAG, "Repository init: ${CoreUtil.Time.getNowTime()}")
+        LogUtils.logV(TAG, "Repository init: ${TimeUtils.getNowString()}")
     }
 }

@@ -7,7 +7,6 @@ import android.graphics.Bitmap
 import android.graphics.Bitmap.Config
 import android.graphics.BitmapFactory
 import android.graphics.Color
-import com.blankj.utilcode.util.ImageUtils
 import java.io.*
 import kotlin.math.*
 
@@ -197,9 +196,11 @@ object BitmapUtils {
             maxNumOfPixels == -1 && minSideLength == -1 -> {
                 1
             }
+
             minSideLength == -1 -> {
                 lowerBound
             }
+
             else -> {
                 upperBound
             }
@@ -225,9 +226,9 @@ object BitmapUtils {
  */
 fun Bitmap.resizeAndRecycle(newWidth: Int, newHeight: Int): Bitmap {
     //获取新的bitmap
-    val bitmap = ImageUtils.compressByScale(this, newWidth, newHeight)
-    recycle()
-    return bitmap
+    val ret = Bitmap.createScaledBitmap(this, newWidth, newHeight, true)
+    this.recycle()
+    return ret
 }
 
 /**

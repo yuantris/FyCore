@@ -28,18 +28,16 @@ import android.os.Build
 import android.os.Process
 import android.provider.Settings
 import android.view.View
-import android.view.WindowManager
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
 import androidx.core.content.edit
-import androidx.preference.PreferenceManager
-import com.blankj.utilcode.util.Utils
 import io.core.common.util.ext.cool.pxToDp
 import io.core.common.util.ext.layoutInflater
 import io.core.common.util.ext.windowManager
 import io.core.common.util.log.printOnDebug
+import io.core.common.util.tools.SPUtils
 import java.io.File
 import kotlin.system.exitProcess
 
@@ -130,8 +128,7 @@ fun Context.startForegroundServiceCompat(intent: Intent) {
 }
 
 
-val Context.defaultSharedPreferences: SharedPreferences
-    get() = PreferenceManager.getDefaultSharedPreferences(this)
+val Context.defaultSharedPreferences: SharedPreferences get() = SPUtils.sp
 
 fun Context.getPrefBoolean(key: String, defValue: Boolean = false) =
     defaultSharedPreferences.getBoolean(key, defValue)
@@ -310,3 +307,31 @@ val Context.channel: String
 
 val Context.isDebuggable: Boolean
     get() = applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE != 0
+
+val Context.isSystemApp: Boolean
+    get() = applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM != 0
+
+val Context.appPackageName: String
+    get() = packageName
+
+val Context.appVersionName: String
+    get() {
+        try {
+            val pInfo = packageManager.getPackageInfo(packageName, 0)
+            return pInfo.versionName
+        } catch (e: Exception) {
+            e.printOnDebug()
+        }
+        return ""
+    }
+
+val Context.appVersionCode: Int
+    get() {
+        try {
+            val pInfo = packageManager.getPackageInfo(packageName, 0)
+            return pInfo.versionCode
+        } catch (e: Exception) {
+            e.printOnDebug()
+        }
+        return 0
+    }
