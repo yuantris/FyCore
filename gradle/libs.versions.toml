@@ -1,6 +1,6 @@
 [versions]
 # 定义 FyCore 库的发布版本与依赖来源
-fycore = "0.1.1"
+fycore = "0.1.2"
 local = "local"
 jitpack = "jitpack"
 package = "package"
@@ -34,9 +34,7 @@ utilcodex = "1.31.1"
 lottie = "6.4.0"
 shapeview = "9.3"
 shapedrawable = "3.3"
-refresh-header-material = "2.0.5"
-refresh-layout-kernel = "2.0.5"
-refresh-footer-classics = "2.0.5"
+refresh-layout = "2.0.5"
 # --------- # --------- #
 [libraries]
 # 项目build.gradle 所需依赖信息
@@ -82,8 +80,8 @@ utilcodex = { module = "com.blankj:utilcodex", version.ref = "utilcodex" }
 lottie = { module = "com.airbnb.android:lottie", version.ref = "lottie" }
 shapeView = { module = "com.github.getActivity:ShapeView", version.ref = "shapeview" }
 shapedrawable = { module = "com.github.getActivity:ShapeDrawable", version.ref = "shapedrawable" }
-refresh-footer-classics = { module = "io.github.scwang90:refresh-footer-classics", version.ref = "refresh-footer-classics" }
-refresh-layout-kernel = { module = "io.github.scwang90:refresh-layout-kernel", version.ref = "refresh-layout-kernel" }
-refresh-header-material = { module = "io.github.scwang90:refresh-header-material", version.ref = "refresh-header-material" }
+refresh-footer-classics = { module = "io.github.scwang90:refresh-footer-classics", version.ref = "refresh-layout" }
+refresh-layout-kernel = { module = "io.github.scwang90:refresh-layout-kernel", version.ref = "refresh-layout" }
+refresh-header-material = { module = "io.github.scwang90:refresh-header-material", version.ref = "refresh-layout" }
 
 

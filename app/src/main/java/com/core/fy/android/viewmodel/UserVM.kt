@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.core.fy.android.room.entity.User
 import com.core.fy.android.room.repository.UserRepository
+import com.hjq.permissions.PermissionFragment.launch
 import io.core.common.util.log.logD
 import io.core.common.util.log.logE
 import io.core.common.base.vm.BaseViewModel
@@ -15,23 +16,18 @@ class UserVM(private var repository: UserRepository) : BaseViewModel() {
     val userLiveData: LiveData<List<User>>
         get() = _userLiveData
 
-    fun insert(user: User) {
-        launch({
-            repository.dao.insert(user)
-        })
-    }
+    fun insert(user: User) = launch({
+        repository.dao.insert(user)
+    })
 
-    fun delete(user: User) {
-        launch({
-            repository.dao.delete(user)
-        })
-    }
+    fun delete(user: User) = launch({
+        repository.dao.delete(user)
+    })
 
-    fun update(user: User) {
-        launch({
-            repository.dao.update(user)
-        })
-    }
+    fun update(user: User) = launch({
+        repository.dao.update(user)
+    })
+
 
     fun getUserByName(name: String): User {
         val user = repository.dao.getUserSync(name)
@@ -66,21 +62,20 @@ class UserVM(private var repository: UserRepository) : BaseViewModel() {
         repository.getUserById(id)
     }
 
-    fun getAllUsers() {
-        launch(
-            block = {
-                val result = repository.queryAll()
-                "查询所有：${result.size}".logD()
-                result
-            },
-            onError = {
-                "查询所有失败：${it.message}".logE()
-            },
-            onSuccess = {
-                _userLiveData.postValue(it)
-            }
-        )
-    }
+    fun getAllUsers() = launch(
+        block = {
+            val result = repository.queryAll()
+            "查询所有：${result.size}".logD()
+            result
+        },
+        onError = {
+            "查询所有失败：${it.message}".logE()
+        },
+        onSuccess = {
+            _userLiveData.postValue(it)
+        }
+    )
+
 
     fun getAll(): Flow<List<User>> {
         return flow {

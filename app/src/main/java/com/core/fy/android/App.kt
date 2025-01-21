@@ -31,7 +31,8 @@ class App : Application() {
         // 设置重启对象Activity
         Android.homeActivity = MainActivity::class.java
 
-        CoreConfigs.DIALOG_BUTTON_POSITIVE_COLOR = getColor(R.color.md_amber_A200)
+        CoreConfigs.DIALOG_BUTTON_POSITIVE_COLOR = getColor(R.color.md_indigo_500)
+        CoreConfigs.DIALOG_BUTTON_NEGATIVE_COLOR = getColor(R.color.md_red_300)
         // SoftKeyboardGlobal.install(this, false)
         createNotificationChannels()
     }

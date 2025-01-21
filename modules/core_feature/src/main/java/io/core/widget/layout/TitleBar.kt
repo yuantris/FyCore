@@ -18,8 +18,13 @@ import android.widget.TextView
 import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
 import androidx.core.content.ContextCompat
+import androidx.core.view.marginStart
 import androidx.core.view.size
+import com.google.android.material.internal.ViewUtils.dpToPx
 import io.core.R
+import io.core.common.util.ext.cool.dpToPx
+import io.core.common.util.ext.cool.pxToSp
+import io.core.common.util.ext.cool.spToPx
 import io.core.common.util.ext.ui.getActivity
 
 class TitleBar @JvmOverloads constructor(
@@ -34,8 +39,8 @@ class TitleBar @JvmOverloads constructor(
     private val rightContainer: LinearLayout
 
     private val rightContainerChildSize = 2 // 默认右侧容器最多包含两个子 View
-    private val defaultVerticalPadding = dpToPx(7)
-    private val buttonTouchPadding = dpToPx(8) // 按钮点击区域扩展
+    private val defaultVerticalPadding = 7.dpToPx()
+    private val buttonTouchPadding = 8.dpToPx() // 按钮点击区域扩展
 
     private var onClickListener: OnTitleClickListener? = null
     private var defaultClickEffect = ClickEffect.Rectangle
@@ -66,7 +71,7 @@ class TitleBar @JvmOverloads constructor(
             layoutParams =
                 LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT).apply {
                     gravity = Gravity.START or Gravity.CENTER_VERTICAL
-                    marginStart = dpToPx(10)
+                    marginStart = 10.dpToPx()
                 }
         }
         addView(leftButtonContainer)
@@ -113,7 +118,7 @@ class TitleBar @JvmOverloads constructor(
             layoutParams =
                 LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT).apply {
                     gravity = Gravity.END or Gravity.CENTER_VERTICAL
-                    marginEnd = dpToPx(10)
+                    marginEnd = 10.dpToPx()
                 }
         }
         addView(rightContainer)
@@ -130,7 +135,7 @@ class TitleBar @JvmOverloads constructor(
                 ContextCompat.getColor(context, R.color.black)
             )
             val titleSize =
-                typedArray.getDimensionPixelSize(R.styleable.TitleBar_titleSize, spToPx(18f))
+                typedArray.getDimensionPixelSize(R.styleable.TitleBar_titleSize, 18.spToPx())
             val titleLeftAlign = typedArray.getBoolean(R.styleable.TitleBar_titleLeftAlign, false)
             val bgColor =
                 typedArray.getColor(R.styleable.TitleBar_bgColor, Color.WHITE)
@@ -148,7 +153,7 @@ class TitleBar @JvmOverloads constructor(
                 2 -> defaultClickEffect = ClickEffect.Circle
             }
 
-            titleTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, pxToSp(titleSize.toFloat()))
+            titleTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, titleSize.toFloat().pxToSp())
             titleTextView.setTextColor(titleColor)
 
             setBackgroundColor(bgColor)
@@ -206,7 +211,7 @@ class TitleBar @JvmOverloads constructor(
             layoutParams.gravity =
                 if (alignLeft) Gravity.START or Gravity.CENTER_VERTICAL else Gravity.CENTER
             layoutParams.marginStart = if (alignLeft) {
-                leftButtonContainer.width + dpToPx(8 * 2) // 避免遮挡左侧按钮
+                leftButtonContainer.width + (8 * 2).dpToPx() // 避免遮挡左侧按钮
             } else {
                 0
             }
@@ -222,7 +227,7 @@ class TitleBar @JvmOverloads constructor(
             layoutParams.gravity =
                 if (alignLeft) Gravity.START or Gravity.CENTER_VERTICAL else Gravity.CENTER
             layoutParams.marginStart = if (alignLeft) {
-                leftButtonContainer.width + dpToPx(8 * 2) // 避免遮挡左侧按钮
+                leftButtonContainer.width + (8 * 2).dpToPx() // 避免遮挡左侧按钮
             } else {
                 0
             }
@@ -233,7 +238,7 @@ class TitleBar @JvmOverloads constructor(
 
     // 设置标题尺寸
     fun setTitleSize(size: Int) {
-        titleTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, pxToSp(size.toFloat()))
+        titleTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, size.toFloat().pxToSp())
     }
 
     // 设置标题颜色
@@ -268,11 +273,9 @@ class TitleBar @JvmOverloads constructor(
         //rightContainer.removeAllViews() // 确保不会重复添加图片
         val imageView = ImageView(context).apply {
             scaleType = ImageView.ScaleType.CENTER_CROP
-            layoutParams = LinearLayout.LayoutParams(
-                dpToPx(40),
-                dpToPx(40)
-            ).apply {
-                marginStart = dpToPx(8)
+            val value = 40.dpToPx()
+            layoutParams = LinearLayout.LayoutParams(value, value).apply {
+                marginStart = 8.dpToPx()
             }
             setPadding(
                 buttonTouchPadding,
@@ -315,7 +318,7 @@ class TitleBar @JvmOverloads constructor(
                 LayoutParams.WRAP_CONTENT,
                 LayoutParams.WRAP_CONTENT
             ).apply {
-                marginStart = dpToPx(8)
+                marginStart = 8.dpToPx()
             }
             this.text = text
             textSize = 16f
@@ -350,7 +353,7 @@ class TitleBar @JvmOverloads constructor(
     // 设置圆角点击效果
     private fun setRoundedClickEffect(angle: Int, view: View) {
         val rippleColor = ContextCompat.getColor(context, R.color.black5)  // 波纹效果颜色
-        val cornerRadius = dpToPx(angle).toFloat()
+        val cornerRadius = angle.dpToPx().toFloat()
 
         // 背景：透明色
         val backgroundDrawable = GradientDrawable().apply {
@@ -397,20 +400,5 @@ class TitleBar @JvmOverloads constructor(
         )
         // 设置背景
         view.background = drawable
-    }
-
-    // 工具方法：dp 转 px
-    private fun dpToPx(dp: Int): Int {
-        return (dp * resources.displayMetrics.density).toInt()
-    }
-
-    // 工具方法：sp 转 px
-    private fun spToPx(sp: Float): Int {
-        return (sp * resources.displayMetrics.scaledDensity).toInt()
-    }
-
-    // 工具方法：px 转 sp
-    private fun pxToSp(px: Float): Float {
-        return px / resources.displayMetrics.scaledDensity
     }
 }

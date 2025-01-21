@@ -18,7 +18,7 @@ object Android {
     val context: Application
         get() {
             if (!::_context.isInitialized) {
-                throw IllegalStateException("Android context has not been initialized")
+                throw IllegalStateException("请先调用 initialize() 方法完成初始化")
             }
             return _context
         }
@@ -27,7 +27,7 @@ object Android {
     val debug: Boolean
         get() = _debug
 
-    // 设置主Activity
+    // 设置主Activity(启动页要跳转的Activity)
     var homeActivity: Class<*>? = null
 
     /**
