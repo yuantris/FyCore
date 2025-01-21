@@ -48,11 +48,13 @@ ext {
     fycoreDependencies = [
             jitpack: libs.fycore.github,
             package: libs.fycore.git.package,
-            local : project(':modules:core_feature')
+            local  : project(':modules:core_feature')
     ]
 }
 
 dependencies {
+
+    // implementation fileTree(dir: "libs", include: ["*.aar"])
 
     implementation libs.core.ktx
     implementation libs.appcompat
@@ -79,25 +81,11 @@ dependencies {
     //Glide
     implementation(libs.glide)
 
-    // https://github.com/liangjingkanji/BRV
-    implementation (libs.brv) {
-        exclude group: 'com.github.liangjingkanji', module: 'StateLayout'
-    }
-
     // 动画解析库：https://github.com/airbnb/lottie-android
     // 动画资源：https://lottiefiles.com、https://icons8.com/animated-icons
     implementation libs.lottie
     implementation libs.xxpermissions
 
-    // https://github.com/gyf-dev/ImmersionBar
-    implementation libs.immersionbar
-    implementation libs.immersionbar.ktx
-
     // https://github.com/Blankj/AndroidUtilCode
     implementation libs.utilcodex
-
-    // ShapeView：https://github.com/getActivity/ShapeView
-    implementation libs.shapeView
-    // ShapeDrawable：https://github.com/getActivity/ShapeDrawable
-    implementation libs.shapedrawable
 }

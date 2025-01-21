@@ -53,10 +53,14 @@
         <attr name="isBackShow" format="boolean" />
     </declare-styleable>
 
+    <attr name="empty_layout" format="reference" />
+    <attr name="error_layout" format="reference" />
+    <attr name="loading_layout" format="reference" />
+
     <declare-styleable name="StateLayout">
-        <attr name="empty_layout" format="reference" />
-        <attr name="error_layout" format="reference" />
-        <attr name="loading_layout" format="reference" />
+        <attr name="empty_layout" />
+        <attr name="error_layout" />
+        <attr name="loading_layout" />
     </declare-styleable>
 
     <declare-styleable name="CustomImageView">
@@ -104,6 +108,22 @@
     <style name="bottomSheetStyleWrapper" parent="Widget.Design.BottomSheet.Modal">
         <item name="android:background">@android:color/transparent</item>
     </style>
+
+
+    <!--下拉刷新上拉加载布局-->
+    <declare-styleable name="PageRefreshLayout">
+        <attr name="empty_layout" />
+        <attr name="error_layout" />
+        <attr name="loading_layout" />
+        <!--启用缺省页-->
+        <attr name="stateEnabled" format="boolean" />
+        <!--启用拉取更多-->
+        <attr name="page_upFetchEnabled" format="boolean" />
+        <!--指定嵌套布局中的缺省页-->
+        <attr name="page_state" format="reference" />
+        <!--指定嵌套布局中的RecyclerView-->
+        <attr name="page_rv" format="reference" />
+    </declare-styleable>
 
 
 </resources>

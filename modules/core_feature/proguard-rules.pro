@@ -22,6 +22,7 @@
 
 # 禁用代码优化
 -dontoptimize
+-printmapping mapping.txt
 
 # 保留类的原始结构，避免被移除或混淆
 -keep class io.core.** { *; }
@@ -39,9 +40,6 @@
 -keepclassmembers class * {
     suspend <methods>;
 }
-
-# 保留通过反射动态加载的类
--keep class io.core.DynamicClass { *; }
 
 # 保留通过反射调用的字段和方法
 -keepclassmembers class * {
@@ -204,15 +202,9 @@
 -keep class **.web.**{*;}
 # 数据类
 -keep class **.data.**{*;}
-# 缓存 Cookie
--keep class **.help.http.CookieStore{*;}
--keep class **.help.CacheManager{*;}
-# StrResponse
--keep class **.help.http.StrResponse{*;}
 
 -dontwarn rx.**
 -dontwarn javax.annotation.**
--dontwarn okhttp3.**
 
 -keep,allowobfuscation,allowshrinking class com.google.gson.** { *; }
 -keep,allowobfuscation,allowshrinking class com.ke.gson.** { *; }
@@ -268,7 +260,9 @@
 -keep class **Exception
 
 # ShapeView：https://github.com/getActivity/ShapeView
--keep class com.hjq.shape.** {*;}
+-keep class io.core.engine.shape.** {*;}
+-keep class io.core.widget.layout.** {*;}
+-keep class io.core.widget.view.** {*;}
 
 -dontwarn io.core.engine.livebus.**
 -keep class io.core.engine.livebus.** { *; }

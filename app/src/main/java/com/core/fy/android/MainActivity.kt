@@ -8,12 +8,8 @@ import com.core.fy.android.interfaces.FragmentPagerAdapter
 import com.core.fy.android.model.Tab
 import com.core.fy.android.ui.fragment.BlankFragment
 import com.core.fy.android.ui.fragment.HomeFragment
-import com.drake.brv.BindingAdapter
-import com.drake.brv.utils.grid
-import com.drake.brv.utils.setup
 import io.core.common.base.component.activity.ReflectBindingActivity
 import io.core.common.base.component.fragment.BaseFragment
-import io.core.common.helper.LifecycleHelp
 import io.core.common.helper.dialogs.alert
 import io.core.common.util.ext.exitApp
 import io.core.common.util.ext.notifyAllDataChanged
@@ -21,6 +17,9 @@ import io.core.common.util.ext.ui.BarColor
 import io.core.common.util.ext.ui.getCompatColor
 import io.core.common.util.ext.ui.hide
 import io.core.common.util.ext.ui.show
+import io.core.engine.brv.BindingAdapter
+import io.core.engine.brv.utils.grid
+import io.core.engine.brv.utils.setup
 
 class MainActivity : ReflectBindingActivity<ActivityMainBinding>() {
 

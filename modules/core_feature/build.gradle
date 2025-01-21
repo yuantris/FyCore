@@ -83,20 +83,19 @@ dependencies {
     // 权限请求框架
     compileOnly libs.xxpermissions
 
-    // https://github.com/liangjingkanji/BRV
-    compileOnly(libs.brv) {
-        exclude group: 'com.github.liangjingkanji', module: 'StateLayout'
-    }
-
     // https://github.com/gyf-dev/ImmersionBar
-    compileOnly libs.immersionbar
-    compileOnly libs.immersionbar.ktx
+    api libs.immersionbar
+    api libs.immersionbar.ktx
 
     // ShapeView：https://github.com/getActivity/ShapeView
-    compileOnly libs.shapeView
+    // api libs.shapeView
     // ShapeDrawable：https://github.com/getActivity/ShapeDrawable
-    compileOnly libs.shapedrawable
+    // api libs.shapedrawable
 
+    // https://github.com/liangjingkanji/BRV
+    api libs.refresh.layout.kernel
+    api libs.refresh.header.material
+    api libs.refresh.footer.classics
 }
 
 ///*当前版本*/

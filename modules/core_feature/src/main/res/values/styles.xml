@@ -23,4 +23,12 @@
         <item name="android:textSize">20sp</item>
     </style>
 
+    <style name="ShapeCheckBoxStyle" parent="Widget.AppCompat.CompoundButton.CheckBox">
+        <item name="shape_buttonDrawable">@drawable/shape_view_placeholder</item>
+    </style>
+
+    <style name="ShapeRadioButtonStyle" parent="Widget.AppCompat.CompoundButton.RadioButton">
+        <item name="shape_buttonDrawable">@drawable/shape_view_placeholder</item>
+    </style>
+
 </resources>

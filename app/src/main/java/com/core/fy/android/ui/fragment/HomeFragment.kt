@@ -22,11 +22,11 @@ import com.core.fy.android.room.VMFactory
 import com.core.fy.android.room.entity.Function
 import com.core.fy.android.room.repository.FunctionRepository
 import com.core.fy.android.viewmodel.FunctionVM
-import com.drake.brv.BindingAdapter
-import com.drake.brv.listener.DefaultItemTouchCallback
-import com.drake.brv.utils.divider
-import com.drake.brv.utils.grid
-import com.drake.brv.utils.setup
+import io.core.engine.brv.BindingAdapter
+import io.core.engine.brv.listener.DefaultItemTouchCallback
+import io.core.engine.brv.utils.divider
+import io.core.engine.brv.utils.grid
+import io.core.engine.brv.utils.setup
 import io.core.common.base.component.fragment.ReflectBindingFragment
 import io.core.common.util.ext.cool.launchAsync
 import io.core.common.util.ext.ui.onClick
