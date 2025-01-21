@@ -4,6 +4,7 @@ import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.content.Intent
 import android.os.Bundle
+import com.core.fy.android.App
 import com.core.fy.android.MainActivity
 import com.core.fy.android.databinding.ActivitySplashBinding
 import io.core.common.base.component.activity.ReflectBindingActivity
@@ -26,6 +27,7 @@ import com.gyf.immersionbar.ImmersionBar
  */
 class SplashActivity : ReflectBindingActivity<ActivitySplashBinding>() {
     override fun initial(savedInstanceState: Bundle?) {
+        setTakeOverBackPressed(true)
         super.initial(savedInstanceState)
         // 问题及方案：https://www.cnblogs.com/net168/p/5722752.html
         // 如果当前 Activity 不是任务栈中的第一个 Activity
@@ -44,13 +46,17 @@ class SplashActivity : ReflectBindingActivity<ActivitySplashBinding>() {
 
     override fun setListener() {
         super.setListener()
-        // 设置动画监听
-        binding.lavSplashLottie.addAnimatorListener(object : AnimatorListenerAdapter() {
-            override fun onAnimationEnd(animation: Animator) {
-                binding.lavSplashLottie.removeAnimatorListener(this)
-                startNoTransition(MainActivity::class.java, finish = true)
-            }
-        })
+        if (App.isDisplaySplashAnim) {
+            // 设置动画监听
+            binding.lavSplashLottie.addAnimatorListener(object : AnimatorListenerAdapter() {
+                override fun onAnimationEnd(animation: Animator) {
+                    binding.lavSplashLottie.removeAnimatorListener(this)
+                    startNoTransition(MainActivity::class.java, finish = true)
+                }
+            })
+        } else {
+            startNoTransition(MainActivity::class.java, finish = true)
+        }
     }
 
     override fun createStatusBarConfig(): ImmersionBar {
@@ -59,9 +65,9 @@ class SplashActivity : ReflectBindingActivity<ActivitySplashBinding>() {
             .hideBar(BarHide.FLAG_HIDE_BAR)
     }
 
-    override fun onBackPressed() {
-        // 禁用返回键
-        //super.onBackPressed();
+    override fun onBackPressedCall() {
+        super.onBackPressedCall()
+        // 拦截返回键
     }
 
     override fun onDestroy() {

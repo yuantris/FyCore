@@ -25,6 +25,11 @@ import io.core.common.util.ext.notificationManager
  */
 class App : Application() {
 
+    companion object {
+        // 是否显示启动动画
+        var isDisplaySplashAnim = true
+    }
+
     override fun onCreate() {
         super.onCreate()
         Android.initialize(this)

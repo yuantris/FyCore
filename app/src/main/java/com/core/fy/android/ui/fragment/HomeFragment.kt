@@ -2,6 +2,7 @@ package com.core.fy.android.ui.fragment
 
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.ItemTouchHelper
+import com.core.fy.android.App
 import com.core.fy.android.MainActivity
 import com.core.fy.android.R
 import com.core.fy.android.databinding.FragmentHomeBinding
@@ -56,10 +57,14 @@ class HomeFragment : ReflectBindingFragment<FragmentHomeBinding, MainActivity>()
 
     override fun initView() {
         binding.state.stateChangedHandler = LeastAnimationStateChangedHandler()
-        binding.state.onRefresh {
+        if (App.isDisplaySplashAnim) {
+            binding.state.onRefresh {
+                functionVM.initRvData()
+            }.showLoading()
+        } else {
             functionVM.initRvData()
-        }.showLoading()
-
+            binding.state.showContent()
+        }
     }
 
     override fun initData() {
@@ -96,6 +101,7 @@ class HomeFragment : ReflectBindingFragment<FragmentHomeBinding, MainActivity>()
                                         putExtra("url", "当前的Url")
                                     }
                                 }
+
                                 FunctionVM.Design.单文字点击的TextView -> startActivity<ClickTextActivity>()
                                 FunctionVM.Design.ROOM -> startActivity<RoomActivity>()
                                 FunctionVM.Design.DIALOG -> startActivity<DialogActivity>()
