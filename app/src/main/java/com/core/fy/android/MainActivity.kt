@@ -2,12 +2,15 @@ package com.core.fy.android
 
 import android.os.Bundle
 import androidx.viewpager.widget.ViewPager.OnPageChangeListener
+import com.blankj.utilcode.util.AppUtils.exitApp
 import com.core.fy.android.databinding.ActivityMainBinding
 import com.core.fy.android.databinding.ItemTabBinding
 import com.core.fy.android.interfaces.FragmentPagerAdapter
 import com.core.fy.android.model.Tab
-import com.core.fy.android.ui.fragment.BlankFragment
-import com.core.fy.android.ui.fragment.HomeFragment
+import com.core.fy.android.main.fragment.BlankFragment
+import com.core.fy.android.main.fragment.HomeFragment
+import com.core.fy.android.ui.ConfigDialog
+import com.core.fy.android.util.ClickSequenceHandler
 import io.core.common.base.component.activity.ReflectBindingActivity
 import io.core.common.base.component.fragment.BaseFragment
 import io.core.common.helper.dialogs.alert
@@ -16,7 +19,10 @@ import io.core.common.util.ext.notifyAllDataChanged
 import io.core.common.util.ext.ui.BarColor
 import io.core.common.util.ext.ui.getCompatColor
 import io.core.common.util.ext.ui.hide
+import io.core.common.util.ext.ui.onClick
 import io.core.common.util.ext.ui.show
+import io.core.common.util.ext.ui.showDialogFragment
+import io.core.common.util.ext.ui.toast
 import io.core.engine.brv.BindingAdapter
 import io.core.engine.brv.utils.grid
 import io.core.engine.brv.utils.setup
@@ -35,6 +41,8 @@ class MainActivity : ReflectBindingActivity<ActivityMainBinding>() {
     override fun initial(savedInstanceState: Bundle?) {
         setTakeOverBackPressed(true)
         super.initial(savedInstanceState)
+
+        binding.appBar.setExpanded(false)
 
         FragmentPagerAdapter<BaseFragment<*>>(this).apply {
             addFragment(HomeFragment())
@@ -82,7 +90,8 @@ class MainActivity : ReflectBindingActivity<ActivityMainBinding>() {
                     position: Int,
                     positionOffset: Float,
                     positionOffsetPixels: Int
-                ) {}
+                ) {
+                }
 
                 override fun onPageSelected(position: Int) {
                     selectIndex = position
@@ -92,6 +101,10 @@ class MainActivity : ReflectBindingActivity<ActivityMainBinding>() {
                 override fun onPageScrollStateChanged(state: Int) {}
 
             })
+
+            ClickSequenceHandler(binding.toolbar) {
+                showDialogFragment<ConfigDialog>()
+            }
         }
     }
 

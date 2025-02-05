@@ -1,11 +1,9 @@
-package com.core.fy.android.function
+package com.core.fy.android
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.content.Intent
 import android.os.Bundle
-import com.core.fy.android.App
-import com.core.fy.android.MainActivity
 import com.core.fy.android.databinding.ActivitySplashBinding
 import io.core.common.base.component.activity.ReflectBindingActivity
 import io.core.common.util.ext.ui.startNoTransition
@@ -46,7 +44,7 @@ class SplashActivity : ReflectBindingActivity<ActivitySplashBinding>() {
 
     override fun setListener() {
         super.setListener()
-        if (App.isDisplaySplashAnim) {
+        if (Config.isDisplaySplashAnim) {
             // 设置动画监听
             binding.lavSplashLottie.addAnimatorListener(object : AnimatorListenerAdapter() {
                 override fun onAnimationEnd(animation: Animator) {

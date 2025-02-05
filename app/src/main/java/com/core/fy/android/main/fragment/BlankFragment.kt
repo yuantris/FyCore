@@ -1,4 +1,4 @@
-package com.core.fy.android.ui.fragment
+package com.core.fy.android.main.fragment
 
 import android.annotation.SuppressLint
 import android.widget.Toast

@@ -15,11 +15,12 @@
         app:elevation="0px">
 
         <com.core.fy.android.widget.XCollapsingToolbarLayout
+            android:id="@+id/coll_tool"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_256"
             app:collapsedTitleGravity="bottom|center_vertical"
             app:collapsedTitleTextColor="@color/white"
-            app:contentScrim="@color/md_indigo_200"
+            app:contentScrim="@color/md_indigo_900"
             app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
             app:scrimVisibleHeightTrigger="@dimen/dp_100"
             app:title="@string/app_name">
@@ -27,7 +28,7 @@
             <androidx.appcompat.widget.AppCompatImageView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/md_indigo_100"
+                android:background="@color/md_indigo_400"
                 android:scaleType="centerCrop"
                 app:layout_collapseMode="parallax" />
 

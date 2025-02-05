@@ -1,4 +1,4 @@
-package com.core.fy.android.function
+package com.core.fy.android.function.database
 
 import android.os.Bundle
 import androidx.activity.viewModels
@@ -6,7 +6,6 @@ import com.core.fy.android.databinding.ActivityRoomBinding
 import com.core.fy.android.room.VMFactory
 import com.core.fy.android.room.appDb
 import com.core.fy.android.room.entity.User
-import com.core.fy.android.room.repository.FunctionRepository
 import com.core.fy.android.room.repository.UserRepository
 import com.core.fy.android.viewmodel.UserVM
 import io.core.common.base.component.activity.ReflectBindingActivity

@@ -1,4 +1,4 @@
-package com.core.fy.android.function
+package com.core.fy.android.function.keyboard
 
 import android.os.Bundle
 import android.util.Log

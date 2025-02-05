@@ -1,4 +1,4 @@
-package com.core.fy.android.function
+package com.core.fy.android.function.tts
 
 import android.os.Bundle
 import com.core.fy.android.databinding.ActivityClickTextBinding

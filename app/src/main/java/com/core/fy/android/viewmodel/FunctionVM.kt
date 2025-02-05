@@ -34,6 +34,7 @@ class FunctionVM(var repository: FunctionRepository) : BaseViewModel() {
         TOAST("toast"),
         VIEW_VISIBILITY("viewVisibility"),
         EVENT("event"),
+        相机("相机"),
         COLL_BAR("collBar");
 
         companion object {
@@ -57,6 +58,7 @@ class FunctionVM(var repository: FunctionRepository) : BaseViewModel() {
             Function(Design.TOAST),
             Function(Design.VIEW_VISIBILITY),
             Function(Design.EVENT),
+            Function(Design.相机),
             Function(Design.COLL_BAR),
         )
     }

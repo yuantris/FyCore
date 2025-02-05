@@ -1,4 +1,4 @@
-package com.core.fy.android.function
+package com.core.fy.android.function.yunchuang
 
 import android.os.Bundle
 import androidx.core.view.isVisible

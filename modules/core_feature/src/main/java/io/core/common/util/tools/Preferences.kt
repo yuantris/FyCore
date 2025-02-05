@@ -6,7 +6,7 @@ import android.content.SharedPreferences
 import androidx.preference.PreferenceManager
 import io.core.common.util.ext.appCtx
 
-object SPUtils {
+object Preferences {
 
     val sp: SharedPreferences by lazy {
         // appCtx.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE)

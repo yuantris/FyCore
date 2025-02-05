@@ -1,13 +1,8 @@
-package com.core.fy.android.function
+package com.core.fy.android.function.event
 
 import com.core.fy.android.R
 import com.core.fy.android.databinding.ActivityEventBinding
 import io.core.common.base.component.activity.ReflectBindingActivity
-import io.core.common.helper.event.Event
-import io.core.common.helper.event.FEvent
-import io.core.common.helper.event.FlowEventBus
-import io.core.common.helper.event.flowOf
-import io.core.common.util.ext.cool.launchSync
 import io.core.common.util.ext.cool.observeEvent
 import io.core.common.util.ext.cool.postEvent
 import io.core.common.util.ext.currentTimeMillis
@@ -16,7 +11,6 @@ import io.core.common.util.ext.ui.onClick
 import io.core.common.util.log.logD
 import io.core.common.util.ext.ui.toast
 import io.core.common.util.tools.DrawableBuilder
-import kotlinx.coroutines.flow.collectLatest
 
 class EventActivity : ReflectBindingActivity<ActivityEventBinding>() {
 

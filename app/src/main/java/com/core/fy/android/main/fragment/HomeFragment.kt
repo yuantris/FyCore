@@ -1,22 +1,24 @@
-package com.core.fy.android.ui.fragment
+package com.core.fy.android.main.fragment
 
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.ItemTouchHelper
 import com.core.fy.android.App
+import com.core.fy.android.Config
 import com.core.fy.android.MainActivity
 import com.core.fy.android.R
 import com.core.fy.android.databinding.FragmentHomeBinding
 import com.core.fy.android.databinding.ItemFunctionBinding
-import com.core.fy.android.function.ClickTextActivity
+import com.core.fy.android.function.tts.ClickTextActivity
 import com.core.fy.android.function.CollapsingBarActivity
-import com.core.fy.android.function.CustomToastActivity
-import com.core.fy.android.function.DialogActivity
-import com.core.fy.android.function.EventActivity
-import com.core.fy.android.function.ImgTextActivity
-import com.core.fy.android.function.KeyboardActivity
-import com.core.fy.android.function.RoomActivity
-import com.core.fy.android.function.TTSActivity
-import com.core.fy.android.function.VisibilityActivity
+import com.core.fy.android.function.toast.CustomToastActivity
+import com.core.fy.android.function.dialog.DialogActivity
+import com.core.fy.android.function.event.EventActivity
+import com.core.fy.android.function.yunchuang.ImgTextActivity
+import com.core.fy.android.function.keyboard.KeyboardActivity
+import com.core.fy.android.function.database.RoomActivity
+import com.core.fy.android.function.tts.TTSActivity
+import com.core.fy.android.function.yunchuang.VisibilityActivity
+import com.core.fy.android.function.camerax.CameraXActivity
 import com.core.fy.android.function.read.ReadBookActivity
 import com.core.fy.android.interfaces.LeastAnimationStateChangedHandler
 import com.core.fy.android.room.VMFactory
@@ -25,7 +27,6 @@ import com.core.fy.android.room.repository.FunctionRepository
 import com.core.fy.android.viewmodel.FunctionVM
 import io.core.engine.brv.BindingAdapter
 import io.core.engine.brv.listener.DefaultItemTouchCallback
-import io.core.engine.brv.utils.divider
 import io.core.engine.brv.utils.grid
 import io.core.engine.brv.utils.setup
 import io.core.common.base.component.fragment.ReflectBindingFragment
@@ -57,7 +58,7 @@ class HomeFragment : ReflectBindingFragment<FragmentHomeBinding, MainActivity>()
 
     override fun initView() {
         binding.state.stateChangedHandler = LeastAnimationStateChangedHandler()
-        if (App.isDisplaySplashAnim) {
+        if (Config.isDisplaySplashAnim) {
             binding.state.onRefresh {
                 functionVM.initRvData()
             }.showLoading()
@@ -111,6 +112,7 @@ class HomeFragment : ReflectBindingFragment<FragmentHomeBinding, MainActivity>()
                                 FunctionVM.Design.VIEW_VISIBILITY -> startActivity<VisibilityActivity>()
                                 FunctionVM.Design.TTS -> startActivity<TTSActivity>()
                                 FunctionVM.Design.READ -> startActivity<ReadBookActivity>()
+                                FunctionVM.Design.相机 -> startActivity<CameraXActivity>()
                                 else -> {
                                     // do nothing
                                     Toast.Builder(requireContext())

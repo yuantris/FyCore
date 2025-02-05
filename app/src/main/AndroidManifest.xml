@@ -1,11 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
+
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
+
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
+    <uses-permission android:name="android.permission.CAMERA" />
 
     <application
         android:name=".App"
@@ -21,37 +27,40 @@
         android:theme="@style/Theme.FyCore">
 
         <activity
+            android:name=".function.camerax.CameraXActivity"
+            android:exported="false" />
+        <activity
             android:name=".function.read.ReadBookActivity"
             android:exported="false" />
         <activity
-            android:name=".function.TTSActivity"
+            android:name=".function.tts.TTSActivity"
             android:exported="false" />
         <activity
-            android:name=".function.ClickTextActivity"
+            android:name=".function.tts.ClickTextActivity"
             android:exported="false" />
         <activity
-            android:name=".function.ImgTextActivity"
+            android:name=".function.yunchuang.ImgTextActivity"
             android:exported="false" />
         <activity
             android:name=".function.CollapsingBarActivity"
             android:exported="false" />
         <activity
-            android:name=".function.EventActivity"
+            android:name=".function.event.EventActivity"
             android:exported="false" />
         <activity
-            android:name=".function.VisibilityActivity"
+            android:name=".function.yunchuang.VisibilityActivity"
             android:exported="false" />
         <activity
-            android:name=".function.CustomToastActivity"
+            android:name=".function.toast.CustomToastActivity"
             android:exported="false" />
         <activity
-            android:name=".function.DialogActivity"
+            android:name=".function.dialog.DialogActivity"
             android:exported="false" />
         <activity
-            android:name=".function.RoomActivity"
+            android:name=".function.database.RoomActivity"
             android:exported="false" />
         <activity
-            android:name=".function.KeyboardActivity"
+            android:name=".function.keyboard.KeyboardActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
         <activity
@@ -61,7 +70,7 @@
             android:name=".MainActivity"
             android:exported="false" />
         <activity
-            android:name=".function.SplashActivity"
+            android:name=".SplashActivity"
             android:exported="true"
             android:theme="@style/Theme.FyCore.Splash">
             <intent-filter>

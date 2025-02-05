@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".function.KeyboardActivity">
+    tools:context=".function.keyboard.KeyboardActivity">
 
     <io.core.widget.layout.TitleBar
         android:id="@+id/title_bar"

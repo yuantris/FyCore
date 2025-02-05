@@ -14,6 +14,10 @@ package com.core.fy.android.constants
  * @author Yuan
  */
 object PreferKey {
+    // 是否显示启动动画
+    const val isDisplaySplashAnim = "isDisplaySplashAnim"
+
+    /** --------------read-------------- */
     const val language = "language"
     const val fontScale = "fontScale"
     const val themeMode = "themeMode"

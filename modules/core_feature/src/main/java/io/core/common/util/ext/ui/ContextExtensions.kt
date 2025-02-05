@@ -37,7 +37,7 @@ import io.core.common.util.ext.cool.pxToDp
 import io.core.common.util.ext.layoutInflater
 import io.core.common.util.ext.windowManager
 import io.core.common.util.log.printOnDebug
-import io.core.common.util.tools.SPUtils
+import io.core.common.util.tools.Preferences
 import java.io.File
 import kotlin.system.exitProcess
 
@@ -128,7 +128,7 @@ fun Context.startForegroundServiceCompat(intent: Intent) {
 }
 
 
-val Context.defaultSharedPreferences: SharedPreferences get() = SPUtils.sp
+val Context.defaultSharedPreferences: SharedPreferences get() = Preferences.sp
 
 fun Context.getPrefBoolean(key: String, defValue: Boolean = false) =
     defaultSharedPreferences.getBoolean(key, defValue)
