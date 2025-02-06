@@ -6,8 +6,8 @@ jitpack = "jitpack"
 package = "package"
 # --------- # --------- #
 android-gradle = "7.3.1"
-kotlin-version = "1.7.20"
-kotlinx-coroutines-android = "1.6.4"
+kotlin-version = "1.8.20"
+kotlinx-coroutines-android = "1.7.1"
 
 appcompat = "1.6.1"
 core-ktx = "1.9.0"
