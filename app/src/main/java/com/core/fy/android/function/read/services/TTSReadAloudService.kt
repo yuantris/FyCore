@@ -253,4 +253,8 @@ class TTSReadAloudService : BaseReadAloudService(), TextToSpeech.OnInitListener 
         return servicePendingIntent<TTSReadAloudService>(actionStr)
     }
 
+    override fun isForegroundService(): Boolean {
+        return true
+    }
+
 }

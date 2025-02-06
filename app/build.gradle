@@ -63,8 +63,8 @@ dependencies {
     testImplementation libs.junit
     androidTestImplementation libs.ext.junit
     androidTestImplementation libs.espresso.core
-    debugImplementation libs.leakcanary.android
     implementation fycoreDependencies[version]
+    debugImplementation libs.leakcanary.android
 
     implementation libs.room.ktx
     //noinspection KaptUsageInsteadOfKsp

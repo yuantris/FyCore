@@ -5,7 +5,6 @@ import android.content.Context
 import android.graphics.drawable.GradientDrawable
 import android.view.WindowManager
 import androidx.appcompat.app.AlertDialog
-import androidx.core.view.forEach
 import androidx.fragment.app.DialogFragment
 import io.core.R
 import io.core.common.util.ext.cool.dpToPx

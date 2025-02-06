@@ -69,4 +69,9 @@
         <item name="android:windowEnterAnimation">@anim/window_right_in</item>
         <item name="android:windowExitAnimation">@anim/window_right_out</item>
     </style>
+
+    <style name="BubbleDialog" parent="@android:style/Theme.Dialog">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:backgroundDimEnabled">false</item>
+    </style>
 </resources>

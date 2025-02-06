@@ -1,4 +1,4 @@
-package io.core.common.base.component.dialog
+package io.core.common.base.component.dialog.specific
 
 import android.os.Bundle
 import android.view.MenuItem
@@ -10,6 +10,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import io.core.R
+import io.core.common.base.component.dialog.BaseDialogFragment
 import io.core.common.base.vm.BaseViewModel
 import io.core.common.helper.rv.ItemViewHolder
 import io.core.common.helper.rv.RecyclerAdapter

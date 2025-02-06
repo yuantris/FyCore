@@ -8,6 +8,8 @@ import android.os.ParcelFileDescriptor
 import androidx.appcompat.app.AppCompatActivity
 import androidx.documentfile.provider.DocumentFile
 import androidx.fragment.app.Fragment
+import com.hjq.permissions.Permission
+import com.hjq.permissions.XXPermissions
 import io.core.Android
 import io.core.common.util.FileDoc
 import io.core.common.util.ext.appCtx
@@ -45,22 +47,15 @@ fun AppCompatActivity.readUri(
                 success.invoke(fileDoc, inputStream)
             }
         } else {
-//            PermissionsCompat.Builder()
-//                .addPermissions(
-//                    Permissions.READ_EXTERNAL_STORAGE,
-//                    Permissions.WRITE_EXTERNAL_STORAGE
-//                )
-//                .rationale(R.string.get_storage_per)
-//                .onGranted {
-//                    RealPathUtil.getPath(this, uri)?.let { path ->
-//                        val file = File(path)
-//                        val fileDoc = FileDoc.fromFile(file)
-//                        FileInputStream(file).use { inputStream ->
-//                            success.invoke(fileDoc, inputStream)
-//                        }
-//                    }
-//                }
-//                .request()
+            if (isGranted(Permission.MANAGE_EXTERNAL_STORAGE)) {
+                RealPathUtil.getPath(this, uri)?.let { path ->
+                    val file = File(path)
+                    val fileDoc = FileDoc.fromFile(file)
+                    FileInputStream(file).use { inputStream ->
+                        success.invoke(fileDoc, inputStream)
+                    }
+                }
+            }
         }
     } catch (e: Exception) {
         e.printOnDebug()
@@ -85,23 +80,16 @@ fun Fragment.readUri(uri: Uri?, success: (fileDoc: FileDoc, inputStream: InputSt
                 success.invoke(fileDoc, inputStream)
             }
         } else {
-//            PermissionsCompat.Builder()
-//                .addPermissions(
-//                    Permissions.READ_EXTERNAL_STORAGE,
-//                    Permissions.WRITE_EXTERNAL_STORAGE
-//                )
-//                .rationale(R.string.get_storage_per)
-//                .onGranted {
-//                    RealPathUtil.getPath(requireContext(), uri)?.let { path ->
-//                        val file = File(path)
-//                        val fileDoc = FileDoc.fromFile(file)
-//                        FileInputStream(file).use { inputStream ->
-//                            success.invoke(fileDoc, inputStream)
-//                        }
-//
-//                    }
-//                }
-//                .request()
+            if (isGranted(Permission.MANAGE_EXTERNAL_STORAGE)) {
+                RealPathUtil.getPath(requireContext(), uri)?.let { path ->
+                    val file = File(path)
+                    val fileDoc = FileDoc.fromFile(file)
+                    FileInputStream(file).use { inputStream ->
+                        success.invoke(fileDoc, inputStream)
+                    }
+
+                }
+            }
         }
     } catch (e: Exception) {
         e.printOnDebug()

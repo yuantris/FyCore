@@ -13,8 +13,12 @@ import io.core.common.base.component.dialog.BaseDialogFragment
 import io.core.common.helper.viewbindingdelegate.viewBinding
 import io.core.common.util.ext.ui.applyTint
 import io.core.common.util.ext.ui.getCompatColor
+import io.core.common.util.ext.ui.restart
 import io.core.common.util.ext.ui.setLayout
+import io.core.common.util.log.LogCat
+import io.core.common.util.log.logD
 import io.core.common.util.tools.Preferences
+import io.core.common.util.tools.TimeUtils
 
 
 /**
@@ -30,7 +34,7 @@ import io.core.common.util.tools.Preferences
  * @description
  * @author Yuan
  */
-class ConfigDialog : BaseDialogFragment(com.core.fy.android.R.layout.dialog_app_config) {
+class ConfigDialog : BaseDialogFragment(R.layout.dialog_app_config) {
 
     private val binding by viewBinding(DialogAppConfigBinding::bind)
 
@@ -40,7 +44,7 @@ class ConfigDialog : BaseDialogFragment(com.core.fy.android.R.layout.dialog_app_
     }
 
     override fun onFragmentCreated(view: View, savedInstanceState: Bundle?) {
-        binding.toolBar.setBackgroundColor(getCompatColor(io.core.R.color.md_blue_300))
+        binding.toolBar.setBackgroundColor(getCompatColor(io.core.R.color.md_grey_850))
         binding.toolBar.inflateMenu(io.core.R.menu.dialog_text)
         binding.toolBar.setTitleTextColor(getCompatColor(R.color.md_white_1000))
         binding.toolBar.menu.applyTint(requireContext())

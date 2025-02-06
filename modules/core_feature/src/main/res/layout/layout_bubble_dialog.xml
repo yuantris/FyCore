@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<io.core.widget.layout.ShapeFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/loading"
+    android:layout_width="wrap_content"
+    android:layout_height="140dp"
+    android:minWidth="140dp"
+    android:orientation="vertical"
+    app:shape_radius="@dimen/dp_8"
+    app:shape_shadowColor="#20000000"
+    app:shape_shadowSize="@dimen/dp_16"
+    app:shape_shadowOffsetY="@dimen/dp_2"
+    app:shape_type="rectangle"
+    app:shape_solidColor="#F6F6F6">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="vertical">
+
+        <io.core.widget.view.LoadingView
+            android:id="@+id/iv_loading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center" />
+
+        <io.core.widget.view.MarqueeTextView
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="8dp"
+            android:layout_marginTop="@dimen/dp_20"
+            android:textColor="@color/md_black_1000"
+            android:textSize="@dimen/sp_13"
+            tools:text="@string/common_loading" />
+    </LinearLayout>
+
+
+</io.core.widget.layout.ShapeFrameLayout>

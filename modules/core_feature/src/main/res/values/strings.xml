@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- 通用的 -->
-    <string name="common_loading">加载中&#8230;</string>
+    <string name="common_loading">加载中</string>
 
     <string name="common_confirm">确定</string>
     <string name="common_cancel">取消</string>

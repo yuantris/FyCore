@@ -1,10 +1,11 @@
-package io.core.common.base.component.dialog
+package io.core.common.base.component.dialog.specific
 
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.lifecycleScope
 import io.core.R
+import io.core.common.base.component.dialog.BaseDialogFragment
 import io.core.common.helper.viewbindingdelegate.viewBinding
 import io.core.common.util.ext.ui.applyTint
 import io.core.common.util.ext.ui.getCompatColor
@@ -12,10 +13,8 @@ import io.core.common.util.ext.ui.setHtml
 import io.core.common.util.ext.ui.setLayout
 import io.core.databinding.DialogTextViewBinding
 import io.core.other.IntentData
-import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class TextDialog() : BaseDialogFragment(R.layout.dialog_text_view) {
 

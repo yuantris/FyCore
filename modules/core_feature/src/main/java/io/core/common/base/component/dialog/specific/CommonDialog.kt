@@ -1,6 +1,6 @@
 @file:Suppress("UNCHECKED_CAST","LeakingThis")
 
-package io.core.common.base.component.dialog
+package io.core.common.base.component.dialog.specific
 
 import android.content.*
 import android.view.*
@@ -9,6 +9,7 @@ import androidx.annotation.LayoutRes
 import androidx.annotation.StringRes
 import io.core.R
 import io.core.common.base.action.AnimAction
+import io.core.common.base.component.dialog.BaseDialog
 
 
 class CommonDialog {

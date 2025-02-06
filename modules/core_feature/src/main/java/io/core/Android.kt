@@ -2,6 +2,7 @@ package io.core
 
 import android.app.Application
 import io.core.common.helper.LifecycleHelp
+import io.core.common.util.log.LogCat
 import io.core.engine.livebus.LiveEventBus
 import io.core.engine.livebus.logger.DefaultLogger
 import io.core.other.CrashHandler
@@ -39,6 +40,8 @@ object Android {
         _context = application
         // 注册全局CrashHandler
         CrashHandler.register(application)
+        // 初始化日志
+        LogCat.setDebug(debug)
         // 注册Activity生命周期回调
         application.registerActivityLifecycleCallbacks(LifecycleHelp)
         // LiveEventBus 初始化

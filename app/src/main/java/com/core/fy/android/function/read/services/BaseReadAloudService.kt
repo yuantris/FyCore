@@ -32,7 +32,6 @@ import com.core.fy.android.function.read.page.entities.TextChapter
 import com.core.fy.android.function.read.receiver.MediaButtonReceiver
 import com.core.fy.android.help.MediaHelp
 import com.core.fy.android.help.config.AppConfig
-import io.core.Android
 import io.core.common.base.component.service.BaseService
 import io.core.common.helper.coroutine.Coroutine
 import io.core.common.helper.glide.ImageLoader

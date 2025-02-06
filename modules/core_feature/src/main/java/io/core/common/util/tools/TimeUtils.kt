@@ -1,14 +1,9 @@
 package io.core.common.util.tools
 
-import android.annotation.SuppressLint
-import android.os.Build
-import androidx.annotation.RequiresApi
 import io.core.common.util.ext.currentTimeMillis
 import io.core.constant.DateFormatPatterns
 import java.text.SimpleDateFormat
 import java.util.Locale
-import java.util.concurrent.ConcurrentHashMap
-import java.util.concurrent.ConcurrentMap
 import kotlin.math.abs
 
 fun Long.toTimeAgo(): String {

@@ -28,17 +28,17 @@ import kotlin.coroutines.resumeWithException
 class TimeoutCancellationException(msg: String) : CancellationException(msg)
 
 suspend fun <T> withTimeoutAsync(delayMillis: Long, block: suspend CoroutineScope.() -> T): T {
-    return suspendCancellableCoroutine { cout ->
-        Coroutine.async(context = cout.context) {
+    return suspendCancellableCoroutine { count ->
+        Coroutine.async(context = count.context) {
             launch {
                 delay(delayMillis)
-                if (!cout.isCompleted) {
-                    cout.resumeWithException(TimeoutCancellationException("Timed out waiting for $delayMillis ms"))
+                if (!count.isCompleted) {
+                    count.resumeWithException(TimeoutCancellationException("Timed out waiting for $delayMillis ms"))
                 }
             }
             val result = block()
-            if (!cout.isCompleted) {
-                cout.resume(result)
+            if (!count.isCompleted) {
+                count.resume(result)
             }
         }
     }

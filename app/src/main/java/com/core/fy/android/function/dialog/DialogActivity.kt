@@ -1,21 +1,25 @@
 package com.core.fy.android.function.dialog
 
+import android.app.Dialog
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.lifecycle.lifecycleScope
 import com.core.fy.android.R
 import com.core.fy.android.databinding.ActivityDialogBinding
 import com.core.fy.android.ui.BottomSheetNextDialog
 import com.core.fy.android.ui.WaitDialog
 import io.core.common.base.component.activity.ReflectBindingActivity
+import io.core.common.base.component.dialog.specific.BubbleDialog
 import io.core.common.helper.dialogs.alert
 import io.core.common.util.CoreUtil
 import io.core.common.util.ext.cool.dpToPx
 import io.core.common.util.ext.ui.getCompatColor
 import io.core.common.util.ext.ui.onClick
+import io.core.common.util.ext.ui.postDelayUI
 import io.core.common.util.ext.ui.showDialogFragment
 import io.core.common.util.tools.DrawableBuilder
 import kotlinx.coroutines.delay
@@ -37,6 +41,10 @@ import kotlinx.coroutines.launch
 class DialogActivity : ReflectBindingActivity<ActivityDialogBinding>() {
     private val dialog by lazy {
         WaitDialog.Builder(this)
+    }
+
+    private val dialog2 by lazy {
+        BubbleDialog(this)
     }
 
     override fun initial(savedInstanceState: Bundle?) {
@@ -73,10 +81,10 @@ class DialogActivity : ReflectBindingActivity<ActivityDialogBinding>() {
 
     override fun setListener() {
         super.setListener()
-        binding.apply {
+        with(binding) {
             show.onClick {
                 lifecycleScope.launch {
-                    dialog.setMessage("正在加载中").show()
+                    dialog.show()
                     delay(2000)
                     dialog.setMessage("加载完成")
                     delay(3000)
@@ -92,6 +100,20 @@ class DialogActivity : ReflectBindingActivity<ActivityDialogBinding>() {
                 showDialogFragment<BottomSheetNextDialog>()
                 //BottomSheetLaterDialog(this@DialogActivity).show()
             }
+
+            show2.onClick {
+                dialog2.show()
+                waitDismiss(dialog2)
+            }
+        }
+    }
+
+    /**
+     * 等待2秒关闭对话框
+     */
+    private fun waitDismiss(dialog: Dialog) {
+        postDelayUI(3000) {
+            dialog.dismiss()
         }
     }
 }

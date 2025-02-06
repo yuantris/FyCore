@@ -5,6 +5,7 @@ import android.util.Log
 import android.util.Size
 import androidx.camera.core.CameraSelector
 import com.core.fy.android.databinding.ActivityCameraxBinding
+import com.hjq.permissions.OnPermissionCallback
 import com.hjq.permissions.Permission
 import com.hjq.permissions.XXPermissions
 import io.core.common.base.component.activity.ReflectBindingActivity
@@ -39,7 +40,10 @@ class CameraXActivity : ReflectBindingActivity<ActivityCameraxBinding>() {
             .build()
         XXPermissions.with(this)
             .permission(Permission.CAMERA)
-            .request { _, _ -> helper?.initializeCamera() }
+            .request { _, _ ->
+                helper?.initializeCamera()
+                helper?.setZoomRatio(0.5f)
+            }
     }
 
     override fun setListener() {

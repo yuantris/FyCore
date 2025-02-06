@@ -38,13 +38,13 @@ abstract class BaseService : LifecycleService() {
     override fun onCreate() {
         super.onCreate()
         LifecycleHelp.onServiceCreate(this)
-        checkPermission()
+        if (isForegroundService()) checkPermission()
     }
 
     @CallSuper
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         LogUtils.logD(message = "onStartCommand $intent ${intent?.toUri(0)}")
-        if (!isForeground) {
+        if (!isForeground && isForegroundService()) {
             startForegroundNotification()
             isForeground = true
         }
@@ -68,6 +68,11 @@ abstract class BaseService : LifecycleService() {
         super.onDestroy()
         LifecycleHelp.onServiceDestroy(this)
     }
+
+    /**
+     * 是否是前台服务
+     */
+    abstract fun isForegroundService(): Boolean
 
     /**
      * 开启前台服务并发送通知

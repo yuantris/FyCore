@@ -23,16 +23,15 @@ import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.lifecycleScope
 import io.core.R
-import io.core.common.util.log.logE
 import io.core.common.util.ext.ui.setDebouncedClickListener
 import com.gyf.immersionbar.ImmersionBar
 import com.hjq.permissions.Permission
 import com.hjq.permissions.XXPermissions
-import io.core.common.base.component.dialog.CrashLogsDialog
-import io.core.common.util.ext.ui.appPackageName
+import io.core.common.base.component.dialog.specific.CrashLogsDialog
 import io.core.common.util.ext.ui.appVersionCode
 import io.core.common.util.ext.ui.appVersionName
 import io.core.common.util.ext.ui.showDialogFragment
+import io.core.common.util.log.LogCat
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.PrintWriter
@@ -107,7 +106,7 @@ class CrashActivity : BaseActivity() {
 
     private fun initData() {
         val throwable: Throwable = getSerializable(INTENT_KEY_IN_THROWABLE) ?: return
-        throwable.message?.logE()
+        LogCat.e(throwable)
         titleView?.text = throwable.javaClass.simpleName
         val stringWriter = StringWriter()
         val printWriter = PrintWriter(stringWriter)

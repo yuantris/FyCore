@@ -8,7 +8,12 @@ import android.os.Build
 import com.core.fy.android.constants.AppConst.channelIdReadAloud
 import io.core.Android
 import io.core.common.CoreConfigs
+import io.core.common.util.ext.cool.GSON
 import io.core.common.util.ext.notificationManager
+import io.core.common.util.log.LogCat
+import io.core.common.util.log.LogHook
+import io.core.common.util.log.LogInfo
+import io.core.common.util.log.logV
 
 /**
 # ██████████
@@ -31,6 +36,16 @@ class App : Application() {
         // 设置重启对象Activity
         Android.homeActivity = MainActivity::class.java
 
+//        // 添加日志全局拦截器
+//        LogCat.addHook(object : LogHook {
+//            override fun hook(info: LogInfo) {
+//                GSON.toJson(info).logV("LogHook_")
+//            }
+//        })
+        initApp()
+    }
+
+    private fun initApp() {
         CoreConfigs.DIALOG_BUTTON_POSITIVE_COLOR = getColor(R.color.md_indigo_500)
         CoreConfigs.DIALOG_BUTTON_NEGATIVE_COLOR = getColor(R.color.md_red_300)
         // SoftKeyboardGlobal.install(this, false)

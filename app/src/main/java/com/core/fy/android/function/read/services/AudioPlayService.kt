@@ -212,6 +212,10 @@ class AudioPlayService : BaseService(),
         }
     }
 
+    override fun isForegroundService(): Boolean {
+        return true
+    }
+
     /**
      * 播放音频
      */
