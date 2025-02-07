@@ -2,6 +2,7 @@
 
 //添加 repositories.gradle
 apply from: 'app/repositories.gradle'
+apply from: 'custom-maven.gradle'
 
 buildscript {
     repositories {
@@ -24,13 +25,6 @@ buildscript {
 
 allprojects {
     repositories {
-        maven {
-            credentials {
-                username '63d4d579378edb0fd9aa3b2d'
-                password 'nXJxEWiiObre'
-            }
-            url 'https://packages.aliyun.com/67789758cdfeb44ae202deb7/maven/2512815-release-ndmhzu'
-        }
         maven {
             url = uri("https://maven.pkg.github.com/yuantris/FyCore")
             credentials {

@@ -80,7 +80,7 @@ class CrashHandler private constructor(private val application: Application) :
         fun saveCrashInfo2File(ex: Throwable) {
             val sb = StringBuilder()
             for ((key, value) in paramsMap) {
-                sb.append(key).append("=").append(value).append("\n")
+                sb.append(key).append("=").append(value).append("\n\n")
             }
 
             val writer = StringWriter()

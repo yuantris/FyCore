@@ -2,6 +2,8 @@
 package io.core.common.util.log
 
 import android.util.Log
+import io.core.common.util.ext.ifNotNull
+import io.core.common.util.ext.ifNull
 import io.core.common.util.log.LogCat.Type.*
 import io.core.common.util.log.LogCat.enabled
 import io.core.common.util.log.LogCat.logHooks
@@ -169,7 +171,12 @@ object LogCat {
 
         if (traceEnabled && occurred != null) {
             occurred.stackTrace.getOrNull(1)?.run {
-                message += " ...($fileName:$lineNumber)"
+                message += " \n...($fileName:$lineNumber)"
+            }
+            occurred.stackTrace.getOrNull(2)?.run {
+                fileName.ifNotNull {
+                    message += "/($fileName:$lineNumber)"
+                }
             }
         }
         val max = 3800

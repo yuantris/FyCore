@@ -7,6 +7,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
 import io.core.common.helper.LifecycleHelp
 import io.core.common.util.ext.ui.postDelayUI
+import io.core.common.util.log.LogCat
 import kotlin.system.exitProcess
 
 /**
@@ -82,5 +83,25 @@ fun OnBackPressedDispatcher.addCallback(
         }
     )
     return callback
+}
+
+fun Any?.logE(){
+    LogCat.e(this)
+}
+
+fun Any?.logV(){
+    LogCat.v(this)
+}
+
+fun Any?.logI(){
+    LogCat.i(this)
+}
+
+fun Any?.logW(){
+    LogCat.w(this)
+}
+
+fun Any?.logJson(){
+    LogCat.json(this)
 }
 

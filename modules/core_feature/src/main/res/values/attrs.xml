@@ -100,9 +100,9 @@
         <attr name="loading_speed" format="integer" />
     </declare-styleable>
 
-    <attr name="radius" format="dimension" />
+    <attr name="core_radius" format="dimension" />
     <declare-styleable name="BadgeView">
-        <attr name="radius" />
+        <attr name="core_radius" />
         <attr name="up_flat_angle" format="boolean" />
     </declare-styleable>
 

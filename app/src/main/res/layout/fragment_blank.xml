@@ -4,6 +4,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <com.core.fy.android.widget.ZYLayout
+        android:id="@+id/zy_layout"
+        android:layout_width="@dimen/dp_200"
+        android:layout_height="@dimen/dp_200" />
+
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -27,5 +32,6 @@
             android:layout_width="wrap_content"
             android:layout_gravity="center"
             android:layout_height="wrap_content" />
+
     </LinearLayout>
 </FrameLayout>

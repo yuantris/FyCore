@@ -22,18 +22,34 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tool_bar">
 
-        <FrameLayout
+        <androidx.appcompat.widget.AppCompatRadioButton
+            android:id="@+id/radio_start_anim"
             android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start|center_vertical"
+            android:paddingHorizontal="@dimen/dp_10"
+            android:text="启动动画" />
+
+        <FrameLayout
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content">
 
-            <androidx.appcompat.widget.AppCompatRadioButton
-                android:id="@+id/radio_start_anim"
-                android:layout_width="match_parent"
+            <Button
+                android:id="@+id/lens"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="start|center_vertical"
-                android:paddingHorizontal="@dimen/dp_10"
-                android:text="启动动画" />
+                android:text="Lens Show" />
+        </FrameLayout>
 
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <Button
+                android:id="@+id/crumble"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="崩溃日志" />
         </FrameLayout>
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

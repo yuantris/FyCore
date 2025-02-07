@@ -7,8 +7,11 @@ import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.view.View
+import android.widget.RelativeLayout
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
+import androidx.annotation.LayoutRes
 import androidx.core.content.edit
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
@@ -81,3 +84,22 @@ inline fun <reified T : Activity> Fragment.startActivity(
 
 val Fragment.isCreated
     get() = lifecycle.currentState.isAtLeast(Lifecycle.State.CREATED)
+
+fun addViewToZYLayout(target: RelativeLayout, view: View) {
+    // 安全类型转换
+    val lp = target.layoutParams?.let { it as? RelativeLayout.LayoutParams }
+        ?: RelativeLayout.LayoutParams(
+            RelativeLayout.LayoutParams.MATCH_PARENT,
+            RelativeLayout.LayoutParams.MATCH_PARENT
+        )
+    target.removeAllViews()
+    val newLp = RelativeLayout.LayoutParams(lp)
+    newLp.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE)
+    target.addView(view, newLp)
+}
+
+fun Fragment.addViewToZYLayout(target: RelativeLayout, @LayoutRes layoutId: Int): View {
+    val view = requireContext().layout2View(layoutId)
+    addViewToZYLayout(target, view)
+    return view
+}

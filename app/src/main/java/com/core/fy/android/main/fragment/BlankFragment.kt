@@ -1,8 +1,10 @@
 package com.core.fy.android.main.fragment
 
 import android.annotation.SuppressLint
+import android.widget.RelativeLayout
 import android.widget.Toast
 import com.core.fy.android.MainActivity
+import com.core.fy.android.R
 import com.core.fy.android.constants.AppConst.timeFormat
 import com.core.fy.android.constants.EventKey.BATTERY_CHANGED
 import com.core.fy.android.constants.EventKey.TIME_CHANGED
@@ -12,7 +14,12 @@ import io.core.common.base.component.fragment.ReflectBindingFragment
 import io.core.common.helper.dialogs.alert
 import io.core.common.util.ext.cool.observeEvent
 import io.core.common.util.ext.cool.observeEventSticky
+import io.core.common.util.ext.logE
+import io.core.common.util.ext.ui.addViewToZYLayout
+import io.core.common.util.ext.ui.getCompatColor
 import io.core.common.util.ext.ui.onClick
+import io.core.common.util.log.LogCat
+import io.core.widget.view.LoadingView
 import java.util.Date
 
 /**
@@ -47,6 +54,12 @@ class BlankFragment : ReflectBindingFragment<FragmentBlankBinding, MainActivity>
                 }
             }
         }
+    }
+
+    override fun onFragmentResume(first: Boolean) {
+        super.onFragmentResume(first)
+        val loadingView = LoadingView(requireContext(), 100, getCompatColor(R.color.black))
+        addViewToZYLayout(binding.zyLayout, loadingView)
     }
 
     override fun initData() {

@@ -5,6 +5,7 @@ import com.core.fy.android.room.entity.Function
 import com.core.fy.android.room.repository.FunctionRepository
 import io.core.common.util.log.logD
 import io.core.common.base.vm.BaseViewModel
+import io.core.common.util.log.logI
 
 /**
 # ██████████
@@ -70,7 +71,6 @@ class FunctionVM(var repository: FunctionRepository) : BaseViewModel() {
                     repository.dao.insertAll(list)
                     repository.getAllList()
                 }
-                "allList: ${allList?.size}".logD()
                 val allListSize = allList?.size ?: 0
                 val designsInList = list.map { it.design }
                 val designsInListSet = designsInList.toSet()

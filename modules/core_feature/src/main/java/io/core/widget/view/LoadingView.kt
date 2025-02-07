@@ -9,7 +9,6 @@ import android.graphics.Paint
 import android.util.AttributeSet
 import android.view.View
 import android.view.animation.LinearInterpolator
-import androidx.collection.SimpleArrayMap
 import io.core.R
 import io.core.common.util.ext.cool.dpToPx
 
@@ -27,133 +26,122 @@ import io.core.common.util.ext.cool.dpToPx
  * @description
  * @author Yuan
  */
-class LoadingView : View {
-    private var mSize = 0
-    private var mPaintColor = 0
-    private var mAnimateValue = 0
-    private var mAnimator: ValueAnimator? = null
-    private var mPaint: Paint? = null
+class LoadingView @JvmOverloads constructor(
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
+) : View(context, attrs, defStyleAttr) {
 
-    @JvmOverloads
-    constructor(context: Context, attrs: AttributeSet? = null) : this(
-        context,
-        attrs,
-        0
-    )
+    private var size: Int
+    private var paintColor: Int
+    private var animateValue = 0
+    private var animator: ValueAnimator? = null
+    // 这里直接使用非空 Paint，并通过 apply 初始化属性
+    private val paint: Paint = Paint().apply {
+        isAntiAlias = true
+        strokeCap = Paint.Cap.ROUND
+    }
 
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
-        context,
-        attrs,
-        defStyleAttr
-    ) {
+    init {
         val typedArray = context.obtainStyledAttributes(attrs, R.styleable.LoadingView, defStyleAttr, 0)
-        mSize = typedArray.getDimensionPixelSize(R.styleable.LoadingView_core_view_size, 32.dpToPx())
-        mPaintColor = typedArray.getColor(R.styleable.LoadingView_core_view_color, Color.BLACK)
+        size = typedArray.getDimensionPixelSize(R.styleable.LoadingView_core_view_size, 32.dpToPx())
+        paintColor = typedArray.getColor(R.styleable.LoadingView_core_view_color, Color.BLACK)
         typedArray.recycle()
-        initPaint()
+        paint.color = paintColor
     }
 
-    constructor(context: Context?, size: Int, color: Int) : super(context) {
-        mSize = size
-        mPaintColor = color
-        initPaint()
-    }
-
-    private fun initPaint() {
-        mPaint = Paint()
-        mPaint!!.color = mPaintColor
-        mPaint!!.isAntiAlias = true
-        mPaint!!.strokeCap = Paint.Cap.ROUND
+    // 提供一个辅助构造函数
+    constructor(context: Context, size: Int, color: Int) : this(context) {
+        this.size = size
+        this.paintColor = color
+        paint.color = color
     }
 
     fun setColor(color: Int) {
-        mPaintColor = color
-        mPaint!!.color = color
+        paintColor = color
+        paint.color = color
         invalidate()
     }
 
-    fun setSize(size: Int) {
-        mSize = size
+    fun setSize(newSize: Int) {
+        size = newSize
         requestLayout()
     }
 
-    private val mUpdateListener =
-        AnimatorUpdateListener { animation ->
-            mAnimateValue = animation.animatedValue as Int
-            invalidate()
-        }
+    // 使用 lambda 简化更新监听器的写法
+    private val updateListener = ValueAnimator.AnimatorUpdateListener { animation ->
+        animateValue = animation.animatedValue as Int
+        invalidate()
+    }
 
-    fun start() {
-        if (mAnimator == null) {
-            mAnimator = ValueAnimator.ofInt(0, LINE_COUNT - 1)
-            mAnimator?.addUpdateListener(mUpdateListener)
-            mAnimator?.setDuration(600)
-            mAnimator?.repeatMode = ValueAnimator.RESTART
-            mAnimator?.repeatCount = ValueAnimator.INFINITE
-            mAnimator?.interpolator = LinearInterpolator()
-            mAnimator?.start()
-        } else if (!mAnimator!!.isStarted) {
-            mAnimator!!.start()
+    private fun startAnimation() {
+        if (animator == null) {
+            animator = ValueAnimator.ofInt(0, LINE_COUNT - 1).apply {
+                addUpdateListener(updateListener)
+                duration = 600
+                repeatMode = ValueAnimator.RESTART
+                repeatCount = ValueAnimator.INFINITE
+                interpolator = LinearInterpolator()
+                start()
+            }
+        } else if (animator?.isStarted == false) {
+            animator?.start()
         }
     }
 
-    fun stop() {
-        if (mAnimator != null) {
-            mAnimator!!.removeUpdateListener(mUpdateListener)
-            mAnimator!!.removeAllUpdateListeners()
-            mAnimator!!.cancel()
-            mAnimator = null
-        }
+    private fun stopAnimation() {
+        animator?.cancel()
+        animator = null
     }
 
     private fun drawLoading(canvas: Canvas, rotateDegrees: Int) {
-        val width = mSize / 12
-        val height = mSize / 6
-        mPaint!!.strokeWidth = width.toFloat()
+        val strokeWidth = size / 12f
+        val lineHeight = size / 6f
+        paint.strokeWidth = strokeWidth
 
-        canvas.rotate(rotateDegrees.toFloat(), (mSize / 2).toFloat(), (mSize / 2).toFloat())
-        canvas.translate((mSize / 2).toFloat(), (mSize / 2).toFloat())
-
+        // 为了避免 canvas 累加平移和旋转，使用 save/restore 分组操作
+        canvas.save()
+        canvas.rotate(rotateDegrees.toFloat(), size / 2f, size / 2f)
+        canvas.translate(size / 2f, size / 2f)
         for (i in 0 until LINE_COUNT) {
             canvas.rotate(DEGREE_PER_LINE.toFloat())
-            mPaint!!.alpha = (255f * (i + 1) / LINE_COUNT).toInt()
-            canvas.translate(0f, (-mSize / 2 + width / 2).toFloat())
-            canvas.drawLine(0f, 0f, 0f, height.toFloat(), mPaint!!)
-            canvas.translate(0f, (mSize / 2 - width / 2).toFloat())
+            paint.alpha = (255f * (i + 1) / LINE_COUNT).toInt()
+            canvas.save()
+            // 将每条线单独绘制后恢复画布状态
+            canvas.translate(0f, -size / 2f + strokeWidth / 2f)
+            canvas.drawLine(0f, 0f, 0f, lineHeight, paint)
+            canvas.restore()
         }
+        canvas.restore()
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        setMeasuredDimension(mSize, mSize)
+        setMeasuredDimension(size, size)
     }
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
-        val saveCount =
-            canvas.saveLayer(0f, 0f, width.toFloat(), height.toFloat(), null, Canvas.ALL_SAVE_FLAG)
-        drawLoading(canvas, mAnimateValue * DEGREE_PER_LINE)
-        canvas.restoreToCount(saveCount)
+        drawLoading(canvas, animateValue * DEGREE_PER_LINE)
     }
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
-        start()
+        startAnimation()
     }
 
     override fun onDetachedFromWindow() {
+        stopAnimation()
         super.onDetachedFromWindow()
-        stop()
     }
 
     override fun onVisibilityChanged(changedView: View, visibility: Int) {
         super.onVisibilityChanged(changedView, visibility)
         if (visibility == VISIBLE) {
-            start()
+            startAnimation()
         } else {
-            stop()
+            stopAnimation()
         }
     }
-
 
     companion object {
         private const val LINE_COUNT = 12

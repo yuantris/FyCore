@@ -2,7 +2,6 @@ package com.core.fy.android.main.fragment
 
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.ItemTouchHelper
-import com.core.fy.android.App
 import com.core.fy.android.Config
 import com.core.fy.android.MainActivity
 import com.core.fy.android.R
@@ -31,9 +30,9 @@ import io.core.engine.brv.utils.grid
 import io.core.engine.brv.utils.setup
 import io.core.common.base.component.fragment.ReflectBindingFragment
 import io.core.common.util.ext.cool.launchAsync
+import io.core.common.util.ext.logV
 import io.core.common.util.ext.ui.onClick
 import io.core.common.util.ext.ui.startActivity
-import io.core.common.util.log.logV
 import io.core.other.Toast
 
 /**

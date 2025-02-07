@@ -20,36 +20,7 @@ import io.core.common.base.component.activity.ReflectBindingActivity
  * @description
  * @author Yuan
  */
-class TestPageActivity: ReflectBindingActivity<ActivityTestPageBinding>(),ContentTextView.CallBack {
-    override val headerHeight: Int
-        get() = 10
-    override val pageFactory: TextPageFactory
-        get() = TODO("Not yet implemented")
-    override val pageDelegate: PageDelegate?
-        get() = TODO("Not yet implemented")
-    override val isScroll: Boolean
-        get() = TODO("Not yet implemented")
-    override var isSelectingSearchResult: Boolean
-        get() = TODO("Not yet implemented")
-        set(value) {}
+class TestPageActivity: ReflectBindingActivity<ActivityTestPageBinding>() {
 
-    override fun upSelectedStart(x: Float, y: Float, top: Float) {
-        TODO("Not yet implemented")
-    }
 
-    override fun upSelectedEnd(x: Float, y: Float) {
-        TODO("Not yet implemented")
-    }
-
-    override fun onImageLongPress(x: Float, y: Float, src: String) {
-        TODO("Not yet implemented")
-    }
-
-    override fun onCancelSelect() {
-        TODO("Not yet implemented")
-    }
-
-    override fun onLongScreenshotTouchEvent(event: MotionEvent): Boolean {
-        TODO("Not yet implemented")
-    }
 }

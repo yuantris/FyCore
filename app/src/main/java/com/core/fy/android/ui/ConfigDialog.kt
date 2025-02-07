@@ -9,12 +9,20 @@ import android.view.ViewGroup
 import com.core.fy.android.R
 import com.core.fy.android.constants.PreferKey
 import com.core.fy.android.databinding.DialogAppConfigBinding
+import com.qiyi.lens.Lens
+import com.qiyi.lens.LensUtil
+import com.qiyi.lens.utils.UIUtils
+import io.core.Android
 import io.core.common.base.component.dialog.BaseDialogFragment
+import io.core.common.base.component.dialog.specific.CrashLogsDialog
 import io.core.common.helper.viewbindingdelegate.viewBinding
+import io.core.common.util.ext.appCtx
 import io.core.common.util.ext.ui.applyTint
 import io.core.common.util.ext.ui.getCompatColor
+import io.core.common.util.ext.ui.onClick
 import io.core.common.util.ext.ui.restart
 import io.core.common.util.ext.ui.setLayout
+import io.core.common.util.ext.ui.showDialogFragment
 import io.core.common.util.log.LogCat
 import io.core.common.util.log.logD
 import io.core.common.util.tools.Preferences
@@ -77,6 +85,15 @@ class ConfigDialog : BaseDialogFragment(R.layout.dialog_app_config) {
                 val check = Preferences.getValue(PreferKey.isDisplaySplashAnim, true)
                 radioStartAnim.isChecked = !check
                 Preferences.putValue(PreferKey.isDisplaySplashAnim, !check)
+            }
+
+            lens.onClick {
+                LensUtil.showManually(appCtx)
+                dismiss()
+            }
+
+            crumble.onClick {
+                showDialogFragment<CrashLogsDialog>()
             }
         }
     }
