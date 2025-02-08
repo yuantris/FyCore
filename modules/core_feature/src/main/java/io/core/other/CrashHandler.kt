@@ -80,7 +80,7 @@ class CrashHandler private constructor(private val application: Application) :
         fun saveCrashInfo2File(ex: Throwable) {
             val sb = StringBuilder()
             for ((key, value) in paramsMap) {
-                sb.append(key).append("=").append(value).append("\n\n")
+                sb.append(key).append("=").append(value).append("\n")
             }
 
             val writer = StringWriter()
@@ -93,7 +93,7 @@ class CrashHandler private constructor(private val application: Application) :
             }
             printWriter.close()
             val result = writer.toString()
-            sb.append(result)
+            sb.append("\n").append(result)
             val crashLog = sb.toString()
             val timestamp = currentTimeMillis
             val time = format.format(Date())

@@ -106,7 +106,6 @@ class CrashActivity : BaseActivity() {
 
     private fun initData() {
         val throwable: Throwable = getSerializable(INTENT_KEY_IN_THROWABLE) ?: return
-        LogCat.e(throwable)
         titleView?.text = throwable.javaClass.simpleName
         val stringWriter = StringWriter()
         val printWriter = PrintWriter(stringWriter)

@@ -10,7 +10,6 @@ import com.core.fy.android.model.Tab
 import com.core.fy.android.main.fragment.BlankFragment
 import com.core.fy.android.main.fragment.HomeFragment
 import com.core.fy.android.ui.ConfigDialog
-import com.core.fy.android.util.ClickSequenceHandler
 import io.core.common.base.component.activity.ReflectBindingActivity
 import io.core.common.base.component.fragment.BaseFragment
 import io.core.common.helper.dialogs.alert
@@ -28,6 +27,7 @@ import io.core.common.util.tools.TimeUtils
 import io.core.engine.brv.BindingAdapter
 import io.core.engine.brv.utils.grid
 import io.core.engine.brv.utils.setup
+import io.core.other.ClickSequenceHandler
 
 class MainActivity : ReflectBindingActivity<ActivityMainBinding>() {
 

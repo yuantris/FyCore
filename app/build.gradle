@@ -76,8 +76,6 @@ dependencies {
     androidTestImplementation libs.espresso.core
     implementation fycoreDependencies[version]
     debugImplementation libs.leakcanary.android
-    debugImplementation libs.iqiyi.lens
-    releaseImplementation libs.lens.no.op
 
     implementation libs.room.ktx
     //noinspection KaptUsageInsteadOfKsp

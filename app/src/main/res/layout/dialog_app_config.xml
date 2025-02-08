@@ -30,16 +30,6 @@
             android:paddingHorizontal="@dimen/dp_10"
             android:text="启动动画" />
 
-        <FrameLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-
-            <Button
-                android:id="@+id/lens"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Lens Show" />
-        </FrameLayout>
 
         <FrameLayout
             android:layout_width="wrap_content"

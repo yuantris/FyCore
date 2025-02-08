@@ -1,12 +1,11 @@
 ## FyCore
 > 项目初始化
 
-> `Android.initialize(this)`
->
-> `
-> // 设置重启对象
-> Android.homeActivity = MainActivity::class.java
-> `
+```kotlin
+Android.initialize(this)
+// 设置重启对象Activity
+Android.homeActivity = MainActivity::class.java
+```
 
 **模块概览**
 - 应用配置
@@ -14,19 +13,96 @@
     - 启动动画设置
 
 **模块功能**
+- ColorUtils
+  - getRandomColor
+  - isColorLight
+  - intToString
+  - stripAlpha
+  - shiftColor
+  - darkenColor
+  - lightenColor
+  - invertColor
+  - adjustAlpha
+  - withAlpha
+- DocumentUtils
+- FileUtils
+- TimeUtils
+
 - 常用拓展函数速览
   - 
 
 - 三方库
-  - BRV(https://github.com/liangjingkanji/BRV)
-  - LiveEventBus(https://github.com/michaellee123/LiveEventBus)
-  - ShapeView(https://github.com/getActivity/ShapeView)
-  - StateLayout(https://github.com/liangjingkanji/StateLayout)
+  - BRV (https://github.com/liangjingkanji/BRV)
+  - LiveEventBus (https://github.com/michaellee123/LiveEventBus)
+  - ShapeView (https://github.com/getActivity/ShapeView)
+  - StateLayout (https://github.com/liangjingkanji/StateLayout)
   - 
 
 - LifecycleHelp
   - Lifecycle管理器,管理项目中Activity、service的状态
+  
+- Coroutine使用
+  ```kotlin
+  /**
+  val coroutine = Coroutine.async(
+    scope = CoroutineScope(Dispatchers.IO), // 指定作用域，默认为 MainScope()
+    context = Dispatchers.Default,          // 指定执行上下文，默认为 Dispatchers.IO
+    start = CoroutineStart.LAZY,            // 指定启动选项，默认为 CoroutineStart.DEFAULT
+    executeContext = Dispatchers.Main,      // 指定回调执行上下文，默认为 Dispatchers.Main
+    block = { /* 协程执行的代码块 */ }
+  )
+  */
+  val coroutine = Coroutine.async(
+    scope = CoroutineScope(Dispatchers.IO),
+    block = {
+        delay(3000) // 模拟耗时操作
+        "任务完成"
+    }
+  )
+  coroutine.timeout(5000) // 设置超时时间为 5 秒
+  coroutine.onErrorReturn("任务失败")
+  
+  coroutine.onStart {
+      println("协程已启动")
+  }
+  
+  coroutine.onSuccess { result ->
+      println("协程成功完成，结果为: $result")
+  }
+  
+  coroutine.onError { throwable ->
+      println("协程遇到异常: ${throwable.message}")
+  }
+  
+  coroutine.onFinally {
+      println("协程已完成")
+  }
+  
+  coroutine.start() // 显式启动协程(如果指定start为CoroutineStart.LAZY，则需要显式调用start方法启动协程)
+  ```
+  
+- Widget
 
+  | 类名 | 作用 | 说明 |
+  | --- | --- | --- |
+  | `AccentTextView` | accentColor颜色的TextView |  |
+  | `BadgeView` | 角标TextView |  |
+  | `ClickableTextView` | 可点击的TextView | 标点符号后会加换行符 |
+  | `CustomImageView` | 可任意位置展示文字的View | 自定义UI首页 |
+  | `DrawableTextView` | 支持限定Drawable大小的TextView |  |
+  | `LoadingView` | 加载View | IOS风格 |
+  | `MarqueeTextView` | 跑马灯TextView |  |
+  | `PressEffectImageView` | 按压效果的ImageView |  |
+  | `RotateLoading` | 旋转加载View |  |
+  | `ScrollTextView` | 嵌套滑动的TextView |  |
+  | `SmartTextView` | 自动显示和隐藏的TextView |  |
+  | `FastScrollRecyclerView` | 支持可快速定位滚动的RecyclerView |  |
+
+  | 类名 | 作用 | 说明 |
+  | --- | --- | --- |
+  | `RatioFrameLayout` | 按照比例显示的FrameLayout |  |
+  | `RootLayout` | 带自定义TitleBar的根布局 |  |
+  | `FixedScrollView` | 禁止滚动/禁止显示滚动条的ScrollView | 配合[android.widget.ImageView.ScaleType.FIT_START]可实现图片顶部对齐裁剪 |
 
 **注意事项**
 
@@ -53,7 +129,7 @@
     - 接管返回键方法onBackPressedCall的使用
       - 需要在initial方法super之前加入setTakeOverBackPressed来开启/关闭接管
       - 当开启接管时，onBackPressedCall方法生效
-      
+    
 - BaseBottomSheetDialog
     - initConfig(builder: Builder)
       - 子类重写该方法获取builder可进行进行额外的配置

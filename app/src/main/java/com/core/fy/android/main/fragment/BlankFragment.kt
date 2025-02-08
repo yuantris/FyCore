@@ -1,7 +1,6 @@
 package com.core.fy.android.main.fragment
 
 import android.annotation.SuppressLint
-import android.widget.RelativeLayout
 import android.widget.Toast
 import com.core.fy.android.MainActivity
 import com.core.fy.android.R
@@ -11,15 +10,22 @@ import com.core.fy.android.constants.EventKey.TIME_CHANGED
 import com.core.fy.android.databinding.FragmentBlankBinding
 import com.core.fy.android.ui.receiver.TimeBatteryReceiver
 import io.core.common.base.component.fragment.ReflectBindingFragment
+import io.core.common.helper.coroutine.Coroutine
 import io.core.common.helper.dialogs.alert
 import io.core.common.util.ext.cool.observeEvent
 import io.core.common.util.ext.cool.observeEventSticky
-import io.core.common.util.ext.logE
 import io.core.common.util.ext.ui.addViewToZYLayout
 import io.core.common.util.ext.ui.getCompatColor
 import io.core.common.util.ext.ui.onClick
-import io.core.common.util.log.LogCat
+import io.core.common.util.tools.ColorUtils
+import io.core.common.util.tools.runOnUI
 import io.core.widget.view.LoadingView
+import io.core.widget.view.RotateLoading
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.CoroutineStart
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
 import java.util.Date
 
 /**
@@ -56,10 +62,33 @@ class BlankFragment : ReflectBindingFragment<FragmentBlankBinding, MainActivity>
         }
     }
 
+    private var job: Coroutine<*>? = null
     override fun onFragmentResume(first: Boolean) {
         super.onFragmentResume(first)
         val loadingView = LoadingView(requireContext(), 100, getCompatColor(R.color.black))
+        val loading = RotateLoading(requireContext())
         addViewToZYLayout(binding.zyLayout, loadingView)
+        addViewToZYLayout(binding.zyLayout1, loading)
+        // 在协程作用域中启动
+        if (job?.isActive != true) {
+            job = Coroutine.async(
+                scope = CoroutineScope(Dispatchers.IO), // 指定作用域，默认为 MainScope()
+                context = Dispatchers.Default,          // 指定执行上下文，默认为 Dispatchers.IO
+                start = CoroutineStart.LAZY,            // 指定启动选项，默认为 CoroutineStart.DEFAULT
+                executeContext = Dispatchers.Main,      // 指定回调执行上下文，默认为 Dispatchers.Main
+            ) {
+                while (isActive) { // 循环条件
+                    runOnUI {
+                        loadingView.setColor(ColorUtils.getRandomColor())
+                        loading.loadingColor = ColorUtils.getRandomColor()
+                    }
+                    delay(3000)    // 非阻塞式延迟
+                }
+            }
+            job?.start()
+        }
+
+
     }
 
     override fun initData() {
@@ -70,5 +99,10 @@ class BlankFragment : ReflectBindingFragment<FragmentBlankBinding, MainActivity>
         observeEvent<Int>(BATTERY_CHANGED) {
             binding.battery.text = "当前电量：$it%"
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        job?.cancel()
     }
 }

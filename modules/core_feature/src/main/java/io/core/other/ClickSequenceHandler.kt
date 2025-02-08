@@ -1,4 +1,4 @@
-package com.core.fy.android.util
+package io.core.other
 
 import android.annotation.SuppressLint
 import android.os.Handler

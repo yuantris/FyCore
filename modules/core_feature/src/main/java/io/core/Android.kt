@@ -3,6 +3,7 @@ package io.core
 import android.app.Application
 import io.core.common.helper.LifecycleHelp
 import io.core.common.util.log.LogCat
+import io.core.common.util.tools.Preferences
 import io.core.engine.livebus.LiveEventBus
 import io.core.engine.livebus.logger.DefaultLogger
 import io.core.other.CrashHandler
@@ -50,6 +51,11 @@ object Android {
             .autoClear(true)
             .enableLogger(debug)
             .setLogger(DefaultLogger())
+    }
+
+    fun clearData() {
+        // 清除sp数据
+        Preferences.clear()
     }
 
 }

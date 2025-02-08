@@ -27,6 +27,19 @@ import kotlin.coroutines.resumeWithException
 
 class TimeoutCancellationException(msg: String) : CancellationException(msg)
 
+/**
+ * 在指定时间内执行异步操作
+ *
+ * 该函数提供了一种方式，可以在指定的延迟时间后，如果操作尚未完成，则取消该操作
+ * 它使用协程来并行执行传入的代码块，并在达到时间限制时抛出异常
+ *
+ * @param T 返回类型
+ * @param delayMillis 延迟时间（以毫秒为单位），在此时间后，如果操作未完成，则会尝试取消操作
+ * @param block 在指定时间内要执行的代码块
+ * @return 返回代码块的执行结果，如果在指定时间内未完成，则抛出异常
+ *
+ * 注意：该函数是一个挂起函数，适用于协程环境中
+ */
 suspend fun <T> withTimeoutAsync(delayMillis: Long, block: suspend CoroutineScope.() -> T): T {
     return suspendCancellableCoroutine { count ->
         Coroutine.async(context = count.context) {

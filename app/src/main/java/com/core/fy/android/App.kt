@@ -6,12 +6,8 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.os.Build
 import com.core.fy.android.constants.AppConst.channelIdReadAloud
-import com.qiyi.lens.Lens
-import com.qiyi.lens.LensUtil
-import com.qiyi.lens.utils.UIUtils
 import io.core.Android
 import io.core.common.CoreConfigs
-import io.core.common.util.ext.appCtx
 import io.core.common.util.ext.notificationManager
 
 
@@ -50,15 +46,6 @@ class App : Application() {
         CoreConfigs.DIALOG_BUTTON_NEGATIVE_COLOR = getColor(R.color.md_red_300)
         // SoftKeyboardGlobal.install(this, false)
         createNotificationChannels()
-        // Lens.init(this, Android.debug)
-        LensUtil.buildConfig()
-            .defaultOpen(false)
-            .enableActivityAnalyzer(true)
-            .enableNetworkAnalyze(false)
-            .enableCrashInfo(true)
-            .initAsPluginMode(Lens.isSDKMode())
-            .enableViewInfo(true)
-            .showClose(appCtx, UIUtils.getScreenWidth(appCtx) / 5 * 3)
     }
 
     /**
