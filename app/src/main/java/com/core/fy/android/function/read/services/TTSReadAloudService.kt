@@ -15,7 +15,7 @@ import io.core.common.util.ext.cool.GSON
 import io.core.common.util.ext.cool.fromJsonObject
 import io.core.common.util.ext.ui.servicePendingIntent
 import io.core.common.util.log.AppLog
-import io.core.common.util.log.LogUtils
+import io.core.common.util.log.LogPure
 import io.core.common.util.tools.toastOnUi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.ensureActive
@@ -45,7 +45,7 @@ class TTSReadAloudService : BaseReadAloudService(), TextToSpeech.OnInitListener 
     private fun initTts() {
         ttsInitFinish = false
         val engine = GSON.fromJsonObject<SelectItem<String>>(ReadAloud.ttsEngine).getOrNull()?.value
-        LogUtils.logD(TAG, "initTts engine:$engine")
+        LogPure.logD(TAG, "initTts engine:$engine")
         textToSpeech = if (engine.isNullOrBlank()) {
             TextToSpeech(this, this)
         } else {
@@ -89,8 +89,8 @@ class TTSReadAloudService : BaseReadAloudService(), TextToSpeech.OnInitListener 
         MediaHelp.playSilentSound(this@TTSReadAloudService)
         speakJob?.cancel()
         speakJob = execute {
-            LogUtils.logD(TAG, "朗读列表大小 ${contentList.size}")
-            LogUtils.logD(TAG, "朗读页数 ${textChapter?.pageSize}")
+            LogPure.logD(TAG, "朗读列表大小 ${contentList.size}")
+            LogPure.logD(TAG, "朗读页数 ${textChapter?.pageSize}")
             val tts = textToSpeech ?: throw RuntimeException("tts is null")
             val contentList = contentList
             var isAddedText = false
@@ -129,7 +129,7 @@ class TTSReadAloudService : BaseReadAloudService(), TextToSpeech.OnInitListener 
                 }
                 isAddedText = true
             }
-            LogUtils.logD(TAG, "朗读内容添加完成")
+            LogPure.logD(TAG, "朗读内容添加完成")
             if (!isAddedText) {
                 playStop()
                 delay(1000)
@@ -188,7 +188,7 @@ class TTSReadAloudService : BaseReadAloudService(), TextToSpeech.OnInitListener 
         private val TAG = "TTSUtteranceListener"
 
         override fun onStart(s: String) {
-            LogUtils.logD(TAG, "onStart nowSpeak:$nowSpeak pageIndex:$pageIndex utteranceId:$s")
+            LogPure.logD(TAG, "onStart nowSpeak:$nowSpeak pageIndex:$pageIndex utteranceId:$s")
             textChapter?.let {
                 if (contentList[nowSpeak].matches(AppPattern.notReadAloudRegex)) {
                     nextParagraph()
@@ -202,7 +202,7 @@ class TTSReadAloudService : BaseReadAloudService(), TextToSpeech.OnInitListener 
         }
 
         override fun onDone(s: String) {
-            LogUtils.logD(TAG, "onDone utteranceId:$s")
+            LogPure.logD(TAG, "onDone utteranceId:$s")
             nextParagraph()
         }
 
@@ -210,7 +210,7 @@ class TTSReadAloudService : BaseReadAloudService(), TextToSpeech.OnInitListener 
             super.onRangeStart(utteranceId, start, end, frame)
             val msg =
                 "onRangeStart nowSpeak:$nowSpeak pageIndex:$pageIndex utteranceId:$utteranceId start:$start end:$end frame:$frame"
-            LogUtils.logD(TAG, msg)
+            LogPure.logD(TAG, msg)
             textChapter?.let {
                 if (readAloudNumber + start > it.getReadLength(pageIndex + 1)) {
                     pageIndex++
@@ -221,7 +221,7 @@ class TTSReadAloudService : BaseReadAloudService(), TextToSpeech.OnInitListener 
         }
 
         override fun onError(utteranceId: String?, errorCode: Int) {
-            LogUtils.logE(
+            LogPure.logE(
                 TAG,
                 "onError nowSpeak:$nowSpeak pageIndex:$pageIndex utteranceId:$utteranceId errorCode:$errorCode"
             )
@@ -243,7 +243,7 @@ class TTSReadAloudService : BaseReadAloudService(), TextToSpeech.OnInitListener 
 
         @Deprecated("Deprecated in Java")
         override fun onError(s: String) {
-            LogUtils.logE(TAG, "onError nowSpeak:$nowSpeak pageIndex:$pageIndex s:$s")
+            LogPure.logE(TAG, "onError nowSpeak:$nowSpeak pageIndex:$pageIndex s:$s")
             nextParagraph()
         }
 

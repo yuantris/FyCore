@@ -1,7 +1,7 @@
 package io.core.common.helper
 
 import io.core.common.util.log.TAG
-import io.core.common.util.log.LogUtils
+import io.core.common.util.log.LogPure
 import java.util.function.Supplier
 import kotlin.coroutines.CoroutineContext
 import kotlinx.coroutines.*
@@ -63,7 +63,7 @@ class TryCatchHelper {
             return try {
                 block()
             } catch (e: Exception) {
-                LogUtils.logE(TAG, "An error occurred: " + e.message)
+                LogPure.logE(TAG, "An error occurred: " + e.message)
                 null
             }
         }
@@ -113,7 +113,7 @@ class TryCatchHelper {
         }
 
         private fun handleException(e: Exception) {
-            LogUtils.logE(TAG, "An error occurred: " + e.message)
+            LogPure.logE(TAG, "An error occurred: " + e.message)
         }
 
         fun interface CheckedConsumer<T> {

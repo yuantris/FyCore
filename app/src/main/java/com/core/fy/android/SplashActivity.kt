@@ -9,6 +9,7 @@ import io.core.common.base.component.activity.ReflectBindingActivity
 import io.core.common.util.ext.ui.startNoTransition
 import com.gyf.immersionbar.BarHide
 import com.gyf.immersionbar.ImmersionBar
+import io.core.other.IntentData
 
 /**
 # ██████████
@@ -54,6 +55,7 @@ class SplashActivity : ReflectBindingActivity<ActivitySplashBinding>() {
             })
         } else {
             startNoTransition(MainActivity::class.java, finish = true)
+            IntentData.goAndFinishAlpha(this, MainActivity::class.java)
         }
     }
 

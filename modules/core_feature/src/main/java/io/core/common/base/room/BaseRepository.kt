@@ -1,8 +1,7 @@
 package io.core.common.base.room
 
+import io.core.common.util.log.LogPure
 import io.core.common.util.log.TAG
-import io.core.common.util.CoreUtil
-import io.core.common.util.log.LogUtils
 import io.core.common.util.tools.TimeUtils
 
 /**
@@ -20,6 +19,6 @@ import io.core.common.util.tools.TimeUtils
  */
 open class BaseRepository {
     init {
-        LogUtils.logV(TAG, "Repository init: ${TimeUtils.getNowString()}")
+        LogPure.logV(TAG, "Repository init: ${TimeUtils.getNowString()}")
     }
 }

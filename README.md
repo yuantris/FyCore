@@ -81,6 +81,36 @@ Android.homeActivity = MainActivity::class.java
   coroutine.start() // 显式启动协程(如果指定start为CoroutineStart.LAZY，则需要显式调用start方法启动协程)
   ```
   
+- MediaScanner使用
+  ```kotlin
+  // 初始化扫描器
+  val mediaScanner = MediaScanner(context)
+  
+  // 查询图片文件（JPG/PNG）
+  val imageFiles = mediaScanner.queryMediaFiles(setOf(
+      MediaScanner.FileType.JPG,
+      MediaScanner.FileType.PNG
+  ))
+  
+  // 查询视频文件（MP4/AVI）并自定义过滤条件
+  val videoFiles = mediaScanner.queryMediaFiles(
+      types = setOf(
+          MediaScanner.FileType.MP4,
+          MediaScanner.FileType.AVI
+      ),
+      filter = { it.size > 1024 * 1024 } // 过滤大于1MB的文件
+  )
+  
+  // 查询文档文件并自定义排序
+  val docFiles = mediaScanner.queryMediaFiles(
+      types = setOf(
+          MediaScanner.FileType.DOCX,
+          MediaScanner.FileType.PDF
+      ),
+      sortOrder = "${MediaStore.MediaColumns.SIZE} DESC" // 按文件大小降序
+  )
+  ```
+  
 - Widget
 
   | 类名 | 作用 | 说明 |

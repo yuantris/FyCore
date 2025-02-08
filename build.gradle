@@ -25,13 +25,6 @@ buildscript {
 
 allprojects {
     repositories {
-        maven {
-            url = uri("https://maven.pkg.github.com/yuantris/FyCore")
-            credentials {
-                username = 'yuantris'
-                password = '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'
-            }
-        }
         maven { url 'https://jitpack.io' }
         mavenCentral()
         google()

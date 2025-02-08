@@ -6,7 +6,7 @@ import android.app.Service
 import android.os.Build
 import android.os.Bundle
 import io.core.common.base.component.service.BaseService
-import io.core.common.util.log.LogUtils
+import io.core.common.util.log.LogPure
 import java.lang.ref.WeakReference
 
 /**
@@ -78,19 +78,19 @@ object LifecycleHelp : Application.ActivityLifecycleCallbacks {
     }
 
     override fun onActivityPaused(activity: Activity) {
-        LogUtils.logD(TAG, "${activity::class.simpleName} onPause")
+        LogPure.logD(TAG, "${activity::class.simpleName} onPause")
     }
 
     override fun onActivityResumed(activity: Activity) {
-        LogUtils.logD(TAG, "${activity::class.simpleName} onResume")
+        LogPure.logD(TAG, "${activity::class.simpleName} onResume")
     }
 
     override fun onActivityStarted(activity: Activity) {
-        LogUtils.logD(TAG, "${activity::class.simpleName} onStart")
+        LogPure.logD(TAG, "${activity::class.simpleName} onStart")
     }
 
     override fun onActivityDestroyed(activity: Activity) {
-        LogUtils.logD(TAG, "${activity::class.simpleName} onDestroy")
+        LogPure.logD(TAG, "${activity::class.simpleName} onDestroy")
         for (temp in activities) {
             if (temp.get() != null && temp.get() === activity) {
                 activities.remove(temp)
@@ -103,27 +103,27 @@ object LifecycleHelp : Application.ActivityLifecycleCallbacks {
     }
 
     override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {
-        LogUtils.logD(TAG, "${activity::class.simpleName} onSaveInstanceState")
+        LogPure.logD(TAG, "${activity::class.simpleName} onSaveInstanceState")
     }
 
     override fun onActivityStopped(activity: Activity) {
-        LogUtils.logD(TAG, "${activity::class.simpleName} onStop")
+        LogPure.logD(TAG, "${activity::class.simpleName} onStop")
     }
 
     override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
-        LogUtils.logD(TAG, "${activity::class.simpleName} onCreate")
+        LogPure.logD(TAG, "${activity::class.simpleName} onCreate")
         activities.add(WeakReference(activity))
     }
 
     @Synchronized
     fun onServiceCreate(service: BaseService) {
-        LogUtils.logD(TAG, "${service::class.simpleName} onCreate")
+        LogPure.logD(TAG, "${service::class.simpleName} onCreate")
         services.add(WeakReference(service))
     }
 
     @Synchronized
     fun onServiceDestroy(service: BaseService) {
-        LogUtils.logD(TAG, "${service::class.simpleName} onDestroy")
+        LogPure.logD(TAG, "${service::class.simpleName} onDestroy")
         for (temp in services) {
             if (temp.get() != null && temp.get() === service) {
                 services.remove(temp)

@@ -14,5 +14,15 @@
             android:name=".common.base.component.activity.RestartActivity"
             android:launchMode="singleTop"
             android:process=":restart" />
+
+        <provider
+            android:name="io.core.other.CoreFileProvider"
+            android:authorities="${applicationId}.fycore.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/core_provider_paths" />
+        </provider>
     </application>
 </manifest>

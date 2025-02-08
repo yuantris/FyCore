@@ -4,13 +4,13 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import com.core.fy.android.constants.IntentAction
-import com.core.fy.android.help.config.AppConfig
 import com.core.fy.android.function.read.services.BaseReadAloudService
 import com.core.fy.android.function.read.services.TTSReadAloudService
+import com.core.fy.android.help.config.AppConfig
 import io.core.common.util.ext.appCtx
 import io.core.common.util.ext.ui.startForegroundServiceCompat
 import io.core.common.util.log.AppLog
-import io.core.common.util.log.LogUtils
+import io.core.common.util.log.LogPure
 import io.core.common.util.tools.toastOnUi
 
 object ReadAloud {
@@ -48,7 +48,7 @@ object ReadAloud {
         intent.putExtra("play", play)
         intent.putExtra("pageIndex", pageIndex)
         intent.putExtra("startPos", startPos)
-        LogUtils.logD("ReadAloud", intent.toString())
+        LogPure.logD("ReadAloud", intent.toString())
         try {
             context.startForegroundServiceCompat(intent)
         } catch (e: Exception) {

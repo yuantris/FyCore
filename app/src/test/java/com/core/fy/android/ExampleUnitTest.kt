@@ -1,4 +1,4 @@
-package com.core.librares
+package com.core.fy.android
 
 import org.junit.Test
 

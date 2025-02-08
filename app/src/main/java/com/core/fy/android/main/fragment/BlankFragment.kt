@@ -5,19 +5,30 @@ import android.widget.Toast
 import com.core.fy.android.MainActivity
 import com.core.fy.android.R
 import com.core.fy.android.constants.AppConst.timeFormat
+import com.core.fy.android.constants.BookSourceType.file
 import com.core.fy.android.constants.EventKey.BATTERY_CHANGED
 import com.core.fy.android.constants.EventKey.TIME_CHANGED
 import com.core.fy.android.databinding.FragmentBlankBinding
 import com.core.fy.android.ui.receiver.TimeBatteryReceiver
+import com.hjq.permissions.Permission
+import com.hjq.permissions.XXPermissions
 import io.core.common.base.component.fragment.ReflectBindingFragment
 import io.core.common.helper.coroutine.Coroutine
 import io.core.common.helper.dialogs.alert
+import io.core.common.util.MediaScanner
 import io.core.common.util.ext.cool.observeEvent
 import io.core.common.util.ext.cool.observeEventSticky
 import io.core.common.util.ext.ui.addViewToZYLayout
 import io.core.common.util.ext.ui.getCompatColor
 import io.core.common.util.ext.ui.onClick
+import io.core.common.util.ext.logE
+import io.core.common.util.ext.logV
+import io.core.common.util.log.logD
+import io.core.common.util.log.logE
+import io.core.common.util.log.logI
+import io.core.common.util.log.logV
 import io.core.common.util.tools.ColorUtils
+import io.core.common.util.tools.UriUtils
 import io.core.common.util.tools.runOnUI
 import io.core.widget.view.LoadingView
 import io.core.widget.view.RotateLoading
@@ -26,6 +37,7 @@ import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
+import java.io.File
 import java.util.Date
 
 /**
@@ -60,6 +72,8 @@ class BlankFragment : ReflectBindingFragment<FragmentBlankBinding, MainActivity>
                 }
             }
         }
+
+
     }
 
     private var job: Coroutine<*>? = null
@@ -88,6 +102,34 @@ class BlankFragment : ReflectBindingFragment<FragmentBlankBinding, MainActivity>
             job?.start()
         }
 
+        XXPermissions.with(this)
+            .permission(Permission.MANAGE_EXTERNAL_STORAGE)
+            .request { _, _ ->
+                Coroutine.async(
+                    scope = CoroutineScope(Dispatchers.IO),
+                    executeContext = Dispatchers.IO
+                ) {
+                    val files = MediaScanner(requireContext())
+                        .queryMediaFiles(
+                            types = setOf(
+                                MediaScanner.FileType.JPG,
+                                MediaScanner.FileType.MP3,
+                            ),
+                            addFilter = {
+                                !it.path.contains("AppColl7")
+                            },
+                        )
+                    files
+                }.onSuccess { result ->
+                    result.forEach {
+                        "文件：${it.path}".logI("FileScanHelper_")
+                    }
+                    val file = File(result[0].path)
+                    val uri = UriUtils.file2Uri(File(file.path))
+                    "数量：${result.size} 第一个文件：${file.absolutePath} uri：${uri}".logE()
+                }
+
+            }
 
     }
 

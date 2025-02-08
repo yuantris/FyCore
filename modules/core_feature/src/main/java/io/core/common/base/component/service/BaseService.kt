@@ -13,7 +13,7 @@ import io.core.common.helper.LifecycleHelp
 import io.core.common.helper.coroutine.Coroutine
 import io.core.common.util.ext.ui.getActivity
 import io.core.common.util.ext.ui.startService
-import io.core.common.util.log.LogUtils
+import io.core.common.util.log.LogPure
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
@@ -43,7 +43,7 @@ abstract class BaseService : LifecycleService() {
 
     @CallSuper
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        LogUtils.logD(message = "onStartCommand $intent ${intent?.toUri(0)}")
+        LogPure.logD(message = "onStartCommand $intent ${intent?.toUri(0)}")
         if (!isForeground && isForegroundService()) {
             startForegroundNotification()
             isForeground = true
@@ -53,7 +53,7 @@ abstract class BaseService : LifecycleService() {
 
     @CallSuper
     override fun onTaskRemoved(rootIntent: Intent?) {
-        LogUtils.logD(message = "onTaskRemoved rootIntent:$rootIntent")
+        LogPure.logD(message = "onTaskRemoved rootIntent:$rootIntent")
         super.onTaskRemoved(rootIntent)
         stopSelf()
     }

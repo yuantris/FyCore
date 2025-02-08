@@ -13,7 +13,7 @@ import com.core.fy.android.function.read.services.AudioPlayService
 import com.core.fy.android.function.read.services.BaseReadAloudService
 import io.core.common.helper.LifecycleHelp
 import io.core.common.util.ext.ui.getPrefBoolean
-import io.core.common.util.log.LogUtils
+import io.core.common.util.log.LogPure
 
 
 /**
@@ -41,7 +41,7 @@ class MediaButtonReceiver : BroadcastReceiver() {
                 val keycode: Int = keyEvent.keyCode
                 val action: Int = keyEvent.action
                 if (action == KeyEvent.ACTION_DOWN) {
-                    LogUtils.logD(TAG, "Receive mediaButton event, keycode:$keycode")
+                    LogPure.logD(TAG, "Receive mediaButton event, keycode:$keycode")
                     when (keycode) {
                         KeyEvent.KEYCODE_MEDIA_PREVIOUS -> {
                             if (context.getPrefBoolean("mediaButtonPerNext", false)) {
