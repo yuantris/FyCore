@@ -3,18 +3,13 @@ package io.core.common.util
 import android.content.Context
 import android.net.Uri
 import android.provider.MediaStore
-import android.telephony.mbms.FileInfo
-import io.core.common.util.ext.logE
 import io.core.common.util.log.LogPure
-import io.core.common.util.log.logW
-import io.core.constant.FileType
-import java.util.Locale.filter
 
 class MediaScanner(private val context: Context) {
 
     fun queryMediaFiles(
         types: Set<FileType>,
-        addFilter: (FileInfo) -> Boolean = { true },
+        addFilter: ((FileInfo) -> Boolean)? = null,
         sortOrder: String = "${MediaStore.MediaColumns.DATE_ADDED} DESC"
     ): List<FileInfo> {
         val groupedTypes = types.groupBy { it.contentUri }
@@ -39,44 +34,42 @@ class MediaScanner(private val context: Context) {
                 selectionArgs?.toTypedArray(),
                 sortOrder
             )?.use { cursor ->
-                val pathIndex = cursor.getColumnIndex(MediaStore.MediaColumns.DATA)
-                val sizeIndex = cursor.getColumnIndex(MediaStore.MediaColumns.SIZE)
-                val dateIndex = cursor.getColumnIndex(MediaStore.MediaColumns.DATE_ADDED)
-                val mimeIndex = cursor.getColumnIndex(MediaStore.MediaColumns.MIME_TYPE)
+                val pathIndex = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA)
+                val sizeIndex = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.SIZE)
+                val dateIndex = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATE_ADDED)
+                val mimeIndex = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.MIME_TYPE)
 
                 while (cursor.moveToNext()) {
-                    val path = cursor.getString(pathIndex)
+                    val path = cursor.getString(pathIndex) ?: continue
                     val size = cursor.getLong(sizeIndex)
                     val date = cursor.getLong(dateIndex)
                     val mime = cursor.getString(mimeIndex)
 
-                    if (!path.isNullOrEmpty()) {
-                        results.add(FileInfo(path, size, date, mime))
-                    }
+                    results.add(FileInfo(path, size, date, mime))
                 }
             }
         }
-        val sortedByDescending = results.distinctBy { it.path }
+        LogPure.logD("Found ${results.size} files")
+        return results.distinctBy { it.path }
             .filter { file ->
                 val defaultShouldKeep = defaultFilter(file)
-                val additionalShouldKeep = addFilter(file)
+                val additionalShouldKeep = addFilter?.invoke(file) ?: true
                 val shouldKeep = defaultShouldKeep && additionalShouldKeep
                 if (!shouldKeep) {
-                    ("Filtered out: ${file.path}").logW()
+                    LogPure.logW("Filtered out: ${file.path}")
                 }
                 shouldKeep
             }
             .sortedByDescending { it.dateAdded }
-        return sortedByDescending
     }
 
     private fun buildSelection(mimeTypes: List<String>, extensions: List<String>): String? {
         val conditions = mutableListOf<String>()
-        
+
         if (mimeTypes.isNotEmpty()) {
-            conditions.add("${MediaStore.MediaColumns.MIME_TYPE} IN (${mimeTypes.map { "?" }.joinToString(", ")})")
+            conditions.add("${MediaStore.MediaColumns.MIME_TYPE} IN (${mimeTypes.joinToString(", ") { "?" }})")
         }
-        
+
         if (extensions.isNotEmpty()) {
             conditions.add(extensions.joinToString(" OR ") { "${MediaStore.MediaColumns.DATA} LIKE ?" })
         }
@@ -84,7 +77,10 @@ class MediaScanner(private val context: Context) {
         return if (conditions.isNotEmpty()) conditions.joinToString(" OR ") else null
     }
 
-    private fun buildSelectionArgs(mimeTypes: List<String>, extensions: List<String>): List<String>? {
+    private fun buildSelectionArgs(
+        mimeTypes: List<String>,
+        extensions: List<String>
+    ): List<String>? {
         val args = mutableListOf<String>()
         args.addAll(mimeTypes)
         args.addAll(extensions.map { "%.$it" })
@@ -92,8 +88,14 @@ class MediaScanner(private val context: Context) {
     }
 
     private fun defaultFilter(file: FileInfo): Boolean {
-        val excludedPaths = listOf("/Android/", "/cache/", "/.", "thumbnails")
-        return file.size > 0 && excludedPaths.none { file.path.contains(it, true) }
+        val excludedPatterns = listOf(
+            "^/storage/emulated/\\d+/Android/.*",
+            "^/storage/emulated/\\d+/.*cache.*",
+            "^/storage/emulated/\\d+/\\..*",
+            "thumbnails"
+        ).map { Regex(it, RegexOption.IGNORE_CASE) }
+
+        return file.size > 0 && excludedPatterns.none { it.containsMatchIn(file.path) }
     }
 
     data class FileInfo(

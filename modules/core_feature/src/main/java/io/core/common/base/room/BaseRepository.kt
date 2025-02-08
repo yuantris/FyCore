@@ -1,5 +1,6 @@
 package io.core.common.base.room
 
+import android.util.Log
 import io.core.common.util.log.LogPure
 import io.core.common.util.log.TAG
 import io.core.common.util.tools.TimeUtils
@@ -19,6 +20,6 @@ import io.core.common.util.tools.TimeUtils
  */
 open class BaseRepository {
     init {
-        LogPure.logV(TAG, "Repository init: ${TimeUtils.getNowString()}")
+        LogPure.logV("Repository init: ${TimeUtils.getNowString()}", TAG)
     }
 }

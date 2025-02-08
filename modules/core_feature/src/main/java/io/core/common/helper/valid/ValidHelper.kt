@@ -72,27 +72,6 @@ class ValidHelper private constructor() {
 
 
     /**
-     * 针对 String 类型校验（预留）
-     */
-    fun asString(): ValidHelper {
-        // 可在此处扩展 String 的基础校验条件
-        addCondition { input ->
-            input is String &&
-                    input.isNotBlank() &&
-                    input.isNotEmpty()
-        }
-        return this
-    }
-
-    /**
-     * 针对 Any 类型校验（预留）
-     */
-    fun asAny(): ValidHelper {
-        // 可在此处扩展 Any 的基础校验条件
-        return this
-    }
-
-    /**
      * 最终执行校验，返回校验结果
      */
     fun build(

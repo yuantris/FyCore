@@ -31,16 +31,6 @@ class KeyboardActivity : BaseInputActivity<ActivityKeyboardBinding>() {
 
     override fun initial(savedInstanceState: Bundle?) {
         super.initial(savedInstanceState)
-
-        "ValidHelper start".logV()
-        ValidHelper.create().asString()
-            .build("1") {
-                if (it) {
-                    "isFile".logD()
-                } else {
-                    "isNotFile".logD()
-                }
-            }
     }
 
     override fun setListener() {

@@ -15,7 +15,9 @@ import com.hjq.permissions.XXPermissions
 import io.core.common.base.component.fragment.ReflectBindingFragment
 import io.core.common.helper.coroutine.Coroutine
 import io.core.common.helper.dialogs.alert
+import io.core.common.helper.valid.ValidHelper
 import io.core.common.util.MediaScanner
+import io.core.common.util.ext.cool.ConvertUtils
 import io.core.common.util.ext.cool.observeEvent
 import io.core.common.util.ext.cool.observeEventSticky
 import io.core.common.util.ext.ui.addViewToZYLayout
@@ -23,11 +25,14 @@ import io.core.common.util.ext.ui.getCompatColor
 import io.core.common.util.ext.ui.onClick
 import io.core.common.util.ext.logE
 import io.core.common.util.ext.logV
+import io.core.common.util.log.LogCat
+import io.core.common.util.log.LogPure
 import io.core.common.util.log.logD
 import io.core.common.util.log.logE
 import io.core.common.util.log.logI
 import io.core.common.util.log.logV
 import io.core.common.util.tools.ColorUtils
+import io.core.common.util.tools.MultimediaUtil
 import io.core.common.util.tools.UriUtils
 import io.core.common.util.tools.runOnUI
 import io.core.widget.view.LoadingView
@@ -112,21 +117,22 @@ class BlankFragment : ReflectBindingFragment<FragmentBlankBinding, MainActivity>
                     val files = MediaScanner(requireContext())
                         .queryMediaFiles(
                             types = setOf(
-                                MediaScanner.FileType.JPG,
-                                MediaScanner.FileType.MP3,
+                                MediaScanner.FileType.MP4,
                             ),
                             addFilter = {
-                                !it.path.contains("AppColl7")
-                            },
+                                it.size > 1024 * 1024
+                            }
                         )
                     files
                 }.onSuccess { result ->
                     result.forEach {
-                        "文件：${it.path}".logI("FileScanHelper_")
+                        LogPure.logI("文件：${it.path}", "FileScanHelper_")
                     }
                     val file = File(result[0].path)
                     val uri = UriUtils.file2Uri(File(file.path))
                     "数量：${result.size} 第一个文件：${file.absolutePath} uri：${uri}".logE()
+                    MultimediaUtil.getDuration(file.absolutePath).logE()
+                    ConvertUtils.formatFileSize(result[0].size).logE()
                 }
 
             }

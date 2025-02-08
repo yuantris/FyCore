@@ -128,7 +128,4 @@ class HomeFragment : ReflectBindingFragment<FragmentHomeBinding, MainActivity>()
         }
     }
 
-    override fun onFragmentResume(first: Boolean) {
-        "是否首次调用：$first".logV()
-    }
 }

@@ -36,6 +36,10 @@ object UriUtils {
         }
     }
 
+    fun path2Uri(path: String): Uri? {
+        return file2Uri(File(path))
+    }
+
     fun uri2File(uri: Uri): File? {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             val path = RealPathUtil.getPath(appCtx, uri)
