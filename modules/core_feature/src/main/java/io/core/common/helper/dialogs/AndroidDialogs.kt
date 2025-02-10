@@ -2,13 +2,22 @@
 
 package io.core.common.helper.dialogs
 
+import android.annotation.SuppressLint
 import android.app.ProgressDialog
 import android.content.Context
 import android.content.DialogInterface
+import android.graphics.Color
+import android.graphics.PorterDuff
+import android.graphics.drawable.ColorDrawable
+import android.view.WindowManager
+import android.widget.ProgressBar
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
+import io.core.R
+import io.core.common.helper.TryCatchHelper
+import io.core.common.util.ext.cool.dpToPx
 
-fun Context.alert(
+fun Context.showDialog(
     title: CharSequence? = null,
     message: CharSequence? = null,
     init: (AlertBuilder<DialogInterface>.() -> Unit)? = null
@@ -24,13 +33,13 @@ fun Context.alert(
     }.show()
 }
 
-inline fun Fragment.alert(
+inline fun Fragment.showDialog(
     title: CharSequence? = null,
     message: CharSequence? = null,
     noinline init: (AlertBuilder<DialogInterface>.() -> Unit)? = null
-) = requireActivity().alert(title, message, init)
+) = requireActivity().showDialog(title, message, init)
 
-fun Context.alert(
+fun Context.showDialog(
     titleResource: Int? = null,
     messageResource: Int? = null,
     init: (AlertBuilder<DialogInterface>.() -> Unit)? = null
@@ -46,19 +55,19 @@ fun Context.alert(
     }.show()
 }
 
-inline fun Fragment.alert(
+inline fun Fragment.showDialog(
     titleResource: Int? = null,
     messageResource: Int? = null,
     noinline init: (AlertBuilder<DialogInterface>.() -> Unit)? = null
-) = requireActivity().alert(titleResource, messageResource, init)
+) = requireActivity().showDialog(titleResource, messageResource, init)
 
-fun Context.alert(init: AlertBuilder<AlertDialog>.() -> Unit): AlertDialog =
+fun Context.showDialog(init: AlertBuilder<AlertDialog>.() -> Unit): AlertDialog =
     AndroidAlertBuilder(this).apply {
         init()
     }.show()
 
-inline fun Fragment.alert(noinline init: AlertBuilder<DialogInterface>.() -> Unit) =
-    requireContext().alert(init)
+inline fun Fragment.showDialog(noinline init: AlertBuilder<DialogInterface>.() -> Unit) =
+    requireContext().showDialog(init)
 
 inline fun Fragment.progressDialog(
     title: Int? = null,
@@ -111,12 +120,13 @@ fun Context.indeterminateProgressDialog(
 ) = progressDialog(title, message, true, init)
 
 
+@SuppressLint("PrivateApi")
 private fun Context.progressDialog(
     title: CharSequence? = null,
     message: CharSequence? = null,
     indeterminate: Boolean,
     init: (ProgressDialog.() -> Unit)? = null
-) = ProgressDialog(this).apply {
+) = ProgressDialog(this,R.style.CustomProgressDialog).apply {
     isIndeterminate = indeterminate
     if (!indeterminate) setProgressStyle(ProgressDialog.STYLE_HORIZONTAL)
     if (message != null) setMessage(message)

@@ -5,7 +5,6 @@ import android.widget.Toast
 import com.core.fy.android.MainActivity
 import com.core.fy.android.R
 import com.core.fy.android.constants.AppConst.timeFormat
-import com.core.fy.android.constants.BookSourceType.file
 import com.core.fy.android.constants.EventKey.BATTERY_CHANGED
 import com.core.fy.android.constants.EventKey.TIME_CHANGED
 import com.core.fy.android.databinding.FragmentBlankBinding
@@ -14,23 +13,18 @@ import com.hjq.permissions.Permission
 import com.hjq.permissions.XXPermissions
 import io.core.common.base.component.fragment.ReflectBindingFragment
 import io.core.common.helper.coroutine.Coroutine
-import io.core.common.helper.dialogs.alert
-import io.core.common.helper.valid.ValidHelper
+import io.core.common.helper.dialogs.showDialog
 import io.core.common.util.MediaScanner
+import io.core.common.util.ext.appCtx
 import io.core.common.util.ext.cool.ConvertUtils
 import io.core.common.util.ext.cool.observeEvent
 import io.core.common.util.ext.cool.observeEventSticky
+import io.core.common.util.ext.logE
 import io.core.common.util.ext.ui.addViewToZYLayout
 import io.core.common.util.ext.ui.getCompatColor
 import io.core.common.util.ext.ui.onClick
-import io.core.common.util.ext.logE
-import io.core.common.util.ext.logV
-import io.core.common.util.log.LogCat
 import io.core.common.util.log.LogPure
-import io.core.common.util.log.logD
 import io.core.common.util.log.logE
-import io.core.common.util.log.logI
-import io.core.common.util.log.logV
 import io.core.common.util.tools.ColorUtils
 import io.core.common.util.tools.MultimediaUtil
 import io.core.common.util.tools.UriUtils
@@ -65,10 +59,10 @@ class BlankFragment : ReflectBindingFragment<FragmentBlankBinding, MainActivity>
     @SuppressLint("UnspecifiedRegisterReceiverFlag")
     override fun initView() {
         super.initView()
-        context?.registerReceiver(timeBatteryReceiver, timeBatteryReceiver.filter)
+        appCtx.registerReceiver(timeBatteryReceiver, timeBatteryReceiver.filter)
         binding.time.onClick {
-            // throw RuntimeException("ssssssss")
-            alert("对话框标题", "这是一个对话框消息。") {
+            //throw RuntimeException("ssssssss")
+            showDialog("对话框标题", "这是一个对话框消息。") {
                 okButton {
                     Toast.makeText(activity, "点击了确定", Toast.LENGTH_SHORT).show()
                 }
@@ -91,7 +85,7 @@ class BlankFragment : ReflectBindingFragment<FragmentBlankBinding, MainActivity>
         // 在协程作用域中启动
         if (job?.isActive != true) {
             job = Coroutine.async(
-                scope = CoroutineScope(Dispatchers.IO), // 指定作用域，默认为 MainScope()
+                scope = CoroutineScope(Dispatchers.Main), // 指定作用域，默认为 MainScope()
                 context = Dispatchers.Default,          // 指定执行上下文，默认为 Dispatchers.IO
                 start = CoroutineStart.LAZY,            // 指定启动选项，默认为 CoroutineStart.DEFAULT
                 executeContext = Dispatchers.Main,      // 指定回调执行上下文，默认为 Dispatchers.Main
@@ -111,18 +105,17 @@ class BlankFragment : ReflectBindingFragment<FragmentBlankBinding, MainActivity>
             .permission(Permission.MANAGE_EXTERNAL_STORAGE)
             .request { _, _ ->
                 Coroutine.async(
-                    scope = CoroutineScope(Dispatchers.IO),
+                    scope = CoroutineScope(Dispatchers.Main),
                     executeContext = Dispatchers.IO
                 ) {
-                    val files = MediaScanner(requireContext())
-                        .queryMediaFiles(
-                            types = setOf(
-                                MediaScanner.FileType.MP4,
-                            ),
-                            addFilter = {
-                                it.size > 1024 * 1024
-                            }
-                        )
+                    val files = MediaScanner.queryFiles(
+                        types = setOf(
+                            MediaScanner.FileType.JPG,
+                        ),
+                        addFilter = {
+                            it.size < 1024 * 1024
+                        }
+                    )
                     files
                 }.onSuccess { result ->
                     result.forEach {
@@ -131,7 +124,7 @@ class BlankFragment : ReflectBindingFragment<FragmentBlankBinding, MainActivity>
                     val file = File(result[0].path)
                     val uri = UriUtils.file2Uri(File(file.path))
                     "数量：${result.size} 第一个文件：${file.absolutePath} uri：${uri}".logE()
-                    MultimediaUtil.getDuration(file.absolutePath).logE()
+                    // MultimediaUtil.getDuration(file.absolutePath).logE()
                     ConvertUtils.formatFileSize(result[0].size).logE()
                 }
 

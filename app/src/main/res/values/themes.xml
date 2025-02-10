@@ -6,8 +6,8 @@
         <item name="colorPrimaryVariant">@color/md_indigo_600</item>
         <item name="colorOnPrimary">@color/white</item>
         <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/teal_200</item>
-        <item name="colorSecondaryVariant">@color/teal_700</item>
+        <item name="colorSecondary">@color/md_blue_grey_300</item>
+        <item name="colorSecondaryVariant">@color/md_blue_grey_600</item>
         <item name="colorOnSecondary">@color/black</item>
         <!-- Surface brand color. -->
         <item name="colorSurface">@color/white</item>

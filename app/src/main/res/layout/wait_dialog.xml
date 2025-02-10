@@ -7,7 +7,7 @@
     android:layout_gravity="center"
     android:gravity="center"
     android:orientation="vertical"
-    app:cardBackgroundColor="#1d1d1d"
+    app:cardBackgroundColor="#F6F6F6"
     app:cardCornerRadius="@dimen/dp_15"
     app:cardElevation="@dimen/dp_10"
     app:cardUseCompatPadding="true"
@@ -22,12 +22,12 @@
         android:orientation="vertical"
         android:padding="@dimen/dp_10">
 
-        <com.airbnb.lottie.LottieAnimationView
+        <io.core.widget.view.RotateLoading
             android:layout_width="@dimen/dp_70"
             android:layout_height="@dimen/dp_70"
-            app:lottie_autoPlay="true"
-            app:lottie_loop="true"
-            app:lottie_rawRes="@raw/progress" />
+            app:loading_color="@color/black"
+            app:loading_speed="4"
+            app:loading_width="@dimen/dp_3" />
 
         <io.core.widget.view.SmartTextView
             android:id="@+id/tv_wait_message"
@@ -37,7 +37,7 @@
             android:layout_marginTop="@dimen/dp_5"
             android:maxLines="3"
             android:text="@string/common_loading"
-            android:textColor="@color/white"
+            android:textColor="@color/common_text_color"
             android:textSize="@dimen/sp_14" />
     </LinearLayout>
 

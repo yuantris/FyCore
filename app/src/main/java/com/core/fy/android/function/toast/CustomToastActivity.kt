@@ -2,9 +2,12 @@ package com.core.fy.android.function.toast
 
 import android.os.Bundle
 import android.view.Gravity
+import android.widget.Toast
 import com.core.fy.android.databinding.ActivityCustomToastBinding
 import io.core.common.base.component.activity.ReflectBindingActivity
-import io.core.other.Toast
+import io.core.common.util.ext.ui.toast
+import io.core.common.util.ext.ui.toastLong
+import io.core.other.CustomToast
 
 /**
 # ██████████
@@ -30,22 +33,20 @@ class CustomToastActivity : ReflectBindingActivity<ActivityCustomToastBinding>()
         super.setListener()
         binding.apply {
             showTop.setOnClickListener {
-                Toast.Builder(this@CustomToastActivity)
+                CustomToast.Builder(this@CustomToastActivity)
                     .setMessage("自定义Toast")
                     .setGravity(Gravity.TOP)
-                    .create().show()
+                    .build()
+                    .show()
             }
             showCenter.setOnClickListener {
-                Toast.Builder(this@CustomToastActivity)
+                CustomToast.Builder(this@CustomToastActivity)
                     .setMessage("点什么点点什么点点什么点点什么点点什么点点什么点")
                     .setGravity(Gravity.CENTER)
-                    .create().show()
+                    .build().show()
             }
             showBottom.setOnClickListener {
-                Toast.Builder(this@CustomToastActivity)
-                    .setMessage("自定义Toast")
-                    .setGravity(Gravity.BOTTOM)
-                    .create().show()
+                toast("自定义Toast")
             }
             cancel.setOnClickListener {
                 // Toast.cancel(this@CustomToastActivity)

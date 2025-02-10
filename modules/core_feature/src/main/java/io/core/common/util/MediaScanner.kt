@@ -1,101 +1,120 @@
 package io.core.common.util
 
-import android.content.Context
 import android.net.Uri
 import android.provider.MediaStore
+import io.core.common.util.ext.appCtx
 import io.core.common.util.log.LogPure
 
-class MediaScanner(private val context: Context) {
+/**
+ * 媒体库扫描工具
+ * 该工具类提供了查询媒体库文件的功能，支持按文件类型、过滤条件和排序顺序查询文件信息。
+ * @author FFGreatKing
+ */
+class MediaScanner {
 
-    fun queryMediaFiles(
-        types: Set<FileType>,
-        addFilter: ((FileInfo) -> Boolean)? = null,
-        sortOrder: String = "${MediaStore.MediaColumns.DATE_ADDED} DESC"
-    ): List<FileInfo> {
-        val groupedTypes = types.groupBy { it.contentUri }
-        val results = mutableListOf<FileInfo>()
+    companion object {
 
-        groupedTypes.forEach { (uri, fileTypes) ->
-            val mimeTypes = fileTypes.flatMap { it.mimeTypes }.distinct()
-            val extensions = fileTypes.flatMap { it.extensions }.distinct()
+        /**
+         * 媒体库查询文件
+         *
+         * 该函数根据指定的文件类型集合、过滤条件和排序顺序，查询设备上的文件信息
+         * 它通过内容解析器查询媒体存储，筛选出符合条件的文件，并返回一个文件信息列表
+         *
+         * @param types 文件类型集合，指定需要查询的文件类型
+         * @param addFilter 可选的附加过滤条件，用于进一步筛选文件，默认为null
+         * @param sortOrder 排序顺序，默认按添加日期降序排列
+         * @return 返回一个文件信息列表，包含路径、大小、添加日期和MIME类型
+         */
+        fun queryFiles(
+            types: Set<FileType>,
+            addFilter: ((FileInfo) -> Boolean)? = null,
+            sortOrder: String = "${MediaStore.MediaColumns.DATE_ADDED} DESC"
+        ): List<FileInfo> {
+            val groupedTypes = types.groupBy { it.contentUri }
+            val results = mutableListOf<FileInfo>()
 
-            val selection = buildSelection(mimeTypes, extensions)
-            val selectionArgs = buildSelectionArgs(mimeTypes, extensions)
+            groupedTypes.forEach { (uri, fileTypes) ->
+                val mimeTypes = fileTypes.flatMap { it.mimeTypes }.distinct()
+                val extensions = fileTypes.flatMap { it.extensions }.distinct()
 
-            context.contentResolver.query(
-                uri,
-                arrayOf(
-                    MediaStore.MediaColumns.DATA,
-                    MediaStore.MediaColumns.SIZE,
-                    MediaStore.MediaColumns.DATE_ADDED,
-                    MediaStore.MediaColumns.MIME_TYPE
-                ),
-                selection,
-                selectionArgs?.toTypedArray(),
-                sortOrder
-            )?.use { cursor ->
-                val pathIndex = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA)
-                val sizeIndex = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.SIZE)
-                val dateIndex = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATE_ADDED)
-                val mimeIndex = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.MIME_TYPE)
+                val selection = buildSelection(mimeTypes, extensions)
+                val selectionArgs = buildSelectionArgs(mimeTypes, extensions)
 
-                while (cursor.moveToNext()) {
-                    val path = cursor.getString(pathIndex) ?: continue
-                    val size = cursor.getLong(sizeIndex)
-                    val date = cursor.getLong(dateIndex)
-                    val mime = cursor.getString(mimeIndex)
+                appCtx.contentResolver.query(
+                    uri,
+                    arrayOf(
+                        MediaStore.MediaColumns.DATA,
+                        MediaStore.MediaColumns.SIZE,
+                        MediaStore.MediaColumns.DATE_ADDED,
+                        MediaStore.MediaColumns.MIME_TYPE
+                    ),
+                    selection,
+                    selectionArgs?.toTypedArray(),
+                    sortOrder
+                )?.use { cursor ->
+                    val pathIndex = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA)
+                    val sizeIndex = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.SIZE)
+                    val dateIndex = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATE_ADDED)
+                    val mimeIndex = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.MIME_TYPE)
 
-                    results.add(FileInfo(path, size, date, mime))
+                    while (cursor.moveToNext()) {
+                        val path = cursor.getString(pathIndex) ?: continue
+                        val size = cursor.getLong(sizeIndex)
+                        val date = cursor.getLong(dateIndex)
+                        val mime = cursor.getString(mimeIndex)
+
+                        results.add(FileInfo(path, size, date, mime))
+                    }
                 }
             }
-        }
-        LogPure.logD("Found ${results.size} files")
-        return results.distinctBy { it.path }
-            .filter { file ->
-                val defaultShouldKeep = defaultFilter(file)
-                val additionalShouldKeep = addFilter?.invoke(file) ?: true
-                val shouldKeep = defaultShouldKeep && additionalShouldKeep
-                if (!shouldKeep) {
-                    LogPure.logW("Filtered out: ${file.path}")
+            LogPure.logD("Found ${results.size} files")
+            return results.distinctBy { it.path }
+                .filter { file ->
+                    val defaultShouldKeep = defaultFilter(file)
+                    val additionalShouldKeep = addFilter?.invoke(file) ?: true
+                    val shouldKeep = defaultShouldKeep && additionalShouldKeep
+                    if (!shouldKeep) {
+                        LogPure.logW("Filtered out: ${file.path}")
+                    }
+                    shouldKeep
                 }
-                shouldKeep
+                .sortedByDescending { it.dateAdded }
+        }
+
+        private fun buildSelection(mimeTypes: List<String>, extensions: List<String>): String? {
+            val conditions = mutableListOf<String>()
+
+            if (mimeTypes.isNotEmpty()) {
+                conditions.add("${MediaStore.MediaColumns.MIME_TYPE} IN (${mimeTypes.joinToString(", ") { "?" }})")
             }
-            .sortedByDescending { it.dateAdded }
-    }
 
-    private fun buildSelection(mimeTypes: List<String>, extensions: List<String>): String? {
-        val conditions = mutableListOf<String>()
+            if (extensions.isNotEmpty()) {
+                conditions.add(extensions.joinToString(" OR ") { "${MediaStore.MediaColumns.DATA} LIKE ?" })
+            }
 
-        if (mimeTypes.isNotEmpty()) {
-            conditions.add("${MediaStore.MediaColumns.MIME_TYPE} IN (${mimeTypes.joinToString(", ") { "?" }})")
+            return if (conditions.isNotEmpty()) conditions.joinToString(" OR ") else null
         }
 
-        if (extensions.isNotEmpty()) {
-            conditions.add(extensions.joinToString(" OR ") { "${MediaStore.MediaColumns.DATA} LIKE ?" })
+        private fun buildSelectionArgs(
+            mimeTypes: List<String>,
+            extensions: List<String>
+        ): List<String>? {
+            val args = mutableListOf<String>()
+            args.addAll(mimeTypes)
+            args.addAll(extensions.map { "%.$it" })
+            return args.ifEmpty { null }
         }
 
-        return if (conditions.isNotEmpty()) conditions.joinToString(" OR ") else null
-    }
+        private fun defaultFilter(file: FileInfo): Boolean {
+            val excludedPatterns = listOf(
+                "^/storage/emulated/\\d+/Android/.*",
+                "^/storage/emulated/\\d+/.*cache.*",
+                "^/storage/emulated/\\d+/\\..*",
+                "thumbnails"
+            ).map { Regex(it, RegexOption.IGNORE_CASE) }
 
-    private fun buildSelectionArgs(
-        mimeTypes: List<String>,
-        extensions: List<String>
-    ): List<String>? {
-        val args = mutableListOf<String>()
-        args.addAll(mimeTypes)
-        args.addAll(extensions.map { "%.$it" })
-        return args.ifEmpty { null }
-    }
-
-    private fun defaultFilter(file: FileInfo): Boolean {
-        val excludedPatterns = listOf(
-            "^/storage/emulated/\\d+/Android/.*",
-            "^/storage/emulated/\\d+/.*cache.*",
-            "^/storage/emulated/\\d+/\\..*",
-            "thumbnails"
-        ).map { Regex(it, RegexOption.IGNORE_CASE) }
-
-        return file.size > 0 && excludedPatterns.none { it.containsMatchIn(file.path) }
+            return file.size > 0 && excludedPatterns.none { it.containsMatchIn(file.path) }
+        }
     }
 
     data class FileInfo(

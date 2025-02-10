@@ -33,6 +33,9 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
 import androidx.core.content.edit
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.LifecycleOwner
 import io.core.common.util.ext.cool.pxToDp
 import io.core.common.util.ext.layoutInflater
 import io.core.common.util.ext.windowManager
@@ -117,6 +120,72 @@ inline fun <reified T : BroadcastReceiver> Context.broadcastPendingIntent(
         FLAG_UPDATE_CURRENT
     }
     return getBroadcast(this, 0, intent, flags)
+}
+
+/**
+ * 注册广播接收器并自动绑定生命周期
+ *
+ * @param context 用于注册接收器的上下文（建议使用 ApplicationContext 避免内存泄漏）
+ * @param actions 要监听的广播 Action 数组
+ * @param onReceive 广播接收回调函数
+ */
+inline fun LifecycleOwner.registerBroadcastReceiver(
+    context: Context,
+    vararg actions: String,
+    crossinline onReceive: (intent: Intent) -> Unit
+): BroadcastReceiver {
+    // 创建广播接收器实例
+    val receiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            onReceive(intent)
+        }
+    }
+
+    // 创建 IntentFilter 并添加 Action
+    val filter = IntentFilter().apply {
+        actions.forEach { addAction(it) }
+    }
+
+    // 注册广播接收器
+    context.registerReceiver(receiver, filter)
+
+    // 绑定生命周期管理
+    lifecycle.addObserver(object : LifecycleEventObserver {
+        override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
+            if (event == Lifecycle.Event.ON_DESTROY) {
+                context.unregisterReceiver(receiver)
+                lifecycle.removeObserver(this)
+            }
+        }
+    })
+
+    return receiver
+}
+
+@SuppressLint("UnspecifiedRegisterReceiverFlag")
+inline fun LifecycleOwner.registerBroadcastReceiver(
+    context: Context,
+    intentFilter: IntentFilter.() -> Unit,
+    crossinline onReceive: (intent: Intent) -> Unit
+): BroadcastReceiver {
+    val receiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            onReceive(intent)
+        }
+    }
+    val filter = IntentFilter().apply(intentFilter)
+    context.registerReceiver(receiver, filter)
+
+    lifecycle.addObserver(object : LifecycleEventObserver {
+        override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
+            if (event == Lifecycle.Event.ON_DESTROY) {
+                context.unregisterReceiver(receiver)
+                lifecycle.removeObserver(this)
+            }
+        }
+    })
+
+    return receiver
 }
 
 fun Context.startForegroundServiceCompat(intent: Intent) {

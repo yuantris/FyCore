@@ -30,10 +30,9 @@ import io.core.engine.brv.utils.grid
 import io.core.engine.brv.utils.setup
 import io.core.common.base.component.fragment.ReflectBindingFragment
 import io.core.common.util.ext.cool.launchAsync
-import io.core.common.util.ext.logV
 import io.core.common.util.ext.ui.onClick
 import io.core.common.util.ext.ui.startActivity
-import io.core.other.Toast
+import io.core.other.CustomToast
 
 /**
 # ██████████
@@ -114,9 +113,9 @@ class HomeFragment : ReflectBindingFragment<FragmentHomeBinding, MainActivity>()
                                 FunctionVM.Design.相机 -> startActivity<CameraXActivity>()
                                 else -> {
                                     // do nothing
-                                    Toast.Builder(requireContext())
+                                    CustomToast.Builder(requireContext())
                                         .setMessage("该添加点击事件了")
-                                        .create()
+                                        .build()
                                         .show()
                                 }
                             }

@@ -23,7 +23,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import io.core.common.util.tools.buildMainHandler
-import io.core.other.Toast
+import io.core.other.CustomToast
 import java.io.Serializable
 
 inline fun <reified T : DialogFragment> AppCompatActivity.showDialogFragment(
@@ -198,9 +198,21 @@ fun Context.getActivity(): Activity? {
  * 显示Toast
  */
 fun Context.toast(message: String) {
-    Toast.Builder(this)
+    CustomToast.Builder(this)
         .setMessage(message)
-        .create()
+        .setDuration(1800)
+        .build()
+        .show()
+}
+
+/**
+ * 长显示Toast
+ */
+fun Context.toastLong(message: String) {
+    CustomToast.Builder(this)
+        .setMessage(message)
+        .setDuration(3600)
+        .build()
         .show()
 }
 

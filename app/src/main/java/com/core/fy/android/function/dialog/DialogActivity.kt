@@ -6,7 +6,6 @@ import android.graphics.Typeface
 import android.os.Bundle
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.lifecycle.lifecycleScope
 import com.core.fy.android.R
 import com.core.fy.android.databinding.ActivityDialogBinding
@@ -14,7 +13,8 @@ import com.core.fy.android.ui.BottomSheetNextDialog
 import com.core.fy.android.ui.WaitDialog
 import io.core.common.base.component.activity.ReflectBindingActivity
 import io.core.common.base.component.dialog.specific.BubbleDialog
-import io.core.common.helper.dialogs.alert
+import io.core.common.helper.dialogs.progressDialog
+import io.core.common.helper.dialogs.showDialog
 import io.core.common.util.CoreUtil
 import io.core.common.util.ext.cool.dpToPx
 import io.core.common.util.ext.ui.getCompatColor
@@ -24,6 +24,7 @@ import io.core.common.util.ext.ui.showDialogFragment
 import io.core.common.util.tools.DrawableBuilder
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.text.NumberFormat
 
 /**
 # ██████████
@@ -52,7 +53,7 @@ class DialogActivity : ReflectBindingActivity<ActivityDialogBinding>() {
         // 设置标题，左对齐
         binding.titleBar.apply {
             addRightButtonImage(R.drawable.ic_find_replace) {
-                alert("温馨提示") {
+                showDialog("温馨提示") {
                     setBackground(
                         DrawableBuilder
                             .setRadius(24f)

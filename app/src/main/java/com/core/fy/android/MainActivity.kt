@@ -13,6 +13,7 @@ import com.core.fy.android.ui.ConfigDialog
 import io.core.common.base.component.activity.ReflectBindingActivity
 import io.core.common.base.component.fragment.BaseFragment
 import io.core.common.helper.dialogs.alert
+import io.core.common.helper.dialogs.showDialog
 import io.core.common.util.ext.exitApp
 import io.core.common.util.ext.notifyAllDataChanged
 import io.core.common.util.ext.ui.BarColor
@@ -111,7 +112,7 @@ class MainActivity : ReflectBindingActivity<ActivityMainBinding>() {
     }
 
     override fun onBackPressedCall() {
-        alert("温馨提示", "是否退出应用？") {
+        showDialog("温馨提示", "是否退出应用？") {
             cancelButton {}
             okButton {
                 exitApp()

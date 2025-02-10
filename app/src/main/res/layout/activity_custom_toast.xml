@@ -11,25 +11,29 @@
         android:layout_height="wrap_content"
         app:titleLeftAlign="true"
         app:titleSize="@dimen/sp_16"
-        app:titleText="自定义Toast" />
+        app:titleText="Toast" />
 
-    <Button
+    <io.core.widget.view.SettingBar
         android:id="@+id/show_top"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="show_top" />
+        android:layout_marginTop="@dimen/dp_10"
+        app:bar_leftText="show_top"
+        app:bar_rightDrawable="@drawable/ic_arrow_right" />
 
-    <Button
+    <io.core.widget.view.SettingBar
         android:id="@+id/show_center"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="show_center" />
+        app:bar_leftText="show_center"
+        app:bar_rightDrawable="@drawable/ic_arrow_right" />
 
-    <Button
+    <io.core.widget.view.SettingBar
         android:id="@+id/show_bottom"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="show_bottom" />
+        app:bar_leftText="show_bottom"
+        app:bar_rightDrawable="@drawable/ic_arrow_right" />
 
     <Button
         android:id="@+id/cancel"

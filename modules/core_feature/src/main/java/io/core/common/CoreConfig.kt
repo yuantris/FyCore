@@ -1,9 +1,9 @@
 package io.core.common
 
-import androidx.annotation.ColorInt
 import io.core.R
 import io.core.common.util.ext.appCtx
 import io.core.common.util.ext.ui.getCompatColor
+import io.core.common.util.tools.Preferences
 
 /**
 # ██████████
@@ -18,7 +18,7 @@ import io.core.common.util.ext.ui.getCompatColor
  * @description
  * @author Yuan
  */
-object CoreConfigs {
+object CoreConfig {
     private val accentColor = appCtx.getCompatColor(R.color.common_accent_color)
 
     /*AndroidAlertBuilder的按钮色值*/

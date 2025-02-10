@@ -16,6 +16,12 @@
 
     <uses-permission android:name="android.permission.CAMERA" />
 
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.TTS_SERVICE" />
+        </intent>
+    </queries>
+
     <application
         android:name=".App"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -70,8 +76,12 @@
             android:name=".function.TestPageActivity"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name=".function.GuideActivity"
             android:exported="false" />
+        <activity
+            android:name=".MainActivity"
+            android:exported="false"
+            android:launchMode="singleTask" />
         <activity
             android:name=".SplashActivity"
             android:exported="true"

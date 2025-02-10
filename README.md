@@ -11,6 +11,7 @@ Android.homeActivity = MainActivity::class.java
 - 应用配置
   - 首页toolbar连点3次，第4次长按打开应用配置设置
     - 启动动画设置
+    - 崩溃信息
 
 **模块功能**
 - ColorUtils
@@ -111,22 +112,30 @@ Android.homeActivity = MainActivity::class.java
   )
   ```
   
+- DrawableBuilder(ShapeDrawable构造器)
+  ```kotlin
+  var drawable = DrawableBuilder.setRadius(12f)
+	 .setSolidColor(context.getCompatColor(R.color.md_amber_A200))
+	 .build()
+  ```
+
 - Widget
 
-  | 类名 | 作用 | 说明 |
-  | --- | --- | --- |
-  | `AccentTextView` | accentColor颜色的TextView |  |
-  | `BadgeView` | 角标TextView |  |
-  | `ClickableTextView` | 可点击的TextView | 标点符号后会加换行符 |
-  | `CustomImageView` | 可任意位置展示文字的View | 自定义UI首页 |
-  | `DrawableTextView` | 支持限定Drawable大小的TextView |  |
-  | `LoadingView` | 加载View | IOS风格 |
-  | `MarqueeTextView` | 跑马灯TextView |  |
-  | `PressEffectImageView` | 按压效果的ImageView |  |
-  | `RotateLoading` | 旋转加载View |  |
-  | `ScrollTextView` | 嵌套滑动的TextView |  |
-  | `SmartTextView` | 自动显示和隐藏的TextView |  |
-  | `FastScrollRecyclerView` | 支持可快速定位滚动的RecyclerView |  |
+  | 类名                       | 作用                      | 说明 |
+  |--------------------------|-------------------------| --- |
+  | `AccentTextView`         | accentColor颜色的TextView  |  |
+  | `BadgeView`              | 角标TextView              |  |
+  | `ClickableTextView`      | 可点击的TextView            | 标点符号后会加换行符 |
+  | `CustomImageView`        | 可任意位置展示文字的View          | 自定义UI首页 |
+  | `DrawableTextView`       | 支持限定Drawable大小的TextView |  |
+  | `LoadingView`            | 加载View                  | IOS风格 |
+  | `MarqueeTextView`        | 跑马灯TextView             |  |
+  | `PressEffectImageView`   | 按压效果的ImageView          |  |
+  | `RotateLoading`          | 旋转加载View                |  |
+  | `ScrollTextView`         | 嵌套滑动的TextView           |  |
+  | `SmartTextView`          | 自动显示和隐藏的TextView        |  |
+  | `FastScrollRecyclerView` | 支持可快速定位滚动的RecyclerView  |  |
+  | `SettingBar`             | 设置条自定义控件                |  |
 
   | 类名 | 作用 | 说明 |
   | --- | --- | --- |

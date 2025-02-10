@@ -3,6 +3,7 @@ package com.core.fy.android.ui
 import android.animation.ValueAnimator
 import android.content.Context
 import android.view.View
+import android.view.animation.LinearInterpolator
 import android.view.animation.OvershootInterpolator
 import android.widget.TextView
 import androidx.annotation.StringRes
@@ -43,8 +44,8 @@ class WaitDialog {
             val rootView = getContentView() ?: return
 
             // 设置初始状态：缩小到 0
-            rootView.scaleX = 0f
-            rootView.scaleY = 0f
+            rootView.scaleX = 0.8f
+            rootView.scaleY = 0.8f
             rootView.alpha = 0f
 
             // 开始动画：从小变大，且逐渐显现
@@ -52,8 +53,8 @@ class WaitDialog {
                 .scaleX(1f)
                 .scaleY(1f)
                 .alpha(1f)
-                .setDuration(300) // 动画时长
-                .setInterpolator(OvershootInterpolator()) // 弹性插值器，视觉更自然
+                .setDuration(200) // 动画时长
+                .setInterpolator(LinearInterpolator()) // 弹性插值器，视觉更自然
                 .start()
         }
 

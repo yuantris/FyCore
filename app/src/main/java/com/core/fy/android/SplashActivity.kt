@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter
 import android.content.Intent
 import android.os.Bundle
 import com.core.fy.android.databinding.ActivitySplashBinding
+import com.core.fy.android.function.GuideActivity
 import io.core.common.base.component.activity.ReflectBindingActivity
 import io.core.common.util.ext.ui.startNoTransition
 import com.gyf.immersionbar.BarHide
@@ -50,12 +51,11 @@ class SplashActivity : ReflectBindingActivity<ActivitySplashBinding>() {
             binding.lavSplashLottie.addAnimatorListener(object : AnimatorListenerAdapter() {
                 override fun onAnimationEnd(animation: Animator) {
                     binding.lavSplashLottie.removeAnimatorListener(this)
-                    startNoTransition(MainActivity::class.java, finish = true)
+                    startNoTransition(GuideActivity::class.java, finish = true)
                 }
             })
         } else {
             startNoTransition(MainActivity::class.java, finish = true)
-            IntentData.goAndFinishAlpha(this, MainActivity::class.java)
         }
     }
 

@@ -10,6 +10,7 @@ import android.text.style.ForegroundColorSpan
 import android.util.Log
 import com.core.fy.android.databinding.ActivityTtsBinding
 import io.core.common.base.component.activity.ReflectBindingActivity
+import io.core.common.util.log.logD
 import io.core.common.util.log.logE
 import java.util.Locale
 
@@ -47,12 +48,14 @@ class TTSActivity : ReflectBindingActivity<ActivityTtsBinding>(), TextToSpeech.O
         super.setListener()
         tts.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
             override fun onStart(utteranceId: String?) {
+                "onStart: $utteranceId".logE()
                 runOnUiThread {
                     highlightCurrentSentence()
                 }
             }
 
             override fun onDone(utteranceId: String?) {
+                "onDone: $utteranceId".logE()
                 runOnUiThread {
                     currentSentenceIndex++
                     if (currentSentenceIndex < sentenceList.size) {
@@ -106,8 +109,9 @@ class TTSActivity : ReflectBindingActivity<ActivityTtsBinding>(), TextToSpeech.O
                 // 初始化成功
                 val result = tts.setLanguage(Locale.CHINA)
                 if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
-                    Log.e("TTS", "This Language is not supported")
+                    "This Language is not supported".logE()
                 } else {
+                    "Initialization Succeed!".logD()
                     // 设置语速（1.0 是默认语速，0.5 是慢速，2.0 是快速）
                     tts.setSpeechRate(0.2f) // 设置为 1.2 倍速
                     // 设置音调（1.0 是默认音调，0.5 是低音调，2.0 是高音调）
@@ -118,7 +122,7 @@ class TTSActivity : ReflectBindingActivity<ActivityTtsBinding>(), TextToSpeech.O
 
             TextToSpeech.ERROR -> {
                 // 初始化失败
-                Log.e("TTS", "Initialization Failed!")
+                "Initialization Failed!".logE()
             }
 
         }

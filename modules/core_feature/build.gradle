@@ -109,7 +109,7 @@ dependencies {
 }
 
 /*当前版本*/
-def version_number = '0.1.4'
+def version_number = '0.1.5'
 def version_github = version_number + '-github'
 
 //publishing {
@@ -152,7 +152,7 @@ afterEvaluate {
         }
         repositories {
             maven {
-                url = 'https://packages.aliyun.com/67789758cdfeb44ae202deb7/maven/2512815-release-ndmhzu'
+                url = 'https://packages.aliyun.com/maven/repository/2512815-release-NDmHZu/'
                 credentials {
                     username = '63d4d579378edb0fd9aa3b2d'
                     password = 'nXJxEWiiObre'

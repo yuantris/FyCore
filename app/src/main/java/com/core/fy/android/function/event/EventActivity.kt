@@ -1,7 +1,9 @@
 package com.core.fy.android.function.event
 
+import androidx.lifecycle.Observer
 import com.core.fy.android.R
 import com.core.fy.android.databinding.ActivityEventBinding
+import com.core.fy.android.util.LiveDataCompat
 import io.core.common.base.component.activity.ReflectBindingActivity
 import io.core.common.util.ext.cool.observeEvent
 import io.core.common.util.ext.cool.postEvent
@@ -11,6 +13,7 @@ import io.core.common.util.ext.ui.onClick
 import io.core.common.util.log.logD
 import io.core.common.util.ext.ui.toast
 import io.core.common.util.tools.DrawableBuilder
+import io.core.engine.livebus.LiveEventBus
 
 class EventActivity : ReflectBindingActivity<ActivityEventBinding>() {
 
@@ -35,7 +38,8 @@ class EventActivity : ReflectBindingActivity<ActivityEventBinding>() {
                         .setSolidColor(context.getCompatColor(R.color.md_amber_A200))
                         .build()
                 onClick {
-                    toast(currentTimeMillis.toString())
+                    // toast(currentTimeMillis.toString())
+                    LiveDataCompat.postEvent("123", "")
                 }
             }
         }
@@ -49,6 +53,9 @@ class EventActivity : ReflectBindingActivity<ActivityEventBinding>() {
                 3 -> binding.ratioLayout.setSizeRatio(3f, 1f)
             }
         }
+
+        LiveDataCompat.on("123", String::class.java)
+            .with(this) { toast(currentTimeMillis.toString()) }
     }
 
 }

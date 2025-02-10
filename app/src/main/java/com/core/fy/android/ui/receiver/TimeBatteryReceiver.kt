@@ -32,4 +32,21 @@ class TimeBatteryReceiver : BroadcastReceiver() {
         }
     }
 
+/*    registerBroadcastReceiver(requireContext(), {
+        addAction(Intent.ACTION_TIME_TICK)
+        addAction(Intent.ACTION_BATTERY_CHANGED)
+    }) {
+        when (it.action) {
+            Intent.ACTION_TIME_TICK -> {
+                // sendEvent("", TIME_CHANGED)
+                postEvent(TIME_CHANGED, "")
+            }
+
+            Intent.ACTION_BATTERY_CHANGED -> {
+                val level = it.getIntExtra(BatteryManager.EXTRA_LEVEL, -1)
+                // sendEvent(level, BATTERY_CHANGED)
+                postEvent(BATTERY_CHANGED, level)
+            }
+        }
+    }*/
 }

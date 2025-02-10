@@ -7,7 +7,7 @@ import android.app.NotificationManager
 import android.os.Build
 import com.core.fy.android.constants.AppConst.channelIdReadAloud
 import io.core.Android
-import io.core.common.CoreConfigs
+import io.core.common.CoreConfig
 import io.core.common.util.ext.notificationManager
 
 
@@ -42,8 +42,8 @@ class App : Application() {
     }
 
     private fun initApp() {
-        CoreConfigs.DIALOG_BUTTON_POSITIVE_COLOR = getColor(R.color.md_indigo_500)
-        CoreConfigs.DIALOG_BUTTON_NEGATIVE_COLOR = getColor(R.color.md_red_300)
+        CoreConfig.DIALOG_BUTTON_POSITIVE_COLOR = getColor(R.color.md_indigo_500)
+        CoreConfig.DIALOG_BUTTON_NEGATIVE_COLOR = getColor(R.color.md_red_300)
         // SoftKeyboardGlobal.install(this, false)
         createNotificationChannels()
     }
