@@ -1,6 +1,5 @@
 package io.core.common.util
 
-import android.graphics.Color
 import android.view.Window
 import android.view.WindowManager
 

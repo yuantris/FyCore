@@ -2,28 +2,44 @@ package io.core.common.base.component.dialog
 
 import android.app.Activity
 import android.app.Application.ActivityLifecycleCallbacks
-import android.content.*
+import android.content.Context
+import android.content.DialogInterface
 import android.graphics.drawable.Drawable
-import android.os.*
+import android.os.Build
+import android.os.Bundle
 import android.util.SparseArray
-import android.view.*
+import android.view.Gravity
+import android.view.KeyEvent
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.view.Window
+import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
-import android.widget.*
-import androidx.annotation.*
+import android.widget.FrameLayout
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.TextView
+import androidx.annotation.ColorInt
+import androidx.annotation.DrawableRes
+import androidx.annotation.FloatRange
+import androidx.annotation.IdRes
+import androidx.annotation.LayoutRes
+import androidx.annotation.StringRes
+import androidx.annotation.StyleRes
 import androidx.appcompat.app.AppCompatDialog
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
 import io.core.R
-import io.core.common.base.action.AnimAction
 import io.core.common.base.action.ActivityAction
+import io.core.common.base.action.AnimAction
 import io.core.common.base.action.ClickAction
 import io.core.common.base.action.HandlerAction
 import io.core.common.base.action.KeyboardAction
 import io.core.common.base.action.ResourcesAction
 import java.lang.ref.SoftReference
-import java.util.*
 
 open class BaseDialog(context: Context, @StyleRes themeResId: Int = R.style.BaseDialogTheme) :
     AppCompatDialog(context, themeResId), LifecycleOwner, ActivityAction, ResourcesAction,

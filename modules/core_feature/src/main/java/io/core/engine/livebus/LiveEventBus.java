@@ -15,16 +15,15 @@ import io.core.engine.livebus.core.ObservableConfig;
  * | |   | \ \ / / _ \  __\ \ / / _ \ '_ \| __| ___ \ | | / __|
  * | |___| |\ V /  __/ |___\ V /  __/ | | | |_| |_/ / |_| \__ \
  * \_____/_| \_/ \___\____/ \_/ \___|_| |_|\__\____/ \__,_|___/
- *
  */
 public final class LiveEventBus {
 
     /**
      * get observable by key with type
      *
-     * @param key String
+     * @param key  String
      * @param type Class
-     * @param <T> T
+     * @param <T>  T
      * @return Observable
      */
     public static <T> Observable<T> get(@NonNull String key, @NonNull Class<T> type) {
@@ -46,7 +45,7 @@ public final class LiveEventBus {
      * get observable from eventType
      *
      * @param eventType Class
-     * @param <T> T
+     * @param <T>       T
      * @return Observable
      */
     public static <T extends LiveEvent> Observable<T> get(@NonNull Class<T> eventType) {
@@ -58,6 +57,7 @@ public final class LiveEventBus {
      * first of all, call config to get the Config instance
      * then, call the method of Config to config LiveEventBus
      * call this method in Application.onCreate
+     *
      * @return Config
      */
     public static Config config() {
@@ -69,6 +69,7 @@ public final class LiveEventBus {
      * first of all, call config to get the Config instance
      * then, call the method of Config to config LiveEventBus
      * call this method in Application.onCreate
+     *
      * @param key String
      * @return ObservableConfig
      */

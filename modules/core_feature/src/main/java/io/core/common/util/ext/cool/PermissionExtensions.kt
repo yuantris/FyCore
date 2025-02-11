@@ -2,7 +2,6 @@ package io.core.common.util.ext.cool
 
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.fragment.app.Fragment
 import com.hjq.permissions.XXPermissions
 

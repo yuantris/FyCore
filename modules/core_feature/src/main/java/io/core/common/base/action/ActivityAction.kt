@@ -23,9 +23,11 @@ interface ActivityAction {
                 is Activity -> {
                     return context
                 }
+
                 is ContextWrapper -> {
                     context = context.baseContext
                 }
+
                 else -> {
                     return null
                 }

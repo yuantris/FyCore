@@ -1,4 +1,3 @@
-
 package io.core.engine.brv.listener
 
 import androidx.recyclerview.widget.RecyclerView

@@ -5,7 +5,7 @@ import android.os.Build
 object DeviceOSUtils {
 
     enum class DeviceBrand {
-        HUAWEI, XIAOMI, OPPO, VIVO, MEIZU, ONEPLUS, REALME, 
+        HUAWEI, XIAOMI, OPPO, VIVO, MEIZU, ONEPLUS, REALME,
         SAMSUNG, SONY, LENOVO, ZTE, NUBIA, HONOR, UNKNOWN
     }
 

@@ -3,17 +3,27 @@ package io.core.common.util.tools
 import android.os.Environment
 import android.webkit.MimeTypeMap
 import androidx.annotation.IntDef
-import io.core.Android
 import io.core.common.util.ext.appCtx
 import io.core.common.util.ext.cool.ConvertUtils
 import io.core.common.util.ext.cool.cnCompare
 import io.core.common.util.ext.currentTimeMillis
 import io.core.common.util.ext.ui.externalCache
 import io.core.common.util.log.printOnDebug
-import java.io.*
+import java.io.ByteArrayOutputStream
+import java.io.Closeable
+import java.io.File
+import java.io.FileFilter
+import java.io.FileInputStream
+import java.io.FileOutputStream
+import java.io.FileWriter
+import java.io.IOException
+import java.io.InputStream
+import java.io.UnsupportedEncodingException
 import java.nio.charset.Charset
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Calendar
+import java.util.Collections
+import java.util.Locale
 import java.util.regex.Pattern
 
 @Suppress("unused", "MemberVisibilityCanBePrivate")
@@ -181,16 +191,19 @@ object FileUtils {
                 Collections.sort(dirList, SortByName())
                 dirList.reverse()
             }
+
             BY_TIME_ASC -> Collections.sort(dirList, SortByTime())
             BY_TIME_DESC -> {
                 Collections.sort(dirList, SortByTime())
                 dirList.reverse()
             }
+
             BY_SIZE_ASC -> Collections.sort(dirList, SortBySize())
             BY_SIZE_DESC -> {
                 Collections.sort(dirList, SortBySize())
                 dirList.reverse()
             }
+
             BY_EXTENSION_ASC -> Collections.sort(dirList, SortByExtension())
             BY_EXTENSION_DESC -> {
                 Collections.sort(dirList, SortByExtension())
@@ -254,16 +267,19 @@ object FileUtils {
                 Collections.sort(fileList, SortByName())
                 fileList.reverse()
             }
+
             BY_TIME_ASC -> Collections.sort(fileList, SortByTime())
             BY_TIME_DESC -> {
                 Collections.sort(fileList, SortByTime())
                 fileList.reverse()
             }
+
             BY_SIZE_ASC -> Collections.sort(fileList, SortBySize())
             BY_SIZE_DESC -> {
                 Collections.sort(fileList, SortBySize())
                 fileList.reverse()
             }
+
             BY_EXTENSION_ASC -> Collections.sort(fileList, SortByExtension())
             BY_EXTENSION_DESC -> {
                 Collections.sort(fileList, SortByExtension())

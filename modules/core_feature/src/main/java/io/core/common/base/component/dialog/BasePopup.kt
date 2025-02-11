@@ -1,13 +1,6 @@
 package io.core.common.base.component.dialog
 
-import android.app.Dialog
 import android.content.Context
-import android.graphics.drawable.ColorDrawable
-import android.view.*
-import android.view.animation.Animation
-import android.view.animation.AnimationUtils
-import androidx.annotation.AnimRes
-import androidx.annotation.LayoutRes
 import androidx.annotation.StyleRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider

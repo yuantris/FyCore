@@ -7,9 +7,6 @@ import android.view.View.OnLayoutChangeListener
 import androidx.annotation.IdRes
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_IDLE
-import io.core.engine.brv.listener.OnBindViewHolderListener
-import io.core.engine.brv.listener.OnMultiStateListener
-import io.core.engine.brv.utils.bindingAdapter
 import com.scwang.smart.refresh.layout.SmartRefreshLayout
 import com.scwang.smart.refresh.layout.api.RefreshComponent
 import com.scwang.smart.refresh.layout.api.RefreshLayout
@@ -17,6 +14,9 @@ import com.scwang.smart.refresh.layout.constant.RefreshState
 import com.scwang.smart.refresh.layout.listener.OnRefreshLoadMoreListener
 import com.scwang.smart.refresh.layout.simple.SimpleBoundaryDecider
 import io.core.R
+import io.core.engine.brv.listener.OnBindViewHolderListener
+import io.core.engine.brv.listener.OnMultiStateListener
+import io.core.engine.brv.utils.bindingAdapter
 import io.core.engine.state.StateChangedHandler
 import io.core.engine.state.StateConfig
 import io.core.engine.state.StateLayout
@@ -143,7 +143,10 @@ open class PageRefreshLayout : SmartRefreshLayout, OnRefreshLoadMoreListener {
 
         try {
             upFetchEnabled =
-                attributes.getBoolean(R.styleable.PageRefreshLayout_page_upFetchEnabled, upFetchEnabled)
+                attributes.getBoolean(
+                    R.styleable.PageRefreshLayout_page_upFetchEnabled,
+                    upFetchEnabled
+                )
             stateEnabled =
                 attributes.getBoolean(R.styleable.PageRefreshLayout_stateEnabled, stateEnabled)
             stateLayoutId =
@@ -163,7 +166,10 @@ open class PageRefreshLayout : SmartRefreshLayout, OnRefreshLoadMoreListener {
             errorLayout =
                 attributes.getResourceId(R.styleable.PageRefreshLayout_error_layout, errorLayout)
             loadingLayout =
-                attributes.getResourceId(R.styleable.PageRefreshLayout_loading_layout, loadingLayout)
+                attributes.getResourceId(
+                    R.styleable.PageRefreshLayout_loading_layout,
+                    loadingLayout
+                )
         } finally {
             attributes.recycle()
         }

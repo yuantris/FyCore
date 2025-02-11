@@ -85,23 +85,23 @@ fun OnBackPressedDispatcher.addCallback(
     return callback
 }
 
-fun Any?.logE(){
+fun Any?.logE() {
     LogCat.e(this)
 }
 
-fun Any?.logV(){
+fun Any?.logV() {
     LogCat.v(this)
 }
 
-fun Any?.logI(){
+fun Any?.logI() {
     LogCat.i(this)
 }
 
-fun Any?.logW(){
+fun Any?.logW() {
     LogCat.w(this)
 }
 
-fun Any?.logJson(){
+fun Any?.logJson() {
     LogCat.json(this)
 }
 

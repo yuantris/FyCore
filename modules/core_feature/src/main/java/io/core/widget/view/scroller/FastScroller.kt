@@ -77,6 +77,7 @@ class FastScroller : LinearLayout {
                             showScrollbar()
                         }
                     }
+
                     RecyclerView.SCROLL_STATE_IDLE -> if (mFadeScrollbar && !mHandleView.isSelected) {
                         handler.postDelayed(mScrollbarHider, sScrollbarHideDelay.toLong())
                     }
@@ -139,6 +140,7 @@ class FastScroller : LinearLayout {
                 layoutParams.setMargins(0, marginTop, 0, marginBottom)
                 setLayoutParams(layoutParams)
             }
+
             is CoordinatorLayout -> {
                 val layoutParams = layoutParams as CoordinatorLayout.LayoutParams
                 layoutParams.anchorId = recyclerViewId
@@ -146,12 +148,14 @@ class FastScroller : LinearLayout {
                 layoutParams.setMargins(0, marginTop, 0, marginBottom)
                 setLayoutParams(layoutParams)
             }
+
             is FrameLayout -> {
                 val layoutParams = layoutParams as FrameLayout.LayoutParams
                 layoutParams.gravity = GravityCompat.END
                 layoutParams.setMargins(0, marginTop, 0, marginBottom)
                 setLayoutParams(layoutParams)
             }
+
             is RelativeLayout -> {
                 val layoutParams = layoutParams as RelativeLayout.LayoutParams
                 val endRule = RelativeLayout.ALIGN_END
@@ -161,6 +165,7 @@ class FastScroller : LinearLayout {
                 layoutParams.setMargins(0, marginTop, 0, marginBottom)
                 setLayoutParams(layoutParams)
             }
+
             else -> throw IllegalArgumentException("Parent ViewGroup must be a ConstraintLayout, CoordinatorLayout, FrameLayout, or RelativeLayout")
         }
         updateViewHeights()
@@ -314,12 +319,14 @@ class FastScroller : LinearLayout {
                 setRecyclerViewPosition(y)
                 return true
             }
+
             MotionEvent.ACTION_MOVE -> {
                 val y = event.y
                 setViewPositions(y)
                 setRecyclerViewPosition(y)
                 return true
             }
+
             MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
                 requestDisallowInterceptTouchEvent(false)
                 setHandleSelected(false)
@@ -502,7 +509,8 @@ class FastScroller : LinearLayout {
         mHandleView = findViewById(R.id.fastscroll_handle)
         mTrackView = findViewById(R.id.fastscroll_track)
         mScrollbar = findViewById(R.id.fastscroll_scrollbar)
-        @ColorInt var bubbleColor = ColorUtils.adjustAlpha(context.getCompatColor(R.color.common_accent_color), 0.8f)
+        @ColorInt var bubbleColor =
+            ColorUtils.adjustAlpha(context.getCompatColor(R.color.common_accent_color), 0.8f)
         @ColorInt var handleColor = context.getCompatColor(R.color.common_accent_color)
         @ColorInt var trackColor = context.getCompatColor(R.color.transparent30)
         @ColorInt var textColor =

@@ -8,7 +8,11 @@ import androidx.recyclerview.widget.DiffUtil
  * @param oldModels 旧的数据
  * @param callback 实际对比数据接口
  */
-internal class ProxyDiffCallback(private val newModels: List<Any?>?, private val oldModels: List<Any?>?, val callback: ItemDifferCallback) : DiffUtil.Callback() {
+internal class ProxyDiffCallback(
+    private val newModels: List<Any?>?,
+    private val oldModels: List<Any?>?,
+    val callback: ItemDifferCallback
+) : DiffUtil.Callback() {
 
     override fun getOldListSize(): Int {
         return oldModels?.size ?: 0

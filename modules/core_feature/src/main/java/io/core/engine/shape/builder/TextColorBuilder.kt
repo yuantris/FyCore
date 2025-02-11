@@ -6,7 +6,6 @@ import android.graphics.Color
 import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.widget.TextView
-import io.core.R
 import io.core.engine.shape.config.ITextColorStyleable
 import io.core.engine.shape.config.ITextViewAttribute
 import io.core.engine.shape.other.TextViewAttribute
@@ -243,7 +242,8 @@ class TextColorBuilder(textView: TextView, typedArray: TypedArray, styleable: IT
         }
 
         if (linearGradientFontSpan != null && strokeFontSpan != null) {
-            val multiFontSpan = MultiFontSpan(mTextViewAttribute!!, strokeFontSpan, linearGradientFontSpan)
+            val multiFontSpan =
+                MultiFontSpan(mTextViewAttribute!!, strokeFontSpan, linearGradientFontSpan)
             builder.setSpan(multiFontSpan, 0, builder.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         } else if (linearGradientFontSpan != null) {
             builder.setSpan(

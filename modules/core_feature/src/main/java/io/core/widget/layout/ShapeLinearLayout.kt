@@ -39,6 +39,7 @@ class ShapeLinearLayout
 
         mShapeDrawableBuilder?.intoBackground()
     }
+
     override fun getShapeDrawableBuilder(): ShapeDrawableBuilder? {
         return mShapeDrawableBuilder
     }

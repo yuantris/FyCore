@@ -44,14 +44,20 @@ class CustomImageView @JvmOverloads constructor(
                 TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 16f, resources.displayMetrics)
             )
             val textColor = typedArray.getColor(R.styleable.CustomImageView_textColor, Color.BLACK)
-            val marginTop = typedArray.getDimensionPixelSize(R.styleable.CustomImageView_layout_marginTop, 0)
-            val marginBottom = typedArray.getDimensionPixelSize(R.styleable.CustomImageView_layout_marginBottom, 0)
-            val marginStart = typedArray.getDimensionPixelSize(R.styleable.CustomImageView_layout_marginStart, 0)
-            val marginEnd = typedArray.getDimensionPixelSize(R.styleable.CustomImageView_layout_marginEnd, 0)
+            val marginTop =
+                typedArray.getDimensionPixelSize(R.styleable.CustomImageView_layout_marginTop, 0)
+            val marginBottom =
+                typedArray.getDimensionPixelSize(R.styleable.CustomImageView_layout_marginBottom, 0)
+            val marginStart =
+                typedArray.getDimensionPixelSize(R.styleable.CustomImageView_layout_marginStart, 0)
+            val marginEnd =
+                typedArray.getDimensionPixelSize(R.styleable.CustomImageView_layout_marginEnd, 0)
 
             val topToTop = typedArray.getBoolean(R.styleable.CustomImageView_layout_topToTop, false)
-            val bottomToBottom = typedArray.getBoolean(R.styleable.CustomImageView_layout_bottomToBottom, false)
-            val startToStart = typedArray.getBoolean(R.styleable.CustomImageView_layout_startToStart, false)
+            val bottomToBottom =
+                typedArray.getBoolean(R.styleable.CustomImageView_layout_bottomToBottom, false)
+            val startToStart =
+                typedArray.getBoolean(R.styleable.CustomImageView_layout_startToStart, false)
             val endToEnd = typedArray.getBoolean(R.styleable.CustomImageView_layout_endToEnd, false)
 
             // 如果设置了 text 属性，则添加到 TextItems 列表
@@ -114,7 +120,8 @@ class CustomImageView @JvmOverloads constructor(
     override fun onTouchEvent(event: MotionEvent): Boolean {
         if (event.action == MotionEvent.ACTION_UP) {
             isActive = !isActive
-            currentDrawable = if (isActive) activeDrawable ?: backgroundDrawable else backgroundDrawable
+            currentDrawable =
+                if (isActive) activeDrawable ?: backgroundDrawable else backgroundDrawable
             invalidate()
             performClick()
         }

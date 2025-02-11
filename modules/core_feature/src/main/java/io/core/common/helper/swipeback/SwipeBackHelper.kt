@@ -8,7 +8,12 @@ import android.content.Context
 import android.content.res.Configuration
 import android.graphics.Rect
 import android.os.Build
-import android.view.*
+import android.view.MotionEvent
+import android.view.VelocityTracker
+import android.view.View
+import android.view.ViewConfiguration
+import android.view.ViewGroup
+import android.view.Window
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import androidx.annotation.RequiresApi
@@ -323,6 +328,7 @@ class SwipeBackHelper constructor(private val activity: Activity) {
                     }
                 }
             }
+
             MotionEvent.ACTION_POINTER_UP -> {
                 //如果抬起的指针是当前控制指针，则进行切换
                 if (event.getPointerId(actionIndex) == mTouchPointerId) {
@@ -340,6 +346,7 @@ class SwipeBackHelper constructor(private val activity: Activity) {
                     }
                 }
             }
+
             MotionEvent.ACTION_MOVE -> {
                 for (index in 0 until event.pointerCount) {
                     //只响应当前控制指针的移动操作
@@ -371,6 +378,7 @@ class SwipeBackHelper constructor(private val activity: Activity) {
                     }
                 }
             }
+
             MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
                 if (mDragDirection == horizontal) {//横向滑动事件
                     //计算横向手势速度
@@ -410,6 +418,7 @@ class SwipeBackHelper constructor(private val activity: Activity) {
                     convertToTranslucent(activity)
                 }
             }
+
             MotionEvent.ACTION_MOVE -> {
                 //还未产生滑动，触点不在拦截区域内
                 if (mDragDirection == 0 && mStartX > mInterceptRect) {

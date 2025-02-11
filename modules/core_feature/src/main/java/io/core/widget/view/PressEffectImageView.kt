@@ -25,8 +25,10 @@ class PressEffectImageView @JvmOverloads constructor(
 
     init {
         // 读取自定义属性
-        val a = context.obtainStyledAttributes(attrs, R.styleable.PressEffectImageView, defStyleAttr, 0)
-        val defaultPadding = a.getDimensionPixelSize(R.styleable.PressEffectImageView_defaultPadding, 10)
+        val a =
+            context.obtainStyledAttributes(attrs, R.styleable.PressEffectImageView, defStyleAttr, 0)
+        val defaultPadding =
+            a.getDimensionPixelSize(R.styleable.PressEffectImageView_defaultPadding, 10)
         a.recycle()
 
         setPadding(defaultPadding, defaultPadding, defaultPadding, defaultPadding) // 设置默认内边距

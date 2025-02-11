@@ -4,20 +4,14 @@ import android.content.DialogInterface
 import android.content.DialogInterface.OnDismissListener
 import android.os.Build
 import android.os.Bundle
-import android.view.Gravity
 import android.view.View
-import android.view.WindowManager
 import androidx.annotation.LayoutRes
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.lifecycleScope
 import io.core.R
 import io.core.common.helper.coroutine.Coroutine
-import io.core.common.util.ext.cool.dpToPx
 import io.core.common.util.ext.ui.getCompatColor
-import io.core.common.util.ext.ui.setBackgroundKeepPadding
 import io.core.common.util.log.AppLog
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -55,7 +49,7 @@ abstract class BaseDialogFragment(
 //            view.findViewById<View>(R.id.vw_bg)?.setOnClickListener(null)
 //            view.setOnClickListener { dismiss() }
 //        } else if (!AppConfig.isEInkMode) {
-            context?.let { view.setBackgroundColor(it.getCompatColor(R.color.common_window_background_color)) }
+        context?.let { view.setBackgroundColor(it.getCompatColor(R.color.common_window_background_color)) }
 //        }
         onFragmentCreated(view, savedInstanceState)
         observeLiveBus()

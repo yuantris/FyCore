@@ -6,16 +6,9 @@ import android.annotation.SuppressLint
 import android.app.ProgressDialog
 import android.content.Context
 import android.content.DialogInterface
-import android.graphics.Color
-import android.graphics.PorterDuff
-import android.graphics.drawable.ColorDrawable
-import android.view.WindowManager
-import android.widget.ProgressBar
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import io.core.R
-import io.core.common.helper.TryCatchHelper
-import io.core.common.util.ext.cool.dpToPx
 
 fun Context.showDialog(
     title: CharSequence? = null,
@@ -126,7 +119,7 @@ private fun Context.progressDialog(
     message: CharSequence? = null,
     indeterminate: Boolean,
     init: (ProgressDialog.() -> Unit)? = null
-) = ProgressDialog(this,R.style.CustomProgressDialog).apply {
+) = ProgressDialog(this, R.style.CustomProgressDialog).apply {
     isIndeterminate = indeterminate
     if (!indeterminate) setProgressStyle(ProgressDialog.STYLE_HORIZONTAL)
     if (message != null) setMessage(message)

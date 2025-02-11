@@ -10,14 +10,12 @@ import android.os.StrictMode
 import android.os.StrictMode.VmPolicy
 import io.core.common.helper.TryCatchHelper
 import io.core.common.util.ext.appCtx
-import io.core.common.util.ext.currentTimeMillis
 import io.core.common.util.ext.ui.getActivity
 import io.core.common.util.ext.verify
 import io.core.common.util.log.logD
 import io.core.common.util.log.logE
 import io.core.common.util.log.logI
 import io.core.common.util.tools.TimeUtils
-import io.core.constant.DateFormatPatterns
 import io.core.constant.FileType
 import java.io.FileInputStream
 import java.security.MessageDigest

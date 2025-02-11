@@ -14,7 +14,11 @@ enum class BarColor {
     WHITE
 }
 
-fun Window.setupImmersiveBars(activity: AppCompatActivity, statusBarColor: BarColor, navigationBarColor: BarColor) {
+fun Window.setupImmersiveBars(
+    activity: AppCompatActivity,
+    statusBarColor: BarColor,
+    navigationBarColor: BarColor
+) {
 
     // 处理窗口 insets
     ViewCompat.setOnApplyWindowInsetsListener(decorView) { v, insets ->

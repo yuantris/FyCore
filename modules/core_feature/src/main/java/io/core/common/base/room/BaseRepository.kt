@@ -1,6 +1,5 @@
 package io.core.common.base.room
 
-import android.util.Log
 import io.core.common.util.log.LogPure
 import io.core.common.util.log.TAG
 import io.core.common.util.tools.TimeUtils

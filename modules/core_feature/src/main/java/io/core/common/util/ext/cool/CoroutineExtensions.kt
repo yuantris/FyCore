@@ -57,7 +57,10 @@ suspend fun <T> withTimeoutAsync(delayMillis: Long, block: suspend CoroutineScop
     }
 }
 
-suspend fun <T> withTimeoutOrNullAsync(delayMillis: Long, block: suspend CoroutineScope.() -> T): T? {
+suspend fun <T> withTimeoutOrNullAsync(
+    delayMillis: Long,
+    block: suspend CoroutineScope.() -> T
+): T? {
     return try {
         withTimeoutAsync(delayMillis, block)
     } catch (e: TimeoutCancellationException) {

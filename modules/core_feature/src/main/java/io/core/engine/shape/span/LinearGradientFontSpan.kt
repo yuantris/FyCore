@@ -1,6 +1,5 @@
 package io.core.engine.shape.span
 
-import android.R
 import android.graphics.Canvas
 import android.graphics.LinearGradient
 import android.graphics.Paint

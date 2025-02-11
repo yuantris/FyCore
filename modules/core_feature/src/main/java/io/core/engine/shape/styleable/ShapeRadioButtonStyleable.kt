@@ -19,7 +19,8 @@ import io.core.engine.shape.config.ITextColorStyleable
  * @description
  * @author Yuan
  */
-class ShapeRadioButtonStyleable:IShapeDrawableStyleable,ITextColorStyleable,ICompoundButtonStyleable {
+class ShapeRadioButtonStyleable : IShapeDrawableStyleable, ITextColorStyleable,
+    ICompoundButtonStyleable {
 
     /**
      * [IShapeDrawableStyleable]

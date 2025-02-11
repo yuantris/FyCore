@@ -2,21 +2,12 @@ package io.core.common.helper.dialogs
 
 import android.content.Context
 import android.content.DialogInterface
-import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.view.KeyEvent
 import android.view.View
-import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
-import androidx.core.content.ContextCompat
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import io.core.R
 import io.core.common.base.component.dialog.BaseAlertDialogBuilder
-import io.core.common.util.ext.cool.dpToPx
-import io.core.common.util.ext.cool.spToPx
-import io.core.common.util.ext.ui.applyTint
-import io.core.common.util.ext.ui.getCompatColor
-import io.core.common.util.tools.DrawableBuilder
 
 internal class AndroidAlertBuilder(override val ctx: Context) : AlertBuilder<AlertDialog> {
 

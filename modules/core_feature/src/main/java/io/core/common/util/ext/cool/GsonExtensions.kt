@@ -138,6 +138,7 @@ class IntJsonDeserializer : JsonDeserializer<Int?> {
                     null
                 }
             }
+
             else -> null
         }
     }
@@ -170,6 +171,7 @@ class MapDeserializerDoubleAsIntFix :
                 }
                 return list
             }
+
             json.isJsonObject -> {
                 val map: MutableMap<String, Any?> =
                     LinkedTreeMap()
@@ -181,15 +183,18 @@ class MapDeserializerDoubleAsIntFix :
                 }
                 return map
             }
+
             json.isJsonPrimitive -> {
                 val prim = json.asJsonPrimitive
                 when {
                     prim.isBoolean -> {
                         return prim.asBoolean
                     }
+
                     prim.isString -> {
                         return prim.asString
                     }
+
                     prim.isNumber -> {
                         val num: Number = prim.asNumber
                         // here you can handle double int/long values

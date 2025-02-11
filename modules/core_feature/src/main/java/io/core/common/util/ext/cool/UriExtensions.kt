@@ -9,8 +9,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.documentfile.provider.DocumentFile
 import androidx.fragment.app.Fragment
 import com.hjq.permissions.Permission
-import com.hjq.permissions.XXPermissions
-import io.core.Android
 import io.core.common.util.FileDoc
 import io.core.common.util.ext.appCtx
 import io.core.common.util.ext.ui.checkSelfUriPermission

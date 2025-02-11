@@ -1,4 +1,3 @@
-
 package io.core.engine.brv.listener
 
 import android.os.SystemClock
@@ -18,7 +17,8 @@ private class OnDebounceClickListener(
     private var _lastDebounceClickTime: Long = 0
     private var lastDebounceClickTime: Long
         get() = if (BRV.debounceGlobalEnabled) BRV.lastDebounceClickTime else _lastDebounceClickTime
-        set(value) = if (BRV.debounceGlobalEnabled) BRV.lastDebounceClickTime = value else _lastDebounceClickTime = value
+        set(value) = if (BRV.debounceGlobalEnabled) BRV.lastDebounceClickTime =
+            value else _lastDebounceClickTime = value
 
     override fun onClick(v: View) {
         val currentTime = SystemClock.elapsedRealtime()

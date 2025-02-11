@@ -7,12 +7,11 @@ import android.graphics.drawable.Drawable
 import android.view.Gravity
 import android.view.View
 import androidx.annotation.Nullable
-import io.core.engine.shape.drawable.ShapeDrawable
 import io.core.engine.shape.config.IShapeDrawableStyleable
+import io.core.engine.shape.drawable.ShapeDrawable
 import io.core.engine.shape.drawable.ShapeGradientOrientation
 import io.core.engine.shape.drawable.ShapeGradientType
 import io.core.engine.shape.drawable.ShapeGradientTypeLimit
-import io.core.engine.shape.drawable.ShapeState
 import io.core.engine.shape.drawable.ShapeType
 import io.core.engine.shape.drawable.ShapeTypeLimit
 import io.core.engine.shape.other.ExtendStateListDrawable

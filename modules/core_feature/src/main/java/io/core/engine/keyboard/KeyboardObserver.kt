@@ -174,7 +174,9 @@ class KeyboardObserver private constructor(
 
                     if (decorView?.isAttachedToWindow == true) {
                         cursorPopWin.showAtLocation(decorView, Gravity.BOTTOM or Gravity.END, 0, 0)
-                        cursorPopWin.contentView.addOnLayoutChangeListener(cursorLayoutChangeListener)
+                        cursorPopWin.contentView.addOnLayoutChangeListener(
+                            cursorLayoutChangeListener
+                        )
                         return@launch
                     }
 

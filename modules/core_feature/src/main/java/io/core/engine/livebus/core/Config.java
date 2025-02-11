@@ -1,20 +1,23 @@
 package io.core.engine.livebus.core;
 
 import android.content.Context;
+
 import androidx.annotation.NonNull;
+
 import io.core.engine.livebus.logger.Logger;
 
 
 /**
- # ██████████
- # █▄█████▄█
- # █▼▼▼▼▼
- # █
- # █▲▲▲▲▲
- # ██████████
- # ██ ██
- # 注释的艺术，正在加载……
+ * # ██████████
+ * # █▄█████▄█
+ * # █▼▼▼▼▼
+ * # █
+ * # █▲▲▲▲▲
+ * # ██████████
+ * # ██ ██
+ * # 注释的艺术，正在加载……
  * 2025/1/15 14:48
+ *
  * @author Yuan
  */
 public class Config {

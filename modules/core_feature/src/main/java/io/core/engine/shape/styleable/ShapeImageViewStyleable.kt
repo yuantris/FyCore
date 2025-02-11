@@ -17,7 +17,7 @@ import io.core.engine.shape.config.IShapeDrawableStyleable
  * @description
  * @author Yuan
  */
-class ShapeImageViewStyleable:IShapeDrawableStyleable {
+class ShapeImageViewStyleable : IShapeDrawableStyleable {
     /**
      * [IShapeDrawableStyleable]
      */

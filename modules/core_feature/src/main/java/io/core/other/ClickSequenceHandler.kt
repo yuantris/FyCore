@@ -68,6 +68,7 @@ class ClickSequenceHandler(private val view: View, private val hideAction: () ->
                     handler.postDelayed(::triggerHideAction, LONG_PRESS_DURATION)
                     true
                 }
+
                 MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
                     handler.removeCallbacks(::triggerHideAction)
                     resetState()

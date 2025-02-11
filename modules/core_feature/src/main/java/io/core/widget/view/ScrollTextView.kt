@@ -108,6 +108,7 @@ class ScrollTextView(context: Context, attrs: AttributeSet?) :
                 setScrollState(scrollStateIdle)
                 mLastTouchY = (event.y + 0.5f).toInt()
             }
+
             MotionEvent.ACTION_MOVE -> {
                 val y = (event.y + 0.5f).toInt()
                 var dy = mLastTouchY - y
@@ -130,6 +131,7 @@ class ScrollTextView(context: Context, attrs: AttributeSet?) :
                     mLastTouchY = y
                 }
             }
+
             MotionEvent.ACTION_UP -> {
                 velocityTracker.computeCurrentVelocity(1000, mMaxFlingVelocity.toFloat())
                 val yVelocity = velocityTracker.yVelocity
@@ -140,6 +142,7 @@ class ScrollTextView(context: Context, attrs: AttributeSet?) :
                 }
                 resetTouch()
             }
+
             MotionEvent.ACTION_CANCEL -> {
                 resetTouch()
             }

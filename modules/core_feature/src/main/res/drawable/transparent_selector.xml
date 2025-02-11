@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- 透明背景按压效果样式 -->
+<?xml version="1.0" encoding="utf-8"?><!-- 透明背景按压效果样式 -->
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
 
     <!-- 按压状态 -->

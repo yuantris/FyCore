@@ -2,6 +2,7 @@ package io.core.engine.livebus.ipc.core;
 
 import android.os.Bundle;
 import android.os.Parcelable;
+
 import io.core.engine.livebus.ipc.consts.IpcConst;
 
 

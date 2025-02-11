@@ -16,10 +16,13 @@ package io.core.engine.shape.drawable
 object ShapeType {
     /** 矩形 */
     const val RECTANGLE = 0
+
     /** 椭圆形 */
     const val OVAL = 1
+
     /** 线条 */
     const val LINE = 2
+
     /** 圆环 */
     const val RING = 3
 }

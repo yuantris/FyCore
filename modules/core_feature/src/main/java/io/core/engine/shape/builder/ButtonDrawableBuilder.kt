@@ -36,7 +36,11 @@ class ButtonDrawableBuilder(
 
     init {
         if (typedArray.hasValue(styleable.getButtonDrawableStyleable())) {
-            mButtonDrawable = if (typedArray.getResourceId(styleable.getButtonDrawableStyleable(), 0) != R.drawable.shape_view_placeholder) {
+            mButtonDrawable = if (typedArray.getResourceId(
+                    styleable.getButtonDrawableStyleable(),
+                    0
+                ) != R.drawable.shape_view_placeholder
+            ) {
                 typedArray.getDrawable(styleable.getButtonDisabledDrawableStyleable())
             } else {
                 CompoundButtonCompat.getButtonDrawable(mCompoundButton)
@@ -47,23 +51,28 @@ class ButtonDrawableBuilder(
         }
 
         if (typedArray.hasValue(styleable.getButtonPressedDrawableStyleable())) {
-            mButtonPressedDrawable = typedArray.getDrawable(styleable.getButtonPressedDrawableStyleable())
+            mButtonPressedDrawable =
+                typedArray.getDrawable(styleable.getButtonPressedDrawableStyleable())
         }
 
         if (typedArray.hasValue(styleable.getButtonCheckedDrawableStyleable())) {
-            mButtonCheckedDrawable = typedArray.getDrawable(styleable.getButtonCheckedDrawableStyleable())
+            mButtonCheckedDrawable =
+                typedArray.getDrawable(styleable.getButtonCheckedDrawableStyleable())
         }
 
         if (typedArray.hasValue(styleable.getButtonDisabledDrawableStyleable())) {
-            mButtonDisabledDrawable = typedArray.getDrawable(styleable.getButtonDisabledDrawableStyleable())
+            mButtonDisabledDrawable =
+                typedArray.getDrawable(styleable.getButtonDisabledDrawableStyleable())
         }
 
         if (typedArray.hasValue(styleable.getButtonFocusedDrawableStyleable())) {
-            mButtonFocusedDrawable = typedArray.getDrawable(styleable.getButtonFocusedDrawableStyleable())
+            mButtonFocusedDrawable =
+                typedArray.getDrawable(styleable.getButtonFocusedDrawableStyleable())
         }
 
         if (typedArray.hasValue(styleable.getButtonSelectedDrawableStyleable())) {
-            mButtonSelectedDrawable = typedArray.getDrawable(styleable.getButtonSelectedDrawableStyleable())
+            mButtonSelectedDrawable =
+                typedArray.getDrawable(styleable.getButtonSelectedDrawableStyleable())
         }
     }
 
@@ -133,7 +142,8 @@ class ButtonDrawableBuilder(
             mButtonCheckedDrawable == null &&
             mButtonDisabledDrawable == null &&
             mButtonFocusedDrawable == null &&
-            mButtonSelectedDrawable == null) {
+            mButtonSelectedDrawable == null
+        ) {
             mCompoundButton.buttonDrawable = mButtonDrawable
             return
         }

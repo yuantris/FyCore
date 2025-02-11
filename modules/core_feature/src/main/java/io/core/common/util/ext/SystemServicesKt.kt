@@ -176,13 +176,16 @@ inline val locationManager: LocationManager get() = getSystemService(LOCATION_SE
 inline val searchManager: SearchManager get() = getSystemService(SEARCH_SERVICE)
 inline val sensorManager: SensorManager get() = getSystemService(SENSOR_SERVICE)
 inline val storageManager: StorageManager get() = getSystemService(STORAGE_SERVICE)
+
 /** Null if invoked in an instant app. */
 inline val wallpaperManager: WallpaperManager? get() = getSystemService(WALLPAPER_SERVICE)
 inline val vibrator: Vibrator get() = getSystemService(VIBRATOR_SERVICE)
 inline val connectivityManager: ConnectivityManager get() = getSystemService(CONNECTIVITY_SERVICE)
+
 /** Null if invoked in an instant app. */
 inline val wifiManager: WifiManager?
     @SuppressLint("WifiManagerLeak") get() = getSystemService(WIFI_SERVICE)
+
 /** Null if invoked in an instant app. */
 inline val wifiP2pManager: WifiP2pManager? get() = getSystemService(WIFI_P2P_SERVICE)
 inline val audioManager: AudioManager get() = getSystemService(AUDIO_SERVICE)
@@ -190,9 +193,11 @@ inline val telephonyManager: TelephonyManager get() = getSystemService(TELEPHONY
 inline val inputMethodManager: InputMethodManager get() = getSystemService(INPUT_METHOD_SERVICE)
 inline val downloadManager: DownloadManager get() = getSystemService(DOWNLOAD_SERVICE)
 inline val uiModeManager: UiModeManager get() = getSystemService(UI_MODE_SERVICE)
+
 /** Null if invoked in an instant app. */
 inline val usbManager: UsbManager? get() = getSystemService(USB_SERVICE)
 inline val nfcManager: NfcManager get() = getSystemService(NFC_SERVICE)
+
 /** Null if invoked in an instant app. */
 inline val devicePolicyManager: DevicePolicyManager? get() = getSystemService(DEVICE_POLICY_SERVICE)
 inline val textServicesManager: TextServicesManager
@@ -267,6 +272,7 @@ inline val storageStatsManager: StorageStatsManager
     @RequiresApi(26) get() = getSystemService(STORAGE_STATS_SERVICE)
 inline val textClassificationManager: TextClassificationManager
     @RequiresApi(26) get() = getSystemService(TEXT_CLASSIFICATION_SERVICE)
+
 /** Null if invoked in an instant app. */
 inline val wifiAwareManager: WifiAwareManager?
     @RequiresApi(26) get() = getSystemService(WIFI_AWARE_SERVICE)

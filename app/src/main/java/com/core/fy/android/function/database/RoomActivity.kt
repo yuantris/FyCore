@@ -113,7 +113,7 @@ class RoomActivity : ReflectBindingActivity<ActivityRoomBinding>() {
             }
         }
 
-        userVM.status.observe(this) { status ->
+        userVM.viewState.observe(this) { status ->
             when (status) {
                 ViewStatus.SUCCESS -> toast("成功")
                 ViewStatus.ERROR -> toast("失败")

@@ -1,12 +1,8 @@
 package io.core.common.base.component.activity
 
-import android.app.Activity
-import android.graphics.Color
-import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.Window
-import android.view.WindowManager
 import androidx.annotation.CallSuper
 import androidx.appcompat.app.AppCompatActivity
 import com.gyf.immersionbar.ImmersionBar
@@ -18,10 +14,8 @@ import io.core.common.util.ext.addCallback
 import io.core.common.util.ext.ifNotNull
 import io.core.common.util.ext.ifNull
 import io.core.common.util.ext.ui.BarColor
-import io.core.common.util.ext.ui.getCompatColor
 import io.core.common.util.log.logD
 import io.core.common.util.tools.DeviceOSUtils
-import io.core.common.util.tools.NavigationBarUtils
 import io.core.widget.layout.TitleBar
 
 abstract class BaseActivity : AppCompatActivity(), TitleBarAction, BundleAction {

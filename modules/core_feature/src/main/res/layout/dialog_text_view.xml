@@ -23,7 +23,7 @@
         android:scrollbarStyle="outsideOverlay"
         android:textIsSelectable="true"
         app:layout_constraintTop_toBottomOf="@+id/tool_bar"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintBottom_toBottomOf="parent" />
 
     <io.core.widget.view.BadgeView
         android:id="@+id/badge_view"

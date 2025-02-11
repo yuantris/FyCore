@@ -32,9 +32,9 @@
         <attr name="rightText" format="string" />
         <!-- 点击效果 -->
         <attr name="clickEffect">
-            <enum name="rectangle" value="0"/>
-            <enum name="roundedRectangle" value="1"/>
-            <enum name="circleShape" value="2"/>
+            <enum name="rectangle" value="0" />
+            <enum name="roundedRectangle" value="1" />
+            <enum name="circleShape" value="2" />
         </attr>
 
     </declare-styleable>
@@ -42,10 +42,10 @@
     <!-- 设置栏 -->
     <declare-styleable name="SettingBar">
         <!-- 左边 -->
-        <attr name="bar_leftText" format="string"/>
+        <attr name="bar_leftText" format="string" />
         <attr name="bar_leftTextColor" format="color" />
         <attr name="bar_leftTextSize" format="dimension" />
-        <attr name="bar_leftTextHint" format="string"/>
+        <attr name="bar_leftTextHint" format="string" />
         <attr name="bar_leftDrawable" format="reference" />
         <attr name="bar_leftDrawablePadding" format="dimension" />
         <attr name="bar_leftDrawableSize" format="dimension" />
@@ -54,7 +54,7 @@
         <attr name="bar_rightText" format="string" />
         <attr name="bar_rightTextColor" format="color" />
         <attr name="bar_rightTextSize" format="dimension" />
-        <attr name="bar_rightTextHint" format="string"/>
+        <attr name="bar_rightTextHint" format="string" />
         <attr name="bar_rightDrawable" format="reference" />
         <attr name="bar_rightDrawablePadding" format="dimension" />
         <attr name="bar_rightDrawableSize" format="dimension" />
@@ -73,7 +73,7 @@
     </declare-styleable>
 
     <declare-styleable name="PressEffectImageView">
-        <attr name="defaultPadding" format="dimension"/>
+        <attr name="defaultPadding" format="dimension" />
     </declare-styleable>
 
     <declare-styleable name="CollapsingHeaderLayout">
@@ -138,6 +138,7 @@
     <style name="BottomSheetDialog" parent="Theme.Design.Light.BottomSheetDialog">
         <item name="bottomSheetStyle">@style/bottomSheetStyleWrapper</item>
     </style>
+
     <style name="bottomSheetStyleWrapper" parent="Widget.Design.BottomSheet.Modal">
         <item name="android:background">@android:color/transparent</item>
     </style>

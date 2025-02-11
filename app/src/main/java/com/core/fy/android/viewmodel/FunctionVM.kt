@@ -101,12 +101,11 @@ class FunctionVM(var repository: FunctionRepository) : BaseViewModel() {
 
                     else -> emptyList<Function>()
                 }
-            },
-            onSuccess = {
                 // 更新列表
                 data.postValue(repository.getAllList())
             },
-            onError = {
+
+             error = {
                 it.message?.logD()
             }
         )

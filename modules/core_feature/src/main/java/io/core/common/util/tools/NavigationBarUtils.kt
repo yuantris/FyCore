@@ -6,7 +6,6 @@ import android.view.View
 import android.view.WindowInsets
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import io.core.common.util.ext.logE
 
 object NavigationBarUtils {
 

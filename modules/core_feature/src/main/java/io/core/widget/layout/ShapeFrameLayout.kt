@@ -22,11 +22,11 @@ import io.core.engine.shape.styleable.ShapeFrameLayoutStyleable
  * @description
  * @author Yuan
  */
-class ShapeFrameLayout@JvmOverloads constructor(
+class ShapeFrameLayout @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
-):FrameLayout(context, attrs, defStyleAttr), IGetShapeDrawableBuilder {
+) : FrameLayout(context, attrs, defStyleAttr), IGetShapeDrawableBuilder {
     private val STYLEABLE = ShapeFrameLayoutStyleable()
 
     private var mShapeDrawableBuilder: ShapeDrawableBuilder? = null
@@ -39,6 +39,7 @@ class ShapeFrameLayout@JvmOverloads constructor(
         mShapeDrawableBuilder?.intoBackground()
 
     }
+
     override fun getShapeDrawableBuilder(): ShapeDrawableBuilder? {
         return mShapeDrawableBuilder
     }

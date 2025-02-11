@@ -18,7 +18,7 @@ import io.core.engine.shape.config.ITextColorStyleable
  * @description
  * @author Yuan
  */
-class ShapeEditTextStyleable:IShapeDrawableStyleable,ITextColorStyleable {
+class ShapeEditTextStyleable : IShapeDrawableStyleable, ITextColorStyleable {
     /**
      * [IShapeDrawableStyleable]
      */

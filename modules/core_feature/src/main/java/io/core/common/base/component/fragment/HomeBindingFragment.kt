@@ -3,11 +3,11 @@ package io.core.common.base.component.fragment
 import android.os.Bundle
 import android.view.View
 import androidx.viewbinding.ViewBinding
+import com.gyf.immersionbar.ImmersionBar
 import io.core.R
 import io.core.common.base.component.activity.BaseActivity
-import io.core.common.util.ext.ui.BarColor
-import com.gyf.immersionbar.ImmersionBar
 import io.core.common.util.ext.ifNull
+import io.core.common.util.ext.ui.BarColor
 
 /**
 # ██████████
@@ -38,7 +38,6 @@ abstract class HomeBindingFragment<VB : ViewBinding, A : BaseActivity> :
         // 重新初始化状态栏
         getStatusBarConfig().init()
     }
-
 
 
     /**

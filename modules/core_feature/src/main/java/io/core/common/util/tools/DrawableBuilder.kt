@@ -98,7 +98,7 @@ object DrawableBuilder {
         }
         if (isValidRectWithArea(padding)) {
             drawable.setPadding(padding)
-        }else{
+        } else {
             drawable.setPadding(paddingLeft, paddingTop, paddingRight, paddingBottom)
         }
 

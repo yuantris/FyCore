@@ -292,13 +292,21 @@ class DefaultDecoration constructor(private val context: Context) : RecyclerView
                 }
 
                 val spanGroupCount = when (layoutManager) {
-                    is GridLayoutManager -> layoutManager.spanSizeLookup.getSpanGroupIndex(state.itemCount - 1, spanCount) + 1
+                    is GridLayoutManager -> layoutManager.spanSizeLookup.getSpanGroupIndex(
+                        state.itemCount - 1,
+                        spanCount
+                    ) + 1
+
                     is StaggeredGridLayoutManager -> ceil(state.itemCount / spanCount.toFloat()).toInt()
                     else -> 1
                 }
 
                 val spanIndex = when (layoutManager) {
-                    is GridLayoutManager -> layoutManager.spanSizeLookup.getSpanIndex(position, spanCount)
+                    is GridLayoutManager -> layoutManager.spanSizeLookup.getSpanIndex(
+                        position,
+                        spanCount
+                    )
+
                     is StaggeredGridLayoutManager -> {
                         val v = layoutManager.findViewByPosition(position) ?: return
                         (v.layoutParams as StaggeredGridLayoutManager.LayoutParams).spanIndex
@@ -308,7 +316,11 @@ class DefaultDecoration constructor(private val context: Context) : RecyclerView
                 }
 
                 val spanGroupIndex = when (layoutManager) {
-                    is GridLayoutManager -> layoutManager.spanSizeLookup.getSpanGroupIndex(position, spanCount)
+                    is GridLayoutManager -> layoutManager.spanSizeLookup.getSpanGroupIndex(
+                        position,
+                        spanCount
+                    )
+
                     is StaggeredGridLayoutManager -> ceil((position + 1) / spanCount.toFloat()).toInt() - 1
                     else -> 0
                 }
@@ -380,7 +392,12 @@ class DefaultDecoration constructor(private val context: Context) : RecyclerView
                     orientation == DividerOrientation.VERTICAL -> outRect.set(left, 0, right, 0)
                     orientation == DividerOrientation.HORIZONTAL -> outRect.set(0, left, 0, right)
                     rvOrientation == RecyclerView.VERTICAL -> outRect.set(left, top, right, bottom)
-                    rvOrientation == RecyclerView.HORIZONTAL -> outRect.set(top, left, bottom, right)
+                    rvOrientation == RecyclerView.HORIZONTAL -> outRect.set(
+                        top,
+                        left,
+                        bottom,
+                        right
+                    )
                 }
             }
 
@@ -476,10 +493,12 @@ class DefaultDecoration constructor(private val context: Context) : RecyclerView
                 val firstBottom: Int
                 if (reverseLayout) {
                     firstBottom = decoratedBounds.bottom
-                    firstTop = if (intrinsicHeight == -1) firstBottom - size else firstBottom - intrinsicHeight
+                    firstTop =
+                        if (intrinsicHeight == -1) firstBottom - size else firstBottom - intrinsicHeight
                 } else {
                     firstTop = decoratedBounds.top
-                    firstBottom = if (intrinsicHeight == -1) firstTop + size else firstTop + intrinsicHeight
+                    firstBottom =
+                        if (intrinsicHeight == -1) firstTop + size else firstTop + intrinsicHeight
                 }
 
                 val top: Int
@@ -626,36 +645,78 @@ class DefaultDecoration constructor(private val context: Context) : RecyclerView
                     child.bottom + layoutParams.bottomMargin
                 )
 
-                val baseItemStartMargin = if (marginBaseItemStart && marginStart != 0) marginStart + height else 0
-                val baseItemEndMargin = if (marginBaseItemEnd && marginEnd != 0) marginEnd + width else 0
+                val baseItemStartMargin =
+                    if (marginBaseItemStart && marginStart != 0) marginStart + height else 0
+                val baseItemEndMargin =
+                    if (marginBaseItemEnd && marginEnd != 0) marginEnd + width else 0
 
                 // top
                 if (startVisible && edge.top) {
-                    setBounds(bounds.left - width, bounds.top - height, bounds.right + width, bounds.top)
+                    setBounds(
+                        bounds.left - width,
+                        bounds.top - height,
+                        bounds.right + width,
+                        bounds.top
+                    )
                     draw(canvas)
                 } else if (!edge.top && edge.right) {
-                    setBounds(bounds.left - width + baseItemEndMargin, bounds.top - height, bounds.right - marginEnd, bounds.top)
+                    setBounds(
+                        bounds.left - width + baseItemEndMargin,
+                        bounds.top - height,
+                        bounds.right - marginEnd,
+                        bounds.top
+                    )
                     draw(canvas)
                 } else if (!edge.top && edge.left) {
-                    setBounds(bounds.left + marginEnd, bounds.top - height, bounds.right + width - baseItemEndMargin, bounds.top)
+                    setBounds(
+                        bounds.left + marginEnd,
+                        bounds.top - height,
+                        bounds.right + width - baseItemEndMargin,
+                        bounds.top
+                    )
                     draw(canvas)
                 } else if (!edge.top) {
-                    setBounds(bounds.left - width + baseItemEndMargin, bounds.top - height, bounds.right + width - baseItemEndMargin, bounds.top)
+                    setBounds(
+                        bounds.left - width + baseItemEndMargin,
+                        bounds.top - height,
+                        bounds.right + width - baseItemEndMargin,
+                        bounds.top
+                    )
                     draw(canvas)
                 }
 
                 // bottom
                 if (startVisible && edge.bottom) {
-                    setBounds(bounds.left - width, bounds.bottom, bounds.right + width, bounds.bottom + height)
+                    setBounds(
+                        bounds.left - width,
+                        bounds.bottom,
+                        bounds.right + width,
+                        bounds.bottom + height
+                    )
                     draw(canvas)
                 } else if (!edge.bottom && edge.right) {
-                    setBounds(bounds.left - width + baseItemEndMargin, bounds.bottom, bounds.right - marginEnd, bounds.bottom + height)
+                    setBounds(
+                        bounds.left - width + baseItemEndMargin,
+                        bounds.bottom,
+                        bounds.right - marginEnd,
+                        bounds.bottom + height
+                    )
                     draw(canvas)
                 } else if (!edge.bottom && edge.left) {
-                    setBounds(bounds.left + marginEnd, bounds.bottom, bounds.right + width - baseItemEndMargin, bounds.bottom + height)
+                    setBounds(
+                        bounds.left + marginEnd,
+                        bounds.bottom,
+                        bounds.right + width - baseItemEndMargin,
+                        bounds.bottom + height
+                    )
                     draw(canvas)
                 } else if (!edge.bottom) {
-                    setBounds(bounds.left - width + baseItemEndMargin, bounds.bottom, bounds.right + width - baseItemEndMargin, bounds.bottom + height)
+                    setBounds(
+                        bounds.left - width + baseItemEndMargin,
+                        bounds.bottom,
+                        bounds.right + width - baseItemEndMargin,
+                        bounds.bottom + height
+                    )
                     draw(canvas)
                 }
 
@@ -664,28 +725,63 @@ class DefaultDecoration constructor(private val context: Context) : RecyclerView
                     setBounds(bounds.left - width, bounds.top, bounds.left, bounds.bottom + height)
                     draw(canvas)
                 } else if (!edge.left && edge.top) {
-                    setBounds(bounds.left - width, bounds.top + marginStart, bounds.left, bounds.bottom + height - baseItemStartMargin)
+                    setBounds(
+                        bounds.left - width,
+                        bounds.top + marginStart,
+                        bounds.left,
+                        bounds.bottom + height - baseItemStartMargin
+                    )
                     draw(canvas)
                 } else if (!edge.left && edge.bottom) {
-                    setBounds(bounds.left - width, bounds.top - height + baseItemStartMargin, bounds.left, bounds.bottom - marginStart)
+                    setBounds(
+                        bounds.left - width,
+                        bounds.top - height + baseItemStartMargin,
+                        bounds.left,
+                        bounds.bottom - marginStart
+                    )
                     draw(canvas)
                 } else if (!edge.left) {
-                    setBounds(bounds.left - width, bounds.top + baseItemStartMargin, bounds.left, bounds.bottom + height - baseItemStartMargin)
+                    setBounds(
+                        bounds.left - width,
+                        bounds.top + baseItemStartMargin,
+                        bounds.left,
+                        bounds.bottom + height - baseItemStartMargin
+                    )
                     draw(canvas)
                 }
 
                 // right
                 if (endVisible && edge.right) {
-                    setBounds(bounds.right, bounds.top, bounds.right + width, bounds.bottom + height)
+                    setBounds(
+                        bounds.right,
+                        bounds.top,
+                        bounds.right + width,
+                        bounds.bottom + height
+                    )
                     draw(canvas)
                 } else if (!edge.right && edge.top) {
-                    setBounds(bounds.right, bounds.top + marginStart, bounds.right + width, bounds.bottom + height - baseItemStartMargin)
+                    setBounds(
+                        bounds.right,
+                        bounds.top + marginStart,
+                        bounds.right + width,
+                        bounds.bottom + height - baseItemStartMargin
+                    )
                     draw(canvas)
                 } else if (!edge.right && edge.bottom) {
-                    setBounds(bounds.right, bounds.top - height + baseItemStartMargin, bounds.right + width, bounds.bottom - marginStart)
+                    setBounds(
+                        bounds.right,
+                        bounds.top - height + baseItemStartMargin,
+                        bounds.right + width,
+                        bounds.bottom - marginStart
+                    )
                     draw(canvas)
                 } else if (!edge.right) {
-                    setBounds(bounds.right, bounds.top + baseItemStartMargin, bounds.right + width, bounds.bottom + height - baseItemStartMargin)
+                    setBounds(
+                        bounds.right,
+                        bounds.top + baseItemStartMargin,
+                        bounds.right + width,
+                        bounds.bottom + height - baseItemStartMargin
+                    )
                     draw(canvas)
                 }
             }
@@ -730,27 +826,34 @@ class DefaultDecoration constructor(private val context: Context) : RecyclerView
                         is StaggeredGridLayoutManager -> {
                             val spanCount = layoutManager.spanCount
                             // 如果item尚未布局将返回null, 此时本方法无效
-                            val viewByPosition = layoutManager.findViewByPosition(position) ?: return@apply
-                            val spanIndex = (viewByPosition.layoutParams as StaggeredGridLayoutManager.LayoutParams).spanIndex + 1
+                            val viewByPosition =
+                                layoutManager.findViewByPosition(position) ?: return@apply
+                            val spanIndex =
+                                (viewByPosition.layoutParams as StaggeredGridLayoutManager.LayoutParams).spanIndex + 1
 
                             if (layoutManager.orientation == RecyclerView.VERTICAL) {
                                 left = spanIndex == 1
                                 right = spanIndex == spanCount
-                                top = if (reverseLayout) index > itemCount - spanCount else index <= spanCount
-                                bottom = if (reverseLayout) index <= spanCount else index > itemCount - spanCount
+                                top =
+                                    if (reverseLayout) index > itemCount - spanCount else index <= spanCount
+                                bottom =
+                                    if (reverseLayout) index <= spanCount else index > itemCount - spanCount
                             } else {
                                 left = index <= spanCount
                                 right = index > itemCount - spanCount
                                 top = if (reverseLayout) spanIndex == spanCount else spanIndex == 1
-                                bottom = if (reverseLayout) spanIndex == 1 else spanIndex == spanCount
+                                bottom =
+                                    if (reverseLayout) spanIndex == 1 else spanIndex == spanCount
                             }
                         }
 
                         is GridLayoutManager -> {
                             val spanSizeLookup = layoutManager.spanSizeLookup
                             val spanCount = layoutManager.spanCount
-                            val spanGroupIndex = spanSizeLookup.getSpanGroupIndex(position, spanCount)
-                            val maxSpanGroupIndex = spanSizeLookup.getSpanGroupIndex(itemCount - 1, spanCount)
+                            val spanGroupIndex =
+                                spanSizeLookup.getSpanGroupIndex(position, spanCount)
+                            val maxSpanGroupIndex =
+                                spanSizeLookup.getSpanGroupIndex(itemCount - 1, spanCount)
                             val spanIndex = spanSizeLookup.getSpanIndex(position, spanCount) + 1
                             val spanSize = spanSizeLookup.getSpanSize(position)
 
@@ -776,8 +879,10 @@ class DefaultDecoration constructor(private val context: Context) : RecyclerView
                             } else {
                                 left = spanGroupIndex == 0
                                 right = spanGroupIndex == maxSpanGroupIndex
-                                top = if (reverseLayout) spanIndex + spanSize - 1 == spanCount else spanIndex == 1
-                                bottom = if (reverseLayout) spanIndex == 1 else spanIndex + spanSize - 1 == spanCount
+                                top =
+                                    if (reverseLayout) spanIndex + spanSize - 1 == spanCount else spanIndex == 1
+                                bottom =
+                                    if (reverseLayout) spanIndex == 1 else spanIndex + spanSize - 1 == spanCount
                             }
                         }
 

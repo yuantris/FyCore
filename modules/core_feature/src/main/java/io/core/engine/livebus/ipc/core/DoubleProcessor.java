@@ -1,6 +1,7 @@
 package io.core.engine.livebus.ipc.core;
 
 import android.os.Bundle;
+
 import io.core.engine.livebus.ipc.consts.IpcConst;
 
 public class DoubleProcessor implements Processor {

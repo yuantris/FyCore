@@ -16,12 +16,13 @@ open class FadeStateChangedHandler(var duration: Long = 400) : StateChangedHandl
         if (container != stateLayout && container.status == Status.LOADING) {
             return super.onRemove(container, state, status, tag)
         }
-        state.animate().setDuration(duration).alpha(0f).setListener(object : AnimatorListenerAdapter() {
-            override fun onAnimationEnd(animation: Animator) {
-                // 等待动画执行完毕后删除旧的缺省页视图
-                StateChangedHandler.onRemove(container, state, status, tag)
-            }
-        }).start()
+        state.animate().setDuration(duration).alpha(0f)
+            .setListener(object : AnimatorListenerAdapter() {
+                override fun onAnimationEnd(animation: Animator) {
+                    // 等待动画执行完毕后删除旧的缺省页视图
+                    StateChangedHandler.onRemove(container, state, status, tag)
+                }
+            }).start()
     }
 
     override fun onAdd(container: StateLayout, state: View, status: Status, tag: Any?) {

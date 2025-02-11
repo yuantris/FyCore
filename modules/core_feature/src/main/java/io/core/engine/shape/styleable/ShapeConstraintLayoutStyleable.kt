@@ -17,7 +17,7 @@ import io.core.engine.shape.config.IShapeDrawableStyleable
  * @description
  * @author Yuan
  */
-class ShapeConstraintLayoutStyleable :IShapeDrawableStyleable{
+class ShapeConstraintLayoutStyleable : IShapeDrawableStyleable {
     /**
      * [IShapeDrawableStyleable]
      */

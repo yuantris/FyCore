@@ -1,7 +1,7 @@
 package io.core.common.util.ext.cool
 
 import java.io.InputStream
-import java.util.*
+import java.util.Scanner
 
 fun InputStream?.isJson(): Boolean {
     this ?: return false

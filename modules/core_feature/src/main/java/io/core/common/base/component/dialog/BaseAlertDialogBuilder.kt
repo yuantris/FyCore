@@ -5,11 +5,8 @@ import android.content.Context
 import android.content.DialogInterface
 import android.view.WindowManager
 import androidx.appcompat.app.AlertDialog
-import androidx.core.widget.TextViewCompat.setTextAppearance
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import io.core.R
 import io.core.common.CoreConfig
-import io.core.common.util.log.logD
 import io.core.common.util.tools.OsUtils
 
 class BaseAlertDialogBuilder : MaterialAlertDialogBuilder {

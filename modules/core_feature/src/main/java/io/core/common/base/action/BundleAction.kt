@@ -3,7 +3,6 @@ package io.core.common.base.action
 import android.os.Bundle
 import android.os.Parcelable
 import java.io.Serializable
-import java.util.*
 
 interface BundleAction {
 

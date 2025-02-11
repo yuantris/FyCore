@@ -13,16 +13,17 @@ object MultimediaUtil {
      * @param formatStr 格式化字符串（例如 "HH:mm:ss", "mm:ss", "m:ss.SS"）
      * @return 格式化后的时长（获取失败返回 null）
      *
-     * val duration1 = MediaDurationUtil.getDuration(filePath, "HH:mm:ss") // 00:03:45
-     * val duration2 = MediaDurationUtil.getDuration(filePath, "mm:ss")     // 03:45
-     * val duration3 = MediaDurationUtil.getDuration(filePath, "m:ss.SSS")  // 3:45.230
+     * val duration1 = MultimediaUtil.getDuration(filePath, "HH:mm:ss") // 00:03:45
+     * val duration2 = MultimediaUtil.getDuration(filePath, "mm:ss")     // 03:45
+     * val duration3 = MultimediaUtil.getDuration(filePath, "m:ss.SSS")  // 3:45.230
      *
      */
     fun getDuration(filePath: String, formatStr: String = "mm:ss"): String? {
         val retriever = MediaMetadataRetriever()
         return try {
             retriever.setDataSource(filePath)
-            val durationMs = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)?.toLongOrNull()
+            val durationMs = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
+                ?.toLongOrNull()
             durationMs?.let { formatDuration(it, formatStr) }
         } catch (e: Exception) {
             LogCat.e(e.fillInStackTrace())

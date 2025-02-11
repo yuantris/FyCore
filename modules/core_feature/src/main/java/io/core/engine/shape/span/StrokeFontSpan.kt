@@ -25,7 +25,7 @@ import io.core.engine.shape.other.TextViewAttribute
  * @author Yuan
  */
 class StrokeFontSpan(textViewAttribute: ITextViewAttribute) : CommonFontSpan(textViewAttribute) {
-    companion object{
+    companion object {
         /**
          * 构建一个文字描边的 Spannable 对象
          */

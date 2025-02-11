@@ -4,10 +4,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.core.fy.android.room.entity.User
 import com.core.fy.android.room.repository.UserRepository
-import com.hjq.permissions.PermissionFragment.launch
+import io.core.common.base.vm.BaseViewModel
 import io.core.common.util.log.logD
 import io.core.common.util.log.logE
-import io.core.common.base.vm.BaseViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
@@ -66,13 +65,10 @@ class UserVM(private var repository: UserRepository) : BaseViewModel() {
         block = {
             val result = repository.queryAll()
             "查询所有：${result.size}".logD()
-            result
+            _userLiveData.postValue(result)
         },
-        onError = {
+        error = {
             "查询所有失败：${it.message}".logE()
-        },
-        onSuccess = {
-            _userLiveData.postValue(it)
         }
     )
 
@@ -91,7 +87,7 @@ class UserVM(private var repository: UserRepository) : BaseViewModel() {
             val result = repository.queryAll()
             "删除后剩余：${result.size}".logD()
         },
-        onError = {
+        error = {
             "删除所有失败：${it.message}".logE()
         }
     )

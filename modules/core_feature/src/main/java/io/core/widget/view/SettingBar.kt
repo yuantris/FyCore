@@ -23,7 +23,8 @@ import io.core.R
 
 
 class SettingBar @JvmOverloads constructor(
-    context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0, defStyleRes: Int = 0) :
+    context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0, defStyleRes: Int = 0
+) :
     FrameLayout(context, attrs, defStyleAttr, defStyleRes) {
 
     companion object {
@@ -46,13 +47,18 @@ class SettingBar @JvmOverloads constructor(
     private var rightDrawableSize: Int = 0
 
     init {
-        mainLayout.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, Gravity.CENTER_VERTICAL)
+        mainLayout.layoutParams = LayoutParams(
+            LayoutParams.MATCH_PARENT,
+            LayoutParams.WRAP_CONTENT,
+            Gravity.CENTER_VERTICAL
+        )
         val leftParams = LinearLayout.LayoutParams(0, LayoutParams.WRAP_CONTENT)
         leftParams.gravity = Gravity.CENTER_VERTICAL
         leftParams.weight = 1f
         leftView.layoutParams = leftParams
 
-        val rightParams = LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
+        val rightParams =
+            LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
         rightParams.gravity = Gravity.CENTER_VERTICAL
         rightView.layoutParams = rightParams
         rightView.layoutParams = rightParams
@@ -64,8 +70,14 @@ class SettingBar @JvmOverloads constructor(
         rightView.isSingleLine = true
         leftView.ellipsize = TextUtils.TruncateAt.END
         rightView.ellipsize = TextUtils.TruncateAt.END
-        leftView.setLineSpacing(resources.getDimension(R.dimen.dp_5), leftView.lineSpacingMultiplier)
-        rightView.setLineSpacing(resources.getDimension(R.dimen.dp_5), rightView.lineSpacingMultiplier)
+        leftView.setLineSpacing(
+            resources.getDimension(R.dimen.dp_5),
+            leftView.lineSpacingMultiplier
+        )
+        rightView.setLineSpacing(
+            resources.getDimension(R.dimen.dp_5),
+            rightView.lineSpacingMultiplier
+        )
         leftView.setPaddingRelative(
             resources.getDimension(R.dimen.dp_15).toInt(),
             resources.getDimension(R.dimen.dp_12).toInt(),
@@ -169,10 +181,18 @@ class SettingBar @JvmOverloads constructor(
         )
 
         // 文字大小设置
-        setLeftTextSize(TypedValue.COMPLEX_UNIT_PX, array.getDimensionPixelSize(
-            R.styleable.SettingBar_bar_leftTextSize, resources.getDimension(R.dimen.sp_15).toInt()).toFloat())
-        setRightTextSize(TypedValue.COMPLEX_UNIT_PX, array.getDimensionPixelSize(
-            R.styleable.SettingBar_bar_rightTextSize, resources.getDimension(R.dimen.sp_14).toInt()).toFloat())
+        setLeftTextSize(
+            TypedValue.COMPLEX_UNIT_PX, array.getDimensionPixelSize(
+                R.styleable.SettingBar_bar_leftTextSize,
+                resources.getDimension(R.dimen.sp_15).toInt()
+            ).toFloat()
+        )
+        setRightTextSize(
+            TypedValue.COMPLEX_UNIT_PX, array.getDimensionPixelSize(
+                R.styleable.SettingBar_bar_rightTextSize,
+                resources.getDimension(R.dimen.sp_14).toInt()
+            ).toFloat()
+        )
 
         // 分割线设置
         if (array.hasValue(R.styleable.SettingBar_bar_lineDrawable)) {

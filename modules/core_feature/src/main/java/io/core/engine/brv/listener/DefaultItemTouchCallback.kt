@@ -63,7 +63,15 @@ open class DefaultItemTouchCallback : ItemTouchHelper.Callback() {
             if (swipeView != null) {
                 swipeView.translationX = dX
             } else {
-                super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
+                super.onChildDraw(
+                    c,
+                    recyclerView,
+                    viewHolder,
+                    dX,
+                    dY,
+                    actionState,
+                    isCurrentlyActive
+                )
             }
         } else {
             super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
@@ -147,7 +155,10 @@ open class DefaultItemTouchCallback : ItemTouchHelper.Callback() {
         val targetPosition = recyclerView.getChildLayoutPosition(target.itemView)
 
         val models = adapter.models as? MutableList
-        if (models != null && source is BindingViewHolder && target is BindingViewHolder && adapter.isModel(targetPosition)) {
+        if (models != null && source is BindingViewHolder && target is BindingViewHolder && adapter.isModel(
+                targetPosition
+            )
+        ) {
             val fromPosition = currentPosition - adapter.headerCount
             val toPosition = targetPosition - adapter.headerCount
             val fromItem = models[fromPosition]

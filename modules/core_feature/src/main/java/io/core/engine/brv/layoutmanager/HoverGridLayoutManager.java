@@ -13,11 +13,11 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import io.core.engine.brv.BindingAdapter;
-import io.core.engine.brv.listener.OnHoverAttachListener;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import io.core.engine.brv.BindingAdapter;
+import io.core.engine.brv.listener.OnHoverAttachListener;
 
 /**
  * 为GridLayoutManager添加悬停/禁用滚动特性

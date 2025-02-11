@@ -30,7 +30,8 @@ class RootLayout @JvmOverloads constructor(
         orientation = VERTICAL
         val bar = TitleBar(context)
         bar.id = R.id.title_bar
-        addView(bar,
+        addView(
+            bar,
             ViewGroup.LayoutParams.MATCH_PARENT,
             ViewGroup.LayoutParams.WRAP_CONTENT
         )

@@ -27,7 +27,6 @@ import android.widget.SeekBar
 import android.widget.TextView
 import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
-import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.menu.MenuPopupHelper
 import androidx.appcompat.widget.PopupMenu
@@ -43,7 +42,6 @@ import io.core.common.helper.canvasrecorder.CanvasRecorder
 import io.core.common.helper.canvasrecorder.record
 import io.core.common.util.ext.currentTimeMillis
 import io.core.common.util.ext.inputMethodManager
-import io.core.common.util.ext.layoutInflater
 import io.core.common.util.log.printOnDebug
 import java.lang.reflect.Field
 

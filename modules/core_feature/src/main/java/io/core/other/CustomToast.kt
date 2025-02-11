@@ -9,11 +9,8 @@ import android.view.View
 import android.view.WindowManager
 import android.widget.TextView
 import io.core.R
-import io.core.common.helper.TryCatchHelper
 import io.core.common.util.ext.cool.dpToPx
-import io.core.common.util.ext.logE
 import io.core.common.util.ext.windowManager
-import io.core.common.util.log.printOnDebug
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob

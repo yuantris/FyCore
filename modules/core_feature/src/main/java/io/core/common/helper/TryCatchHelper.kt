@@ -1,10 +1,11 @@
 package io.core.common.helper
 
-import io.core.common.util.log.TAG
 import io.core.common.util.log.LogPure
+import io.core.common.util.log.TAG
+import io.core.common.util.log.printOnDebug
+import kotlinx.coroutines.*
 import java.util.function.Supplier
 import kotlin.coroutines.CoroutineContext
-import kotlinx.coroutines.*
 
 /**
 # ██████████
@@ -19,6 +20,37 @@ import kotlinx.coroutines.*
  * @description
  * @author Yuan
  */
+inline fun <T> tryCatch(
+    tryBlock: () -> T,
+    catchBlock: (Throwable) -> Unit = { it.printOnDebug() },
+    finallyBlock: () -> Unit = {}
+): T? {
+    return try {
+        tryBlock()
+    } catch (e: Exception) {
+        catchBlock(e)
+        null
+    } finally {
+        finallyBlock()
+    }
+}
+
+inline fun <T> tryCatchWithDefault(
+    default: T, // 提供默认返回值
+    tryBlock: () -> T,
+    catchBlock: (Throwable) -> Unit = { it.printStackTrace() },
+    finallyBlock: () -> Unit = {}
+): T {
+    return try {
+        tryBlock()
+    } catch (e: Exception) {
+        catchBlock(e)
+        default
+    } finally {
+        finallyBlock()
+    }
+}
+
 class TryCatchHelper {
 
     companion object {

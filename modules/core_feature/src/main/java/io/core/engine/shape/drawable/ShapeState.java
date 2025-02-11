@@ -6,10 +6,10 @@ import android.graphics.drawable.Drawable;
 import android.view.Gravity;
 
 /**
- *    author : Android 轮子哥
- *    github : https://github.com/getActivity/ShapeDrawable
- *    time   : 2021/08/15
- *    desc   : ShapeDrawable 参数构建
+ * author : Android 轮子哥
+ * github : https://github.com/getActivity/ShapeDrawable
+ * time   : 2021/08/15
+ * desc   : ShapeDrawable 参数构建
  */
 public class ShapeState extends Drawable.ConstantState {
 
@@ -55,7 +55,8 @@ public class ShapeState extends Drawable.ConstantState {
 
     public int lineGravity = Gravity.CENTER;
 
-    public ShapeState() {}
+    public ShapeState() {
+    }
 
     public ShapeState(ShapeState state) {
         changingConfigurations = state.changingConfigurations;

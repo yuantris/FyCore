@@ -3,7 +3,7 @@ package io.core.common.base.action
 import android.view.ViewGroup
 import io.core.widget.layout.TitleBar
 
-interface TitleBarAction{
+interface TitleBarAction {
 
     /**
      * 获取标题栏对象

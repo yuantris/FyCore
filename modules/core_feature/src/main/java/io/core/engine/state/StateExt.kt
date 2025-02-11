@@ -71,9 +71,13 @@ fun View.state(): StateLayout {
 
     when (this) {
         is ConstraintLayout -> {
-            val contentViewLayoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+            val contentViewLayoutParams = ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT
+            )
             stateLayout.addView(this, contentViewLayoutParams)
         }
+
         else -> {
             stateLayout.addView(this)
         }

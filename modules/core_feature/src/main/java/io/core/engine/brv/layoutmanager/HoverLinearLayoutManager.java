@@ -14,12 +14,12 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import io.core.engine.brv.BindingAdapter;
 import io.core.engine.brv.listener.OnHoverAttachListener;
 import io.core.engine.brv.listener.SnapLinearSmoothScroller;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * 为LinearLayoutManager添加悬停/禁用滚动特性

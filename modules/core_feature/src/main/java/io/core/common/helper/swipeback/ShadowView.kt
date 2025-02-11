@@ -1,7 +1,11 @@
 package io.core.common.helper.swipeback
 
 import android.content.Context
-import android.graphics.*
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.LinearGradient
+import android.graphics.Paint
+import android.graphics.Shader
 import android.graphics.drawable.ColorDrawable
 import android.view.View
 

@@ -5,7 +5,8 @@ import android.animation.ObjectAnimator
 import android.view.View
 
 
-class ScaleItemAnimation @JvmOverloads constructor(private val mFrom: Float = DEFAULT_SCALE_FROM) : ItemAnimation {
+class ScaleItemAnimation @JvmOverloads constructor(private val mFrom: Float = DEFAULT_SCALE_FROM) :
+    ItemAnimation {
 
     override fun onItemEnterAnimation(view: View) {
         val scaleX = ObjectAnimator.ofFloat(view, "scaleX", mFrom, 1f)

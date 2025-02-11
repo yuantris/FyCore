@@ -25,7 +25,7 @@ class ClickableTextView @JvmOverloads constructor(
 ) : AppCompatTextView(context, attrs, defStyleAttr) {
 
     private var onLetterClickListener: ((CharSequence, Int) -> Unit)? = null
-    private var clickedSpans :MutableList<BackgroundColorSpan>? = null
+    private var clickedSpans: MutableList<BackgroundColorSpan>? = null
 
     init {
         clickedSpans = mutableListOf() // 确保初始化

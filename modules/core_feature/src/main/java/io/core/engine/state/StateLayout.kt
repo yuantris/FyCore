@@ -1,4 +1,5 @@
 @file:Suppress("unused", "MemberVisibilityCanBePrivate", "NAME_SHADOWING", "RedundantSetter")
+
 package io.core.engine.state
 
 import android.annotation.SuppressLint
@@ -265,13 +266,19 @@ class StateLayout @JvmOverloads constructor(
                 }.forEach {
                     val statePair = it.value
                     if (it.key == previousStatus) {
-                        stateChangedHandler?.onRemove(this, statePair.first, it.key, statePair.second)
+                        stateChangedHandler?.onRemove(
+                            this,
+                            statePair.first,
+                            it.key,
+                            statePair.second
+                        )
                     }
                 }
                 stateChangedHandler?.onAdd(this, targetStatusView, status, tag)
                 if (status == EMPTY || status == ERROR) {
                     retryIds?.forEach {
-                        targetStatusView.findViewById<View>(it)?.setDebouncedClickListener { showLoading() }
+                        targetStatusView.findViewById<View>(it)
+                            ?.setDebouncedClickListener { showLoading() }
                     }
                 }
                 when (status) {
@@ -333,9 +340,11 @@ class StateLayout @JvmOverloads constructor(
      */
     @SuppressLint("MissingPermission")
     fun isNetworking(): Boolean {
-        val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val connectivityManager =
+            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val network = connectivityManager.activeNetwork ?: return false
-        val networkCapabilities = connectivityManager.getNetworkCapabilities(network) ?: return false
+        val networkCapabilities =
+            connectivityManager.getNetworkCapabilities(network) ?: return false
 
         return when {
             networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true

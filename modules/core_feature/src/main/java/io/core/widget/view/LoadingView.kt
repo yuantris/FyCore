@@ -36,6 +36,7 @@ class LoadingView @JvmOverloads constructor(
     private var paintColor: Int
     private var animateValue = 0
     private var animator: ValueAnimator? = null
+
     // 这里直接使用非空 Paint，并通过 apply 初始化属性
     private val paint: Paint = Paint().apply {
         isAntiAlias = true
@@ -43,7 +44,8 @@ class LoadingView @JvmOverloads constructor(
     }
 
     init {
-        val typedArray = context.obtainStyledAttributes(attrs, R.styleable.LoadingView, defStyleAttr, 0)
+        val typedArray =
+            context.obtainStyledAttributes(attrs, R.styleable.LoadingView, defStyleAttr, 0)
         size = typedArray.getDimensionPixelSize(R.styleable.LoadingView_core_view_size, 32.dpToPx())
         paintColor = typedArray.getColor(R.styleable.LoadingView_core_view_color, Color.BLACK)
         typedArray.recycle()
