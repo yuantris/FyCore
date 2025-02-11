@@ -3,17 +3,14 @@ package io.core.common.helper
 import android.app.Activity
 import android.app.Application
 import android.app.Service
-import android.os.Build
 import android.os.Bundle
 import io.core.common.base.component.service.BaseService
 import io.core.common.util.log.LogPure
 import java.lang.ref.WeakReference
 
-/**
- * Activity管理器,管理项目中Activity的状态
- */
+
 @Suppress("unused")
-object LifecycleHelp : Application.ActivityLifecycleCallbacks {
+object AppLifecycleTracker : Application.ActivityLifecycleCallbacks {
 
     private const val TAG = "LifecycleHelp"
 

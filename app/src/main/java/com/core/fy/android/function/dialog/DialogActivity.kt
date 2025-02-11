@@ -4,23 +4,33 @@ import android.app.Dialog
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
+import android.view.Gravity
+import android.view.LayoutInflater
+import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.lifecycle.lifecycleScope
 import com.core.fy.android.R
 import com.core.fy.android.databinding.ActivityDialogBinding
+import com.core.fy.android.databinding.DialogBottomStreetBinding
 import com.core.fy.android.ui.BottomSheetNextDialog
 import com.core.fy.android.ui.WaitDialog
 import io.core.common.base.component.activity.ReflectBindingActivity
+import io.core.common.base.component.dialog.BasePopup
+import io.core.common.base.component.dialog.showCustomDialog
+import io.core.common.base.component.dialog.showPopupWindow
 import io.core.common.base.component.dialog.specific.BubbleDialog
 import io.core.common.helper.dialogs.progressDialog
 import io.core.common.helper.dialogs.showDialog
 import io.core.common.util.CoreUtil
 import io.core.common.util.ext.cool.dpToPx
+import io.core.common.util.ext.ui.getActivity
 import io.core.common.util.ext.ui.getCompatColor
 import io.core.common.util.ext.ui.onClick
 import io.core.common.util.ext.ui.postDelayUI
+import io.core.common.util.ext.ui.screenRealWidthPx
 import io.core.common.util.ext.ui.showDialogFragment
+import io.core.common.util.ext.ui.toast
 import io.core.common.util.tools.DrawableBuilder
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -103,8 +113,19 @@ class DialogActivity : ReflectBindingActivity<ActivityDialogBinding>() {
             }
 
             show2.onClick {
-                dialog2.show()
-                waitDismiss(dialog2)
+//                dialog2.show()
+//                waitDismiss(dialog2)
+                showCustomDialog {
+                    setLayout(R.layout.dialog_bottom_street)
+                    setSize((screenRealWidthPx * 0.8f).toInt(), 200.dpToPx())
+                    setAnimation(BasePopup.PopupAnimation.FADE)
+                    setViewInitializer { dialog ->
+
+                    }
+                    setOnDismissListener {
+                        toast("已关闭")
+                    }
+                }
             }
         }
     }

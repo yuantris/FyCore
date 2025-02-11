@@ -2,33 +2,28 @@ package com.core.fy.android
 
 import android.os.Bundle
 import androidx.viewpager.widget.ViewPager.OnPageChangeListener
-import com.blankj.utilcode.util.AppUtils.exitApp
 import com.core.fy.android.databinding.ActivityMainBinding
 import com.core.fy.android.databinding.ItemTabBinding
 import com.core.fy.android.interfaces.FragmentPagerAdapter
-import com.core.fy.android.model.Tab
 import com.core.fy.android.main.fragment.BlankFragment
 import com.core.fy.android.main.fragment.HomeFragment
+import com.core.fy.android.model.Tab
 import com.core.fy.android.ui.ConfigDialog
 import io.core.common.base.component.activity.ReflectBindingActivity
 import io.core.common.base.component.fragment.BaseFragment
-import io.core.common.helper.dialogs.alert
 import io.core.common.helper.dialogs.showDialog
 import io.core.common.util.ext.exitApp
 import io.core.common.util.ext.notifyAllDataChanged
 import io.core.common.util.ext.ui.BarColor
 import io.core.common.util.ext.ui.getCompatColor
 import io.core.common.util.ext.ui.hide
-import io.core.common.util.ext.ui.onClick
 import io.core.common.util.ext.ui.show
 import io.core.common.util.ext.ui.showDialogFragment
-import io.core.common.util.ext.ui.toast
-import io.core.common.util.log.LogCat
-import io.core.common.util.tools.TimeUtils
 import io.core.engine.brv.BindingAdapter
 import io.core.engine.brv.utils.grid
 import io.core.engine.brv.utils.setup
 import io.core.other.ClickSequenceHandler
+
 
 class MainActivity : ReflectBindingActivity<ActivityMainBinding>() {
 

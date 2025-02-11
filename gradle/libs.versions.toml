@@ -1,12 +1,12 @@
 [versions]
 # 定义 FyCore 库的发布版本与依赖来源
-fycore = "0.1.4"
+fycore = "+"
 local = "local"
 jitpack = "jitpack"
 package = "package"
 # --------- # --------- #
 android-gradle = "7.3.1"
-kotlin-version = "1.8.20"
+kotlin-version = "1.7.20"
 kotlinx-coroutines-android = "1.6.4"
 
 appcompat = "1.6.1"

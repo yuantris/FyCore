@@ -1,24 +1,19 @@
 package io.core.common.base.component.service
 
 import android.content.Intent
-import android.os.Build
 import android.os.IBinder
 import androidx.annotation.CallSuper
 import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.lifecycleScope
 import com.hjq.permissions.Permission
 import com.hjq.permissions.XXPermissions
-import io.core.R
-import io.core.common.helper.LifecycleHelp
+import io.core.common.helper.AppLifecycleTracker
 import io.core.common.helper.coroutine.Coroutine
-import io.core.common.util.ext.ui.getActivity
-import io.core.common.util.ext.ui.startService
 import io.core.common.util.log.LogPure
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.isActive
-import java.security.Permissions
 import kotlin.coroutines.CoroutineContext
 
 abstract class BaseService : LifecycleService() {
@@ -37,7 +32,7 @@ abstract class BaseService : LifecycleService() {
     @CallSuper
     override fun onCreate() {
         super.onCreate()
-        LifecycleHelp.onServiceCreate(this)
+        AppLifecycleTracker.onServiceCreate(this)
         if (isForegroundService()) checkPermission()
     }
 
@@ -66,7 +61,7 @@ abstract class BaseService : LifecycleService() {
     @CallSuper
     override fun onDestroy() {
         super.onDestroy()
-        LifecycleHelp.onServiceDestroy(this)
+        AppLifecycleTracker.onServiceDestroy(this)
     }
 
     /**
@@ -85,7 +80,7 @@ abstract class BaseService : LifecycleService() {
      * 检测通知权限和后台权限
      */
     private fun checkPermission() {
-        LifecycleHelp.getTopActivity()?.let {
+        AppLifecycleTracker.getTopActivity()?.let {
             XXPermissions.with(it)
                 .permission(Permission.POST_NOTIFICATIONS)
                 .request { _, _ ->

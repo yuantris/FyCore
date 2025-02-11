@@ -97,11 +97,6 @@ dependencies {
     api libs.immersionbar
     api libs.immersionbar.ktx
 
-    // ShapeView：https://github.com/getActivity/ShapeView
-    // api libs.shapeView
-    // ShapeDrawable：https://github.com/getActivity/ShapeDrawable
-    // api libs.shapedrawable
-
     // https://github.com/liangjingkanji/BRV
     api libs.refresh.layout.kernel
     api libs.refresh.header.material

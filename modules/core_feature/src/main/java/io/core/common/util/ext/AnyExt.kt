@@ -5,7 +5,7 @@ import androidx.activity.OnBackPressedCallback
 import androidx.activity.OnBackPressedDispatcher
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
-import io.core.common.helper.LifecycleHelp
+import io.core.common.helper.AppLifecycleTracker
 import io.core.common.util.ext.ui.postDelayUI
 import io.core.common.util.log.LogCat
 import kotlin.system.exitProcess
@@ -52,7 +52,7 @@ fun RecyclerView.Adapter<*>.notifyAllDataChanged() {
 }
 
 fun Any?.exitApp() {
-    LifecycleHelp.finishAllActivity()
+    AppLifecycleTracker.finishAllActivity()
     postDelayUI(10) {
         exitProcess(0)
     }

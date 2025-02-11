@@ -66,6 +66,14 @@
         <item name="android:includeFontPadding">false</item>
     </style>
 
+    <style name="Theme.App.Starting" parent="Theme.SplashScreen">
+        <!-- Android 12+ 新特性配置 -->
+        <item name="windowSplashScreenBackground">@color/common_window_background_color</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_launcher_a12</item>
+        <item name="windowSplashScreenAnimationDuration">300</item>
+        <item name="postSplashScreenTheme">@style/Theme.FyCore.Splash</item>
+    </style>
+
     <!-- 全屏主题样式 -->
     <style name="FullScreenTheme" parent="AppTheme">
         <item name="android:windowFullscreen">true</item>

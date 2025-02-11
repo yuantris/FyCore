@@ -2,6 +2,7 @@ package com.core.fy.android.function.read
 
 import android.annotation.SuppressLint
 import android.content.res.Configuration
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.view.Gravity
@@ -23,6 +24,7 @@ import com.core.fy.android.help.config.AppConfig
 import com.core.fy.android.help.config.ReadBookConfig
 import com.core.fy.android.room.entity.Book
 import io.core.common.base.component.activity.ReflectBindingActivity
+import io.core.common.util.DiveGestureLine
 import io.core.common.util.log.logD
 import io.core.common.util.ext.ui.MainLooper.handler
 import io.core.common.util.ext.ui.getCompatColor
@@ -173,6 +175,7 @@ class ReadBookActivity : ReflectBindingActivity<ActivityBookReadBinding>(),
 
     override fun showActionMenu() {
         toastOnUi("showActionMenu")
+        DiveGestureLine.adaptXiaomi(window, Color.parseColor("#F4F4F4"))
         binding.readMenu.runMenuIn()
     }
 
@@ -309,6 +312,7 @@ class ReadBookActivity : ReflectBindingActivity<ActivityBookReadBinding>(),
 
     override fun onMenuHide() {
         toastOnUi("onMenuHide")
+        DiveGestureLine.adaptXiaomi(window)
         binding.readView.autoPager.resume()
     }
 

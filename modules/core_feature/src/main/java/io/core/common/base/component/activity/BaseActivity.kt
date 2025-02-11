@@ -1,19 +1,27 @@
 package io.core.common.base.component.activity
 
+import android.app.Activity
+import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.Window
+import android.view.WindowManager
 import androidx.annotation.CallSuper
 import androidx.appcompat.app.AppCompatActivity
 import com.gyf.immersionbar.ImmersionBar
 import io.core.R
 import io.core.common.base.action.BundleAction
 import io.core.common.base.action.TitleBarAction
+import io.core.common.util.DiveGestureLine
 import io.core.common.util.ext.addCallback
 import io.core.common.util.ext.ifNotNull
 import io.core.common.util.ext.ifNull
 import io.core.common.util.ext.ui.BarColor
+import io.core.common.util.ext.ui.getCompatColor
 import io.core.common.util.log.logD
+import io.core.common.util.tools.DeviceOSUtils
+import io.core.common.util.tools.NavigationBarUtils
 import io.core.widget.layout.TitleBar
 
 abstract class BaseActivity : AppCompatActivity(), TitleBarAction, BundleAction {
@@ -30,7 +38,8 @@ abstract class BaseActivity : AppCompatActivity(), TitleBarAction, BundleAction 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(contentViewBind())
+        val contentViewBind = contentViewBind()
+        setContentView(contentViewBind)
         initial(savedInstanceState)
         setListener()
         observers()
@@ -44,6 +53,7 @@ abstract class BaseActivity : AppCompatActivity(), TitleBarAction, BundleAction 
         titleBar.ifNotNull {
             ImmersionBar.setTitleBar(this, it)
         }
+        adaptOS()
         // 设置返回键拦截
         onBackPressedDispatcher.addCallback(this, enabled = isTakeOverBackPressed) {
             onBackPressedCall()
@@ -98,6 +108,28 @@ abstract class BaseActivity : AppCompatActivity(), TitleBarAction, BundleAction 
 
     protected open fun getNavigationBarColor(): BarColor {
         return BarColor.BLACK // 根据实际情况返回 BarColor.BLACK 或 BarColor.WHITE
+    }
+
+    // 定义针对不同设备的适配逻辑，默认实现
+    protected open var xiaomiAdapt: (Window) -> Unit = { window ->
+        DiveGestureLine.adaptXiaomi(window)
+    }
+    protected open var huaweiAdapt: (Window) -> Unit = { window ->
+    }
+    protected open var oppoAdapt: (Window) -> Unit = { window ->
+    }
+    protected open var vivoAdapt: (Window) -> Unit = { window ->
+    }
+
+    protected open fun adaptOS() {
+        when (DeviceOSUtils.deviceBrand) {
+            DeviceOSUtils.DeviceBrand.XIAOMI -> xiaomiAdapt(window)
+            DeviceOSUtils.DeviceBrand.HUAWEI -> huaweiAdapt(window)
+            DeviceOSUtils.DeviceBrand.OPPO -> oppoAdapt(window)
+            DeviceOSUtils.DeviceBrand.VIVO -> vivoAdapt(window)
+
+            else -> {}
+        }
     }
 
     override fun getTitleBar(): TitleBar? {

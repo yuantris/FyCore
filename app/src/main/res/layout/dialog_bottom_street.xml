@@ -9,28 +9,28 @@
     app:shape_solidColor="@color/md_indigo_100">
 
     <!-- 选项1按钮 -->
-    <Button
+    <io.core.widget.view.SettingBar
         android:id="@+id/buttonOption1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="选项1"
-        android:textColor="@color/common_accent_color" />
+        android:layout_marginTop="@dimen/dp_16"
+        app:bar_leftText="选项1" />
 
     <!-- 选项2按钮 -->
-    <Button
+    <io.core.widget.view.SettingBar
         android:id="@+id/buttonOption2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="选项2"
-        android:textColor="@color/common_accent_color" />
+        android:textColor="@color/common_accent_color"
+        app:bar_leftText="选项2" />
 
     <!-- 取消按钮 -->
-    <Button
+    <io.core.widget.view.SettingBar
         android:id="@+id/buttonCancel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="取消"
-        android:textColor="@color/common_accent_color" />
+        android:textColor="@color/common_accent_color"
+        app:bar_leftText="取消" />
 
     <View
         android:layout_width="0dp"
