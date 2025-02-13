@@ -111,6 +111,71 @@ Android.homeActivity = MainActivity::class.java
   )
   ```
   
+- ConcurrentProcessor使用
+  ```java
+  List<ConcurrentProcessor.ProcessorTask<String>> tasks = new ArrayList<>();
+  tasks.add(() -> "234");
+  tasks.add(() -> {
+      try {
+          Thread.sleep(2000);
+      } catch (InterruptedException e) {
+      }
+      return "兼容";
+  });
+  ConcurrentProcessor.Companion.get().executeForJava(tasks,
+         new ConcurrentProcessor.ConcurrentCallback<String>() {
+             @Override
+             public void onComplete(@NonNull List<? extends String> results) {
+                 results.forEach(ToastUtil::showShort);
+             }
+
+             @Override
+             public void onError(@NonNull Exception e) {
+
+             }
+
+         });
+  ```
+  ```kotlin
+  // 场景1：基本并发
+  suspend fun handleMediaScan() {
+      val tasks = listOf<suspend () -> List<String>>(
+          { /* 扫描图片实现 */ listOf("img1", "img2") },
+          { /* 扫描视频实现 */ listOf("video1") },
+          { /* 扫描音频实现 */ listOf("audio1") }
+      )
+
+      ConcurrentProcessor.get().executeConcurrent(tasks,
+          onComplete = { results ->
+              // 合并结果示例
+              val total = results.flatten()
+              updatePieChart(total.size)
+          },
+          onError = { showError(it) }
+      )
+  }
+
+  // 场景2：链式处理
+  suspend fun handleFileProcessing() {
+      val fileTasks = listOf<suspend () -> String>(
+          { File("path1").readText() },
+          { File("path2").readText() }
+      )
+
+      ConcurrentProcessor.get().executeChainedConcurrent(
+          firstTasks = fileTasks,
+          secondProcess = { contents ->
+              // 在IO线程处理中间结果
+              contents.map { it.split("\n") }.flatten()
+          },
+          finalProcess = { processedList ->
+              // 在主线程更新UI
+              updateTextView(processedList.joinToString())
+          }
+      )
+  }
+  ```
+  
 - DrawableBuilder(ShapeDrawable构造器)
   ```kotlin
   var drawable = DrawableBuilder.setRadius(12f)
