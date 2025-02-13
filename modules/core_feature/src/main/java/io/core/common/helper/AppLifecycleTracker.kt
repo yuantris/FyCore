@@ -9,7 +9,6 @@ import io.core.common.util.log.LogPure
 import java.lang.ref.WeakReference
 
 
-@Suppress("unused")
 object AppLifecycleTracker : Application.ActivityLifecycleCallbacks {
 
     private const val TAG = "LifecycleHelp"
@@ -75,19 +74,19 @@ object AppLifecycleTracker : Application.ActivityLifecycleCallbacks {
     }
 
     override fun onActivityPaused(activity: Activity) {
-        LogPure.logD(TAG, "${activity::class.simpleName} onPause")
+        LogPure.logD(TAG, "${activity.javaClass.simpleName} onPause")
     }
 
     override fun onActivityResumed(activity: Activity) {
-        LogPure.logD(TAG, "${activity::class.simpleName} onResume")
+        LogPure.logD(TAG, "${activity.javaClass.simpleName} onResume")
     }
 
     override fun onActivityStarted(activity: Activity) {
-        LogPure.logD(TAG, "${activity::class.simpleName} onStart")
+        LogPure.logD(TAG, "${activity.javaClass.simpleName} onStart")
     }
 
     override fun onActivityDestroyed(activity: Activity) {
-        LogPure.logD(TAG, "${activity::class.simpleName} onDestroy")
+        LogPure.logD(TAG, "${activity.javaClass.simpleName} onDestroy")
         for (temp in activities) {
             if (temp.get() != null && temp.get() === activity) {
                 activities.remove(temp)
@@ -100,15 +99,15 @@ object AppLifecycleTracker : Application.ActivityLifecycleCallbacks {
     }
 
     override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {
-        LogPure.logD(TAG, "${activity::class.simpleName} onSaveInstanceState")
+        LogPure.logD(TAG, "${activity.javaClass.simpleName} onSaveInstanceState")
     }
 
     override fun onActivityStopped(activity: Activity) {
-        LogPure.logD(TAG, "${activity::class.simpleName} onStop")
+        LogPure.logD(TAG, "${activity.javaClass.simpleName} onStop")
     }
 
     override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
-        LogPure.logD(TAG, "${activity::class.simpleName} onCreate")
+        LogPure.logD(TAG, "${activity.javaClass.simpleName} onCreate")
         activities.add(WeakReference(activity))
     }
 

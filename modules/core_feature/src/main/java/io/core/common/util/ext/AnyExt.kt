@@ -93,6 +93,10 @@ fun Any?.logV() {
     LogCat.v(this)
 }
 
+fun Any?.logD() {
+    LogCat.d(this)
+}
+
 fun Any?.logI() {
     LogCat.i(this)
 }

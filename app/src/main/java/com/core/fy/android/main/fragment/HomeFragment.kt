@@ -1,12 +1,16 @@
 package com.core.fy.android.main.fragment
 
+import androidx.databinding.DataBindingUtil.getBinding
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.viewpager.widget.ViewPager.OnPageChangeListener
+import com.blankj.utilcode.util.DeviceUtils.getModel
 import com.core.fy.android.Config
 import com.core.fy.android.MainActivity
 import com.core.fy.android.R
 import com.core.fy.android.databinding.FragmentHomeBinding
 import com.core.fy.android.databinding.ItemFunctionBinding
+import com.core.fy.android.databinding.ItemTabBinding
 import com.core.fy.android.function.tts.ClickTextActivity
 import com.core.fy.android.function.CollapsingBarActivity
 import com.core.fy.android.function.toast.CustomToastActivity
@@ -19,19 +23,30 @@ import com.core.fy.android.function.tts.TTSActivity
 import com.core.fy.android.function.yunchuang.VisibilityActivity
 import com.core.fy.android.function.camerax.CameraXActivity
 import com.core.fy.android.function.read.ReadBookActivity
+import com.core.fy.android.interfaces.FragmentPagerAdapter
 import com.core.fy.android.interfaces.LeastAnimationStateChangedHandler
+import com.core.fy.android.model.Tab
 import com.core.fy.android.room.VMFactory
 import com.core.fy.android.room.entity.Function
 import com.core.fy.android.room.repository.FunctionRepository
+import com.core.fy.android.ui.ConfigDialog
 import com.core.fy.android.viewmodel.FunctionVM
+import io.core.common.base.component.fragment.BaseFragment
 import io.core.engine.brv.BindingAdapter
 import io.core.engine.brv.listener.DefaultItemTouchCallback
 import io.core.engine.brv.utils.grid
 import io.core.engine.brv.utils.setup
 import io.core.common.base.component.fragment.ReflectBindingFragment
 import io.core.common.util.ext.cool.launchAsync
+import io.core.common.util.ext.notifyAllDataChanged
+import io.core.common.util.ext.ui.adaptStatusBarToView
+import io.core.common.util.ext.ui.getCompatColor
+import io.core.common.util.ext.ui.hide
 import io.core.common.util.ext.ui.onClick
+import io.core.common.util.ext.ui.show
+import io.core.common.util.ext.ui.showDialogFragment
 import io.core.common.util.ext.ui.startActivity
+import io.core.other.ClickSequenceHandler
 import io.core.other.CustomToast
 
 /**
@@ -49,82 +64,85 @@ import io.core.other.CustomToast
  */
 class HomeFragment : ReflectBindingFragment<FragmentHomeBinding, MainActivity>() {
 
-    private val functionVM by viewModels<FunctionVM> {
-        VMFactory(FunctionRepository)
-    }
+    private val list: List<Tab> = listOf(
+        Tab("功能"),
+        Tab("待开发"),
+    )
+
+    // 当前选中的tab
+    private var selectIndex = 0
+    private var adapter: BindingAdapter? = null
 
 
     override fun initView() {
-        binding.state.stateChangedHandler = LeastAnimationStateChangedHandler()
-        if (Config.isDisplaySplashAnim) {
-            binding.state.onRefresh {
-                functionVM.initRvData()
-            }.showLoading()
-        } else {
-            functionVM.initRvData()
-            binding.state.showContent()
+        binding.appBar.setExpanded(false)
+
+        FragmentPagerAdapter<BaseFragment<*>>(this).apply {
+            addFragment(StatusFragment())
+            addFragment(BlankFragment())
+            binding.vpHomePager.adapter = this
         }
+
+        adapter = binding.rvHomeTab
+            .grid(2)
+            .setup {
+                addType<Tab>(R.layout.item_tab)
+                onBind {
+                    val binding = getBinding<ItemTabBinding>()
+                    val data = getModel<Tab>()
+                    binding.tvTabDesignTitle.text = data.type
+                    if (selectIndex == modelPosition) {
+                        binding.tvTabDesignTitle.setTextColor(
+                            context.getCompatColor(R.color.common_accent_color)
+                        )
+                        binding.vTabDesignLine.show()
+                    } else {
+                        binding.tvTabDesignTitle.setTextColor(
+                            context.getCompatColor(R.color.black25)
+                        )
+                        binding.vTabDesignLine.hide()
+                    }
+                }
+
+                onClick(R.id.item_root) {
+                    val index = modelPosition
+                    binding.vpHomePager.setCurrentItem(index, true)
+                }
+            }
+        adapter?.models = list
     }
 
     override fun initData() {
-        functionVM.data.observe(this) {
-            binding.rv.apply {
-                grid(2).setup {
-                    addType<Function>(R.layout.item_function)
-                    itemTouchHelper = ItemTouchHelper(object : DefaultItemTouchCallback() {
-                        override fun onDrag(
-                            source: BindingAdapter.BindingViewHolder,
-                            target: BindingAdapter.BindingViewHolder
-                        ) {
-                            launchAsync {
-                                models?.forEachIndexed { index, model ->
-                                    if (model is Function) {
-                                        model.position = index
-                                        // 更新位置信息
-                                        functionVM.repository.dao.update(model)
-                                    }
-                                }
-                            }
-                        }
-                    })
-                    onBind {
-                        val binding = getBinding<ItemFunctionBinding>()
-                        val data = getModel<Function>()
-                        binding.item.text = data.design.function
-                        binding.item.onClick {
-                            when (data.design) {
-                                FunctionVM.Design.KEYBOARD -> startActivity<KeyboardActivity>()
-                                FunctionVM.Design.云创控件 -> {
-                                    startActivity<ImgTextActivity> {
-                                        putExtra("title", "云创控件")
-                                        putExtra("url", "当前的Url")
-                                    }
-                                }
+        with(binding) {
+            vpHomePager.addOnPageChangeListener(object : OnPageChangeListener {
+                override fun onPageScrolled(
+                    position: Int,
+                    positionOffset: Float,
+                    positionOffsetPixels: Int
+                ) {
+                }
 
-                                FunctionVM.Design.单文字点击的TextView -> startActivity<ClickTextActivity>()
-                                FunctionVM.Design.ROOM -> startActivity<RoomActivity>()
-                                FunctionVM.Design.DIALOG -> startActivity<DialogActivity>()
-                                FunctionVM.Design.TOAST -> startActivity<CustomToastActivity>()
-                                FunctionVM.Design.EVENT -> startActivity<EventActivity>()
-                                FunctionVM.Design.COLL_BAR -> startActivity<CollapsingBarActivity>()
-                                FunctionVM.Design.VIEW_VISIBILITY -> startActivity<VisibilityActivity>()
-                                FunctionVM.Design.TTS -> startActivity<TTSActivity>()
-                                FunctionVM.Design.READ -> startActivity<ReadBookActivity>()
-                                FunctionVM.Design.相机 -> startActivity<CameraXActivity>()
-                                else -> {
-                                    // do nothing
-                                    CustomToast.Builder(requireContext())
-                                        .setMessage("该添加点击事件了")
-                                        .build()
-                                        .show()
-                                }
-                            }
-                        }
-                    }
-                }.models = it?.ifEmpty { functionVM.list }
+                override fun onPageSelected(position: Int) {
+                    selectIndex = position
+                    adapter?.notifyAllDataChanged()
+                }
+
+                override fun onPageScrollStateChanged(state: Int) {}
+
+            })
+
+            ClickSequenceHandler(binding.toolbar) {
+                showDialogFragment<ConfigDialog>()
             }
-            binding.state.showContent()
         }
+    }
+
+    override fun onFragmentResume(first: Boolean) {
+        super.onFragmentResume(first)
+        getAttachActivity()?.adaptStatusBarToView(
+            rootView = requireActivity().window.decorView,
+            targetView = binding.collTool
+        )
     }
 
 }

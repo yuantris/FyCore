@@ -19,7 +19,6 @@ import io.core.common.util.ext.appCtx
 import io.core.common.util.ext.cool.ConvertUtils
 import io.core.common.util.ext.cool.observeEvent
 import io.core.common.util.ext.cool.observeEventSticky
-import io.core.common.util.ext.logE
 import io.core.common.util.ext.ui.addViewToZYLayout
 import io.core.common.util.ext.ui.getCompatColor
 import io.core.common.util.ext.ui.onClick
@@ -83,23 +82,22 @@ class BlankFragment : ReflectBindingFragment<FragmentBlankBinding, MainActivity>
         addViewToZYLayout(binding.zyLayout, loadingView)
         addViewToZYLayout(binding.zyLayout1, loading)
         // 在协程作用域中启动
-        if (job?.isActive != true) {
-            job = Coroutine.async(
-                scope = CoroutineScope(Dispatchers.Main), // 指定作用域，默认为 MainScope()
-                context = Dispatchers.Default,          // 指定执行上下文，默认为 Dispatchers.IO
-                start = CoroutineStart.LAZY,            // 指定启动选项，默认为 CoroutineStart.DEFAULT
-                executeContext = Dispatchers.Main,      // 指定回调执行上下文，默认为 Dispatchers.Main
-            ) {
-                while (isActive) { // 循环条件
-                    runOnUI {
-                        loadingView.setColor(ColorUtils.getRandomColor())
-                        loading.loadingColor = ColorUtils.getRandomColor()
-                    }
-                    delay(3000)    // 非阻塞式延迟
+        job = Coroutine.async(
+            scope = CoroutineScope(Dispatchers.Main), // 指定作用域，默认为 MainScope()
+            context = Dispatchers.Default,          // 指定执行上下文，默认为 Dispatchers.IO
+            start = CoroutineStart.LAZY,            // 指定启动选项，默认为 CoroutineStart.DEFAULT
+            executeContext = Dispatchers.Main,      // 指定回调执行上下文，默认为 Dispatchers.Main
+        ) {
+            while (isActive) { // 循环条件
+                runOnUI {
+                    loadingView.setColor(ColorUtils.getRandomColor())
+                    loading.loadingColor = ColorUtils.getRandomColor()
                 }
+                delay(3000)    // 非阻塞式延迟
             }
-            job?.start()
         }
+        job?.start()
+
 
         XXPermissions.with(this)
             .permission(Permission.MANAGE_EXTERNAL_STORAGE)
@@ -110,10 +108,10 @@ class BlankFragment : ReflectBindingFragment<FragmentBlankBinding, MainActivity>
                 ) {
                     val files = MediaScanner.queryFiles(
                         types = setOf(
-                            MediaScanner.FileType.JPG,
+                            MediaScanner.FileType.MP4,
                         ),
                         addFilter = {
-                            it.size < 1024 * 1024
+                            it.size > 1024 * 1024
                         }
                     )
                     files
@@ -124,7 +122,7 @@ class BlankFragment : ReflectBindingFragment<FragmentBlankBinding, MainActivity>
                     val file = File(result[0].path)
                     val uri = UriUtils.file2Uri(File(file.path))
                     "数量：${result.size} 第一个文件：${file.absolutePath} uri：${uri}".logE()
-                    // MultimediaUtil.getDuration(file.absolutePath).logE()
+                    MultimediaUtil.getDuration(file.absolutePath)?.logE()
                     ConvertUtils.formatFileSize(result[0].size).logE()
                 }
 

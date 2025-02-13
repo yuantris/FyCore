@@ -22,6 +22,6 @@ class ZYLayout @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : RelativeLayout(context, attrs, defStyleAttr) {
     init {
-        setBackgroundColor(context.getColor(R.color.common_icon_color))
+        //setBackgroundColor(context.getColor(R.color.common_icon_color))
     }
 }

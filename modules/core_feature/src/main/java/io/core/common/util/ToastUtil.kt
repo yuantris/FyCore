@@ -17,7 +17,6 @@ object ToastUtil : CoroutineScope by MainScope() {
      * @param message 显示的消息
      * @param duration Toast显示时长，默认为Toast.LENGTH_SHORT
      */
-    @JvmStatic
     fun show(message: String, duration: Int = Toast.LENGTH_SHORT) {
         launch(Dispatchers.Main) {
             // 如果有正在显示的Toast，取消它
@@ -28,6 +27,16 @@ object ToastUtil : CoroutineScope by MainScope() {
                 show()
             }
         }
+    }
+
+    @JvmStatic
+    fun showShort(message: String) {
+        show(message, Toast.LENGTH_SHORT)
+    }
+
+    @JvmStatic
+    fun showLong(message: String) {
+        show(message, Toast.LENGTH_LONG)
     }
 
     /**

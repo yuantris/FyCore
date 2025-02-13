@@ -5,6 +5,10 @@ import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -19,8 +23,11 @@ import android.view.WindowManager
 import android.view.WindowMetrics
 import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.WindowCompat
+import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
+import io.core.common.util.ext.logV
 import io.core.common.util.tools.buildMainHandler
 import io.core.other.CustomToast
 
@@ -222,6 +229,58 @@ fun Activity.moveTaskToFront(context: Context) {
     intent.flags =
         Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_REORDER_TO_FRONT or Intent.FLAG_ACTIVITY_SINGLE_TOP
     context.startActivity(intent)
+}
+
+@SuppressLint("InternalInsetResource")
+fun Activity.adaptStatusBarToView(rootView: View, targetView: View? = null) {
+//    // 设置透明状态栏
+//    WindowCompat.setDecorFitsSystemWindows(window, false)
+//    window.statusBarColor = Color.TRANSPARENT
+
+    // 监听视图变化
+    rootView.doOnPreDraw {
+        val statusBarHeight = resources.getIdentifier(
+            "status_bar_height", "dimen", "android"
+        ).takeIf { it > 0 }?.let { resources.getDimensionPixelSize(it) } ?: 0
+
+        // 获取目标视图的背景颜色（优先使用指定视图）
+        val color = targetView?.backgroundAsColor() ?: run {
+            val location = IntArray(2)
+            rootView.getLocationInWindow(location)
+            rootView.getPixelColor(
+                x = location[0] + rootView.width / 2,
+                y = location[1] + statusBarHeight / 2
+            )
+        }
+
+        // 计算亮度并设置状态栏模式
+        val isDark = color.isDarkColor()
+        WindowCompat.getInsetsController(window, window.decorView).apply {
+            isAppearanceLightStatusBars = !isDark
+        }
+    }
+}
+
+// 扩展函数：判断颜色是否为深色
+fun Int.isDarkColor(): Boolean {
+    val darkness = 1 - (0.299 * Color.red(this) +
+            0.587 * Color.green(this) +
+            0.114 * Color.blue(this)) / 255
+    return darkness >= 0.25
+}
+
+// 扩展函数：安全获取像素颜色
+fun View.getPixelColor(x: Int, y: Int): Int {
+    val bitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)
+    val canvas = Canvas(bitmap)
+    canvas.translate(-x.toFloat(), -y.toFloat())
+    this.draw(canvas)
+    return bitmap.getPixel(0, 0)
+}
+
+// 扩展函数：获取背景颜色
+fun View.backgroundAsColor(): Int? {
+    return (background as? ColorDrawable)?.color
 }
 
 fun <T> T.postUI(action: () -> Unit) {

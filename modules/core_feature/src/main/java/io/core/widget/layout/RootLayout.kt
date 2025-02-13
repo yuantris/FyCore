@@ -2,10 +2,18 @@ package io.core.widget.layout
 
 import android.content.Context
 import android.util.AttributeSet
+import android.view.MotionEvent
+import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
+import android.view.ViewGroup.LayoutParams.MATCH_PARENT
+import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.LinearLayout
+import androidx.core.widget.NestedScrollView
 import io.core.R
+import io.core.common.util.ext.ui.gone
+import io.core.common.util.ext.ui.statusBarHeight
+import io.core.common.util.ext.ui.visible
+import kotlin.math.abs
 
 /**
 # ██████████
@@ -23,21 +31,50 @@ import io.core.R
 class RootLayout @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
-    defStyleAttr: Int = 0,
+    defStyleAttr: Int = 0
 ) : LinearLayout(context, attrs, defStyleAttr) {
+
+    private val titleBar: TitleBar
+    private val scrollContainer: NestedScrollView
+    private val contentContainer: LinearLayout
 
     init {
         orientation = VERTICAL
-        val bar = TitleBar(context)
-        bar.id = R.id.title_bar
-        addView(
-            bar,
-            ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.WRAP_CONTENT
-        )
+
+        // 初始化标题栏
+        titleBar = TitleBar(context).apply {
+            id = R.id.title_bar
+            layoutParams = LayoutParams(MATCH_PARENT, WRAP_CONTENT)
+        }
+        addView(titleBar)
+
+        // 初始化滚动容器
+        scrollContainer = NestedScrollView(context).apply {
+            layoutParams = LayoutParams(MATCH_PARENT, 0, 1.0f)
+            overScrollMode = OVER_SCROLL_NEVER
+        }
+
+        // 内容容器保持垂直布局特性
+        contentContainer = LinearLayout(context).apply {
+            orientation = VERTICAL
+            layoutParams = LayoutParams(MATCH_PARENT, WRAP_CONTENT)
+        }
+
+        scrollContainer.addView(contentContainer)
+        addView(scrollContainer)
+
     }
 
-    fun getTitleBar(): TitleBar {
-        return findViewById(R.id.title_bar)
+
+    // 重写添加子View方法，保持原有布局特性
+    override fun addView(child: View?, params: ViewGroup.LayoutParams?) {
+        if (child?.id != R.id.title_bar && child != scrollContainer) {
+            contentContainer.addView(child, params)
+        } else {
+            super.addView(child, params)
+        }
     }
+
+    fun getTitleBar(): TitleBar = titleBar
+
 }

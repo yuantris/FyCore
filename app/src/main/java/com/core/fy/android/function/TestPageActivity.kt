@@ -1,11 +1,13 @@
 package com.core.fy.android.function
 
+import android.os.Bundle
 import android.view.MotionEvent
 import com.core.fy.android.databinding.ActivityTestPageBinding
 import com.core.fy.android.function.read.page.ContentTextView
 import com.core.fy.android.function.read.page.delegate.PageDelegate
 import com.core.fy.android.function.read.page.provider.TextPageFactory
 import io.core.common.base.component.activity.ReflectBindingActivity
+import io.core.common.util.ToastUtil
 
 /**
 # ██████████
@@ -23,4 +25,7 @@ import io.core.common.base.component.activity.ReflectBindingActivity
 class TestPageActivity: ReflectBindingActivity<ActivityTestPageBinding>() {
 
 
+    override fun initial(savedInstanceState: Bundle?) {
+        super.initial(savedInstanceState)
+    }
 }

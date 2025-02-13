@@ -2,8 +2,9 @@
 > 项目初始化
 
 ```kotlin
+
 Android.initialize(this)
-// 设置重启对象Activity
+// 设置重启对象Activity(Crash设置)
 Android.homeActivity = MainActivity::class.java
 ```
 
@@ -39,7 +40,7 @@ Android.homeActivity = MainActivity::class.java
   - StateLayout (https://github.com/liangjingkanji/StateLayout)
   - 
 
-- LifecycleHelp
+- AppLifecycleTracker
   - Lifecycle管理器,管理项目中Activity、service的状态
   
 - Coroutine使用
@@ -84,17 +85,15 @@ Android.homeActivity = MainActivity::class.java
   
 - MediaScanner使用
   ```kotlin
-  // 初始化扫描器
-  val mediaScanner = MediaScanner(context)
-  
+
   // 查询图片文件（JPG/PNG）
-  val imageFiles = mediaScanner.queryMediaFiles(setOf(
+  val imageFiles = MediaScanner.queryFiles(setOf(
       MediaScanner.FileType.JPG,
       MediaScanner.FileType.PNG
   ))
   
   // 查询视频文件（MP4/AVI）并自定义过滤条件
-  val videoFiles = mediaScanner.queryMediaFiles(
+  val videoFiles = MediaScanner.queryFiles(
       types = setOf(
           MediaScanner.FileType.MP4,
           MediaScanner.FileType.AVI
@@ -103,7 +102,7 @@ Android.homeActivity = MainActivity::class.java
   )
   
   // 查询文档文件并自定义排序
-  val docFiles = mediaScanner.queryMediaFiles(
+  val docFiles = MediaScanner.queryFiles(
       types = setOf(
           MediaScanner.FileType.DOCX,
           MediaScanner.FileType.PDF
@@ -174,3 +173,19 @@ Android.homeActivity = MainActivity::class.java
       - 子类重写该方法获取builder可进行进行额外的配置
     - initView()
       - 子类重写该方法进行初始化View
+- ToolBar(Google)与AppTitleBar(自定义)
+    - ToolBar(Google)
+      - setDisplayHomeAsUpEnabled 系统是否接管返回键
+      - ```kotlin
+          override fun initial(savedInstanceState: Bundle?) {
+                ImmersionBar.setTitleBar(this, binding.titleBar)
+                super.initial(savedInstanceState)
+                setSupportActionBar(binding.titleBar)
+                supportActionBar?.apply {
+                    setDisplayHomeAsUpEnabled(true)
+                    setHomeAsUpIndicator(R.drawable.ic_arrow_back)
+                }
+          }
+         ```
+    - AppTitleBar(自定义)
+      - 已经在BaseActivity设置了

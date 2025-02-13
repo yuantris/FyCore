@@ -1,6 +1,7 @@
 package io.core.common.base.component.activity
 
 import android.os.Bundle
+import android.view.MenuItem
 import android.view.View
 import android.view.Window
 import androidx.annotation.CallSuper
@@ -14,6 +15,7 @@ import io.core.common.util.ext.addCallback
 import io.core.common.util.ext.ifNotNull
 import io.core.common.util.ext.ifNull
 import io.core.common.util.ext.ui.BarColor
+import io.core.common.util.ext.ui.adaptStatusBarToView
 import io.core.common.util.log.logD
 import io.core.common.util.tools.DeviceOSUtils
 import io.core.widget.layout.TitleBar
@@ -53,6 +55,17 @@ abstract class BaseActivity : AppCompatActivity(), TitleBarAction, BundleAction 
             onBackPressedCall()
         }
     }
+
+    final override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == android.R.id.home) {
+            supportFinishAfterTransition()
+            return true
+        }
+        return onCompatOptionsItemSelected(item)
+    }
+
+    open fun onCompatOptionsItemSelected(item: MenuItem) = super.onOptionsItemSelected(item)
+
 
     protected open fun setListener() {}
     protected open fun observers() {}
@@ -124,6 +137,7 @@ abstract class BaseActivity : AppCompatActivity(), TitleBarAction, BundleAction 
 
             else -> {}
         }
+        adaptStatusBarToView(window.decorView)
     }
 
     override fun getTitleBar(): TitleBar? {

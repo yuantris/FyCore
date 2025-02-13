@@ -1,107 +1,72 @@
 package com.core.fy.android
 
+import android.graphics.drawable.Drawable
 import android.os.Bundle
-import androidx.viewpager.widget.ViewPager.OnPageChangeListener
+import android.view.ViewGroup
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.GridLayoutManager
 import com.core.fy.android.databinding.ActivityMainBinding
-import com.core.fy.android.databinding.ItemTabBinding
+import com.core.fy.android.databinding.HomeNavigationItemBinding
 import com.core.fy.android.interfaces.FragmentPagerAdapter
-import com.core.fy.android.main.fragment.BlankFragment
 import com.core.fy.android.main.fragment.HomeFragment
-import com.core.fy.android.model.Tab
-import com.core.fy.android.ui.ConfigDialog
+import com.core.fy.android.main.fragment.SetFragment
+import com.gyf.immersionbar.ktx.navigationBarHeight
 import io.core.common.base.component.activity.ReflectBindingActivity
 import io.core.common.base.component.fragment.BaseFragment
 import io.core.common.helper.dialogs.showDialog
+import io.core.common.helper.rv.ItemViewHolder
+import io.core.common.helper.rv.RecyclerAdapter
 import io.core.common.util.ext.exitApp
 import io.core.common.util.ext.notifyAllDataChanged
-import io.core.common.util.ext.ui.BarColor
-import io.core.common.util.ext.ui.getCompatColor
-import io.core.common.util.ext.ui.hide
-import io.core.common.util.ext.ui.show
-import io.core.common.util.ext.ui.showDialogFragment
-import io.core.engine.brv.BindingAdapter
-import io.core.engine.brv.utils.grid
-import io.core.engine.brv.utils.setup
-import io.core.other.ClickSequenceHandler
-
+import io.core.common.util.ext.ui.onClick
+import io.core.common.util.ext.ui.setPaddingBottom
+import io.core.engine.brv.utils.disableEdgeEffect
 
 class MainActivity : ReflectBindingActivity<ActivityMainBinding>() {
 
-    private val list: List<Tab> = listOf(
-        Tab("功能"),
-        Tab("待开发"),
-    )
-
-    // 当前选中的tab
-    private var selectIndex = 0
-    private var adapter: BindingAdapter? = null
+    private var navigationAdapter: NavigationAdapter? = null
+    private var pagerAdapter: FragmentPagerAdapter<BaseFragment<*>>? = null
 
     override fun initial(savedInstanceState: Bundle?) {
         setTakeOverBackPressed(true)
         super.initial(savedInstanceState)
 
-        binding.appBar.setExpanded(false)
+        navigationAdapter = NavigationAdapter().apply {
+            addItem(
+                MenuItem(
+                    "首页",
+                    ContextCompat.getDrawable(this@MainActivity, R.drawable.home_home_selector)
+                )
+            )
+            addItem(
+                MenuItem(
+                    "我的",
+                    ContextCompat.getDrawable(this@MainActivity, R.drawable.home_me_selector)
+                )
+            )
+            binding.rvHomeNavigation.layoutManager = GridLayoutManager(this@MainActivity, this.itemCount)
+            binding.rvHomeNavigation.adapter = this
+            binding.rvHomeNavigation.setPaddingBottom(this@MainActivity.navigationBarHeight)
+            binding.rvHomeNavigation.disableEdgeEffect()
+        }
 
-        FragmentPagerAdapter<BaseFragment<*>>(this).apply {
+        pagerAdapter = FragmentPagerAdapter<BaseFragment<*>>(this).apply {
             addFragment(HomeFragment())
-            addFragment(BlankFragment())
+            addFragment(SetFragment())
             binding.vpHomePager.adapter = this
         }
 
-        adapter = binding.rvHomeTab
-            .grid(2)
-            .setup {
-                addType<Tab>(R.layout.item_tab)
-                onBind {
-                    val binding = getBinding<ItemTabBinding>()
-                    val data = getModel<Tab>()
-                    binding.tvTabDesignTitle.text = data.type
-                    if (selectIndex == modelPosition) {
-                        binding.tvTabDesignTitle.setTextColor(
-                            context.getCompatColor(R.color.common_accent_color)
-                        )
-                        binding.vTabDesignLine.show()
-                    } else {
-                        binding.tvTabDesignTitle.setTextColor(
-                            context.getCompatColor(R.color.black25)
-                        )
-                        binding.vTabDesignLine.hide()
-                    }
-                }
 
-                onClick(R.id.item_root) {
-                    val index = modelPosition
-                    binding.vpHomePager.setCurrentItem(index, true)
-                }
-            }
-        adapter?.models = list
     }
 
-    override fun onResume() {
-        super.onResume()
-    }
-
-    override fun setListener() {
-        with(binding) {
-            vpHomePager.addOnPageChangeListener(object : OnPageChangeListener {
-                override fun onPageScrolled(
-                    position: Int,
-                    positionOffset: Float,
-                    positionOffsetPixels: Int
-                ) {
-                }
-
-                override fun onPageSelected(position: Int) {
-                    selectIndex = position
-                    adapter?.notifyAllDataChanged()
-                }
-
-                override fun onPageScrollStateChanged(state: Int) {}
-
-            })
-
-            ClickSequenceHandler(binding.toolbar) {
-                showDialogFragment<ConfigDialog>()
+    private fun switchFragment(fragmentIndex: Int) {
+        if (fragmentIndex == -1) {
+            return
+        }
+        when (fragmentIndex) {
+            0, 1, 2, 3 -> {
+                binding.vpHomePager.currentItem = fragmentIndex
+                navigationAdapter?.setSelectedPosition(fragmentIndex)
             }
         }
     }
@@ -115,8 +80,51 @@ class MainActivity : ReflectBindingActivity<ActivityMainBinding>() {
         }
     }
 
-    override fun getStatusBarColor(): BarColor {
-        return BarColor.WHITE
+
+    inner class NavigationAdapter :
+        RecyclerAdapter<MenuItem, HomeNavigationItemBinding>(this@MainActivity) {
+
+        /** 当前选中条目位置 */
+        private var selectedPosition: Int = 0
+
+        override fun getViewBinding(parent: ViewGroup): HomeNavigationItemBinding {
+            return HomeNavigationItemBinding.inflate(inflater, parent, false)
+        }
+
+        override fun registerListener(holder: ItemViewHolder, binding: HomeNavigationItemBinding) {
+            holder.itemView.onClick {
+                switchFragment(holder.layoutPosition)
+            }
+        }
+
+        fun setSelectedPosition(position: Int) {
+            selectedPosition = position
+            notifyAllDataChanged()
+        }
+
+        override fun convert(
+            holder: ItemViewHolder,
+            binding: HomeNavigationItemBinding,
+            item: MenuItem,
+            payloads: MutableList<Any>
+        ) {
+            binding.ivHomeNavigationIcon.setImageDrawable(item.getDrawable())
+            binding.tvHomeNavigationTitle.text = item.getText()
+            binding.ivHomeNavigationIcon.isSelected = (selectedPosition == holder.layoutPosition)
+            binding.tvHomeNavigationTitle.isSelected = (selectedPosition == holder.layoutPosition)
+        }
+
+    }
+
+    class MenuItem(private val text: String?, private val drawable: Drawable?) {
+
+        fun getText(): String? {
+            return text
+        }
+
+        fun getDrawable(): Drawable? {
+            return drawable
+        }
     }
 
 }

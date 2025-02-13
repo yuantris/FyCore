@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/set_root"
+
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/md_indigo_50"
+    android:orientation="vertical">
+
+    <View
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dp_300" />
+
+    <io.core.widget.view.SettingBar
+        android:id="@+id/test_code"
+        android:layout_width="match_parent"
+        app:bar_leftText="CodeTest"
+        app:bar_rightDrawable="@drawable/ic_arrow_right"
+        android:layout_height="wrap_content" />
+
+    <io.core.widget.view.SettingBar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <io.core.widget.view.SettingBar
+        android:id="@+id/version"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:bar_leftText="@string/app_name"
+        app:bar_rightText="@string/app_name" />
+
+</LinearLayout>

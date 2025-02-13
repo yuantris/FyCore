@@ -13,4 +13,4 @@ package com.core.fy.android.model
  * @description
  * @author Yuan
  */
-class Tab(val type: String = "功能")
+data class Tab(val type: String = "功能")

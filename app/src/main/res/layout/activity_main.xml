@@ -1,62 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".MainActivity">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/app_bar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/transparent"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        app:elevation="0px">
-
-        <com.core.fy.android.widget.XCollapsingToolbarLayout
-            android:id="@+id/coll_tool"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_256"
-            app:collapsedTitleGravity="bottom|center_vertical"
-            app:collapsedTitleTextColor="@color/white"
-            app:contentScrim="@color/md_indigo_900"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
-            app:scrimVisibleHeightTrigger="@dimen/dp_100"
-            app:title="@string/app_name">
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/md_indigo_400"
-                android:scaleType="centerCrop"
-                app:layout_collapseMode="parallax" />
-
-            <com.core.fy.android.widget.XToolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingHorizontal="@dimen/dp_16"
-                android:paddingBottom="@dimen/dp_16"
-                app:layout_collapseMode="pin" />
-
-        </com.core.fy.android.widget.XCollapsingToolbarLayout>
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_home_tab"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            tools:listitem="@layout/item_tab" />
-
-    </com.google.android.material.appbar.AppBarLayout>
-
-    <io.core.widget.layout.NestedViewPager
+    <io.core.widget.layout.NoScrollViewPager
         android:id="@+id/vp_home_pager"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+        android:layout_height="0px"
+        android:layout_weight="1" />
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_home_navigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:elevation="@dimen/dp_10"
+        android:layout_gravity="center"
+        android:orientation="vertical"
+        android:paddingVertical="@dimen/dp_5"
+        app:spanCount="2"
+        tools:itemCount="2"
+        tools:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+        tools:listitem="@layout/home_navigation_item" />
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+</LinearLayout>

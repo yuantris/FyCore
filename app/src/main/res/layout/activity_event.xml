@@ -1,50 +1,108 @@
 <?xml version="1.0" encoding="utf-8"?>
-<io.core.widget.layout.RootLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/md_blue_50">
 
-    <Button
-        android:id="@+id/f_event"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="3:1" />
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/app_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-    <Button
-        android:id="@+id/flow_event"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="2:1" />
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/title_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_scrollFlags="scroll|enterAlways"
+            app:navigationIcon="@drawable/ic_arrow_right"
+            app:title="Event" />
+    </com.google.android.material.appbar.AppBarLayout>
 
-    <io.core.widget.layout.EffectFrameLayout
-        android:id="@+id/iv_img"
-        android:layout_width="@dimen/dp_100"
-        android:layout_height="@dimen/dp_100"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="@dimen/dp_10"
-        android:background="@color/gold"
-        android:clickable="true"
-        android:focusable="true">
-
-    </io.core.widget.layout.EffectFrameLayout>
-
-    <io.core.widget.layout.RatioFrameLayout
-        android:id="@+id/ratio_layout"
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_10"
-        android:background="@color/md_amber_700"
-        app:sizeRatio="2:1">
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="这是一个宽高比 2:1 的FrameLayout"
-            android:textColor="@color/white" />
+            android:orientation="vertical">
 
-    </io.core.widget.layout.RatioFrameLayout>
+            <Button
+                android:id="@+id/f_event"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="3:1" />
+
+            <Button
+                android:id="@+id/flow_event"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="2:1" />
+
+            <io.core.widget.layout.EffectFrameLayout
+                android:id="@+id/iv_img"
+                android:layout_width="@dimen/dp_100"
+                android:layout_height="@dimen/dp_100"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/dp_10"
+                android:background="@color/gold"
+                android:clickable="true"
+                android:focusable="true">
+
+            </io.core.widget.layout.EffectFrameLayout>
+
+            <io.core.widget.layout.RatioFrameLayout
+                android:id="@+id/ratio_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_10"
+                android:background="@color/md_amber_700"
+                app:sizeRatio="3:1">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/description"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="这是一个宽高比 3:1 的FrameLayout"
+                    android:textColor="@color/white" />
+
+            </io.core.widget.layout.RatioFrameLayout>
 
 
-</io.core.widget.layout.RootLayout>
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center">
+
+                <io.core.widget.layout.BlurContainer
+                    android:id="@+id/blur"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/md_grey_600"
+                    android:padding="@dimen/dp_10">
+
+                    <com.airbnb.lottie.LottieAnimationView
+                        android:id="@+id/lav_splash_lottie"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        app:lottie_autoPlay="true"
+                        app:lottie_loop="true"
+                        app:lottie_rawRes="@raw/welcome" />
+                </io.core.widget.layout.BlurContainer>
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="@string/app_name"
+                    android:textColor="@color/white" />
+            </FrameLayout>
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -1,8 +1,16 @@
 package io.core.common.util.tools
 
 import android.media.MediaMetadataRetriever
+import io.core.common.helper.coroutine.launchSuspend
+import io.core.common.helper.coroutine.runSuspend
+import io.core.common.helper.tryCatchWithDefault
 import io.core.common.util.log.LogCat
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
 object MultimediaUtil {
 
@@ -18,18 +26,29 @@ object MultimediaUtil {
      * val duration3 = MultimediaUtil.getDuration(filePath, "m:ss.SSS")  // 3:45.230
      *
      */
-    fun getDuration(filePath: String, formatStr: String = "mm:ss"): String? {
-        val retriever = MediaMetadataRetriever()
-        return try {
-            retriever.setDataSource(filePath)
-            val durationMs = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
-                ?.toLongOrNull()
-            durationMs?.let { formatDuration(it, formatStr) }
-        } catch (e: Exception) {
-            LogCat.e(e.fillInStackTrace())
-            null
-        } finally {
-            retriever.release()
+    fun getDuration(filePath: String, formatStr: String = "mm:ss"): String? = runSuspend {
+        obtainDuration(filePath, formatStr)
+    }
+
+    suspend fun obtainDuration(filePath: String, formatStr: String = "mm:ss"): String? {
+        return suspendCoroutine { continuation ->
+            launchSuspend(dispatcher = Dispatchers.IO) {
+                // 在IO线程中执行操作
+                val retriever = MediaMetadataRetriever()
+                try {
+                    retriever.setDataSource(filePath)
+                    val durationMs =
+                        retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
+                            ?.toLongOrNull()
+                    val formattedDuration = durationMs?.let { formatDuration(it, formatStr) }
+                    continuation.resume(formattedDuration) // 返回格式化后的时长
+                } catch (e: Exception) {
+                    LogCat.e(e)
+                    continuation.resume("") // 异常时返回 ""
+                } finally {
+                    retriever.release()
+                }
+            }
         }
     }
 

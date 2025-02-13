@@ -36,6 +36,10 @@
         <item name="android:background">@drawable/button_rect_selector</item>
     </style>
 
+    <style name="AppTheme.AppBarOverlay.Dark" parent="ThemeOverlay.AppCompat.Dark">
+        <item name="colorAccent">@color/md_grey_50</item>
+    </style>
+
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light">
         <item name="overlapAnchor">false</item>
         <item name="colorAccent">@color/md_grey_900</item>

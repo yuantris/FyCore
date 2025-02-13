@@ -1,23 +1,34 @@
 package com.core.fy.android.function.event
 
-import androidx.lifecycle.Observer
+import android.os.Bundle
+import androidx.appcompat.widget.Toolbar
 import com.core.fy.android.R
 import com.core.fy.android.databinding.ActivityEventBinding
 import com.core.fy.android.util.LiveDataCompat
+import com.gyf.immersionbar.ImmersionBar
 import io.core.common.base.component.activity.ReflectBindingActivity
 import io.core.common.util.ext.cool.observeEvent
 import io.core.common.util.ext.cool.postEvent
 import io.core.common.util.ext.currentTimeMillis
 import io.core.common.util.ext.ui.getCompatColor
 import io.core.common.util.ext.ui.onClick
-import io.core.common.util.log.logD
 import io.core.common.util.ext.ui.toast
+import io.core.common.util.log.logD
 import io.core.common.util.tools.DrawableBuilder
-import io.core.engine.livebus.LiveEventBus
 
 class EventActivity : ReflectBindingActivity<ActivityEventBinding>() {
 
     private val _ratio = "3:1"
+
+    override fun initial(savedInstanceState: Bundle?) {
+        ImmersionBar.setTitleBar(this, binding.titleBar)
+        super.initial(savedInstanceState)
+        setSupportActionBar(binding.titleBar)
+        supportActionBar?.apply {
+            setDisplayHomeAsUpEnabled(true)
+            setHomeAsUpIndicator(R.drawable.ic_arrow_back)
+        }
+    }
 
     override fun setListener() {
         super.setListener()
@@ -47,10 +58,18 @@ class EventActivity : ReflectBindingActivity<ActivityEventBinding>() {
 
     override fun observers() {
         super.observers()
+        val description = "这是一个宽高比 %s 的FrameLayout"
         observeEvent<Int>(_ratio) {
             when (it) {
-                2 -> binding.ratioLayout.setSizeRatio(2f, 1f)
-                3 -> binding.ratioLayout.setSizeRatio(3f, 1f)
+                2 -> {
+                    binding.ratioLayout.setSizeRatio(2f, 1f)
+                    binding.description.text = description.format("2:1")
+                }
+
+                3 -> {
+                    binding.ratioLayout.setSizeRatio(3f, 1f)
+                    binding.description.text = description.format("3:1")
+                }
             }
         }
 

@@ -55,7 +55,7 @@
             android:exported="false" />
         <activity
             android:name=".function.event.EventActivity"
-            android:exported="false" />
+            android:exported="false"/>
         <activity
             android:name=".function.yunchuang.VisibilityActivity"
             android:exported="false" />
@@ -74,6 +74,9 @@
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".function.TestPageActivity"
+            android:exported="false" />
+        <activity
+            android:name=".function.TestCodePageActivity"
             android:exported="false" />
         <activity
             android:name=".function.GuideActivity"
