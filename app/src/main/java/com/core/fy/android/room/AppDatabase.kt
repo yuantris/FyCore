@@ -9,7 +9,7 @@ import com.core.fy.android.room.dao.UserDao
 import com.core.fy.android.room.entity.Function
 import com.core.fy.android.room.entity.User
 import io.core.Android
-import io.core.common.util.ext.appCtx
+import io.core.appCtx
 
 val appDb by lazy {
     Room.databaseBuilder(appCtx, AppDatabase::class.java, AppDatabase.DATABASE_NAME)

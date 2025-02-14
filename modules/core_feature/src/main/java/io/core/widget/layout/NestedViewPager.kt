@@ -16,6 +16,14 @@ class NestedViewPager @JvmOverloads constructor(context: Context, attrs: Attribu
     private val parentHelper: NestedScrollingParentHelper = NestedScrollingParentHelper(this)
     private val childHelper: NestedScrollingChildHelper = NestedScrollingChildHelper(this)
 
+    fun addOnPageSelectedListener(listener: (position: Int) -> Unit) {
+        addOnPageChangeListener(object : OnPageChangeListener {
+            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
+            override fun onPageSelected(position: Int) = listener(position)
+            override fun onPageScrollStateChanged(state: Int) {}
+        })
+    }
+
     init {
         isNestedScrollingEnabled = true
     }

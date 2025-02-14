@@ -1,7 +1,7 @@
 package io.core.common.util
 
 import android.widget.Toast
-import io.core.common.util.ext.appCtx
+import io.core.appCtx
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope

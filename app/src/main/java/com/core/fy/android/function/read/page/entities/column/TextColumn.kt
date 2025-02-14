@@ -9,7 +9,7 @@ import com.core.fy.android.function.read.page.entities.TextLine
 import com.core.fy.android.function.read.page.entities.TextLine.Companion.emptyTextLine
 import com.core.fy.android.function.read.page.provider.ChapterProvider
 import com.core.fy.android.help.config.ReadBookConfig
-import io.core.common.util.ext.appCtx
+import io.core.appCtx
 import io.core.common.util.ext.ui.getCompatColor
 
 /**

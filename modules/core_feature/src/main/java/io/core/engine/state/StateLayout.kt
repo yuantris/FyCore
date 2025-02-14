@@ -18,7 +18,7 @@ import android.widget.FrameLayout
 import androidx.annotation.IdRes
 import androidx.annotation.LayoutRes
 import io.core.R
-import io.core.common.util.ext.ui.setDebouncedClickListener
+import io.core.common.util.ext.ui.onDebouncedClick
 import io.core.engine.state.Status.*
 
 /**
@@ -278,7 +278,7 @@ class StateLayout @JvmOverloads constructor(
                 if (status == EMPTY || status == ERROR) {
                     retryIds?.forEach {
                         targetStatusView.findViewById<View>(it)
-                            ?.setDebouncedClickListener { showLoading() }
+                            ?.onDebouncedClick { showLoading() }
                     }
                 }
                 when (status) {

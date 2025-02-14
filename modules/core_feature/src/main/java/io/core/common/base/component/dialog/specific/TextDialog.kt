@@ -6,11 +6,11 @@ import android.view.ViewGroup
 import androidx.lifecycle.lifecycleScope
 import io.core.R
 import io.core.common.base.component.dialog.BaseDialogFragment
-import io.core.common.helper.viewbindingdelegate.viewBinding
 import io.core.common.util.ext.ui.applyTint
 import io.core.common.util.ext.ui.getCompatColor
 import io.core.common.util.ext.ui.setHtml
 import io.core.common.util.ext.ui.setLayout
+import io.core.common.util.ext.ui.viewBinding
 import io.core.databinding.DialogTextViewBinding
 import io.core.other.IntentData
 import kotlinx.coroutines.delay

@@ -29,10 +29,10 @@ class GuideActivity : BaseGuideActivity() {
     override fun getGuideConfig() = GuideConfig(
         guideImages = listOf(R.drawable.splash_1, R.drawable.splash_2, R.drawable.splash_3),
         enterButtonRes = 0,
-        enableCustomEnterButton = true,
-        enterButtonMargin = 50.dpToPx(),
+        enableEnterButton = true,
+        enterButtonMargin = 80,
         showIndicator = false,
-        indicatorMargin = 100.dpToPx(),
+        indicatorMargin = 100,
         indicatorDotSelected = R.drawable.ic_daytime,
         indicatorDotNormal = R.drawable.ic_brightness,
     )

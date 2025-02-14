@@ -12,7 +12,7 @@ import com.core.fy.android.room.entity.BookChapter
 import com.core.fy.android.function.read.services.AudioPlayService
 import com.google.common.eventbus.EventBus
 import io.core.common.helper.coroutine.Coroutine
-import io.core.common.util.ext.appCtx
+import io.core.appCtx
 import io.core.common.util.ext.cool.postEvent
 import io.core.common.util.ext.ui.startService
 import kotlinx.coroutines.CoroutineScope

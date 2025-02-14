@@ -1,7 +1,7 @@
 package io.core.common
 
 import io.core.R
-import io.core.common.util.ext.appCtx
+import io.core.appCtx
 import io.core.common.util.ext.ui.getCompatColor
 
 /**
@@ -21,6 +21,9 @@ object CoreConfig {
     private val accentColor = appCtx.getCompatColor(R.color.common_accent_color)
 
     /*AndroidAlertBuilder的按钮色值*/
-    var DIALOG_BUTTON_POSITIVE_COLOR = accentColor
-    var DIALOG_BUTTON_NEGATIVE_COLOR = accentColor
+    var alert_positive_color = accentColor
+    var alert_negative_color = accentColor
+
+    @JvmStatic
+    var crashAfterJumpActivity: Class<*>? = null // 设置闪退后要跳转的Activity
 }

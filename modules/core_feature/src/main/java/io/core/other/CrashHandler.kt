@@ -15,7 +15,7 @@ import androidx.core.content.ContextCompat
 import io.core.Android
 import io.core.common.base.component.activity.CrashActivity
 import io.core.common.base.component.activity.RestartActivity
-import io.core.common.util.ext.appCtx
+import io.core.appCtx
 import io.core.common.util.ext.cool.createFolderReplace
 import io.core.common.util.ext.cool.getFile
 import io.core.common.util.ext.currentTimeMillis

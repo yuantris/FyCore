@@ -11,13 +11,12 @@ import com.core.fy.android.constants.PreferKey
 import com.core.fy.android.databinding.DialogAppConfigBinding
 import io.core.common.base.component.dialog.BaseDialogFragment
 import io.core.common.base.component.dialog.specific.CrashLogsDialog
-import io.core.common.helper.viewbindingdelegate.viewBinding
-import io.core.common.util.ext.appCtx
 import io.core.common.util.ext.ui.applyTint
 import io.core.common.util.ext.ui.getCompatColor
 import io.core.common.util.ext.ui.onClick
 import io.core.common.util.ext.ui.setLayout
 import io.core.common.util.ext.ui.showDialogFragment
+import io.core.common.util.ext.ui.viewBinding
 import io.core.common.util.tools.Preferences
 
 
@@ -70,13 +69,29 @@ class ConfigDialog : BaseDialogFragment(R.layout.dialog_app_config) {
         }
 
         val isDisplaySplashAnim = Preferences.getValue(PreferKey.isDisplaySplashAnim, true)
+        val isDisplayGuide = Preferences.getValue(PreferKey.isDisplayGuide, true)
+        val isDisplayHomeSkeletonAnim = Preferences.getValue(PreferKey.isDisplayHomeSkeletonAnim, true)
 
         binding.apply {
             radioStartAnim.isChecked = isDisplaySplashAnim
-            radioStartAnim.setOnClickListener {
+            radioStartAnim.onClick {
                 val check = Preferences.getValue(PreferKey.isDisplaySplashAnim, true)
                 radioStartAnim.isChecked = !check
                 Preferences.putValue(PreferKey.isDisplaySplashAnim, !check)
+            }
+
+            radioGuideShow.isChecked = isDisplayGuide
+            radioGuideShow.onClick {
+                val check = Preferences.getValue(PreferKey.isDisplayGuide, true)
+                radioGuideShow.isChecked = !check
+                Preferences.putValue(PreferKey.isDisplayGuide, !check)
+            }
+
+            radioHomeSkeletonAnim.isChecked = isDisplayHomeSkeletonAnim
+            radioHomeSkeletonAnim.onClick {
+                val check = Preferences.getValue(PreferKey.isDisplayHomeSkeletonAnim, true)
+                radioHomeSkeletonAnim.isChecked = !check
+                Preferences.putValue(PreferKey.isDisplayHomeSkeletonAnim, !check)
             }
 
             crumble.onClick {

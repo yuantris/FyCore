@@ -4,15 +4,79 @@ package io.core.common.util.ext.ui
 
 import android.app.Activity
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupWindow
 import androidx.activity.ComponentActivity
+import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import androidx.viewbinding.ViewBinding
+import io.core.common.helper.ViewBindingProperty
 import java.lang.reflect.InvocationTargetException
 import java.lang.reflect.ParameterizedType
+
+inline fun <T : ViewBinding> androidx.core.app.ComponentActivity.viewBinding(
+    crossinline bindingInflater: (LayoutInflater) -> T,
+    setContentView: Boolean = false
+) = lazy(LazyThreadSafetyMode.SYNCHRONIZED) {
+    val binding = bindingInflater.invoke(layoutInflater)
+    if (setContentView) {
+        setContentView(binding.root)
+    }
+    binding
+}
+
+private class FragmentViewBindingProperty<F : Fragment, T : ViewBinding>(
+    viewBinder: (F) -> T
+) : ViewBindingProperty<F, T>(viewBinder) {
+
+    override fun getLifecycleOwner(thisRef: F) = thisRef.viewLifecycleOwner
+}
+
+/**
+ * Create new [ViewBinding] associated with the [Fragment]
+ */
+@JvmName("viewBindingFragment")
+fun <F : Fragment, T : ViewBinding> Fragment.viewBinding(viewBinder: (F) -> T): ViewBindingProperty<F, T> {
+    return FragmentViewBindingProperty(viewBinder)
+}
+
+/**
+ * Create new [ViewBinding] associated with the [Fragment]
+ *
+ * @param vbFactory Function that create new instance of [ViewBinding]. `MyViewBinding::bind` can be used
+ * @param viewProvider Provide a [View] from the Fragment. By default call [Fragment.requireView]
+ */
+@JvmName("viewBindingFragment")
+inline fun <F : Fragment, T : ViewBinding> Fragment.viewBinding(
+    crossinline vbFactory: (View) -> T,
+    crossinline viewProvider: (F) -> View = Fragment::requireView
+): ViewBindingProperty<F, T> {
+    return viewBinding { fragment: F -> vbFactory(viewProvider(fragment)) }
+}
+
+
+/**
+ * 为Fragment创建一个ViewBinding属性
+ * @param T ViewBinding的类型，它决定了返回的ViewBinding实例的类型
+ * @param vbFactory 一个工厂方法，用于创建ViewBinding实例
+ * @param viewBindingRootId 视图绑定的根视图的ID，用于在Fragment的视图中找到根视图
+ * @return 返回一个ViewBindingProperty实例，它是一个代理对象，用于管理ViewBinding实例的生命周期和访问
+ *
+ * 注意：这个函数使用了inline修饰符，以避免额外的类生成，保持性能
+ *       它还使用了@JvmName注解，以自定义生成的字节码中的函数名称，避免名称冲突
+ */
+@JvmName("viewBindingFragment")
+inline fun <T : ViewBinding> Fragment.viewBinding(
+    crossinline vbFactory: (View) -> T,
+    @IdRes viewBindingRootId: Int
+): ViewBindingProperty<Fragment, T> {
+    return viewBinding(vbFactory) { fragment: Fragment ->
+        fragment.requireView().findViewById(viewBindingRootId)
+    }
+}
 
 
 @JvmName("inflateWithGeneric")

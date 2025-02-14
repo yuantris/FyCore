@@ -8,7 +8,7 @@ import com.core.fy.android.function.read.model.ReadBook
 import com.core.fy.android.function.read.page.ContentTextView
 import com.core.fy.android.function.read.page.entities.TextLine
 import com.core.fy.android.function.read.page.entities.TextLine.Companion.emptyTextLine
-import io.core.common.util.ext.appCtx
+import io.core.appCtx
 import io.core.common.util.tools.toastOnUi
 
 /**

@@ -11,7 +11,7 @@ import com.core.fy.android.help.isEpub
 import com.core.fy.android.help.isMobi
 import com.core.fy.android.help.isPdf
 import com.core.fy.android.room.entity.Book
-import io.core.common.util.ext.appCtx
+import io.core.appCtx
 import io.core.common.util.log.AppLog.putDebug
 import io.core.common.util.tools.BitmapUtils
 import io.core.common.util.tools.toastOnUi

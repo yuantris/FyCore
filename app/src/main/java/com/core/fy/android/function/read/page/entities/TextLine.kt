@@ -19,7 +19,7 @@ import io.core.Android
 import io.core.common.util.ext.cool.dpToPx
 import io.core.common.util.ext.ui.getCompatColor
 import io.core.common.helper.canvasrecorder.recordIfNeededThenDraw
-import io.core.common.util.ext.appCtx
+import io.core.appCtx
 
 /**
  * 行信息

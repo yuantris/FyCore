@@ -3,7 +3,8 @@ package io.core.common.util.tools
 import android.net.Uri
 import android.os.Build
 import androidx.core.content.FileProvider
-import io.core.common.util.ext.appCtx
+import io.core.appCtx
+import io.core.common.util.ext.authority
 import java.io.File
 
 /**
@@ -24,11 +25,7 @@ object UriUtils {
     // 获取安全的文件 URI
     fun file2Uri(file: File): Uri {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            FileProvider.getUriForFile(
-                appCtx,
-                "${appCtx.packageName}.fycore.fileprovider",
-                file
-            )
+            FileProvider.getUriForFile(appCtx, authority, file)
         } else {
             Uri.fromFile(file)
         }

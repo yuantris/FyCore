@@ -144,6 +144,7 @@ import android.view.textclassifier.TextClassificationManager
 import android.view.textservice.TextServicesManager
 import androidx.annotation.RequiresApi
 import io.core.Android
+import io.core.appCtx
 
 /**
 # ██████████
@@ -158,8 +159,6 @@ import io.core.Android
  * @description
  * @author Yuan
  */
-
-inline val appCtx get() = Android.context
 
 inline val AccessibilityService.windowManager get() = getSystemService(WINDOW_SERVICE) as WindowManager
 inline val Context.windowManager get() = getSystemService(WINDOW_SERVICE) as WindowManager

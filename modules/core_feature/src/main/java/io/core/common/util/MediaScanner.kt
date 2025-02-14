@@ -2,7 +2,7 @@ package io.core.common.util
 
 import android.net.Uri
 import android.provider.MediaStore
-import io.core.common.util.ext.appCtx
+import io.core.appCtx
 import io.core.common.util.log.LogPure
 
 /**

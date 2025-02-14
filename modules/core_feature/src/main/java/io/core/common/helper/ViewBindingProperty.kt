@@ -1,6 +1,6 @@
 @file:Suppress("RedundantVisibilityModifier")
 
-package io.core.common.helper.viewbindingdelegate
+package io.core.common.helper
 
 import android.os.Handler
 import android.os.Looper

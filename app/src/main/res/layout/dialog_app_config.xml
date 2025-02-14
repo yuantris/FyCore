@@ -30,16 +30,32 @@
             android:paddingHorizontal="@dimen/dp_10"
             android:text="启动动画" />
 
+        <androidx.appcompat.widget.AppCompatRadioButton
+            android:id="@+id/radio_guide_show"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start|center_vertical"
+            android:paddingHorizontal="@dimen/dp_10"
+            android:text="引导页展示" />
 
-        <FrameLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+        <androidx.appcompat.widget.AppCompatRadioButton
+            android:id="@+id/radio_home_skeleton_anim"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start|center_vertical"
+            android:paddingHorizontal="@dimen/dp_10"
+            android:text="首页加载骨骼动画" />
 
-            <Button
-                android:id="@+id/crumble"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="崩溃日志" />
-        </FrameLayout>
+
+        <io.core.widget.view.SettingBar
+            android:id="@+id/crumble"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/common_window_background_color"
+            app:bar_leftDrawable="@drawable/shape_card_view"
+            app:bar_leftDrawablePadding="@dimen/dp_28"
+            app:bar_leftText="崩溃日志查看"
+            app:bar_rightDrawable="@drawable/ic_arrow_right" />
+
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

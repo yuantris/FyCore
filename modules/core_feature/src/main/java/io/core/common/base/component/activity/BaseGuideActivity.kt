@@ -19,17 +19,21 @@ import com.gyf.immersionbar.ImmersionBar
 import io.core.R
 import io.core.common.helper.dialogs.showDialog
 import io.core.common.util.ext.addCallback
+import io.core.common.util.ext.cool.dp
+import io.core.common.util.ext.cool.dpToPx
 import io.core.common.util.ext.exitApp
-import io.core.common.util.ext.ui.setDebouncedClickListener
+import io.core.common.util.ext.ui.onDebouncedClick
 
 // GuideConfig.kt
 data class GuideConfig(
     val guideImages: List<Int>,
     val enterButtonRes: Int,
-    val enableCustomEnterButton: Boolean = false,
+    val enableEnterButton: Boolean = false,
     val showIndicator: Boolean = true,
     val indicatorGravity: Int = Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL,
     val enterButtonGravity: Int = Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL,
+
+    // 单位dp
     val indicatorMargin: Int = 32,
     val enterButtonMargin: Int = 64,
     val indicatorDotNormal: Int = 0,
@@ -72,7 +76,7 @@ abstract class BaseGuideActivity : AppCompatActivity() {
         viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 updateIndicator(position)
-                if (config.enableCustomEnterButton) {
+                if (config.enableEnterButton) {
                     btnEnterCustom.visibility =
                         if (position == config.guideImages.lastIndex) View.VISIBLE else View.GONE
                     btnEnterCustom.breathingAnim()
@@ -86,27 +90,27 @@ abstract class BaseGuideActivity : AppCompatActivity() {
     }
 
     private fun initEnterButton(config: GuideConfig) {
-        if (config.enableCustomEnterButton) {
+        if (config.enableEnterButton) {
             btnEnterCustom = findViewById(R.id.btnEnterCustom)
             (btnEnterCustom.layoutParams as FrameLayout.LayoutParams).apply {
                 gravity = config.enterButtonGravity
                 setMargins(
-                    config.enterButtonMargin, config.enterButtonMargin,
-                    config.enterButtonMargin, config.enterButtonMargin
+                    config.enterButtonMargin.dpToPx(), config.enterButtonMargin.dpToPx(),
+                    config.enterButtonMargin.dpToPx(), config.enterButtonMargin.dpToPx()
                 )
             }
-            btnEnterCustom.setDebouncedClickListener { onEnterClicked() }
+            btnEnterCustom.onDebouncedClick { onEnterClicked() }
         } else {
             btnEnter = findViewById(R.id.btnEnter)
             btnEnter.setImageResource(config.enterButtonRes)
             (btnEnter.layoutParams as FrameLayout.LayoutParams).apply {
                 gravity = config.enterButtonGravity
                 setMargins(
-                    config.enterButtonMargin, config.enterButtonMargin,
-                    config.enterButtonMargin, config.enterButtonMargin
+                    config.enterButtonMargin.dpToPx(), config.enterButtonMargin.dpToPx(),
+                    config.enterButtonMargin.dpToPx(), config.enterButtonMargin.dpToPx()
                 )
             }
-            btnEnter.setDebouncedClickListener { onEnterClicked() }
+            btnEnter.onDebouncedClick { onEnterClicked() }
         }
 
     }
@@ -137,8 +141,8 @@ abstract class BaseGuideActivity : AppCompatActivity() {
         (indicatorContainer.layoutParams as FrameLayout.LayoutParams).apply {
             gravity = config.indicatorGravity
             setMargins(
-                config.indicatorMargin, config.indicatorMargin,
-                config.indicatorMargin, config.indicatorMargin
+                config.indicatorMargin.dpToPx(), config.indicatorMargin.dpToPx(),
+                config.indicatorMargin.dpToPx(), config.indicatorMargin.dpToPx()
             )
         }
         updateIndicator(0)
@@ -169,10 +173,10 @@ abstract class BaseGuideActivity : AppCompatActivity() {
             holder.imageView.setImageResource(config.guideImages[position])
             holder.imageView.scaleType = ImageView.ScaleType.FIT_XY
             if (config.enterButtonRes == 0
-                && !config.enableCustomEnterButton
+                && !config.enableEnterButton
                 && position == config.guideImages.lastIndex
             ) {
-                holder.imageView.setDebouncedClickListener { onEnterClicked() }
+                holder.imageView.onDebouncedClick { onEnterClicked() }
             }
         }
 

@@ -57,9 +57,9 @@ class BaseAlertDialogBuilder : MaterialAlertDialogBuilder {
 
     private fun setButtonColors(dialog: AlertDialog) {
         dialog.getButton(DialogInterface.BUTTON_POSITIVE)
-            ?.setTextColor(CoreConfig.DIALOG_BUTTON_POSITIVE_COLOR)
+            ?.setTextColor(CoreConfig.alert_positive_color)
         dialog.getButton(DialogInterface.BUTTON_NEGATIVE)
-            ?.setTextColor(CoreConfig.DIALOG_BUTTON_NEGATIVE_COLOR)
+            ?.setTextColor(CoreConfig.alert_negative_color)
     }
 
     companion object {

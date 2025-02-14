@@ -5,7 +5,6 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import com.core.fy.android.Config
 import com.core.fy.android.MainActivity
 import com.core.fy.android.R
-import com.core.fy.android.databinding.FragmentHomeBinding
 import com.core.fy.android.databinding.FragmentStatusBinding
 import com.core.fy.android.databinding.ItemFunctionBinding
 import com.core.fy.android.function.CollapsingBarActivity
@@ -33,7 +32,7 @@ import io.core.engine.brv.BindingAdapter
 import io.core.engine.brv.listener.DefaultItemTouchCallback
 import io.core.engine.brv.utils.grid
 import io.core.engine.brv.utils.setup
-import io.core.other.CustomToast
+import io.core.common.base.component.dialog.CustomToast
 
 /**
 # ██████████
@@ -57,7 +56,7 @@ class StatusFragment : ReflectBindingFragment<FragmentStatusBinding, MainActivit
 
     override fun initView() {
         binding.state.stateChangedHandler = LeastAnimationStateChangedHandler()
-        if (Config.isDisplaySplashAnim) {
+        if (Config.isDisplayHomeSkeletonAnim) {
             binding.state.onRefresh {
                 functionVM.initRvData()
             }.showLoading()

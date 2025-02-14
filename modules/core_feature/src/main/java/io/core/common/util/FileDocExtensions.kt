@@ -9,7 +9,7 @@ import android.net.Uri
 import android.os.ParcelFileDescriptor
 import android.provider.DocumentsContract
 import androidx.documentfile.provider.DocumentFile
-import io.core.common.util.ext.appCtx
+import io.core.appCtx
 import io.core.common.util.ext.cool.checkWrite
 import io.core.common.util.ext.cool.inputStream
 import io.core.common.util.ext.cool.isContentScheme

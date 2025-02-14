@@ -8,10 +8,12 @@ import android.os.Environment
 import android.os.Looper
 import android.os.StrictMode
 import android.os.StrictMode.VmPolicy
-import io.core.common.helper.TryCatchHelper
-import io.core.common.util.ext.appCtx
+import io.core.common.helper.tryCatch
+import io.core.appCtx
+import io.core.common.util.ext.logE
 import io.core.common.util.ext.ui.getActivity
 import io.core.common.util.ext.verify
+import io.core.common.util.log.LogCat
 import io.core.common.util.log.logD
 import io.core.common.util.log.logE
 import io.core.common.util.log.logI
@@ -131,8 +133,8 @@ class CoreUtil {
                     .firstOrNull { fileName.endsWith(it[0], ignoreCase = true) }
                     ?.get(1) ?: ""
 
-                TryCatchHelper.execute(
-                    block = {
+                tryCatch(
+                    tryBlock = {
                         // 直接跳过权限
                         val builder = VmPolicy.Builder()
                         StrictMode.setVmPolicy(builder.build())
@@ -152,9 +154,9 @@ class CoreUtil {
                                 appCtx.getActivity()?.overridePendingTransition(0, 0)
                             })
                     },
-                    catch = {
+                    catchBlock = {
                         toast("无法打开该格式文件")
-                        it.message?.logE()
+                        LogCat.e(it)
                     }
                 )
             }

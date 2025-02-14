@@ -16,7 +16,7 @@
             android:process=":restart" />
 
         <provider
-            android:name="io.core.other.CoreFileProvider"
+            android:name="io.core.CoreFileProvider"
             android:authorities="${applicationId}.fycore.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">

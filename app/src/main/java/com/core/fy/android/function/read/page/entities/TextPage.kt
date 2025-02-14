@@ -19,7 +19,7 @@ import com.core.fy.android.help.PaintPool
 import com.core.fy.android.help.config.AppConfig
 import com.core.fy.android.help.config.ReadBookConfig
 import io.core.common.helper.canvasrecorder.recordIfNeeded
-import io.core.common.util.ext.appCtx
+import io.core.appCtx
 import io.core.common.util.ext.cool.dpToPx
 import java.text.DecimalFormat
 import kotlin.math.min

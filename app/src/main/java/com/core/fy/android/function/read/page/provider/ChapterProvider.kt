@@ -22,7 +22,7 @@ import com.core.fy.android.help.config.ReadBookConfig
 import com.core.fy.android.help.textHeight
 import com.core.fy.android.room.entity.Book
 import com.core.fy.android.room.entity.BookChapter
-import io.core.common.util.ext.appCtx
+import io.core.appCtx
 import io.core.common.util.ext.cool.dpToPx
 import io.core.common.util.ext.cool.fastSum
 import io.core.common.util.ext.cool.isContentScheme

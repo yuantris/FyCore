@@ -6,8 +6,8 @@ import com.core.fy.android.databinding.ActivityVisibilityBinding
 import io.core.common.base.component.activity.ReflectBindingActivity
 import io.core.common.util.ext.ui.hide
 import io.core.common.util.ext.cool.launchSync
+import io.core.common.util.ext.ui.onDebouncedClick
 import io.core.common.util.ext.ui.onVisibilityChange
-import io.core.common.util.ext.ui.setDebouncedClickListener
 import io.core.common.util.ext.ui.setVisible
 import io.core.common.util.ext.ui.show
 import io.core.common.util.ext.ui.toast
@@ -29,7 +29,7 @@ class VisibilityActivity : ReflectBindingActivity<ActivityVisibilityBinding>() {
     override fun setListener() {
         super.setListener()
         with(binding.imageView){
-            setDebouncedClickListener {
+            onDebouncedClick {
                 if (isVisible) {
                     hide()
                     launchSync {

@@ -3,7 +3,7 @@ package io.core.common.util.tools
 import android.os.Environment
 import android.webkit.MimeTypeMap
 import androidx.annotation.IntDef
-import io.core.common.util.ext.appCtx
+import io.core.appCtx
 import io.core.common.util.ext.cool.ConvertUtils
 import io.core.common.util.ext.cool.cnCompare
 import io.core.common.util.ext.currentTimeMillis

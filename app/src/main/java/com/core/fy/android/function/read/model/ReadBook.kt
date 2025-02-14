@@ -13,7 +13,7 @@ import com.core.fy.android.room.entity.BookChapter
 import com.core.fy.android.room.entity.ReadRecord
 import com.core.fy.android.function.read.services.BaseReadAloudService
 import io.core.common.helper.coroutine.Coroutine
-import io.core.common.util.ext.appCtx
+import io.core.appCtx
 import io.core.common.util.log.AppLog
 import io.core.common.util.tools.globalExecutor
 import kotlinx.coroutines.CoroutineScope

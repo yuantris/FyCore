@@ -6,7 +6,7 @@ import com.core.fy.android.BuildConfig
 import com.core.fy.android.constants.PreferKey
 import com.core.fy.android.constants.PreferKey.themeMode
 import io.core.Android
-import io.core.common.util.ext.appCtx
+import io.core.appCtx
 import io.core.common.util.ext.ui.defaultSharedPreferences
 import io.core.common.util.ext.ui.getPrefBoolean
 import io.core.common.util.ext.ui.getPrefInt

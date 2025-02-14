@@ -2,12 +2,10 @@ package com.core.fy.android.function.toast
 
 import android.os.Bundle
 import android.view.Gravity
-import android.widget.Toast
 import com.core.fy.android.databinding.ActivityCustomToastBinding
 import io.core.common.base.component.activity.ReflectBindingActivity
 import io.core.common.util.ext.ui.toast
-import io.core.common.util.ext.ui.toastLong
-import io.core.other.CustomToast
+import io.core.common.base.component.dialog.CustomToast
 
 /**
 # ██████████

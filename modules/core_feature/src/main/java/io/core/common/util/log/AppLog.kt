@@ -1,6 +1,6 @@
 package io.core.common.util.log
 
-import io.core.common.util.ext.appCtx
+import io.core.appCtx
 import io.core.common.util.ext.currentTimeMillis
 import io.core.common.util.tools.toastOnUi
 

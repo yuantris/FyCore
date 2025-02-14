@@ -11,7 +11,7 @@ import com.core.fy.android.help.config.AppConfig
 import com.core.fy.android.help.config.ReadBookConfig
 import io.core.Android
 import io.core.common.helper.canvasrecorder.recordIfNeeded
-import io.core.common.util.ext.appCtx
+import io.core.appCtx
 
 /**
  * 自动翻页

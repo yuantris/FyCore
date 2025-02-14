@@ -4,7 +4,7 @@ package io.core.common.util.tools
 
 import android.content.SharedPreferences
 import androidx.preference.PreferenceManager
-import io.core.common.util.ext.appCtx
+import io.core.appCtx
 
 object Preferences {
 

@@ -29,8 +29,6 @@ class App : Application() {
     override fun onCreate() {
         super.onCreate()
         Android.initialize(this)
-        // 设置重启对象Activity
-        Android.homeActivity = MainActivity::class.java
 
 //        // 添加日志全局拦截器
 //        LogCat.addHook(object : LogHook {
@@ -42,8 +40,9 @@ class App : Application() {
     }
 
     private fun initApp() {
-        CoreConfig.DIALOG_BUTTON_POSITIVE_COLOR = getColor(R.color.md_indigo_500)
-        CoreConfig.DIALOG_BUTTON_NEGATIVE_COLOR = getColor(R.color.md_red_300)
+        CoreConfig.crashAfterJumpActivity = MainActivity::class.java
+        CoreConfig.alert_positive_color = getColor(R.color.md_indigo_500)
+        CoreConfig.alert_negative_color = getColor(R.color.md_red_300)
         // SoftKeyboardGlobal.install(this, false)
         createNotificationChannels()
     }

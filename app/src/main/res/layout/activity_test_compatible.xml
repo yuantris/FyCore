@@ -10,7 +10,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:navigationIcon="@drawable/bar_arrows_left_black"
-        app:subtitle="Code Compatible"
+        app:subtitle="Kotlin code java environment compatibility test"
         app:subtitleTextAppearance="@style/Toolbar.SubTitleText"
         app:title="Code Test" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -19,4 +19,6 @@ import io.core.common.util.tools.Preferences
 object Config {
     // 是否显示启动动画
     var isDisplaySplashAnim = Preferences.getValue(PreferKey.isDisplaySplashAnim, true)
+    var isDisplayGuide = Preferences.getValue(PreferKey.isDisplayGuide, true)
+    var isDisplayHomeSkeletonAnim = Preferences.getValue(PreferKey.isDisplayHomeSkeletonAnim, true)
 }

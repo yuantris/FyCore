@@ -3,7 +3,7 @@ package com.core.fy.android.help.config
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.core.content.edit
-import io.core.common.util.ext.appCtx
+import io.core.appCtx
 import io.core.common.util.ext.cool.getBoolean
 import io.core.common.util.ext.cool.putBoolean
 import io.core.common.util.ext.cool.putLong

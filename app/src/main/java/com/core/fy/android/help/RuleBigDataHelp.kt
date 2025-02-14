@@ -1,7 +1,7 @@
 package com.core.fy.android.help
 
 import io.core.Android
-import io.core.common.util.ext.appCtx
+import io.core.appCtx
 import io.core.common.util.ext.cool.getFile
 import io.core.common.util.ext.ui.externalFiles
 import io.core.common.util.tools.FileUtils

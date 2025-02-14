@@ -16,6 +16,8 @@ package com.core.fy.android.constants
 object PreferKey {
     // 是否显示启动动画
     const val isDisplaySplashAnim = "isDisplaySplashAnim"
+    const val isDisplayGuide = "isDisplayGuide"
+    const val isDisplayHomeSkeletonAnim = "isDisplayHomeSkeletonAnim"
 
     /** --------------read-------------- */
     const val language = "language"

@@ -426,7 +426,7 @@ fun View.onClick(action: () -> Unit) {
 
 // 防止多次点击
 // 防止重复点击（防止快速点击触发多次）
-fun View.setDebouncedClickListener(debounceTime: Long = 500L, onClick: () -> Unit) {
+fun View.onDebouncedClick(debounceTime: Long = 500L, onClick: () -> Unit) {
     var lastClickTime = 0L
     setOnClickListener {
         val currentTime = currentTimeMillis

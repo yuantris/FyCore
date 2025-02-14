@@ -7,12 +7,12 @@ import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
-import java.util.Collections
+import java.util.SortedMap
 import java.util.concurrent.*
 import kotlin.coroutines.cancellation.CancellationException
 
 // ========================= 增强版并发处理器 =========================
-class ConcurrentProcessor private constructor() {
+class TaskExecutor private constructor() {
 
     // ====================== Kotlin 协程版本 ======================
     /**
@@ -77,6 +77,14 @@ class ConcurrentProcessor private constructor() {
     private val scheduledExecutor = Executors.newScheduledThreadPool(2)
 
     /**
+     * 无超时版本（方法重载）
+     */
+    fun <T> executeForJava(
+        tasks: List<ProcessorTask<T>>,
+        callback: ConcurrentCallback<T>
+    ) = executeForJava(tasks, callback, 0, TimeUnit.MILLISECONDS)
+
+    /**
      * 增强型并发执行模板（Java 版）
      * @param tasks 任务集合
      * @param callback 带丰富状态的回调接口
@@ -93,43 +101,64 @@ class ConcurrentProcessor private constructor() {
 
         executor.execute {
             try {
-                val callables = tasks.map { task ->
-                    Callable<T> { task.process() }
+                val taskPairs = tasks.mapIndexed { index, task ->
+                    index to Callable<T> { task.process() }
                 }
 
                 val futures = if (timeout > 0) {
-                    javaThreadPool.invokeAll(callables, timeout, timeUnit)
+                    javaThreadPool.invokeAll(
+                        taskPairs.map { it.second },
+                        timeout,
+                        timeUnit
+                    )
                 } else {
-                    javaThreadPool.invokeAll(callables)
+                    javaThreadPool.invokeAll(taskPairs.map { it.second })
                 }
 
-                val results = Collections.synchronizedList(mutableListOf<T>())
-                val errors = Collections.synchronizedList(mutableListOf<Throwable>())
+                val resultMap = ConcurrentHashMap<Int, T>()
+                val errors = ConcurrentLinkedQueue<Throwable>()
 
-                // 并行处理结果
-                futures.forEachIndexed { index, future ->
+                // 并行处理结果（保留原始顺序）
+                futures.forEachIndexed { futureIndex, future ->
                     try {
                         if (future.isDone) {
                             val result = future.get()
-                            results.add(result)
+                            val originalIndex = taskPairs[futureIndex].first
+                            resultMap[originalIndex] = result
                             runOnUI {
-                                callback.onEachResult(result, index)
-                                callback.onProgress(results.size, tasks.size)
+                                callback.onEachResult(result, originalIndex)
+                                callback.onProgress(resultMap.size, tasks.size)
                             }
                         }
                     } catch (e: InterruptedException) {
-                        errors.add(ConcurrentException("Task interrupted", e))
+                        errors.add(ConcurrentException("Task $futureIndex interrupted", e))
                     } catch (e: ExecutionException) {
-                        errors.add(ConcurrentException("Task failed", e.cause))
+                        errors.add(ConcurrentException("Task $futureIndex failed", e.cause))
                     } catch (e: CancellationException) {
-                        errors.add(ConcurrentTimeoutException("Task timed out"))
+                        errors.add(ConcurrentTimeoutException("Task $futureIndex timed out"))
                     }
                 }
 
                 when {
-                    errors.isNotEmpty() -> runOnUI { callback.onError(ConcurrentAggregateException(errors)) }
-                    results.size == tasks.size -> runOnUI { callback.onComplete(results) }
-                    else -> runOnUI { callback.onError(ConcurrentIncompleteException("Partial completion")) }
+                    errors.isNotEmpty() -> {
+                        val sortedMap = resultMap.toSortedMap()
+                        runOnUI {
+                            callback.onPartialComplete(sortedMap)
+                            callback.onError(ConcurrentAggregateException(errors.toList()))
+                        }
+                    }
+
+                    resultMap.size == tasks.size -> {
+                        runOnUI { callback.onComplete(resultMap.toSortedMap()) }
+                    }
+
+                    else -> {
+                        val sortedMap = resultMap.toSortedMap()
+                        runOnUI {
+                            callback.onPartialComplete(sortedMap)
+                            callback.onError(ConcurrentIncompleteException("Partial completion"))
+                        }
+                    }
                 }
             } catch (e: Exception) {
                 runOnUI { callback.onError(ConcurrentException("Execution failed", e)) }
@@ -145,23 +174,43 @@ class ConcurrentProcessor private constructor() {
         }
     }
 
+    // ====================== 增强回调接口 ======================
+    interface ConcurrentCallback<T> {
+        /**
+         * 全部成功时回调（有序 Map）
+         * @param results 按任务原始顺序排序的结果集
+         */
+        fun onComplete(results: SortedMap<Int, T>)
+
+        /**
+         * 部分完成时回调
+         * @param partialResults 已完成的結果（保留原始顺序）
+         */
+        fun onPartialComplete(partialResults: SortedMap<Int, T>) {}
+
+        fun onError(e: Throwable)
+        fun onProgress(completed: Int, total: Int) {}
+        fun onEachResult(result: T, index: Int) {}
+    }
+
+
     // ====================== 数据结构定义 ======================
     interface ProcessorTask<T> {
         @Throws(Exception::class)
         fun process(): T
     }
 
-    interface ConcurrentCallback<T> {
-        fun onComplete(results: List<T>)
-        fun onError(e: Throwable)
-        fun onProgress(completed: Int, total: Int) {}
-        fun onEachResult(result: T, index: Int) {}
-    }
 
     // ====================== 异常体系 ======================
-    open class ConcurrentException(message: String, cause: Throwable? = null) : Exception(message, cause)
-    class ConcurrentTimeoutException(message: String, cause: Throwable? = null) : ConcurrentException(message, cause)
-    class ConcurrentAggregateException(val causes: List<Throwable>) : ConcurrentException("Multiple errors occurred")
+    open class ConcurrentException(message: String, cause: Throwable? = null) :
+        Exception(message, cause)
+
+    class ConcurrentTimeoutException(message: String, cause: Throwable? = null) :
+        ConcurrentException(message, cause)
+
+    class ConcurrentAggregateException(val causes: List<Throwable>) :
+        ConcurrentException("Multiple errors occurred")
+
     class ConcurrentIncompleteException(message: String) : ConcurrentException(message)
 
     // ====================== 资源管理 ======================
@@ -173,10 +222,10 @@ class ConcurrentProcessor private constructor() {
     // ====================== 单例实现 ======================
     companion object {
         @Volatile
-        private var instance: ConcurrentProcessor? = null
+        private var instance: TaskExecutor? = null
 
-        fun get(): ConcurrentProcessor = instance ?: synchronized(this) {
-            instance ?: ConcurrentProcessor().also { instance = it }
+        fun get(): TaskExecutor = instance ?: synchronized(this) {
+            instance ?: TaskExecutor().also { instance = it }
         }
     }
 }

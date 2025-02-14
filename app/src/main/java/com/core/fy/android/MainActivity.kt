@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.viewpager.widget.ViewPager.OnPageChangeListener
 import com.core.fy.android.databinding.ActivityMainBinding
 import com.core.fy.android.databinding.HomeNavigationItemBinding
 import com.core.fy.android.interfaces.FragmentPagerAdapter
@@ -21,6 +22,7 @@ import io.core.common.util.ext.notifyAllDataChanged
 import io.core.common.util.ext.ui.onClick
 import io.core.common.util.ext.ui.setPaddingBottom
 import io.core.engine.brv.utils.disableEdgeEffect
+import io.core.widget.layout.NestedViewPager
 
 class MainActivity : ReflectBindingActivity<ActivityMainBinding>() {
 
@@ -44,7 +46,8 @@ class MainActivity : ReflectBindingActivity<ActivityMainBinding>() {
                     ContextCompat.getDrawable(this@MainActivity, R.drawable.home_me_selector)
                 )
             )
-            binding.rvHomeNavigation.layoutManager = GridLayoutManager(this@MainActivity, this.itemCount)
+            binding.rvHomeNavigation.layoutManager =
+                GridLayoutManager(this@MainActivity, this.itemCount)
             binding.rvHomeNavigation.adapter = this
             binding.rvHomeNavigation.setPaddingBottom(this@MainActivity.navigationBarHeight)
             binding.rvHomeNavigation.disableEdgeEffect()
@@ -54,6 +57,9 @@ class MainActivity : ReflectBindingActivity<ActivityMainBinding>() {
             addFragment(HomeFragment())
             addFragment(SetFragment())
             binding.vpHomePager.adapter = this
+            binding.vpHomePager.addOnPageSelectedListener {
+                navigationAdapter?.setSelectedPosition(it)
+            }
         }
 
 

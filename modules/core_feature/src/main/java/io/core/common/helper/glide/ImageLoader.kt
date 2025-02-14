@@ -8,7 +8,7 @@ import androidx.annotation.DrawableRes
 import androidx.lifecycle.Lifecycle
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestBuilder
-import io.core.common.util.ext.appCtx
+import io.core.appCtx
 import io.core.common.util.ext.cool.isAbsUrl
 import io.core.common.util.ext.cool.isContentScheme
 import io.core.common.util.ext.cool.isDataUrl

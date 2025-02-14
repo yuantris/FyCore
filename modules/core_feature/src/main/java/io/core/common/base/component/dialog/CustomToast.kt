@@ -1,4 +1,4 @@
-package io.core.other
+package io.core.common.base.component.dialog
 
 import android.app.Activity
 import android.content.Context

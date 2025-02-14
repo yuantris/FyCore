@@ -13,6 +13,7 @@ import java.io.InputStreamReader
 import java.text.DecimalFormat
 import kotlin.math.log10
 import kotlin.math.pow
+import kotlin.math.roundToInt
 
 
 /**
@@ -139,3 +140,8 @@ fun Float.pxToDp(): Float = this / Resources.getSystem().displayMetrics.density 
 
 @Suppress("DEPRECATION")
 fun Float.pxToSp(): Float = this / Resources.getSystem().displayMetrics.scaledDensity + 0.5f
+
+fun Int.dp(): Int = (this * Resources.getSystem().displayMetrics.density).roundToInt()
+fun Int.px(): Int = (this / Resources.getSystem().displayMetrics.density).roundToInt()
+fun Float.dp(): Float = this * Resources.getSystem().displayMetrics.density
+fun Float.px(): Float = this / Resources.getSystem().displayMetrics.density

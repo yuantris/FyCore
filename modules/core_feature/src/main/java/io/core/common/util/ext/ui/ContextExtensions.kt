@@ -44,6 +44,28 @@ import io.core.common.util.tools.Preferences
 import java.io.File
 import kotlin.system.exitProcess
 
+/**
+ * 获取应用启动页的 [Intent]，即在 AndroidManifest.xml 中配置了 action = MAIN、category = LAUNCHER 的入口 Activity。
+ *
+ * @return 启动页的 [Intent]，如果获取不到则返回 null
+ */
+fun Context.getLauncherActivityIntent(): Intent? {
+    return packageManager.getLaunchIntentForPackage(packageName)
+}
+
+/**
+ * 跳转到应用的启动页 Activity。如果获取不到启动页的 Intent，则不会执行跳转。
+ */
+fun Context.navigateToLauncherActivity() {
+    getLauncherActivityIntent()?.let { intent ->
+        // 添加 FLAG_ACTIVITY_CLEAR_TOP 和 FLAG_ACTIVITY_SINGLE_TOP，确保在栈顶 Activity 重复启动时，不会重复创建 Activity
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+        // 添加 FLAG_ACTIVITY_NEW_TASK，确保在非 Activity 的 Context 中也能启动
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        startActivity(intent)
+    }
+}
+
 inline fun <reified A : Activity> Context.startActivity(configIntent: Intent.() -> Unit = {}) {
     val intent = Intent(this, A::class.java)
     if (this !is Activity) intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)

@@ -10,7 +10,7 @@ import androidx.documentfile.provider.DocumentFile
 import androidx.fragment.app.Fragment
 import com.hjq.permissions.Permission
 import io.core.common.util.FileDoc
-import io.core.common.util.ext.appCtx
+import io.core.appCtx
 import io.core.common.util.ext.ui.checkSelfUriPermission
 import io.core.common.util.log.AppLog
 import io.core.common.util.log.printOnDebug

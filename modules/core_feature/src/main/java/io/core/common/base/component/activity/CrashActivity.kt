@@ -29,7 +29,7 @@ import io.core.R
 import io.core.common.base.component.dialog.specific.CrashLogsDialog
 import io.core.common.util.ext.ui.appVersionCode
 import io.core.common.util.ext.ui.appVersionName
-import io.core.common.util.ext.ui.setDebouncedClickListener
+import io.core.common.util.ext.ui.onDebouncedClick
 import io.core.common.util.ext.ui.showDialogFragment
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -95,6 +95,7 @@ class CrashActivity : BaseActivity() {
     }
 
     override fun initial(savedInstanceState: Bundle?) {
+        setTakeOverBackPressed(true)
         super.initial(savedInstanceState)
         // 设置状态栏沉浸
         ImmersionBar.setTitleBar(this, findViewById(R.id.ll_crash_bar))
@@ -310,26 +311,25 @@ class CrashActivity : BaseActivity() {
         val info = findViewById<ImageView>(R.id.iv_crash_info)
         val share = findViewById<ImageView>(R.id.iv_crash_share)
         val restart = findViewById<ImageView>(R.id.iv_crash_restart)
-        info.setDebouncedClickListener {
+        info.onDebouncedClick {
             drawerLayout?.openDrawer(GravityCompat.START)
         }
-        share.setDebouncedClickListener {
+        share.onDebouncedClick {
             // 分享文本
             val intent = Intent(Intent.ACTION_SEND)
             intent.type = "text/plain"
             intent.putExtra(Intent.EXTRA_TEXT, stackTrace)
             startActivity(Intent.createChooser(intent, ""))
         }
-        restart.setDebouncedClickListener {
-            onBackPressed()
+        restart.onDebouncedClick {
+            onBackPressedCall()
         }
-        titleView?.setDebouncedClickListener {
+        titleView?.onDebouncedClick {
             showDialogFragment<CrashLogsDialog>()
         }
     }
 
-    @Deprecated("Deprecated in Java")
-    override fun onBackPressed() {
+    override fun onBackPressedCall() {
         finish()
         // 重启应用
         RestartActivity.restart(this)

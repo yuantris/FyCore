@@ -27,9 +27,8 @@ import androidx.core.view.WindowCompat
 import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
-import io.core.common.util.ext.logV
 import io.core.common.util.tools.buildMainHandler
-import io.core.other.CustomToast
+import io.core.common.base.component.dialog.CustomToast
 
 inline fun <reified T : DialogFragment> AppCompatActivity.showDialogFragment(
     arguments: Bundle.() -> Unit = {}

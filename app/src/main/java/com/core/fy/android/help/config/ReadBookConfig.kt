@@ -20,7 +20,7 @@ import io.core.common.util.ext.cool.hexString
 import io.core.common.util.ext.ui.putPrefBoolean
 import io.core.common.util.ext.ui.putPrefInt
 import io.core.common.helper.coroutine.Coroutine
-import io.core.common.util.ext.appCtx
+import io.core.appCtx
 import io.core.common.util.log.AppLog
 import io.core.common.util.tools.BitmapUtils
 import io.core.common.util.tools.FileUtils

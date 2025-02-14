@@ -46,7 +46,7 @@ import com.google.common.eventbus.EventBus
 import io.core.common.base.component.service.BaseService
 import io.core.common.helper.coroutine.Coroutine
 import io.core.common.helper.glide.ImageLoader
-import io.core.common.util.ext.appCtx
+import io.core.appCtx
 import io.core.common.util.ext.audioManager
 import io.core.common.util.ext.cool.postEvent
 import io.core.common.util.ext.notificationManager

@@ -1,4 +1,4 @@
-package io.core.other
+package io.core.other.single
 
 /**
  * 单例模板（支持带参数初始化，线程安全）
@@ -6,7 +6,7 @@ package io.core.other
  * @param A 构造参数类型
  * @param creator 构造器函数
  */
-open class SingletonHolder<out T : Any, in A>(private val creator: (A) -> T) {
+open class SingletonArgHolder<out T : Any, in A>(private val creator: (A) -> T) {
     @Volatile
     private var instance: T? = null
 

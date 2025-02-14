@@ -6,7 +6,7 @@ import android.content.Intent
 import android.net.Uri
 import android.provider.Settings
 import android.view.Display
-import io.core.common.util.ext.appCtx
+import io.core.appCtx
 import io.core.common.util.ext.displayManager
 import io.core.common.util.ext.powerManager
 

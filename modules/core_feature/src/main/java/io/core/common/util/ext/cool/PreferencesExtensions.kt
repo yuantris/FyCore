@@ -10,7 +10,7 @@ import android.content.SharedPreferences
 import androidx.core.content.edit
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
-import io.core.common.util.ext.appCtx
+import io.core.appCtx
 import io.core.common.util.ext.ui.defaultSharedPreferences
 import io.core.common.util.log.printOnDebug
 import java.io.File

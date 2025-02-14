@@ -1,6 +1,6 @@
 package com.core.fy.android.help.config
 
-import io.core.common.util.ext.appCtx
+import io.core.appCtx
 import io.core.common.util.ext.cool.GSON
 import io.core.common.util.ext.cool.fromJsonArray
 import java.io.File

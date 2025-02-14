@@ -38,6 +38,7 @@ class SplashActivity : ReflectBindingActivity<ActivitySplashBinding>() {
         // Keep the splash screen visible for this Activity.
         // splashScreen.setKeepOnScreenCondition { true }
     }
+
     override fun initial(savedInstanceState: Bundle?) {
         setTakeOverBackPressed(true)
         super.initial(savedInstanceState)
@@ -63,11 +64,20 @@ class SplashActivity : ReflectBindingActivity<ActivitySplashBinding>() {
             binding.lavSplashLottie.addAnimatorListener(object : AnimatorListenerAdapter() {
                 override fun onAnimationEnd(animation: Animator) {
                     binding.lavSplashLottie.removeAnimatorListener(this)
-                    startNoTransition(GuideActivity::class.java, finish = true)
+                    if (Config.isDisplayGuide) {
+                        startNoTransition(GuideActivity::class.java, finish = true)
+                    } else {
+                        startNoTransition(MainActivity::class.java, finish = true)
+                    }
+
                 }
             })
         } else {
-            startNoTransition(MainActivity::class.java, finish = true)
+            if (Config.isDisplayGuide) {
+                startNoTransition(GuideActivity::class.java, finish = true)
+            } else {
+                startNoTransition(MainActivity::class.java, finish = true)
+            }
         }
     }
 

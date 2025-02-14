@@ -14,14 +14,16 @@ import io.core.common.base.component.dialog.BaseDialogFragment
 import io.core.common.base.vm.BaseViewModel
 import io.core.common.helper.rv.ItemViewHolder
 import io.core.common.helper.rv.RecyclerAdapter
-import io.core.common.helper.viewbindingdelegate.viewBinding
 import io.core.common.util.FileDoc
-import io.core.common.util.ext.appCtx
+import io.core.common.util.FileSharer
+import io.core.appCtx
 import io.core.common.util.ext.cool.getFile
 import io.core.common.util.ext.ui.getCompatColor
 import io.core.common.util.ext.ui.setLayout
 import io.core.common.util.ext.ui.showDialogFragment
+import io.core.common.util.ext.ui.viewBinding
 import io.core.common.util.tools.FileUtils
+import io.core.common.util.tools.UriUtils
 import io.core.common.util.tools.toastOnUi
 import io.core.databinding.DialogRecyclerViewBinding
 import io.core.databinding.Item1lineTextBinding
@@ -51,6 +53,20 @@ class CrashLogsDialog : BaseDialogFragment(R.layout.dialog_recycler_view),
             adapter.setItems(it)
         }
         viewModel.initData()
+
+        adapter.setOnItemLongClickListener { _, item ->
+            viewModel.readFile(item) {
+                if (lifecycleScope.isActive) {
+                    UriUtils.uri2File(item.uri)?.let {
+                        FileSharer.Builder()
+                            .setChooserTitle("分享崩溃日志")
+                            .setFileList(listOf(it))
+                            .share(requireContext())
+                    }
+                }
+            }
+            true
+        }
     }
 
     override fun onMenuItemClick(item: MenuItem): Boolean {

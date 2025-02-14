@@ -6,20 +6,25 @@ import android.provider.MediaStore;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.blankj.utilcode.util.GsonUtils;
+import com.core.fy.android.MainActivity;
 import com.core.fy.android.databinding.ActivityTestCompatibleBinding;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
+import java.util.SortedMap;
 
+import io.core.Android;
+import io.core.AndroidKt;
 import io.core.common.base.component.activity.ReflectBindingActivity;
-import io.core.common.helper.ConcurrentProcessor;
+import io.core.common.helper.TaskExecutor;
 import io.core.common.util.MediaScanner;
 import io.core.common.util.ToastUtil;
 import io.core.common.util.log.LogCat;
 import io.core.common.util.tools.AsyncUtils;
+import io.core.common.util.tools.CollectionTools;
 
 /**
  * # ██████████
@@ -41,7 +46,6 @@ public class TestCodePageActivity extends ReflectBindingActivity<ActivityTestCom
         super.initial(savedInstanceState);
 
         ToastUtil.showShort("初始化");
-
         AsyncUtils.supplyAsync(() -> {
                     Set<MediaScanner.FileType> fileTypes = new HashSet<>();
                     fileTypes.add(MediaScanner.FileType.PNG);
@@ -56,7 +60,7 @@ public class TestCodePageActivity extends ReflectBindingActivity<ActivityTestCom
                     return null;
                 });
 
-        List<ConcurrentProcessor.ProcessorTask<String>> tasks = new ArrayList<>();
+        List<TaskExecutor.ProcessorTask<String>> tasks = new ArrayList<>();
         tasks.add(() -> "234");
         tasks.add(() -> {
             try {
@@ -65,17 +69,20 @@ public class TestCodePageActivity extends ReflectBindingActivity<ActivityTestCom
             }
             return "兼容";
         });
-        ConcurrentProcessor.Companion.get().executeForJava(tasks,
-                new ConcurrentProcessor.ConcurrentCallback<String>() {
-                    @Override
-                    public void onComplete(@NonNull List<? extends String> results) {
 
+        TaskExecutor.Companion.get().executeForJava(tasks,
+                new TaskExecutor.ConcurrentCallback<>() {
+                    @Override
+                    public void onComplete(@NonNull SortedMap<Integer, String> results) {
+                        List<String> strings = CollectionTools.mapValuesToList(results);
+                        String json = GsonUtils.toJson(strings);
+                        LogCat.e(json);
                     }
 
                     @Override
                     public void onError(@NonNull Throwable e) {
-
+                        LogCat.e(e);
                     }
-                }, 1, TimeUnit.MINUTES);
+                });
     }
 }
