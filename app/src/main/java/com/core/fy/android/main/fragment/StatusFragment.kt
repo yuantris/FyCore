@@ -14,6 +14,7 @@ import com.core.fy.android.function.dialog.DialogActivity
 import com.core.fy.android.function.event.EventActivity
 import com.core.fy.android.function.keyboard.KeyboardActivity
 import com.core.fy.android.function.read.ReadBookActivity
+import com.core.fy.android.function.select.SingleSelectActivity
 import com.core.fy.android.function.toast.CustomToastActivity
 import com.core.fy.android.function.tts.ClickTextActivity
 import com.core.fy.android.function.tts.TTSActivity
@@ -111,6 +112,7 @@ class StatusFragment : ReflectBindingFragment<FragmentStatusBinding, MainActivit
                                 FunctionVM.Design.TTS -> startActivity<TTSActivity>()
                                 FunctionVM.Design.READ -> startActivity<ReadBookActivity>()
                                 FunctionVM.Design.相机 -> startActivity<CameraXActivity>()
+                                FunctionVM.Design.单选多选 -> startActivity<SingleSelectActivity>()
                                 else -> {
                                     // do nothing
                                     CustomToast.Builder(requireContext())

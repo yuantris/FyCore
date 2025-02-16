@@ -17,10 +17,12 @@ import io.core.common.base.component.fragment.BaseFragment
 import io.core.common.helper.dialogs.showDialog
 import io.core.common.helper.rv.ItemViewHolder
 import io.core.common.helper.rv.RecyclerAdapter
+import io.core.common.util.DiveGestureLine
 import io.core.common.util.ext.exitApp
 import io.core.common.util.ext.notifyAllDataChanged
 import io.core.common.util.ext.ui.onClick
 import io.core.common.util.ext.ui.setPaddingBottom
+import io.core.common.util.processNavigationBar
 import io.core.engine.brv.utils.disableEdgeEffect
 import io.core.widget.layout.NestedViewPager
 
@@ -49,7 +51,7 @@ class MainActivity : ReflectBindingActivity<ActivityMainBinding>() {
             binding.rvHomeNavigation.layoutManager =
                 GridLayoutManager(this@MainActivity, this.itemCount)
             binding.rvHomeNavigation.adapter = this
-            binding.rvHomeNavigation.setPaddingBottom(this@MainActivity.navigationBarHeight)
+            binding.rvHomeNavigation.processNavigationBar()
             binding.rvHomeNavigation.disableEdgeEffect()
         }
 

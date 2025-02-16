@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <io.core.widget.view.AppTitleBar
+        android:id="@+id/title_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <io.core.widget.view.AccentTextView
+        android:id="@+id/tip"
+        android:layout_width="match_parent"
+        app:layout_constraintStart_toStartOf="@id/title_bar"
+        app:layout_constraintTop_toBottomOf="@id/title_bar"
+        android:layout_height="wrap_content"/>
+
+    <Button
+        android:id="@+id/all_select"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="全选"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tip" />
+
+    <Button
+        android:id="@+id/cancel_all_select"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="取消全选"
+        app:layout_constraintEnd_toStartOf="@id/edit"
+        app:layout_constraintStart_toEndOf="@id/all_select"
+        app:layout_constraintTop_toBottomOf="@id/tip" />
+
+    <Button
+        android:id="@+id/edit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="编辑"
+        app:layout_constraintEnd_toStartOf="@id/exit_edit"
+        app:layout_constraintStart_toEndOf="@id/cancel_all_select"
+        app:layout_constraintTop_toBottomOf="@id/tip" />
+
+    <Button
+        android:id="@+id/exit_edit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="退出编辑"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tip" />
+
+    <io.core.widget.view.scroller.FastScrollRecyclerView
+        android:id="@+id/recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        tools:listitem="@layout/item_select_data"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/edit" />
+</androidx.constraintlayout.widget.ConstraintLayout>

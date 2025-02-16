@@ -36,6 +36,12 @@
         android:theme="@style/Theme.FyCore">
 
         <activity
+            android:name=".function.brv.BrvActivity"
+            android:exported="false" />
+        <activity
+            android:name=".function.select.SingleSelectActivity"
+            android:exported="false" />
+        <activity
             android:name=".function.camerax.CameraXActivity"
             android:exported="false" />
         <activity

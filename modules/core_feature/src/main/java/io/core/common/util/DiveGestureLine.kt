@@ -1,7 +1,14 @@
 package io.core.common.util
 
+import android.view.View
 import android.view.Window
 import android.view.WindowManager
+import com.gyf.immersionbar.OSUtils
+import com.gyf.immersionbar.ktx.navigationBarHeight
+import io.core.appCtx
+import io.core.common.util.ext.ui.setPaddingBottom
+import io.core.common.util.tools.DeviceOSUtils
+import io.core.common.util.tools.OsUtils
 
 /**
 # ██████████
@@ -16,6 +23,17 @@ import android.view.WindowManager
  * @description
  * @author Yuan
  */
+
+fun View.processNavigationBar() {
+    when(DeviceOSUtils.deviceBrand){
+        DeviceOSUtils.DeviceBrand.XIAOMI -> {
+            this.setPaddingBottom(appCtx.navigationBarHeight)
+        }
+
+        else -> {}
+    }
+}
+
 object DiveGestureLine {
     fun adaptXiaomi(
         window: Window,
