@@ -3,6 +3,7 @@ package io.core.common.util
 import android.view.View
 import android.view.Window
 import android.view.WindowManager
+import androidx.lifecycle.Lifecycle
 import com.gyf.immersionbar.OSUtils
 import com.gyf.immersionbar.ktx.navigationBarHeight
 import io.core.appCtx

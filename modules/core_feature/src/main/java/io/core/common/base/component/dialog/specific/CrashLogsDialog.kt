@@ -5,6 +5,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.lifecycleScope
@@ -17,16 +18,20 @@ import io.core.common.helper.rv.RecyclerAdapter
 import io.core.common.util.FileDoc
 import io.core.common.util.FileSharer
 import io.core.appCtx
+import io.core.other.DoubleClickProcessor
 import io.core.common.util.ext.cool.getFile
+import io.core.common.util.ext.ui.ctx
 import io.core.common.util.ext.ui.getCompatColor
 import io.core.common.util.ext.ui.setLayout
 import io.core.common.util.ext.ui.showDialogFragment
+import io.core.common.util.ext.ui.toast
 import io.core.common.util.ext.ui.viewBinding
 import io.core.common.util.tools.FileUtils
 import io.core.common.util.tools.UriUtils
 import io.core.common.util.tools.toastOnUi
 import io.core.databinding.DialogRecyclerViewBinding
 import io.core.databinding.Item1lineTextBinding
+import io.core.other.RandomEventGenerator
 import kotlinx.coroutines.isActive
 import java.io.FileFilter
 
@@ -69,9 +74,28 @@ class CrashLogsDialog : BaseDialogFragment(R.layout.dialog_recycler_view),
         }
     }
 
+    private val randomProcessor by lazy {
+        RandomEventGenerator()
+            .addEvent { ctx.toast("NoNoNoNo~ 好孩子是不会想着销毁日志的") }
+            .addEvent { ctx.toast("心理阴暗！居然想着删除日志！！！") }
+            .addEvent { ctx.toast("点击后，心里默念 `quickly quickly biu biu biu~` 就删除了") }
+    }
+
+    private val clearProcessor by lazy {
+        DoubleClickProcessor(
+            doubleClickAction = { viewModel.clearCrashLog() },
+            singleClickHint = { randomProcessor.generate() }
+        )
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        clearProcessor.destroy()
+    }
+
     override fun onMenuItemClick(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.menu_clear -> viewModel.clearCrashLog()
+            R.id.menu_clear -> clearProcessor.handleClick()
         }
         return true
     }
@@ -105,6 +129,7 @@ class CrashLogsDialog : BaseDialogFragment(R.layout.dialog_recycler_view),
             item: FileDoc,
             payloads: MutableList<Any>
         ) {
+            binding.textView.requestFocus()
             binding.textView.text = item.name
         }
 

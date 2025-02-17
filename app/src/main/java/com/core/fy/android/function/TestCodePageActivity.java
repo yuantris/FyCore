@@ -7,7 +7,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.blankj.utilcode.util.GsonUtils;
-import com.core.fy.android.MainActivity;
 import com.core.fy.android.databinding.ActivityTestCompatibleBinding;
 
 import java.util.ArrayList;
@@ -16,8 +15,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.SortedMap;
 
-import io.core.Android;
-import io.core.AndroidKt;
 import io.core.common.base.component.activity.ReflectBindingActivity;
 import io.core.common.helper.TaskExecutor;
 import io.core.common.util.MediaScanner;
@@ -25,7 +22,6 @@ import io.core.common.util.ToastUtil;
 import io.core.common.util.log.LogCat;
 import io.core.common.util.tools.AsyncUtils;
 import io.core.common.util.tools.CollectionTools;
-import io.core.common.util.tools.CollectionToolsKt;
 
 /**
  * # ██████████

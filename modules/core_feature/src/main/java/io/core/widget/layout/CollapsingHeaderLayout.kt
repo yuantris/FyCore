@@ -13,7 +13,7 @@ import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import io.core.R
 import io.core.common.util.ext.cool.dpToPx
-import io.core.common.util.ext.ui.getActivity
+import io.core.common.util.ext.ui.ctx
 import io.core.common.util.ext.ui.statusBarHeight
 import io.core.common.util.log.logD
 
@@ -163,7 +163,7 @@ class CollapsingHeaderLayout @JvmOverloads constructor(
             toolbar.setNavigationIcon(R.drawable.bar_arrows_left_black)
             toolbar.setNavigationOnClickListener {
                 "我已点击".logD()
-                context.getActivity()?.finish()
+                context.ctx?.finish()
             }
         } else {
             toolbar.setNavigationIcon(null)

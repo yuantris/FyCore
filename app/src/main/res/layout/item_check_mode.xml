@@ -9,7 +9,7 @@
 
         <variable
             name="m"
-            type="com.core.fy.android.function.brv.CheckModel" />
+            type="com.core.fy.android.function.brv.model.CheckModel" />
 
     </data>
 
@@ -18,7 +18,7 @@
         android:layout_width="match_parent"
         android:layout_height="100dp"
         android:layout_margin="16dp"
-        android:background="@drawable/shape_bottom_dialog_view"
+        android:background="@drawable/bg_card"
         android:foreground="?selectableItemBackgroundBorderless"
         app:cardCornerRadius="4dp">
 
@@ -27,7 +27,7 @@
             android:layout_height="match_parent">
 
 
-            <CheckBox
+            <com.google.android.material.checkbox.MaterialCheckBox
                 android:id="@+id/cb"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

@@ -4,10 +4,13 @@ import com.core.fy.android.MainActivity
 import com.core.fy.android.databinding.FragmentSetBinding
 import com.core.fy.android.function.TestCodePageActivity
 import io.core.common.base.component.fragment.ReflectBindingFragment
+import io.core.common.util.ext.cool.currentTimeFormat
+import io.core.common.util.ext.currentTimeMillis
 import io.core.common.util.ext.ui.adaptStatusBarToView
 import io.core.common.util.ext.ui.appVersionName
 import io.core.common.util.ext.ui.onDebouncedClick
 import io.core.common.util.ext.ui.startActivity
+import io.core.constant.DateFormat
 
 /**
 # ██████████
@@ -32,6 +35,9 @@ class SetFragment : ReflectBindingFragment<FragmentSetBinding, MainActivity>() {
 
             testCode.onDebouncedClick {
                 startActivity<TestCodePageActivity>()
+            }
+            crash.onDebouncedClick {
+                throw RuntimeException("Crash ${currentTimeMillis.currentTimeFormat(DateFormat.yyyyMMddHHmmssSSS)}")
             }
         }
     }

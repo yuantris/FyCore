@@ -8,10 +8,8 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 import io.core.common.CoreConfig.crashAfterJumpActivity
-import io.core.common.util.ext.ui.adaptStatusBarToView
-import io.core.common.util.ext.ui.navigateToLauncherActivity
+import io.core.common.util.ext.ui.restart
 import io.core.common.util.ext.ui.startActivity
-import kotlin.system.exitProcess
 
 
 /**
@@ -42,7 +40,7 @@ class RestartActivity : AppCompatActivity() {
                 }
                 context.startActivity(intent)
             } ?: run {
-                context.navigateToLauncherActivity()
+                context.restart()
             }
 
         }

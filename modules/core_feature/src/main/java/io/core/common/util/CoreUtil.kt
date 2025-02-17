@@ -8,14 +8,12 @@ import android.os.Environment
 import android.os.Looper
 import android.os.StrictMode
 import android.os.StrictMode.VmPolicy
-import io.core.common.helper.tryCatch
 import io.core.appCtx
-import io.core.common.util.ext.logE
-import io.core.common.util.ext.ui.getActivity
+import io.core.common.helper.tryCatch
+import io.core.common.util.ext.ui.ctx
 import io.core.common.util.ext.verify
 import io.core.common.util.log.LogCat
 import io.core.common.util.log.logD
-import io.core.common.util.log.logE
 import io.core.common.util.log.logI
 import io.core.common.util.tools.TimeUtils
 import io.core.constant.FileType
@@ -151,7 +149,7 @@ class CoreUtil {
                             },
                             ifNotNull = {
                                 appCtx.startActivity(intent)
-                                appCtx.getActivity()?.overridePendingTransition(0, 0)
+                                appCtx.ctx?.overridePendingTransition(0, 0)
                             })
                     },
                     catchBlock = {

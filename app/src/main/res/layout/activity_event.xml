@@ -81,17 +81,21 @@
                     android:id="@+id/blur"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/md_grey_600"
                     android:padding="@dimen/dp_10">
 
-                    <com.airbnb.lottie.LottieAnimationView
-                        android:id="@+id/lav_splash_lottie"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        app:lottie_autoPlay="true"
-                        app:lottie_loop="true"
-                        app:lottie_rawRes="@raw/welcome" />
+<!--                    <com.airbnb.lottie.LottieAnimationView-->
+<!--                        android:id="@+id/lav_splash_lottie"-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:layout_gravity="center"-->
+<!--                        app:lottie_autoPlay="true"-->
+<!--                        app:lottie_loop="true"-->
+<!--                        app:lottie_rawRes="@raw/welcome" />-->
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/splash_3"/>
                 </io.core.widget.layout.BlurContainer>
 
                 <androidx.appcompat.widget.AppCompatTextView
@@ -99,7 +103,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:text="@string/app_name"
-                    android:textColor="@color/white" />
+                    android:textColor="@color/common_text_color" />
             </FrameLayout>
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

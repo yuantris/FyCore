@@ -34,8 +34,7 @@ abstract class BaseActivity : AppCompatActivity(), TitleBarAction, BundleAction 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val contentViewBind = contentViewBind()
-        setContentView(contentViewBind)
+        setContentView(contentViewBind())
         initial(savedInstanceState)
         setListener()
         observers()

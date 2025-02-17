@@ -8,12 +8,14 @@ import com.core.fy.android.R
 import com.core.fy.android.databinding.FragmentStatusBinding
 import com.core.fy.android.databinding.ItemFunctionBinding
 import com.core.fy.android.function.CollapsingBarActivity
+import com.core.fy.android.function.brv.BrvActivity
 import com.core.fy.android.function.camerax.CameraXActivity
 import com.core.fy.android.function.database.RoomActivity
 import com.core.fy.android.function.dialog.DialogActivity
 import com.core.fy.android.function.event.EventActivity
 import com.core.fy.android.function.keyboard.KeyboardActivity
 import com.core.fy.android.function.read.ReadBookActivity
+import com.core.fy.android.function.record.AudioRecordActivity
 import com.core.fy.android.function.select.SingleSelectActivity
 import com.core.fy.android.function.toast.CustomToastActivity
 import com.core.fy.android.function.tts.ClickTextActivity
@@ -113,6 +115,8 @@ class StatusFragment : ReflectBindingFragment<FragmentStatusBinding, MainActivit
                                 FunctionVM.Design.READ -> startActivity<ReadBookActivity>()
                                 FunctionVM.Design.相机 -> startActivity<CameraXActivity>()
                                 FunctionVM.Design.单选多选 -> startActivity<SingleSelectActivity>()
+                                FunctionVM.Design.Brv -> startActivity<BrvActivity>()
+                                FunctionVM.Design.录音 -> startActivity<AudioRecordActivity>()
                                 else -> {
                                     // do nothing
                                     CustomToast.Builder(requireContext())

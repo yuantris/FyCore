@@ -29,6 +29,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import io.core.common.util.tools.buildMainHandler
 import io.core.common.base.component.dialog.CustomToast
+import io.core.common.helper.AppLifecycleTracker
 
 inline fun <reified T : DialogFragment> AppCompatActivity.showDialogFragment(
     arguments: Bundle.() -> Unit = {}
@@ -187,7 +188,7 @@ fun Activity.startNoTransition(clazz: Class<*>, finish: Boolean = true) {
 /**
  * @return 上下文中的Activity对象
  */
-fun Context.getActivity(): Activity? {
+private fun Context.getActivity(): Activity? {
     var context = this
     while (context is ContextWrapper) {
         if (context is Activity) {
@@ -197,6 +198,9 @@ fun Context.getActivity(): Activity? {
     }
     return null
 }
+
+val Context.ctx
+    get() = getActivity()
 
 /**
  * 显示Toast

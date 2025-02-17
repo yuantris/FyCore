@@ -28,6 +28,7 @@ import android.os.Build
 import android.os.Process
 import android.provider.Settings
 import android.view.View
+import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import androidx.annotation.LayoutRes
@@ -36,6 +37,7 @@ import androidx.core.content.edit
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
+import io.core.R
 import io.core.common.util.ext.cool.pxToDp
 import io.core.common.util.ext.layoutInflater
 import io.core.common.util.ext.windowManager
@@ -51,19 +53,6 @@ import kotlin.system.exitProcess
  */
 fun Context.getLauncherActivityIntent(): Intent? {
     return packageManager.getLaunchIntentForPackage(packageName)
-}
-
-/**
- * 跳转到应用的启动页 Activity。如果获取不到启动页的 Intent，则不会执行跳转。
- */
-fun Context.navigateToLauncherActivity() {
-    getLauncherActivityIntent()?.let { intent ->
-        // 添加 FLAG_ACTIVITY_CLEAR_TOP 和 FLAG_ACTIVITY_SINGLE_TOP，确保在栈顶 Activity 重复启动时，不会重复创建 Activity
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
-        // 添加 FLAG_ACTIVITY_NEW_TASK，确保在非 Activity 的 Context 中也能启动
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        startActivity(intent)
-    }
 }
 
 inline fun <reified A : Activity> Context.startActivity(configIntent: Intent.() -> Unit = {}) {
@@ -258,6 +247,15 @@ fun Context.removePref(key: String) =
 
 fun Context.layout2View(@LayoutRes layout: Int): View {
     return layoutInflater.inflate(layout, null)
+}
+
+@ColorInt
+fun Context.getPrimaryTextColor(dark: Boolean): Int {
+    return if (dark) {
+        getCompatColor(R.color.md_light_primary_text)
+    } else {
+        getCompatColor(R.color.md_dark_primary_text)
+    }
 }
 
 fun Context.getCompatColor(@ColorRes id: Int): Int = ContextCompat.getColor(this, id)

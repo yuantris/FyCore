@@ -3,10 +3,17 @@
 package io.core.common.util.ext.cool
 
 import android.annotation.SuppressLint
+import android.graphics.Color
 import android.icu.text.Collator
 import android.icu.util.ULocale
 import android.net.Uri
 import android.text.Editable
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.style.ForegroundColorSpan
+import androidx.annotation.ColorInt
+import io.core.R
+import io.core.common.util.ext.ui.getCompatColor
 import java.io.File
 import java.lang.Character.codePointCount
 import java.lang.Character.offsetByCodePoints
@@ -125,5 +132,20 @@ fun CharSequence.toStringArray(): Array<String> {
     } catch (e: Exception) {
         split("").toTypedArray()
     }
+}
+
+/**
+ * SpannableString
+ * string 字符串文字颜色修改
+ */
+fun String.spanForeColor(@ColorInt color: Int): SpannableString {
+    val spannableString = SpannableString(this)
+    spannableString.setSpan(
+        ForegroundColorSpan(color),
+        0,
+        spannableString.length,
+        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+    )
+    return spannableString
 }
 

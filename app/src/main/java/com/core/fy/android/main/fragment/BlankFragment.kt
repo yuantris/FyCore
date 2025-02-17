@@ -60,7 +60,6 @@ class BlankFragment : ReflectBindingFragment<FragmentBlankBinding, MainActivity>
         super.initView()
         appCtx.registerReceiver(timeBatteryReceiver, timeBatteryReceiver.filter)
         binding.time.onClick {
-            throw RuntimeException("ssssssss")
             showDialog("对话框标题", "这是一个对话框消息。") {
                 okButton {
                     Toast.makeText(activity, "点击了确定", Toast.LENGTH_SHORT).show()

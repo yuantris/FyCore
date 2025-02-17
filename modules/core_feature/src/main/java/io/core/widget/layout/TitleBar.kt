@@ -18,14 +18,12 @@ import android.widget.TextView
 import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
 import androidx.core.content.ContextCompat
-import androidx.core.view.marginStart
 import androidx.core.view.size
-import com.google.android.material.internal.ViewUtils.dpToPx
 import io.core.R
 import io.core.common.util.ext.cool.dpToPx
 import io.core.common.util.ext.cool.pxToSp
 import io.core.common.util.ext.cool.spToPx
-import io.core.common.util.ext.ui.getActivity
+import io.core.common.util.ext.ui.ctx
 
 class TitleBar @JvmOverloads constructor(
     context: Context,
@@ -165,7 +163,7 @@ class TitleBar @JvmOverloads constructor(
                 else R.drawable.bar_arrows_left_black
             ) {
                 onClickListener?.onBackClick() ?: run {
-                    context.getActivity()?.finish()
+                    context.ctx?.finish()
                 }
             }
 
@@ -177,7 +175,7 @@ class TitleBar @JvmOverloads constructor(
             setTitleSize(18)
             setLeftButton(R.drawable.bar_arrows_left_black) {
                 onClickListener?.onBackClick() ?: run {
-                    context.getActivity()?.finish()
+                    context.ctx?.finish()
                 }
             }
         }

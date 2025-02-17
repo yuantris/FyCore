@@ -103,3 +103,6 @@ fun Fragment.addViewToZYLayout(target: RelativeLayout, @LayoutRes layoutId: Int)
     addViewToZYLayout(target, view)
     return view
 }
+
+val Fragment.ctx
+    get() = requireContext()

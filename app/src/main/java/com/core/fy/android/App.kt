@@ -7,8 +7,10 @@ import android.app.NotificationManager
 import android.os.Build
 import com.core.fy.android.constants.AppConst.channelIdReadAloud
 import io.core.Android
+import io.core.BR
 import io.core.common.CoreConfig
 import io.core.common.util.ext.notificationManager
+import io.core.engine.brv.utils.BRV
 
 
 /**
@@ -30,6 +32,7 @@ class App : Application() {
         super.onCreate()
         Android.initialize(this)
 
+
 //        // 添加日志全局拦截器
 //        LogCat.addHook(object : LogHook {
 //            override fun hook(info: LogInfo) {
@@ -43,6 +46,13 @@ class App : Application() {
         CoreConfig.crashAfterJumpActivity = MainActivity::class.java
         CoreConfig.alert_positive_color = getColor(R.color.md_indigo_500)
         CoreConfig.alert_negative_color = getColor(R.color.md_red_300)
+
+        /**
+         * 如果BRV使用DataBinding，需要初始化
+         * 在Application中初始化, DataBinding会根据modelId自动绑定models到xml中
+         */
+        BRV.modelId = BR.m
+
         // SoftKeyboardGlobal.install(this, false)
         createNotificationChannels()
     }

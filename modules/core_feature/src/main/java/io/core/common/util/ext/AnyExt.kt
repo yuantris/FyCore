@@ -7,6 +7,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
 import io.core.appCtx
 import io.core.common.helper.AppLifecycleTracker
+import io.core.common.util.ext.cool.currentTimeFormat
 import io.core.common.util.ext.ui.appPackageName
 import io.core.common.util.ext.ui.postDelayUI
 import io.core.common.util.log.LogCat
@@ -63,7 +64,10 @@ fun Any?.exitApp() {
 val currentTimeMillis: Long
     get() = System.currentTimeMillis()
 
-val authority:String
+val currentTime: String
+    get() = currentTimeMillis.currentTimeFormat()
+
+val authority: String
     get() = "${appCtx.appPackageName}.fycore.fileprovider"
 
 /**

@@ -5,14 +5,8 @@ import android.os.Bundle
 import android.util.Log
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.core.fy.android.databinding.ActivityKeyboardBinding
-import io.core.R
 import io.core.common.base.component.activity.BaseInputActivity
-import io.core.common.util.log.logD
-import io.core.common.util.log.logV
-import io.core.common.helper.valid.ValidHelper
 import io.core.common.util.DiveGestureLine
-import io.core.common.util.ext.ui.getCompatColor
-import io.core.common.util.tools.DeviceOSUtils
 
 /**
 # ██████████

@@ -37,6 +37,8 @@ class FunctionVM(var repository: FunctionRepository) : BaseViewModel() {
         EVENT("event"),
         相机("相机"),
         单选多选("单选多选"),
+        Brv("brv"),
+        录音("录音"),
         COLL_BAR("collBar");
 
         companion object {
@@ -62,6 +64,8 @@ class FunctionVM(var repository: FunctionRepository) : BaseViewModel() {
             Function(Design.EVENT),
             Function(Design.相机),
             Function(Design.单选多选),
+            Function(Design.Brv),
+            Function(Design.录音),
             Function(Design.COLL_BAR),
         )
     }

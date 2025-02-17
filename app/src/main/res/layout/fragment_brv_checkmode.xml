@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <FrameLayout
+        android:id="@+id/fl_top"
+        android:layout_width="match_parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_height="48dp">
+
+        <TextView
+            android:visibility="gone"
+            android:id="@+id/tvCheckedCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            tools:text="已选择 1/2" />
+
+
+        <TextView
+            android:id="@+id/tv_manage"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="right"
+            android:layout_marginRight="16dp"
+            android:gravity="center"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:text="编辑" />
+
+    </FrameLayout>
+
+    <io.core.widget.view.scroller.FastScrollRecyclerView
+        android:id="@+id/rv"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        tools:listitem="@layout/item_check_mode"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/ll_menu"
+        app:layout_constraintTop_toBottomOf="@id/fl_top" />
+
+    <LinearLayout
+        android:id="@+id/ll_menu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:background="@color/white"
+        android:elevation="8dp"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <CheckBox
+            android:id="@+id/tvSingleMode"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:background="@drawable/btn_checked"
+            android:button="@null"
+            android:foreground="?selectableItemBackground"
+            android:gravity="center"
+            android:textColor="@drawable/btn_checked_text"
+            android:text="单选模式" />
+
+
+        <CheckBox
+            android:background="@drawable/btn_checked"
+            android:id="@+id/tvAllChecked"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:button="@null"
+            android:foreground="?selectableItemBackgroundBorderless"
+            android:textColor="@drawable/btn_checked_text"
+            android:gravity="center"
+            android:text="全选" />
+
+        <TextView
+            android:id="@+id/tvReverseChecked"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:foreground="?selectableItemBackgroundBorderless"
+            android:gravity="center"
+            android:text="反选" />
+
+        <TextView
+            android:id="@+id/tvCancelChecked"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:foreground="?selectableItemBackgroundBorderless"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="取消选择" />
+
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

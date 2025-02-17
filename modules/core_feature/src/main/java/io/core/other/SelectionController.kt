@@ -23,6 +23,7 @@ class SelectionController<T : SelectableItem> {
     }
 
     fun selectAll(items: Collection<T>) {
+        if (!isEditMode) return
         selectedItems.addAll(items.map { it.uniqueId })
         notifySelectionChanged()
     }
@@ -68,10 +69,8 @@ class SelectionController<T : SelectableItem> {
     interface SelectionStateListener {
         fun onSelectionChanged(selectedCount: Int)
         fun onEditModeChanged(isEditMode: Boolean)
-
         // 新增完整选中集合通知
         fun onSelectedIdsChanged(ids: Set<Long>) = Unit
-
     }
 }
 

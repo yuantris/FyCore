@@ -12,14 +12,18 @@ import android.os.Environment
 import android.os.Process
 import android.webkit.WebSettings
 import androidx.core.content.ContextCompat
+import com.hjq.permissions.Permission
+import com.hjq.permissions.XXPermissions
 import io.core.Android
 import io.core.common.base.component.activity.CrashActivity
 import io.core.common.base.component.activity.RestartActivity
 import io.core.appCtx
+import io.core.common.helper.tryCatch
 import io.core.common.util.ext.cool.createFolderReplace
 import io.core.common.util.ext.cool.getFile
 import io.core.common.util.ext.currentTimeMillis
 import io.core.common.util.ext.ui.externalCache
+import io.core.common.util.log.LogCat
 import io.core.common.util.tools.FileUtils
 import java.io.PrintWriter
 import java.io.StringWriter
@@ -110,15 +114,14 @@ class CrashHandler private constructor(private val application: Application) :
                         .writeText(crashLog)
 
                     // 写入外置存储
-                    if (ContextCompat.checkSelfPermission(
-                            appCtx,
-                            Manifest.permission.WRITE_EXTERNAL_STORAGE
+                    if (XXPermissions.isGranted(appCtx, Permission.WRITE_EXTERNAL_STORAGE)) {
+                        val folder = FileUtils.createFolderIfNotExist(
+                            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS),
+                            "Crash"
                         )
-                        == PackageManager.PERMISSION_GRANTED
-                    ) {
                         FileUtils.createFileIfNotExist(
-                            Environment.getExternalStorageDirectory(),
-                            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).name,
+                            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS),
+                            folder.name,
                             fileName
                         ).writeText(crashLog)
                     }
@@ -174,7 +177,16 @@ class CrashHandler private constructor(private val application: Application) :
         // 致命异常标记：如果上次崩溃的时间距离当前崩溃小于 5 分钟，那么判定为致命异常
         val deadlyCrash: Boolean = currentCrashTime - lastCrashTime < 1000 * 60 * 5
         if (Android.debug) {
-            CrashActivity.start(application, throwable)
+            tryCatch(
+                tryBlock = {
+                    CrashActivity.start(application, throwable)
+                },
+                catchBlock = {
+                    LogCat.e(throwable)
+                    RestartActivity.start(application)
+                }
+            )
+
         } else {
             if (!deadlyCrash) {
                 // 如果不是致命的异常就自动重启应用

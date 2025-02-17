@@ -17,7 +17,9 @@ import io.core.common.util.ext.cool.GSON
 import io.core.common.util.ext.logD
 import io.core.common.util.ext.notifyAllDataChanged
 import io.core.common.util.ext.ui.onClick
+import io.core.common.util.ext.ui.toast
 import io.core.common.util.tools.findFirstByProperty
+import io.core.common.util.tools.toastOnUi
 import io.core.other.SelectableAdapter
 import io.core.other.SelectableItem
 import io.core.other.SelectionController
@@ -95,7 +97,7 @@ class SingleSelectActivity : ReflectBindingActivity<ActivitySingleSelectBinding>
     }
 
     override fun onEditModeChanged(isEditMode: Boolean) {
-        isEditMode.logD()
+        toast(if (isEditMode) "进入编辑模式" else "退出编辑模式")
     }
 
     class SelectAdapter(

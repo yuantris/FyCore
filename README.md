@@ -254,3 +254,6 @@ Android.homeActivity = MainActivity::class.java
          ```
     - AppTitleBar(自定义)
       - 已经在BaseActivity设置了
+
+- RandomEventGenerator(随机事件生成器)
+- DoubleClickProcessor(双击处理器)

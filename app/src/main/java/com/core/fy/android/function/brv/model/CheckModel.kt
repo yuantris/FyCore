@@ -1,4 +1,4 @@
-package com.core.fy.android.function.brv
+package com.core.fy.android.function.brv.model
 
 import androidx.databinding.BaseObservable
 

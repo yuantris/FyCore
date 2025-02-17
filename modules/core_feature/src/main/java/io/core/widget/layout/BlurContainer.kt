@@ -22,7 +22,7 @@ class BlurContainer @JvmOverloads constructor(
 ) : FrameLayout(context, attrs, defStyleAttr) {
 
     // 配置参数
-    private var blurRadius: Float = 15f
+    private var blurRadius: Float = 90f
     private var downSampleFactor: Int = 8
     private var isBlurEnabled: Boolean = true
 

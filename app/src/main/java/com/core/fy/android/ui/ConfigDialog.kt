@@ -11,7 +11,9 @@ import com.core.fy.android.constants.PreferKey
 import com.core.fy.android.databinding.DialogAppConfigBinding
 import io.core.common.base.component.dialog.BaseDialogFragment
 import io.core.common.base.component.dialog.specific.CrashLogsDialog
+import io.core.common.util.ext.cool.spanForeColor
 import io.core.common.util.ext.ui.applyTint
+import io.core.common.util.ext.ui.ctx
 import io.core.common.util.ext.ui.getCompatColor
 import io.core.common.util.ext.ui.onClick
 import io.core.common.util.ext.ui.setLayout
@@ -43,23 +45,17 @@ class ConfigDialog : BaseDialogFragment(R.layout.dialog_app_config) {
     }
 
     override fun onFragmentCreated(view: View, savedInstanceState: Bundle?) {
-        binding.toolBar.setBackgroundColor(getCompatColor(io.core.R.color.md_grey_850))
-        binding.toolBar.inflateMenu(io.core.R.menu.dialog_text)
+        binding.toolBar.setBackgroundColor(getCompatColor(R.color.md_grey_850))
+        binding.toolBar.inflateMenu(R.menu.dialog_text)
         binding.toolBar.setTitleTextColor(getCompatColor(R.color.md_white_1000))
-        binding.toolBar.menu.applyTint(requireContext())
+        binding.toolBar.menu.applyTint(ctx)
 
         // 修改菜单项文字颜色
-        val spannableString = SpannableString("关闭")
-        spannableString.setSpan(
-            ForegroundColorSpan(getCompatColor(R.color.md_white_1000)),
-            0,
-            spannableString.length,
-            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-        )
-        binding.toolBar.menu.findItem(R.id.menu_close).setTitle(spannableString)
+        val whiteCloseString = "关闭".spanForeColor(getCompatColor(R.color.md_white_1000))
+        binding.toolBar.menu.findItem(R.id.menu_close).setTitle(whiteCloseString)
         binding.toolBar.setOnMenuItemClickListener {
             when (it.itemId) {
-                io.core.R.id.menu_close -> dismissAllowingStateLoss()
+                R.id.menu_close -> dismissAllowingStateLoss()
             }
             true
         }

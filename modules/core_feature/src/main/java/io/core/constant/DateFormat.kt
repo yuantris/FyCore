@@ -1,7 +1,7 @@
 package io.core.constant
 
 // 日期格式常量
-object DateFormatPatterns {
+object DateFormat {
     const val yyyyMMdd = "yyyy-MM-dd"
     const val yyyyMMddSlash = "yyyy/MM/dd"
     const val ddMMyyyy = "dd-MM-yyyy"
