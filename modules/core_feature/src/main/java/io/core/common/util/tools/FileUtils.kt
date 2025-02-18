@@ -6,8 +6,8 @@ import androidx.annotation.IntDef
 import io.core.appCtx
 import io.core.common.util.ext.cool.ConvertUtils
 import io.core.common.util.ext.cool.cnCompare
+import io.core.common.util.ext.cool.externalCache
 import io.core.common.util.ext.currentTimeMillis
-import io.core.common.util.ext.ui.externalCache
 import io.core.common.util.log.printOnDebug
 import java.io.ByteArrayOutputStream
 import java.io.Closeable

@@ -5,26 +5,21 @@ import android.os.Bundle
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.viewpager.widget.ViewPager.OnPageChangeListener
 import com.core.fy.android.databinding.ActivityMainBinding
 import com.core.fy.android.databinding.HomeNavigationItemBinding
 import com.core.fy.android.interfaces.FragmentPagerAdapter
 import com.core.fy.android.main.fragment.HomeFragment
 import com.core.fy.android.main.fragment.SetFragment
-import com.gyf.immersionbar.ktx.navigationBarHeight
 import io.core.common.base.component.activity.ReflectBindingActivity
 import io.core.common.base.component.fragment.BaseFragment
 import io.core.common.helper.dialogs.showDialog
 import io.core.common.helper.rv.ItemViewHolder
 import io.core.common.helper.rv.RecyclerAdapter
-import io.core.common.util.DiveGestureLine
 import io.core.common.util.ext.exitApp
 import io.core.common.util.ext.notifyAllDataChanged
+import io.core.common.util.ext.ui.disableEdgeEffect
 import io.core.common.util.ext.ui.onClick
-import io.core.common.util.ext.ui.setPaddingBottom
 import io.core.common.util.processNavigationBar
-import io.core.engine.brv.utils.disableEdgeEffect
-import io.core.widget.layout.NestedViewPager
 
 class MainActivity : ReflectBindingActivity<ActivityMainBinding>() {
 

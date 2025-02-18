@@ -43,7 +43,6 @@ import io.core.common.util.ext.layoutInflater
 import io.core.common.util.ext.windowManager
 import io.core.common.util.log.printOnDebug
 import io.core.common.util.tools.Preferences
-import java.io.File
 import kotlin.system.exitProcess
 
 /**
@@ -370,12 +369,6 @@ val Context.screenHeightDp: Int
     get() {
         return screenHeightPx.pxToDp()
     }
-
-val Context.externalFiles: File
-    get() = this.getExternalFilesDir(null) ?: this.filesDir
-
-val Context.externalCache: File
-    get() = this.externalCacheDir ?: this.cacheDir
 
 val Context.isPad: Boolean
     get() {

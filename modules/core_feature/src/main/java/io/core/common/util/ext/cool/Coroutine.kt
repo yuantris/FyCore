@@ -7,7 +7,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.viewModelScope
 import io.core.common.helper.coroutine.Coroutine
-import io.core.common.util.ext.logE
 import io.core.common.util.log.logE
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope

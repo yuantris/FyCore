@@ -2,8 +2,10 @@ package io.core.common.util.ext.ui
 
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.TextView
+import io.core.common.util.ext.inputMethodManager
 
 /**
  * 优化输入框
@@ -70,4 +72,13 @@ fun TextView.isEmpty(): Boolean {
  */
 fun TextView.isTrimEmpty(): Boolean {
     return this.textStringTrim().isEmpty()
+}
+
+fun EditText.showSoftInput() = run {
+    requestFocus()
+    inputMethodManager.showSoftInput(this, InputMethodManager.RESULT_SHOWN)
+}
+
+fun EditText.disableEdit() {
+    keyListener = null
 }

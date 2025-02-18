@@ -5,19 +5,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 
-/**
-# ██████████
-# █▄█████▄█
-# █▼▼▼▼▼
-# █
-# █▲▲▲▲▲
-# ██████████
-# ██ ██
-# 注释的艺术，正在加载……
- * 2024/12/26 10:31
- * @description
- * @author Yuan
- */
 
 /**
  * Activity 中获取 ViewModel 的扩展属性

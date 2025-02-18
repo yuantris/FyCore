@@ -1,15 +1,18 @@
 package com.core.fy.android.main.fragment
 
+import android.os.Build
 import com.core.fy.android.MainActivity
 import com.core.fy.android.databinding.FragmentSetBinding
 import com.core.fy.android.function.TestCodePageActivity
 import io.core.common.base.component.fragment.ReflectBindingFragment
 import io.core.common.util.ext.cool.currentTimeFormat
 import io.core.common.util.ext.currentTimeMillis
+import io.core.common.util.ext.logV
 import io.core.common.util.ext.ui.adaptStatusBarToView
 import io.core.common.util.ext.ui.appVersionName
 import io.core.common.util.ext.ui.onDebouncedClick
 import io.core.common.util.ext.ui.startActivity
+import io.core.common.util.tools.isAndroid15Plus
 import io.core.constant.DateFormat
 
 /**

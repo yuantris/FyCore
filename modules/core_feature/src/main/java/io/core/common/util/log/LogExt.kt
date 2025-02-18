@@ -26,6 +26,12 @@ fun String.logW(tag: String = TAG) =
 fun String.logE(tag: String = TAG) =
     log(LEVEL.E, tag, this)
 
+fun Throwable.printOnDebug() {
+    if (Android.debug) {
+        printStackTrace()
+    }
+}
+
 private fun log(level: LEVEL, tag: String, message: String) {
     if (!isLog) return
     val stackTraceElement = getActualStackTraceElement()

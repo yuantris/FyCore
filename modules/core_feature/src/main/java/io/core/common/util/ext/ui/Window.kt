@@ -14,6 +14,12 @@ enum class BarColor {
     WHITE
 }
 
+val WindowInsetsCompat.navigationBarHeight
+    get() = (getInsets(WindowInsetsCompat.Type.systemBars()).bottom - imeHeight).coerceAtLeast(0)
+
+val WindowInsetsCompat.imeHeight
+    get() = getInsets(WindowInsetsCompat.Type.ime()).bottom
+
 fun Window.setupImmersiveBars(
     activity: AppCompatActivity,
     statusBarColor: BarColor,

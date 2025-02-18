@@ -10,10 +10,14 @@ import com.core.fy.android.util.RecorderConfig
 import com.core.fy.android.util.RecorderState
 import com.hjq.permissions.Permission
 import com.hjq.permissions.XXPermissions
+import io.core.appCtx
 import io.core.common.base.component.activity.ReflectBindingActivity
 import io.core.common.util.ext.cool.launchAsync
 import io.core.common.util.ext.cool.launchSync
+import io.core.common.util.ext.cool.requestPermission
+import io.core.common.util.ext.cool.toast
 import io.core.common.util.ext.ui.onClick
+import io.core.common.util.log.logD
 import kotlinx.coroutines.flow.collectLatest
 import java.io.File
 
@@ -39,15 +43,13 @@ class AudioRecordActivity : ReflectBindingActivity<ActivityAudioRecordBinding>()
         super.initial(savedInstanceState)
 
         binding.start.onClick {
-            XXPermissions.with(this@AudioRecordActivity)
-                .permission(Permission.RECORD_AUDIO)
-                .request { _, _ ->
-                    val outputFile = File(
-                        Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC),
-                        "recording.wav"
-                    )
-                    // recorder.start(outputFile, AudioFormatType.WAV)
-                }
+            requestPermission(Permission.RECORD_AUDIO) {
+                val outputFile = File(
+                    Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC),
+                    "recording.wav"
+                )
+                // recorder.start(outputFile, AudioFormatType.WAV)
+            }
 
         }
 

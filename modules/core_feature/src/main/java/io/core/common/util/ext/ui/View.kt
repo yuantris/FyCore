@@ -10,6 +10,7 @@ import android.graphics.Color
 import android.graphics.Picture
 import android.graphics.Rect
 import android.os.Build
+import android.os.Build.VERSION.SDK_INT
 import android.text.Html
 import android.view.MotionEvent
 import android.view.View
@@ -27,6 +28,7 @@ import android.widget.SeekBar
 import android.widget.TextView
 import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
+import androidx.annotation.Px
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.menu.MenuPopupHelper
 import androidx.appcompat.widget.PopupMenu
@@ -57,48 +59,39 @@ private tailrec fun getCompatActivity(context: Context?): AppCompatActivity? {
 val View.activity: AppCompatActivity?
     get() = getCompatActivity(context)
 
+// 设置点击事件
+fun View.onClick(action: () -> Unit) {
+    setOnClickListener { action() }
+}
+
+// 防止多次点击
+// 防止重复点击（防止快速点击触发多次）
+fun View.onDebouncedClick(debounceTime: Long = 500L, onClick: () -> Unit) {
+    var lastClickTime = 0L
+    setOnClickListener {
+        val currentTime = currentTimeMillis
+        if (currentTime - lastClickTime > debounceTime) {
+            onClick()
+            lastClickTime = currentTime
+        }
+    }
+}
+
+inline fun View.onLongClick(
+    consume: Boolean = true,
+    crossinline block: () -> Unit
+) = setOnLongClickListener { block(); consume }
+
 
 fun View.hideSoftInput() = run {
     inputMethodManager.hideSoftInputFromWindow(this.windowToken, 0)
 }
 
-fun EditText.showSoftInput() = run {
-    requestFocus()
-    inputMethodManager.showSoftInput(this, InputMethodManager.RESULT_SHOWN)
-}
 
 fun View.disableAutoFill() = run {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
         this.importantForAutofill = IMPORTANT_FOR_AUTOFILL_NO_EXCLUDE_DESCENDANTS
     }
-}
-
-
-fun RecyclerView.setEdgeEffectColor(@ColorInt color: Int) {
-    edgeEffectFactory = object : RecyclerView.EdgeEffectFactory() {
-        override fun createEdgeEffect(view: RecyclerView, direction: Int): EdgeEffect {
-            val edgeEffect = super.createEdgeEffect(view, direction)
-            edgeEffect.color = color
-            return edgeEffect
-        }
-    }
-}
-
-fun ViewPager.setEdgeEffectColor(@ColorInt color: Int) {
-    try {
-        val clazz = ViewPager::class.java
-        for (name in arrayOf("mLeftEdge", "mRightEdge")) {
-            val field = clazz.getDeclaredField(name)
-            field.isAccessible = true
-            val edge = field.get(this)
-            (edge as EdgeEffect).color = color
-        }
-    } catch (ignored: Exception) {
-    }
-}
-
-fun EditText.disableEdit() {
-    keyListener = null
 }
 
 fun View.gone() {
@@ -127,6 +120,21 @@ fun View.visible(visible: Boolean) {
     } else if (!visible && visibility == VISIBLE) {
         visibility = INVISIBLE
     }
+}
+
+// 显示 View
+fun View.show() {
+    visibility = VISIBLE
+}
+
+// 隐藏 View
+fun View.hide() {
+    visibility = GONE
+}
+
+// 完全隐藏 View（包括占位）
+fun View.invisible() {
+    visibility = INVISIBLE
 }
 
 fun View.screenshot(bitmap: Bitmap? = null, canvas: Canvas? = null): Bitmap? {
@@ -174,9 +182,35 @@ fun View.setPaddingBottom(bottom: Int) {
     setPadding(paddingLeft, paddingTop, paddingRight, bottom)
 }
 
-fun SeekBar.progressAdd(int: Int) {
-    progress += int
-}
+inline var View.topPadding: Int
+    get() = paddingTop
+    set(@Px value) = setPadding(paddingLeft, value, paddingRight, paddingBottom)
+
+inline var View.bottomPadding: Int
+    get() = paddingBottom
+    set(@Px value) = setPadding(paddingLeft, paddingTop, paddingRight, value)
+
+inline var View.startPadding: Int
+    get() = if (SDK_INT >= 17) paddingStart else paddingLeft
+    set(@Px value) = when {
+        SDK_INT >= 17 -> setPaddingRelative(value, paddingTop, paddingEnd, paddingBottom)
+        else -> setPadding(value, paddingTop, paddingRight, paddingBottom)
+    }
+
+inline var View.endPadding: Int
+    get() = if (SDK_INT >= 17) paddingEnd else paddingRight
+    set(@Px value) = when {
+        SDK_INT >= 17 -> setPaddingRelative(paddingStart, paddingTop, value, paddingBottom)
+        else -> setPadding(paddingLeft, paddingTop, value, paddingBottom)
+    }
+
+inline var View.leftPadding: Int
+    get() = paddingLeft
+    set(@Px value) = setPadding(value, paddingTop, paddingRight, paddingBottom)
+
+inline var View.rightPadding: Int
+    get() = paddingRight
+    set(@Px value) = setPadding(paddingLeft, paddingTop, value, paddingBottom)
 
 fun RadioGroup.getIndexById(id: Int): Int {
     for (i in 0 until this.childCount) {
@@ -400,55 +434,21 @@ fun View.onVisibilityChange(
 }
 
 val View.isInScreen: Boolean
-    get() = ViewCompat.isAttachedToWindow(this) && visibility == View.VISIBLE && getLocalVisibleRect(
+    get() = ViewCompat.isAttachedToWindow(this) && visibility == VISIBLE && getLocalVisibleRect(
         Rect()
     )
-
-// 显示 View
-fun View.show() {
-    visibility = View.VISIBLE
-}
-
-// 隐藏 View
-fun View.hide() {
-    visibility = View.GONE
-}
-
-// 完全隐藏 View（包括占位）
-fun View.invisible() {
-    visibility = View.INVISIBLE
-}
-
-// 设置点击事件
-fun View.onClick(action: () -> Unit) {
-    setOnClickListener { action() }
-}
-
-// 防止多次点击
-// 防止重复点击（防止快速点击触发多次）
-fun View.onDebouncedClick(debounceTime: Long = 500L, onClick: () -> Unit) {
-    var lastClickTime = 0L
-    setOnClickListener {
-        val currentTime = currentTimeMillis
-        if (currentTime - lastClickTime > debounceTime) {
-            onClick()
-            lastClickTime = currentTime
-        }
-    }
-}
-
 
 // 简单的淡入动画
 fun View.fadeIn(duration: Long = 300) {
     alpha = 0f
-    visibility = View.VISIBLE
+    visibility = VISIBLE
     animate().alpha(1f).setDuration(duration).start()
 }
 
 // 简单的淡出动画
 fun View.fadeOut(duration: Long = 300) {
     animate().alpha(0f).setDuration(duration).withEndAction {
-        visibility = View.GONE
+        visibility = GONE
     }.start()
 }
 
@@ -456,13 +456,13 @@ fun View.fadeOut(duration: Long = 300) {
 fun View.scaleUp(duration: Long = 300) {
     scaleX = 0f
     scaleY = 0f
-    visibility = View.VISIBLE
+    visibility = VISIBLE
     animate().scaleX(1f).scaleY(1f).setDuration(duration).start()
 }
 
 fun View.scaleDown(duration: Long = 300) {
     animate().scaleX(0f).scaleY(0f).setDuration(duration).withEndAction {
-        visibility = View.GONE
+        visibility = GONE
     }.start()
 }
 
@@ -497,7 +497,7 @@ fun View.setMargin(left: Int, top: Int, right: Int, bottom: Int) {
 
 // 设置是否可见
 fun View.setVisible(isVisible: Boolean) {
-    visibility = if (isVisible) View.VISIBLE else View.GONE
+    visibility = if (isVisible) VISIBLE else GONE
 }
 
 // 设置是否可用

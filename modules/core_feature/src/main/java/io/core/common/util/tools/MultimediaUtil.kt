@@ -12,6 +12,10 @@ import java.util.concurrent.TimeUnit
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
+fun Long.formatDuration(formatStr: String): String {
+    return MultimediaUtil.formatDuration(this, formatStr)
+}
+
 object MultimediaUtil {
 
     /**
@@ -26,6 +30,7 @@ object MultimediaUtil {
      * val duration3 = MultimediaUtil.getDuration(filePath, "m:ss.SSS")  // 3:45.230
      *
      */
+    @JvmStatic
     fun getDuration(filePath: String, formatStr: String = "mm:ss"): String? = runSuspend {
         obtainDuration(filePath, formatStr)
     }
@@ -58,7 +63,7 @@ object MultimediaUtil {
      * @param formatStr  格式化字符串（支持 HH, mm, ss, SSS）
      * @return 格式化后的时间字符串
      */
-    private fun formatDuration(durationMs: Long, formatStr: String): String {
+    fun formatDuration(durationMs: Long, formatStr: String): String {
         val hours = TimeUnit.MILLISECONDS.toHours(durationMs)
         val minutes = TimeUnit.MILLISECONDS.toMinutes(durationMs) % 60
         val seconds = TimeUnit.MILLISECONDS.toSeconds(durationMs) % 60

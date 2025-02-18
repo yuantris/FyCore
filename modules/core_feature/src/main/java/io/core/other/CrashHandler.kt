@@ -1,28 +1,26 @@
 package io.core.other
 
-import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
-import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Debug
-import android.os.Environment
 import android.os.Process
 import android.webkit.WebSettings
-import androidx.core.content.ContextCompat
 import com.hjq.permissions.Permission
 import com.hjq.permissions.XXPermissions
 import io.core.Android
+import io.core.appCtx
 import io.core.common.base.component.activity.CrashActivity
 import io.core.common.base.component.activity.RestartActivity
-import io.core.appCtx
 import io.core.common.helper.tryCatch
 import io.core.common.util.ext.cool.createFolderReplace
+import io.core.common.util.ext.cool.externalCache
+import io.core.common.util.ext.cool.externalDocuments
 import io.core.common.util.ext.cool.getFile
+import io.core.common.util.ext.cool.isGranted
 import io.core.common.util.ext.currentTimeMillis
-import io.core.common.util.ext.ui.externalCache
 import io.core.common.util.log.LogCat
 import io.core.common.util.tools.FileUtils
 import java.io.PrintWriter
@@ -114,13 +112,13 @@ class CrashHandler private constructor(private val application: Application) :
                         .writeText(crashLog)
 
                     // 写入外置存储
-                    if (XXPermissions.isGranted(appCtx, Permission.WRITE_EXTERNAL_STORAGE)) {
+                    if (appCtx.isGranted(Permission.WRITE_EXTERNAL_STORAGE)) {
                         val folder = FileUtils.createFolderIfNotExist(
-                            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS),
+                            externalDocuments,
                             "Crash"
                         )
                         FileUtils.createFileIfNotExist(
-                            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS),
+                            externalDocuments,
                             folder.name,
                             fileName
                         ).writeText(crashLog)
@@ -133,8 +131,7 @@ class CrashHandler private constructor(private val application: Application) :
          * 进行堆转储
          */
         fun doHeapDump(manually: Boolean = false) {
-            val heapDir = appCtx
-                .externalCache
+            val heapDir = appCtx.externalCache
                 .getFile("heapDump")
             heapDir.createFolderReplace()
             val fileName = if (manually) {

@@ -2,6 +2,8 @@ package com.core.fy.android.main.fragment
 
 import android.annotation.SuppressLint
 import android.widget.Toast
+import androidx.lifecycle.lifecycleScope
+import androidx.media3.common.util.MediaFormatUtil
 import com.core.fy.android.MainActivity
 import com.core.fy.android.R
 import com.core.fy.android.constants.AppConst.timeFormat
@@ -11,22 +13,30 @@ import com.core.fy.android.databinding.FragmentBlankBinding
 import com.core.fy.android.ui.receiver.TimeBatteryReceiver
 import com.hjq.permissions.Permission
 import com.hjq.permissions.XXPermissions
+import io.core.appCtx
 import io.core.common.base.component.fragment.ReflectBindingFragment
 import io.core.common.helper.coroutine.Coroutine
 import io.core.common.helper.dialogs.showDialog
+import io.core.common.helper.media.FlowMediaPlayer
+import io.core.common.helper.media.PlayerEvent
+import io.core.common.helper.media.PlayerState
 import io.core.common.util.MediaScanner
-import io.core.appCtx
 import io.core.common.util.ext.cool.ConvertUtils
+import io.core.common.util.ext.cool.launchSync
 import io.core.common.util.ext.cool.observeEvent
 import io.core.common.util.ext.cool.observeEventSticky
 import io.core.common.util.ext.ui.addViewToZYLayout
+import io.core.common.util.ext.ui.ctx
 import io.core.common.util.ext.ui.getCompatColor
 import io.core.common.util.ext.ui.onClick
+import io.core.common.util.ext.ui.postDelayUI
+import io.core.common.util.log.LogCat
 import io.core.common.util.log.LogPure
 import io.core.common.util.log.logE
 import io.core.common.util.tools.ColorUtils
 import io.core.common.util.tools.MultimediaUtil
 import io.core.common.util.tools.UriUtils
+import io.core.common.util.tools.formatDuration
 import io.core.common.util.tools.runOnUI
 import io.core.widget.view.LoadingView
 import io.core.widget.view.RotateLoading
@@ -34,7 +44,11 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 import java.io.File
 import java.util.Date
 
@@ -74,6 +88,7 @@ class BlankFragment : ReflectBindingFragment<FragmentBlankBinding, MainActivity>
     }
 
     private var job: Coroutine<*>? = null
+
     override fun onFragmentResume(first: Boolean) {
         super.onFragmentResume(first)
         val loadingView = LoadingView(requireContext(), 100, getCompatColor(R.color.black))
@@ -96,41 +111,9 @@ class BlankFragment : ReflectBindingFragment<FragmentBlankBinding, MainActivity>
             }
         }
         job?.start()
-
-
-        XXPermissions.with(this)
-            .permission(Permission.MANAGE_EXTERNAL_STORAGE)
-            .request { _, _ ->
-                Coroutine.async(
-                    scope = CoroutineScope(Dispatchers.Main),
-                    executeContext = Dispatchers.IO
-                ) {
-                    val files = MediaScanner.queryFiles(
-                        types = setOf(
-                            MediaScanner.FileType.MP4,
-                        ),
-                        addFilter = {
-                            it.size > 1024 * 1024
-                        }
-                    )
-                    files
-                }.onSuccess { result ->
-                    result.forEach {
-                        LogPure.logI("文件：${it.path}", "FileScanHelper_")
-                    }
-                    val file = File(result[0].path)
-                    val uri = UriUtils.file2Uri(File(file.path))
-                    "数量：${result.size} 第一个文件：${file.absolutePath} uri：${uri}".logE()
-                    MultimediaUtil.getDuration(file.absolutePath)?.logE()
-                    ConvertUtils.formatFileSize(result[0].size).logE()
-                }
-
-            }
-
     }
 
-    override fun initData() {
-        super.initData()
+    override fun observers() {
         observeEventSticky<String>(TIME_CHANGED) {
             binding.time.text = timeFormat.format(Date(System.currentTimeMillis()))
         }

@@ -14,6 +14,7 @@ import com.core.fy.android.function.database.RoomActivity
 import com.core.fy.android.function.dialog.DialogActivity
 import com.core.fy.android.function.event.EventActivity
 import com.core.fy.android.function.keyboard.KeyboardActivity
+import com.core.fy.android.function.media.MediaPlayerActivity
 import com.core.fy.android.function.read.ReadBookActivity
 import com.core.fy.android.function.record.AudioRecordActivity
 import com.core.fy.android.function.select.SingleSelectActivity
@@ -117,6 +118,7 @@ class StatusFragment : ReflectBindingFragment<FragmentStatusBinding, MainActivit
                                 FunctionVM.Design.单选多选 -> startActivity<SingleSelectActivity>()
                                 FunctionVM.Design.Brv -> startActivity<BrvActivity>()
                                 FunctionVM.Design.录音 -> startActivity<AudioRecordActivity>()
+                                FunctionVM.Design.Media -> startActivity<MediaPlayerActivity>()
                                 else -> {
                                     // do nothing
                                     CustomToast.Builder(requireContext())

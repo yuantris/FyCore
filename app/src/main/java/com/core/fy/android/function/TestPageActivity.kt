@@ -5,6 +5,7 @@ import com.core.fy.android.databinding.ActivityTestPageBinding
 import io.core.common.base.component.activity.ReflectBindingActivity
 import io.core.common.helper.TaskExecutor
 import io.core.common.util.ext.cool.launchAsync
+import io.core.common.util.log.LogPure
 
 /**
 # ██████████
@@ -19,12 +20,11 @@ import io.core.common.util.ext.cool.launchAsync
  * @description
  * @author Yuan
  */
-class TestPageActivity: ReflectBindingActivity<ActivityTestPageBinding>() {
+class TestPageActivity : ReflectBindingActivity<ActivityTestPageBinding>() {
 
 
     override fun initial(savedInstanceState: Bundle?) {
         super.initial(savedInstanceState)
-
 
         val tasks = listOf<suspend () -> List<String>>(
             { /* 扫描图片实现 */ listOf("img1", "img2") },

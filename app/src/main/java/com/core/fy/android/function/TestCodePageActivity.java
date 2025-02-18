@@ -20,8 +20,10 @@ import io.core.common.helper.TaskExecutor;
 import io.core.common.util.MediaScanner;
 import io.core.common.util.ToastUtil;
 import io.core.common.util.log.LogCat;
+import io.core.common.util.log.LogPure;
 import io.core.common.util.tools.AsyncUtils;
 import io.core.common.util.tools.CollectionTools;
+import kotlin.jvm.functions.Function0;
 
 /**
  * # ██████████

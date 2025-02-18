@@ -16,13 +16,13 @@ import com.core.fy.android.model.Tab
 import io.core.common.base.component.activity.ReflectBindingActivity
 import io.core.common.base.component.fragment.BaseFragment
 import io.core.common.util.ext.notifyAllDataChanged
+import io.core.common.util.ext.ui.disableEdgeEffect
 import io.core.common.util.ext.ui.getCompatColor
 import io.core.common.util.ext.ui.hide
 import io.core.common.util.ext.ui.screenWidthPx
 import io.core.common.util.ext.ui.show
 import io.core.engine.brv.annotaion.AnimationType
 import io.core.engine.brv.utils.bindingAdapter
-import io.core.engine.brv.utils.disableEdgeEffect
 import io.core.engine.brv.utils.linear
 import io.core.engine.brv.utils.setup
 
