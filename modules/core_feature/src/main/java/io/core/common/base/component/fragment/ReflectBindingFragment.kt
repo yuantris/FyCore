@@ -3,7 +3,7 @@ package io.core.common.base.component.fragment
 import android.view.View
 import androidx.viewbinding.ViewBinding
 import io.core.common.base.component.activity.BaseActivity
-import io.core.common.util.ext.ui.inflateBindingWithGeneric
+import io.core.common.util.extensions.ui.inflateBindingWithGeneric
 
 /**
 # ██████████

@@ -5,8 +5,8 @@ import android.view.MotionEvent
 import android.view.View
 import android.widget.EditText
 import androidx.viewbinding.ViewBinding
-import io.core.common.util.ext.ui.hideSoftInput
-import io.core.common.util.ext.ui.inflateBindingWithGeneric
+import io.core.common.util.extensions.ui.hideSoftInput
+import io.core.common.util.extensions.ui.inflateBindingWithGeneric
 import io.core.engine.keyboard.KeyboardObserver
 
 /**

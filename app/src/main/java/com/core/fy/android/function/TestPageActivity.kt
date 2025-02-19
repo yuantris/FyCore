@@ -4,8 +4,7 @@ import android.os.Bundle
 import com.core.fy.android.databinding.ActivityTestPageBinding
 import io.core.common.base.component.activity.ReflectBindingActivity
 import io.core.common.helper.TaskExecutor
-import io.core.common.util.ext.cool.launchAsync
-import io.core.common.util.log.LogPure
+import io.core.common.util.extensions.cool.launchAsync
 
 /**
 # ██████████

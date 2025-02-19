@@ -4,7 +4,7 @@ import android.view.MotionEvent
 import com.core.fy.android.function.read.page.ReadView
 import com.core.fy.android.function.read.page.entities.PageDirection
 import com.core.fy.android.help.CanvasRecorderFactory
-import io.core.common.util.ext.ui.screenshot
+import io.core.common.util.extensions.ui.screenshot
 
 abstract class HorizontalPageDelegate(readView: ReadView) : PageDelegate(readView) {
 

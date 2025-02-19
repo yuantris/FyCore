@@ -3,7 +3,7 @@
 package io.core.common.util.log
 
 import android.util.Log
-import io.core.common.util.ext.ifNotNull
+import io.core.common.util.extensions.ifNotNull
 import io.core.common.util.log.LogCat.Type.DEBUG
 import io.core.common.util.log.LogCat.Type.ERROR
 import io.core.common.util.log.LogCat.Type.INFO

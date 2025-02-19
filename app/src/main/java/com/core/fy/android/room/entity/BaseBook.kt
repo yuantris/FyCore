@@ -2,8 +2,8 @@ package com.core.fy.android.room.entity
 
 import com.core.fy.android.help.RuleBigDataHelp
 import com.core.fy.android.model.RuleDataInterface
-import io.core.common.util.ext.cool.GSON
-import io.core.common.util.ext.cool.splitNotBlank
+import io.core.common.util.extensions.cool.GSON
+import io.core.common.util.extensions.cool.splitNotBlank
 
 
 interface BaseBook : RuleDataInterface {

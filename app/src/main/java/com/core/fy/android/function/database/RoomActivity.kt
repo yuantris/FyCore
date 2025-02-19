@@ -12,9 +12,9 @@ import io.core.common.base.component.activity.ReflectBindingActivity
 import io.core.common.base.vm.ViewStatus
 import io.core.common.util.CoreUtil
 import io.core.common.util.ToastUtil
-import io.core.common.util.ext.cool.launchAsync
-import io.core.common.util.ext.cool.launchSync
-import io.core.common.util.ext.ui.toast
+import io.core.common.util.extensions.cool.launchAsync
+import io.core.common.util.extensions.cool.launchSync
+import io.core.common.util.extensions.ui.toast
 import io.core.common.util.log.logD
 import io.core.common.util.log.logE
 import io.core.common.util.log.logI

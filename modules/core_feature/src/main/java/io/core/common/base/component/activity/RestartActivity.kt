@@ -8,8 +8,8 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 import io.core.common.CoreConfig.crashAfterJumpActivity
-import io.core.common.util.ext.ui.restart
-import io.core.common.util.ext.ui.startActivity
+import io.core.common.util.extensions.ui.restart
+import io.core.common.util.extensions.ui.startActivity
 
 
 /**

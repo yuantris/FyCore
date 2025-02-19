@@ -4,7 +4,7 @@ import android.net.Uri
 import android.os.Build
 import androidx.core.content.FileProvider
 import io.core.appCtx
-import io.core.common.util.ext.authority
+import io.core.common.util.extensions.authority
 import java.io.File
 
 /**

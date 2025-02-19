@@ -10,8 +10,8 @@ import android.os.StrictMode
 import android.os.StrictMode.VmPolicy
 import io.core.appCtx
 import io.core.common.helper.tryCatch
-import io.core.common.util.ext.ui.ctx
-import io.core.common.util.ext.verify
+import io.core.common.util.extensions.ui.ctx
+import io.core.common.util.extensions.verify
 import io.core.common.util.log.LogCat
 import io.core.common.util.log.logD
 import io.core.common.util.log.logI

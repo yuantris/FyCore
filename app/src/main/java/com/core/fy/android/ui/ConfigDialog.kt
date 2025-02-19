@@ -1,9 +1,6 @@
 package com.core.fy.android.ui
 
 import android.os.Bundle
-import android.text.SpannableString
-import android.text.Spanned
-import android.text.style.ForegroundColorSpan
 import android.view.View
 import android.view.ViewGroup
 import com.core.fy.android.R
@@ -11,14 +8,14 @@ import com.core.fy.android.constants.PreferKey
 import com.core.fy.android.databinding.DialogAppConfigBinding
 import io.core.common.base.component.dialog.BaseDialogFragment
 import io.core.common.base.component.dialog.specific.CrashLogsDialog
-import io.core.common.util.ext.cool.spanForeColor
-import io.core.common.util.ext.ui.applyTint
-import io.core.common.util.ext.ui.ctx
-import io.core.common.util.ext.ui.getCompatColor
-import io.core.common.util.ext.ui.onClick
-import io.core.common.util.ext.ui.setLayout
-import io.core.common.util.ext.ui.showDialogFragment
-import io.core.common.util.ext.ui.viewBinding
+import io.core.common.util.extensions.cool.spanForeColor
+import io.core.common.util.extensions.ui.applyTint
+import io.core.common.util.extensions.ui.ctx
+import io.core.common.util.extensions.ui.getCompatColor
+import io.core.common.util.extensions.ui.onClick
+import io.core.common.util.extensions.ui.setLayout
+import io.core.common.util.extensions.ui.showDialogFragment
+import io.core.common.util.extensions.ui.viewBinding
 import io.core.common.util.tools.Preferences
 
 

@@ -4,9 +4,9 @@ import android.os.Bundle
 import com.core.fy.android.R
 import com.core.fy.android.databinding.ActivityImgTextBinding
 import io.core.common.base.component.activity.ReflectBindingActivity
-import io.core.common.util.ext.ifNotNull
-import io.core.common.util.ext.ui.getCompatDrawable
-import io.core.common.util.ext.ui.toast
+import io.core.common.util.extensions.ifNotNull
+import io.core.common.util.extensions.ui.getCompatDrawable
+import io.core.common.util.extensions.ui.toast
 
 /**
 # ██████████

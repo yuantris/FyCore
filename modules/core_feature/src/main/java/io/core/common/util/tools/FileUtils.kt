@@ -4,10 +4,10 @@ import android.os.Environment
 import android.webkit.MimeTypeMap
 import androidx.annotation.IntDef
 import io.core.appCtx
-import io.core.common.util.ext.cool.ConvertUtils
-import io.core.common.util.ext.cool.cnCompare
-import io.core.common.util.ext.cool.externalCache
-import io.core.common.util.ext.currentTimeMillis
+import io.core.common.util.extensions.cool.ConvertUtils
+import io.core.common.util.extensions.cool.cnCompare
+import io.core.common.util.extensions.cool.externalCache
+import io.core.common.util.extensions.currentTimeMillis
 import io.core.common.util.log.printOnDebug
 import java.io.ByteArrayOutputStream
 import java.io.Closeable

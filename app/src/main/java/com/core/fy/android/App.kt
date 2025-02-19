@@ -9,7 +9,7 @@ import com.core.fy.android.constants.AppConst.channelIdReadAloud
 import io.core.Android
 import io.core.BR
 import io.core.common.CoreConfig
-import io.core.common.util.ext.notificationManager
+import io.core.common.util.extensions.notificationManager
 import io.core.engine.brv.utils.BRV
 
 

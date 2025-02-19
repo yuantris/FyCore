@@ -23,12 +23,12 @@ import com.core.fy.android.help.textHeight
 import com.core.fy.android.room.entity.Book
 import com.core.fy.android.room.entity.BookChapter
 import io.core.appCtx
-import io.core.common.util.ext.cool.dpToPx
-import io.core.common.util.ext.cool.fastSum
-import io.core.common.util.ext.cool.isContentScheme
+import io.core.common.util.extensions.cool.dpToPx
+import io.core.common.util.extensions.cool.fastSum
+import io.core.common.util.extensions.cool.isContentScheme
 import io.core.common.util.log.logD
-import io.core.common.util.ext.cool.spToPx
-import io.core.common.util.ext.ui.isPad
+import io.core.common.util.extensions.cool.spToPx
+import io.core.common.util.extensions.ui.isPad
 import io.core.common.util.tools.RealPathUtil
 import kotlinx.coroutines.CoroutineScope
 import java.util.LinkedList

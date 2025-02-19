@@ -1,20 +1,19 @@
 package com.core.fy.android.function.event
 
 import android.os.Bundle
-import androidx.appcompat.widget.Toolbar
 import com.core.fy.android.R
 import com.core.fy.android.databinding.ActivityEventBinding
-import com.core.fy.android.util.LiveDataCompat
 import com.gyf.immersionbar.ImmersionBar
 import io.core.common.base.component.activity.ReflectBindingActivity
-import io.core.common.util.ext.cool.observeEvent
-import io.core.common.util.ext.cool.postEvent
-import io.core.common.util.ext.currentTimeMillis
-import io.core.common.util.ext.ui.getCompatColor
-import io.core.common.util.ext.ui.onClick
-import io.core.common.util.ext.ui.toast
+import io.core.common.util.extensions.cool.observeEvent
+import io.core.common.util.extensions.cool.postEvent
+import io.core.common.util.extensions.currentTimeMillis
+import io.core.common.util.extensions.ui.getCompatColor
+import io.core.common.util.extensions.ui.onClick
+import io.core.common.util.extensions.ui.toast
 import io.core.common.util.log.logD
 import io.core.common.util.tools.DrawableBuilder
+import io.core.other.LiveDataCompat
 
 class EventActivity : ReflectBindingActivity<ActivityEventBinding>() {
 

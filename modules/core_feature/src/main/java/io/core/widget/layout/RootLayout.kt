@@ -2,7 +2,6 @@ package io.core.widget.layout
 
 import android.content.Context
 import android.util.AttributeSet
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
@@ -10,10 +9,6 @@ import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.LinearLayout
 import androidx.core.widget.NestedScrollView
 import io.core.R
-import io.core.common.util.ext.ui.gone
-import io.core.common.util.ext.ui.statusBarHeight
-import io.core.common.util.ext.ui.visible
-import kotlin.math.abs
 
 /**
 # ██████████

@@ -4,11 +4,11 @@ import android.content.Context
 import android.content.SharedPreferences
 import androidx.core.content.edit
 import io.core.appCtx
-import io.core.common.util.ext.cool.getBoolean
-import io.core.common.util.ext.cool.putBoolean
-import io.core.common.util.ext.cool.putLong
-import io.core.common.util.ext.cool.putString
-import io.core.common.util.ext.cool.remove
+import io.core.common.util.extensions.cool.getBoolean
+import io.core.common.util.extensions.cool.putBoolean
+import io.core.common.util.extensions.cool.putLong
+import io.core.common.util.extensions.cool.putString
+import io.core.common.util.extensions.cool.remove
 
 @Suppress("ConstPropertyName")
 object LocalConfig : SharedPreferences

@@ -18,11 +18,10 @@ import com.gyf.immersionbar.BarHide
 import com.gyf.immersionbar.ImmersionBar
 import io.core.R
 import io.core.common.helper.dialogs.showDialog
-import io.core.common.util.ext.addCallback
-import io.core.common.util.ext.cool.dp
-import io.core.common.util.ext.cool.dpToPx
-import io.core.common.util.ext.exitApp
-import io.core.common.util.ext.ui.onDebouncedClick
+import io.core.common.util.extensions.addCallback
+import io.core.common.util.extensions.cool.dpToPx
+import io.core.common.util.extensions.exitApp
+import io.core.common.util.extensions.ui.onDebouncedClick
 
 // GuideConfig.kt
 data class GuideConfig(

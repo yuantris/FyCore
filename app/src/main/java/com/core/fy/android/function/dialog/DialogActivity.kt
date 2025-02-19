@@ -11,19 +11,20 @@ import com.core.fy.android.R
 import com.core.fy.android.databinding.ActivityDialogBinding
 import com.core.fy.android.ui.BottomSheetNextDialog
 import com.core.fy.android.ui.WaitDialog
+import io.core.appCtx
 import io.core.common.base.component.activity.ReflectBindingActivity
 import io.core.common.base.component.dialog.BasePopup
 import io.core.common.base.component.dialog.showCustomDialog
 import io.core.common.base.component.dialog.specific.BubbleDialog
 import io.core.common.helper.dialogs.showDialog
 import io.core.common.util.CoreUtil
-import io.core.common.util.ext.cool.dpToPx
-import io.core.common.util.ext.ui.getCompatColor
-import io.core.common.util.ext.ui.onClick
-import io.core.common.util.ext.ui.postDelayUI
-import io.core.common.util.ext.ui.screenRealWidthPx
-import io.core.common.util.ext.ui.showDialogFragment
-import io.core.common.util.ext.ui.toast
+import io.core.common.util.extensions.cool.dpToPx
+import io.core.common.util.extensions.cool.postDelayUI
+import io.core.common.util.extensions.ui.getCompatColor
+import io.core.common.util.extensions.ui.onClick
+import io.core.common.util.extensions.ui.screenRealWidthPx
+import io.core.common.util.extensions.ui.showDialogFragment
+import io.core.common.util.extensions.ui.toast
 import io.core.common.util.tools.DrawableBuilder
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -52,6 +53,7 @@ class DialogActivity : ReflectBindingActivity<ActivityDialogBinding>() {
 
     override fun initial(savedInstanceState: Bundle?) {
         super.initial(savedInstanceState)
+
         // 设置标题，左对齐
         binding.titleBar.apply {
             addRightButtonImage(R.drawable.ic_find_replace) {
@@ -105,8 +107,11 @@ class DialogActivity : ReflectBindingActivity<ActivityDialogBinding>() {
             }
 
             show2.onClick {
-//                dialog2.show()
-//                waitDismiss(dialog2)
+                dialog2.show()
+                waitDismiss(dialog2)
+            }
+
+            show3.onClick {
                 showCustomDialog {
                     setLayout(R.layout.dialog_bottom_street)
                     setSize((screenRealWidthPx * 0.8f).toInt(), 200.dpToPx())

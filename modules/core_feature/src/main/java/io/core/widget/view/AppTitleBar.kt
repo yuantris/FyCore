@@ -19,10 +19,10 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.children
 import com.google.android.material.appbar.AppBarLayout
 import io.core.R
-import io.core.common.util.ext.cool.dpToPx
-import io.core.common.util.ext.ui.activity
-import io.core.common.util.ext.ui.bottomPadding
-import io.core.common.util.ext.ui.topPadding
+import io.core.common.util.extensions.cool.dpToPx
+import io.core.common.util.extensions.ui.activity
+import io.core.common.util.extensions.ui.bottomPadding
+import io.core.common.util.extensions.ui.topPadding
 
 @Suppress("unused", "MemberVisibilityCanBePrivate")
 class AppTitleBar @JvmOverloads constructor(

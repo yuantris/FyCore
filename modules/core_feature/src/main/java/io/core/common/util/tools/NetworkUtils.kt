@@ -4,9 +4,9 @@ import android.annotation.SuppressLint
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
-import io.core.common.util.ext.connectivityManager
-import io.core.common.util.ext.cool.isAbsUrl
-import io.core.common.util.ext.cool.isDataUrl
+import io.core.common.util.extensions.connectivityManager
+import io.core.common.util.extensions.cool.isAbsUrl
+import io.core.common.util.extensions.cool.isDataUrl
 import io.core.common.util.log.AppLog
 import io.core.common.util.log.printOnDebug
 import java.net.URL

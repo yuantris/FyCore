@@ -3,8 +3,7 @@ package com.core.fy.android.ui
 import com.core.fy.android.R
 import com.core.fy.android.databinding.DialogBottomStreetBinding
 import io.core.common.base.component.dialog.BaseBottomSheetDialog
-import io.core.common.util.ext.cool.dpToPx
-import io.core.common.util.ext.ui.getCompatColor
+import io.core.common.util.extensions.ui.getCompatColor
 import io.core.common.util.tools.DrawableBuilder
 
 /**

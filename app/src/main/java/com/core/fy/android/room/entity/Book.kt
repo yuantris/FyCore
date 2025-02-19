@@ -17,8 +17,8 @@ import com.core.fy.android.help.config.ReadBookConfig
 import com.core.fy.android.help.isImage
 import com.core.fy.android.help.isPdf
 import com.core.fy.android.help.simulatedTotalChapterNum
-import io.core.common.util.ext.cool.GSON
-import io.core.common.util.ext.cool.fromJsonObject
+import io.core.common.util.extensions.cool.GSON
+import io.core.common.util.extensions.cool.fromJsonObject
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 import java.nio.charset.Charset

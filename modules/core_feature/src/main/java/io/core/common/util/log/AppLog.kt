@@ -1,7 +1,7 @@
 package io.core.common.util.log
 
 import io.core.appCtx
-import io.core.common.util.ext.currentTimeMillis
+import io.core.common.util.extensions.currentTimeMillis
 import io.core.common.util.tools.toastOnUi
 
 object AppLog {

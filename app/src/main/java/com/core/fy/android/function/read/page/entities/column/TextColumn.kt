@@ -10,7 +10,7 @@ import com.core.fy.android.function.read.page.entities.TextLine.Companion.emptyT
 import com.core.fy.android.function.read.page.provider.ChapterProvider
 import com.core.fy.android.help.config.ReadBookConfig
 import io.core.appCtx
-import io.core.common.util.ext.ui.getCompatColor
+import io.core.common.util.extensions.ui.getCompatColor
 
 /**
  * 文字列

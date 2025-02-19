@@ -10,11 +10,10 @@ import com.core.fy.android.constants.Status
 import com.core.fy.android.room.entity.Book
 import com.core.fy.android.room.entity.BookChapter
 import com.core.fy.android.function.read.services.AudioPlayService
-import com.google.common.eventbus.EventBus
 import io.core.common.helper.coroutine.Coroutine
 import io.core.appCtx
-import io.core.common.util.ext.cool.postEvent
-import io.core.common.util.ext.ui.startService
+import io.core.common.util.extensions.cool.postEvent
+import io.core.common.util.extensions.ui.startService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancelChildren

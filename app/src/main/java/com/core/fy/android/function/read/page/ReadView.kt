@@ -33,8 +33,8 @@ import com.core.fy.android.help.config.AppConfig
 import com.core.fy.android.help.config.ReadBookConfig
 import com.core.fy.android.help.throttle
 import io.core.common.helper.canvasrecorder.pools.BitmapPool
-import io.core.common.util.ext.ui.activity
-import io.core.common.util.ext.ui.invisible
+import io.core.common.util.extensions.ui.activity
+import io.core.common.util.extensions.ui.invisible
 import java.text.BreakIterator
 import java.util.Locale
 import kotlin.math.abs

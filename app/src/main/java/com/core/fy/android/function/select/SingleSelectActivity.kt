@@ -13,13 +13,10 @@ import com.core.fy.android.R
 import com.core.fy.android.databinding.ActivitySingleSelectBinding
 import io.core.common.base.component.activity.ReflectBindingActivity
 import io.core.common.util.ToastUtil
-import io.core.common.util.ext.cool.GSON
-import io.core.common.util.ext.logD
-import io.core.common.util.ext.notifyAllDataChanged
-import io.core.common.util.ext.ui.onClick
-import io.core.common.util.ext.ui.toast
+import io.core.common.util.extensions.ui.notifyAllDataChanged
+import io.core.common.util.extensions.ui.onClick
+import io.core.common.util.extensions.ui.toast
 import io.core.common.util.tools.findFirstByProperty
-import io.core.common.util.tools.toastOnUi
 import io.core.other.SelectableAdapter
 import io.core.other.SelectableItem
 import io.core.other.SelectionController

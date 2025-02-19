@@ -10,8 +10,8 @@ import android.graphics.RectF
 import android.util.AttributeSet
 import android.view.View
 import io.core.R
-import io.core.common.util.ext.cool.dpToPx
-import io.core.common.util.ext.ui.getCompatColor
+import io.core.common.util.extensions.cool.dpToPx
+import io.core.common.util.extensions.ui.getCompatColor
 
 /**
  * RotateLoading

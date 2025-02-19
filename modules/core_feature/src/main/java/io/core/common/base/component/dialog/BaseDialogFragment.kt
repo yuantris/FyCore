@@ -11,7 +11,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
 import io.core.R
 import io.core.common.helper.coroutine.Coroutine
-import io.core.common.util.ext.ui.getCompatColor
+import io.core.common.util.extensions.ui.getCompatColor
 import io.core.common.util.log.AppLog
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

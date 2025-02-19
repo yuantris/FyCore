@@ -4,20 +4,14 @@ import android.os.Bundle
 import android.os.Environment
 import androidx.lifecycle.lifecycleScope
 import com.core.fy.android.databinding.ActivityAudioRecordBinding
-import com.core.fy.android.util.AudioFormatType
 import com.core.fy.android.util.AudioRecorder
 import com.core.fy.android.util.RecorderConfig
 import com.core.fy.android.util.RecorderState
 import com.hjq.permissions.Permission
-import com.hjq.permissions.XXPermissions
-import io.core.appCtx
 import io.core.common.base.component.activity.ReflectBindingActivity
-import io.core.common.util.ext.cool.launchAsync
-import io.core.common.util.ext.cool.launchSync
-import io.core.common.util.ext.cool.requestPermission
-import io.core.common.util.ext.cool.toast
-import io.core.common.util.ext.ui.onClick
-import io.core.common.util.log.logD
+import io.core.common.util.extensions.cool.launchSync
+import io.core.common.util.extensions.cool.requestPermission
+import io.core.common.util.extensions.ui.onClick
 import kotlinx.coroutines.flow.collectLatest
 import java.io.File
 

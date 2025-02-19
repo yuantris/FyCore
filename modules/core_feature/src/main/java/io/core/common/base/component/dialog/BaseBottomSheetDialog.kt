@@ -10,8 +10,8 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.viewbinding.ViewBinding
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import io.core.R
-import io.core.common.util.ext.cool.dpToPx
-import io.core.common.util.ext.ui.inflateWithGeneric
+import io.core.common.util.extensions.cool.dpToPx
+import io.core.common.util.extensions.ui.inflateWithGeneric
 
 /**
 # ██████████

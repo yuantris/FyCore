@@ -4,7 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import io.core.common.util.ext.currentTimeMillis
+import io.core.common.util.extensions.currentTimeMillis
 
 object IntentData {
 

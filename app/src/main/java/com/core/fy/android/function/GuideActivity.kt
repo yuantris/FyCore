@@ -1,15 +1,10 @@
 package com.core.fy.android.function
 
-import android.view.Gravity
 import com.core.fy.android.MainActivity
 import com.core.fy.android.R
-import com.core.fy.android.constants.PreferKey
 import io.core.common.base.component.activity.BaseGuideActivity
 import io.core.common.base.component.activity.GuideConfig
-import io.core.common.util.ext.cool.dpToPx
-import io.core.common.util.ext.ui.startNoTransition
-import io.core.common.util.tools.Preferences
-import io.core.other.IntentData
+import io.core.common.util.extensions.ui.startNoTransition
 
 /**
 # ██████████

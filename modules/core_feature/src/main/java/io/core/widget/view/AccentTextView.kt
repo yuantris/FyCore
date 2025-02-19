@@ -4,7 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatTextView
 import io.core.R
-import io.core.common.util.ext.ui.getCompatColor
+import io.core.common.util.extensions.ui.getCompatColor
 
 class AccentTextView(context: Context, attrs: AttributeSet?) :
     AppCompatTextView(context, attrs) {

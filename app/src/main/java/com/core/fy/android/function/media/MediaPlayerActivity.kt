@@ -1,8 +1,6 @@
 package com.core.fy.android.function.media
 
 import android.os.Bundle
-import android.widget.SeekBar
-import android.widget.SeekBar.OnSeekBarChangeListener
 import androidx.lifecycle.lifecycleScope
 import com.core.fy.android.databinding.ActivityMediaPlayerBinding
 import com.hjq.permissions.Permission
@@ -11,18 +9,14 @@ import io.core.common.helper.coroutine.Coroutine
 import io.core.common.helper.media.FlowMediaPlayer
 import io.core.common.helper.media.PlayerState
 import io.core.common.util.MediaScanner
-import io.core.common.util.ext.cool.requestPermission
-import io.core.common.util.ext.logV
-import io.core.common.util.ext.ui.onClick
-import io.core.common.util.ext.ui.onTrackingTouch
+import io.core.common.util.extensions.cool.requestPermission
+import io.core.common.util.extensions.ui.onClick
+import io.core.common.util.extensions.ui.onTrackingTouch
 import io.core.common.util.log.LogCat
-import io.core.common.util.log.logI
 import io.core.common.util.tools.UriUtils
 import io.core.common.util.tools.formatDuration
 import io.core.common.util.tools.runOnUI
 import io.core.common.util.tools.toastOnUi
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.File
 import java.util.concurrent.atomic.AtomicBoolean

@@ -2,7 +2,7 @@ package io.core.common.base.component.activity
 
 import android.view.View
 import androidx.viewbinding.ViewBinding
-import io.core.common.util.ext.ui.inflateBindingWithGeneric
+import io.core.common.util.extensions.ui.inflateBindingWithGeneric
 
 abstract class ReflectBindingActivity<VB : ViewBinding> : BaseActivity() {
 

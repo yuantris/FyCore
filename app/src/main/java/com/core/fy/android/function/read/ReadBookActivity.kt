@@ -25,16 +25,16 @@ import com.core.fy.android.help.config.ReadBookConfig
 import com.core.fy.android.room.entity.Book
 import io.core.common.base.component.activity.ReflectBindingActivity
 import io.core.common.util.DiveGestureLine
+import io.core.common.util.extensions.cool.MainLooper.handler
 import io.core.common.util.log.logD
-import io.core.common.util.ext.ui.MainLooper.handler
-import io.core.common.util.ext.ui.getCompatColor
-import io.core.common.util.ext.ui.getPrefString
-import io.core.common.util.ext.ui.invisible
-import io.core.common.util.ext.ui.keepScreenOn
-import io.core.common.util.ext.ui.navigationBarGravity
-import io.core.common.util.ext.ui.sysScreenOffTime
-import io.core.common.util.ext.ui.toast
-import io.core.common.util.ext.ui.visible
+import io.core.common.util.extensions.ui.getCompatColor
+import io.core.common.util.extensions.ui.getPrefString
+import io.core.common.util.extensions.ui.invisible
+import io.core.common.util.extensions.ui.keepScreenOn
+import io.core.common.util.extensions.ui.navigationBarGravity
+import io.core.common.util.extensions.ui.sysScreenOffTime
+import io.core.common.util.extensions.ui.toast
+import io.core.common.util.extensions.ui.visible
 import io.core.common.util.tools.toastOnUi
 import kotlinx.coroutines.launch
 

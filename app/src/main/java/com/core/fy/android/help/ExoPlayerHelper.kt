@@ -7,11 +7,9 @@ import androidx.media3.database.StandaloneDatabaseProvider
 import androidx.media3.datasource.cache.Cache
 import androidx.media3.datasource.cache.LeastRecentlyUsedCacheEvictor
 import androidx.media3.datasource.cache.SimpleCache
-import androidx.media3.exoplayer.DefaultLoadControl
 import androidx.media3.exoplayer.ExoPlayer
-import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
 import io.core.appCtx
-import io.core.common.util.ext.cool.GSON
+import io.core.common.util.extensions.cool.GSON
 import com.google.gson.reflect.TypeToken
 import java.io.File
 

@@ -3,7 +3,7 @@ package io.core.common.util.tools
 import android.graphics.Color
 import android.graphics.Rect
 import androidx.annotation.ColorInt
-import io.core.common.util.ext.cool.dpToPx
+import io.core.common.util.extensions.cool.dpToPx
 import io.core.engine.shape.drawable.ShapeDrawable
 
 /**

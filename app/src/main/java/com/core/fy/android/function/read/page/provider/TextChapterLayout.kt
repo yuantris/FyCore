@@ -18,9 +18,9 @@ import com.core.fy.android.help.config.AppConfig
 import com.core.fy.android.help.config.ReadBookConfig
 import com.core.fy.android.room.entity.Book
 import com.core.fy.android.room.entity.BookChapter
-import io.core.common.util.ext.cool.dpToPx
-import io.core.common.util.ext.cool.fastSum
-import io.core.common.util.ext.cool.splitNotBlank
+import io.core.common.util.extensions.cool.dpToPx
+import io.core.common.util.extensions.cool.fastSum
+import io.core.common.util.extensions.cool.splitNotBlank
 import io.core.common.helper.coroutine.Coroutine
 import io.core.common.util.log.AppLog
 import kotlinx.coroutines.CancellationException

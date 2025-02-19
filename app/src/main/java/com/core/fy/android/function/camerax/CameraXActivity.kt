@@ -5,11 +5,10 @@ import android.util.Log
 import android.util.Size
 import androidx.camera.core.CameraSelector
 import com.core.fy.android.databinding.ActivityCameraxBinding
-import com.hjq.permissions.OnPermissionCallback
 import com.hjq.permissions.Permission
 import com.hjq.permissions.XXPermissions
 import io.core.common.base.component.activity.ReflectBindingActivity
-import io.core.common.util.ext.ui.onClick
+import io.core.common.util.extensions.ui.onClick
 
 /**
 # ██████████

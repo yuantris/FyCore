@@ -2,7 +2,7 @@ package io.core.common
 
 import io.core.R
 import io.core.appCtx
-import io.core.common.util.ext.ui.getCompatColor
+import io.core.common.util.extensions.ui.getCompatColor
 
 /**
 # ██████████

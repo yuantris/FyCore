@@ -1,7 +1,7 @@
 package io.core.other
 
 import androidx.recyclerview.widget.RecyclerView
-import io.core.common.util.ext.notifyAllDataChanged
+import io.core.common.util.extensions.ui.notifyAllDataChanged
 
 // --------------------- 核心逻辑层 ---------------------
 interface SelectableItem {

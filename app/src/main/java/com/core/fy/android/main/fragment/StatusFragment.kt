@@ -29,9 +29,9 @@ import com.core.fy.android.room.entity.Function
 import com.core.fy.android.room.repository.FunctionRepository
 import com.core.fy.android.viewmodel.FunctionVM
 import io.core.common.base.component.fragment.ReflectBindingFragment
-import io.core.common.util.ext.cool.launchAsync
-import io.core.common.util.ext.ui.onClick
-import io.core.common.util.ext.ui.startActivity
+import io.core.common.util.extensions.cool.launchAsync
+import io.core.common.util.extensions.ui.onClick
+import io.core.common.util.extensions.ui.startActivity
 import io.core.engine.brv.BindingAdapter
 import io.core.engine.brv.listener.DefaultItemTouchCallback
 import io.core.engine.brv.utils.grid

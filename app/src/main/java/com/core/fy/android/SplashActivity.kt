@@ -2,19 +2,15 @@ package com.core.fy.android
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
-import android.animation.ObjectAnimator
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
-import androidx.core.animation.doOnEnd
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.core.fy.android.databinding.ActivitySplashBinding
 import com.core.fy.android.function.GuideActivity
 import io.core.common.base.component.activity.ReflectBindingActivity
-import io.core.common.util.ext.ui.startNoTransition
+import io.core.common.util.extensions.ui.startNoTransition
 import com.gyf.immersionbar.BarHide
 import com.gyf.immersionbar.ImmersionBar
-import io.core.other.IntentData
 
 /**
 # ██████████

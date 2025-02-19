@@ -10,7 +10,7 @@ val isAndroid15Plus
 val isAndroid14Plus
     get() = OsUtils.atLeastU()
 val isAndroid13Plus
-    get() = OsUtils.atLeastS()
+    get() = OsUtils.atLeastT()
 val isAndroid12Plus
     get() = OsUtils.atLeastS()
 val isAndroid11Plus

@@ -11,11 +11,11 @@ import io.core.R
 import io.core.common.base.action.BundleAction
 import io.core.common.base.action.TitleBarAction
 import io.core.common.util.DiveGestureLine
-import io.core.common.util.ext.addCallback
-import io.core.common.util.ext.ifNotNull
-import io.core.common.util.ext.ifNull
-import io.core.common.util.ext.ui.BarColor
-import io.core.common.util.ext.ui.adaptStatusBarToView
+import io.core.common.util.extensions.addCallback
+import io.core.common.util.extensions.ifNotNull
+import io.core.common.util.extensions.ifNull
+import io.core.common.util.extensions.ui.BarColor
+import io.core.common.util.extensions.ui.adaptStatusBarToView
 import io.core.common.util.log.logD
 import io.core.common.util.tools.DeviceOSUtils
 import io.core.widget.layout.TitleBar

@@ -6,7 +6,7 @@ import android.view.MotionEvent
 import android.view.View
 import androidx.viewbinding.ViewBinding
 import io.core.common.helper.swipeback.SwipeBackHelper
-import io.core.common.util.ext.ui.inflateBindingWithGeneric
+import io.core.common.util.extensions.ui.inflateBindingWithGeneric
 
 /**
 # ██████████

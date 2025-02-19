@@ -5,15 +5,14 @@ import android.content.res.Resources
 import com.core.fy.android.BuildConfig
 import com.core.fy.android.constants.PreferKey
 import com.core.fy.android.constants.PreferKey.themeMode
-import io.core.Android
 import io.core.appCtx
-import io.core.common.util.ext.ui.defaultSharedPreferences
-import io.core.common.util.ext.ui.getPrefBoolean
-import io.core.common.util.ext.ui.getPrefInt
-import io.core.common.util.ext.ui.getPrefString
-import io.core.common.util.ext.ui.putPrefBoolean
-import io.core.common.util.ext.ui.putPrefInt
-import io.core.common.util.ext.ui.putPrefString
+import io.core.common.util.extensions.ui.defaultSharedPreferences
+import io.core.common.util.extensions.ui.getPrefBoolean
+import io.core.common.util.extensions.ui.getPrefInt
+import io.core.common.util.extensions.ui.getPrefString
+import io.core.common.util.extensions.ui.putPrefBoolean
+import io.core.common.util.extensions.ui.putPrefInt
+import io.core.common.util.extensions.ui.putPrefString
 
 /**
 # ██████████

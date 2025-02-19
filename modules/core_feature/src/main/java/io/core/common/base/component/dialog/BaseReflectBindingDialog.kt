@@ -8,7 +8,7 @@ import android.view.Gravity
 import android.view.ViewGroup
 import androidx.viewbinding.ViewBinding
 import io.core.R
-import io.core.common.util.ext.ui.inflateWithGeneric
+import io.core.common.util.extensions.ui.inflateWithGeneric
 
 /**
  * 愿你余生所学，皆是兴趣使然，而非生活所迫。

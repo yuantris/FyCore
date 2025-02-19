@@ -1,8 +1,8 @@
 package com.core.fy.android.help
 
 import io.core.appCtx
-import io.core.common.util.ext.cool.externalFiles
-import io.core.common.util.ext.cool.getFile
+import io.core.common.util.extensions.cool.externalFiles
+import io.core.common.util.extensions.cool.getFile
 import io.core.common.util.tools.FileUtils
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.withContext

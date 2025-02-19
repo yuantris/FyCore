@@ -1,6 +1,5 @@
 package com.core.fy.android.widget
 
-import android.app.Activity
 import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.PorterDuff
@@ -19,11 +18,10 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.children
 import com.core.fy.android.R
-import io.core.common.util.ext.cool.dpToPx
-import io.core.common.util.ext.ui.activity
-import io.core.common.util.ext.ui.bottomPadding
-import io.core.common.util.ext.ui.getCompatColor
-import io.core.common.util.ext.ui.topPadding
+import io.core.common.util.extensions.cool.dpToPx
+import io.core.common.util.extensions.ui.bottomPadding
+import io.core.common.util.extensions.ui.getCompatColor
+import io.core.common.util.extensions.ui.topPadding
 import com.google.android.material.appbar.AppBarLayout
 
 @Suppress("unused", "MemberVisibilityCanBePrivate")

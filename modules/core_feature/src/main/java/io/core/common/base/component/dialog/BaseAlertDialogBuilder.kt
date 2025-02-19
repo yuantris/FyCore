@@ -7,7 +7,8 @@ import android.view.WindowManager
 import androidx.appcompat.app.AlertDialog
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import io.core.common.CoreConfig
-import io.core.common.util.tools.OsUtils
+import io.core.common.util.tools.isAndroid12Plus
+import io.core.common.util.tools.isAndroid13Plus
 
 class BaseAlertDialogBuilder : MaterialAlertDialogBuilder {
     constructor(context: Context) : super(context)
@@ -16,12 +17,12 @@ class BaseAlertDialogBuilder : MaterialAlertDialogBuilder {
     override fun create(): AlertDialog {
         return super.create().also { dialog ->
             val window = dialog.window ?: return@also
-            if (OsUtils.atLeastS()) {
+            if (isAndroid12Plus) {
                 window.apply {
                     addFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND)
                     addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
 
-                    if (OsUtils.atLeastT()) {
+                    if (isAndroid13Plus) {
                         val animator = ValueAnimator.ofInt(0, 13).apply {
                             duration = ANIMATION_DURATION
                             addUpdateListener { animation ->

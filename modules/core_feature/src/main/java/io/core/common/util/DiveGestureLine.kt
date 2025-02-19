@@ -3,13 +3,10 @@ package io.core.common.util
 import android.view.View
 import android.view.Window
 import android.view.WindowManager
-import androidx.lifecycle.Lifecycle
-import com.gyf.immersionbar.OSUtils
 import com.gyf.immersionbar.ktx.navigationBarHeight
 import io.core.appCtx
-import io.core.common.util.ext.ui.setPaddingBottom
+import io.core.common.util.extensions.ui.setPaddingBottom
 import io.core.common.util.tools.DeviceOSUtils
-import io.core.common.util.tools.OsUtils
 
 /**
 # ██████████

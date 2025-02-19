@@ -14,9 +14,9 @@ import android.widget.FrameLayout
 import android.widget.FrameLayout.LayoutParams
 import androidx.appcompat.widget.AppCompatTextView
 import io.core.R
-import io.core.common.util.ext.ui.getCompatColor
-import io.core.common.util.ext.ui.invisible
-import io.core.common.util.ext.ui.visible
+import io.core.common.util.extensions.ui.getCompatColor
+import io.core.common.util.extensions.ui.invisible
+import io.core.common.util.extensions.ui.visible
 import io.core.common.util.tools.ColorUtils
 
 

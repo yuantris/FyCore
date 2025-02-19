@@ -15,10 +15,10 @@ import io.core.common.base.component.fragment.BaseFragment
 import io.core.common.helper.dialogs.showDialog
 import io.core.common.helper.rv.ItemViewHolder
 import io.core.common.helper.rv.RecyclerAdapter
-import io.core.common.util.ext.exitApp
-import io.core.common.util.ext.notifyAllDataChanged
-import io.core.common.util.ext.ui.disableEdgeEffect
-import io.core.common.util.ext.ui.onClick
+import io.core.common.util.extensions.exitApp
+import io.core.common.util.extensions.ui.notifyAllDataChanged
+import io.core.common.util.extensions.ui.disableEdgeEffect
+import io.core.common.util.extensions.ui.onClick
 import io.core.common.util.processNavigationBar
 
 class MainActivity : ReflectBindingActivity<ActivityMainBinding>() {

@@ -6,8 +6,7 @@ import android.content.Intent
 import android.net.Uri
 import android.widget.Toast
 import androidx.core.content.FileProvider
-import io.core.common.util.ext.authority
-import io.core.common.util.ext.ui.appPackageName
+import io.core.common.util.extensions.authority
 import java.io.File
 
 class FileSharer private constructor(private val builder: Builder) {

@@ -2,8 +2,6 @@ package com.core.fy.android.main.fragment
 
 import android.annotation.SuppressLint
 import android.widget.Toast
-import androidx.lifecycle.lifecycleScope
-import androidx.media3.common.util.MediaFormatUtil
 import com.core.fy.android.MainActivity
 import com.core.fy.android.R
 import com.core.fy.android.constants.AppConst.timeFormat
@@ -11,32 +9,16 @@ import com.core.fy.android.constants.EventKey.BATTERY_CHANGED
 import com.core.fy.android.constants.EventKey.TIME_CHANGED
 import com.core.fy.android.databinding.FragmentBlankBinding
 import com.core.fy.android.ui.receiver.TimeBatteryReceiver
-import com.hjq.permissions.Permission
-import com.hjq.permissions.XXPermissions
 import io.core.appCtx
 import io.core.common.base.component.fragment.ReflectBindingFragment
 import io.core.common.helper.coroutine.Coroutine
 import io.core.common.helper.dialogs.showDialog
-import io.core.common.helper.media.FlowMediaPlayer
-import io.core.common.helper.media.PlayerEvent
-import io.core.common.helper.media.PlayerState
-import io.core.common.util.MediaScanner
-import io.core.common.util.ext.cool.ConvertUtils
-import io.core.common.util.ext.cool.launchSync
-import io.core.common.util.ext.cool.observeEvent
-import io.core.common.util.ext.cool.observeEventSticky
-import io.core.common.util.ext.ui.addViewToZYLayout
-import io.core.common.util.ext.ui.ctx
-import io.core.common.util.ext.ui.getCompatColor
-import io.core.common.util.ext.ui.onClick
-import io.core.common.util.ext.ui.postDelayUI
-import io.core.common.util.log.LogCat
-import io.core.common.util.log.LogPure
-import io.core.common.util.log.logE
+import io.core.common.util.extensions.cool.observeEvent
+import io.core.common.util.extensions.cool.observeEventSticky
+import io.core.common.util.extensions.ui.addViewToZYLayout
+import io.core.common.util.extensions.ui.getCompatColor
+import io.core.common.util.extensions.ui.onClick
 import io.core.common.util.tools.ColorUtils
-import io.core.common.util.tools.MultimediaUtil
-import io.core.common.util.tools.UriUtils
-import io.core.common.util.tools.formatDuration
 import io.core.common.util.tools.runOnUI
 import io.core.widget.view.LoadingView
 import io.core.widget.view.RotateLoading
@@ -44,12 +26,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.isActive
-import kotlinx.coroutines.launch
-import java.io.File
 import java.util.Date
 
 /**

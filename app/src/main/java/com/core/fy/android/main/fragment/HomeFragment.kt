@@ -13,12 +13,12 @@ import io.core.engine.brv.BindingAdapter
 import io.core.engine.brv.utils.grid
 import io.core.engine.brv.utils.setup
 import io.core.common.base.component.fragment.ReflectBindingFragment
-import io.core.common.util.ext.notifyAllDataChanged
-import io.core.common.util.ext.ui.adaptStatusBarToView
-import io.core.common.util.ext.ui.getCompatColor
-import io.core.common.util.ext.ui.hide
-import io.core.common.util.ext.ui.show
-import io.core.common.util.ext.ui.showDialogFragment
+import io.core.common.util.extensions.ui.notifyAllDataChanged
+import io.core.common.util.extensions.ui.adaptStatusBarToView
+import io.core.common.util.extensions.ui.getCompatColor
+import io.core.common.util.extensions.ui.hide
+import io.core.common.util.extensions.ui.show
+import io.core.common.util.extensions.ui.showDialogFragment
 import io.core.other.ClickSequenceHandler
 
 /**

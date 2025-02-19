@@ -1,6 +1,6 @@
 package io.core.common.util.tools
 
-import io.core.common.util.ext.currentTimeMillis
+import io.core.common.util.extensions.currentTimeMillis
 import io.core.constant.DateFormat
 import java.text.SimpleDateFormat
 import java.util.Locale

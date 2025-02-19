@@ -6,8 +6,8 @@ import androidx.viewbinding.ViewBinding
 import com.gyf.immersionbar.ImmersionBar
 import io.core.R
 import io.core.common.base.component.activity.BaseActivity
-import io.core.common.util.ext.ifNull
-import io.core.common.util.ext.ui.BarColor
+import io.core.common.util.extensions.ifNull
+import io.core.common.util.extensions.ui.BarColor
 
 /**
 # ██████████

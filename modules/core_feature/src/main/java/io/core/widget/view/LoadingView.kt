@@ -1,7 +1,6 @@
 package io.core.widget.view
 
 import android.animation.ValueAnimator
-import android.animation.ValueAnimator.AnimatorUpdateListener
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
@@ -10,7 +9,7 @@ import android.util.AttributeSet
 import android.view.View
 import android.view.animation.LinearInterpolator
 import io.core.R
-import io.core.common.util.ext.cool.dpToPx
+import io.core.common.util.extensions.cool.dpToPx
 
 
 /**

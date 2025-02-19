@@ -7,7 +7,7 @@ import android.content.IntentFilter
 import android.os.BatteryManager
 import com.core.fy.android.constants.EventKey.BATTERY_CHANGED
 import com.core.fy.android.constants.EventKey.TIME_CHANGED
-import io.core.common.util.ext.cool.postEvent
+import io.core.common.util.extensions.cool.postEvent
 
 
 class TimeBatteryReceiver : BroadcastReceiver() {

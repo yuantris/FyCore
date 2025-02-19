@@ -12,7 +12,7 @@ import com.core.fy.android.help.config.AppConfig
 import com.core.fy.android.function.read.services.AudioPlayService
 import com.core.fy.android.function.read.services.BaseReadAloudService
 import io.core.common.helper.AppLifecycleTracker
-import io.core.common.util.ext.ui.getPrefBoolean
+import io.core.common.util.extensions.ui.getPrefBoolean
 import io.core.common.util.log.LogPure
 
 

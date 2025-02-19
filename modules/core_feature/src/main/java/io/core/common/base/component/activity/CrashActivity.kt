@@ -27,10 +27,10 @@ import com.hjq.permissions.Permission
 import com.hjq.permissions.XXPermissions
 import io.core.R
 import io.core.common.base.component.dialog.specific.CrashLogsDialog
-import io.core.common.util.ext.ui.appVersionCode
-import io.core.common.util.ext.ui.appVersionName
-import io.core.common.util.ext.ui.onDebouncedClick
-import io.core.common.util.ext.ui.showDialogFragment
+import io.core.common.util.extensions.ui.appVersionCode
+import io.core.common.util.extensions.ui.appVersionName
+import io.core.common.util.extensions.ui.onDebouncedClick
+import io.core.common.util.extensions.ui.showDialogFragment
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.PrintWriter

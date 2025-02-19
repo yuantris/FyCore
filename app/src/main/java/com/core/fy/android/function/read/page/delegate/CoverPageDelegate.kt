@@ -6,7 +6,7 @@ import androidx.core.graphics.withClip
 import androidx.core.graphics.withTranslation
 import com.core.fy.android.function.read.page.ReadView
 import com.core.fy.android.function.read.page.entities.PageDirection
-import io.core.common.util.ext.ui.screenshot
+import io.core.common.util.extensions.ui.screenshot
 
 class CoverPageDelegate(readView: ReadView) : HorizontalPageDelegate(readView) {
     private val shadowDrawableR: GradientDrawable

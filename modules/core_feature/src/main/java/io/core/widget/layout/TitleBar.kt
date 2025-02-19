@@ -20,10 +20,10 @@ import androidx.annotation.DrawableRes
 import androidx.core.content.ContextCompat
 import androidx.core.view.size
 import io.core.R
-import io.core.common.util.ext.cool.dpToPx
-import io.core.common.util.ext.cool.pxToSp
-import io.core.common.util.ext.cool.spToPx
-import io.core.common.util.ext.ui.ctx
+import io.core.common.util.extensions.cool.dpToPx
+import io.core.common.util.extensions.cool.pxToSp
+import io.core.common.util.extensions.cool.spToPx
+import io.core.common.util.extensions.ui.ctx
 
 class TitleBar @JvmOverloads constructor(
     context: Context,

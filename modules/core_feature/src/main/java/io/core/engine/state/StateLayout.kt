@@ -18,7 +18,7 @@ import android.widget.FrameLayout
 import androidx.annotation.IdRes
 import androidx.annotation.LayoutRes
 import io.core.R
-import io.core.common.util.ext.ui.onDebouncedClick
+import io.core.common.util.extensions.ui.onDebouncedClick
 import io.core.engine.state.Status.*
 
 /**

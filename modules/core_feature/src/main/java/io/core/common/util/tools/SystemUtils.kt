@@ -7,8 +7,8 @@ import android.net.Uri
 import android.provider.Settings
 import android.view.Display
 import io.core.appCtx
-import io.core.common.util.ext.displayManager
-import io.core.common.util.ext.powerManager
+import io.core.common.util.extensions.displayManager
+import io.core.common.util.extensions.powerManager
 
 
 @Suppress("unused")
