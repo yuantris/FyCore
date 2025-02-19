@@ -1,186 +1,157 @@
 package io.core.common.util.tools
 
-import android.os.Build
-import androidx.annotation.RequiresApi
-import java.util.concurrent.Callable
+import io.core.common.helper.coroutine.launchSuspend
+import kotlinx.coroutines.runBlocking
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.CountDownLatch
-import java.util.concurrent.CyclicBarrier
 import java.util.concurrent.Executor
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import java.util.concurrent.ForkJoinPool
+import java.util.concurrent.ScheduledExecutorService
 import java.util.concurrent.ScheduledFuture
-import java.util.concurrent.Semaphore
-import java.util.concurrent.ThreadFactory
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeoutException
 import java.util.concurrent.atomic.AtomicInteger
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
+import kotlin.coroutines.suspendCoroutine
 
-object AsyncUtils {
-    // 默认线程池配置
-    private val DEFAULT_THREAD_POOL by lazy {
-        Executors.newCachedThreadPool { r ->
-            Thread(r, "AsyncUtils-${POOL_COUNTER.getAndIncrement()}").apply {
+
+@Suppress("UNUSED", "MemberVisibilityCanBePrivate")
+class AsyncUtils private constructor() {
+    companion object {
+        @JvmStatic
+        val executors: ExecutorService = ForkJoinPool.commonPool()
+
+        private val scheduler: ScheduledExecutorService = Executors.newScheduledThreadPool(
+            Runtime.getRuntime().availableProcessors() * 2
+        ) { r ->
+            Thread(r).apply {
+                name = "async-scheduler-${AtomicInteger(0).incrementAndGet()}"
                 isDaemon = true
             }
         }
-    }
-    private val POOL_COUNTER = AtomicInteger(1)
 
-    // 可自定义线程池
-    @Volatile
-    var threadPool: ExecutorService = DEFAULT_THREAD_POOL
-        private set
-
-    // 调度线程池（用于定时任务）
-    private val scheduler by lazy { Executors.newScheduledThreadPool(4) }
-
-    /**
-     * 初始化时自定义线程池（必须在第一次使用前调用）
-     */
-    @Synchronized
-    @JvmStatic
-    fun configThreadPool(executor: ExecutorService) {
-        if (threadPool !== DEFAULT_THREAD_POOL) {
-            throw IllegalStateException("Thread pool already customized")
+        // region CompletableFuture 增强
+        @JvmStatic
+        fun <T> supplyAsync(
+            supplier: () -> T,
+            executor: Executor = ForkJoinPool.commonPool()
+        ): CompletableFuture<T> {
+            return CompletableFuture.supplyAsync(supplier, executor)
         }
-        threadPool = executor
-    }
 
-    // region 基础异步操作
-    /**
-     * 执行异步任务（无返回值）
-     */
-    @JvmStatic
-    fun runAsync(task: Runnable): CompletableFuture<Void> {
-        return CompletableFuture.runAsync(task, threadPool)
-    }
-
-    /**
-     * 执行异步任务（有返回值）
-     */
-    @JvmStatic
-    fun <T> supplyAsync(task: Callable<T>): CompletableFuture<T> {
-        return CompletableFuture.supplyAsync({ task.call()}, threadPool)
-    }
-    // endregion
-
-    // region 并发工具封装
-    /**
-     * 使用 CountDownLatch 等待多个任务完成
-     */
-    @JvmStatic
-    fun countDownAwait(
-        count: Int,
-        awaitTimeout: Long = Long.MAX_VALUE,
-        unit: TimeUnit = TimeUnit.MILLISECONDS,
-        onFinish: () -> Unit
-    ): CountDownLatch {
-        val latch = CountDownLatch(count)
-        threadPool.submit {
-            try {
-                if (latch.await(awaitTimeout, unit)) {
-                    onFinish()
-                }
-            } catch (e: InterruptedException) {
-                Thread.currentThread().interrupt()
+        @JvmStatic
+        fun <T> withTimeout(
+            future: CompletableFuture<T>,
+            timeout: Long,
+            unit: TimeUnit,
+            exception: TimeoutException = TimeoutException("Operation timed out")
+        ): CompletableFuture<T> {
+            return future.apply {
+                scheduler.schedule({
+                    if (!isDone) completeExceptionally(exception)
+                }, timeout, unit)
             }
         }
-        return latch
-    }
 
-    /**
-     * 使用 CyclicBarrier 协调多个任务
-     */
-    @JvmStatic
-    fun cyclicBarrier(
-        parties: Int,
-        action: Runnable? = null
-    ): CyclicBarrier {
-        return CyclicBarrier(parties, action)
-    }
-
-    /**
-     * 使用 Semaphore 控制并发量
-     */
-    @JvmStatic
-    fun <T> withSemaphore(
-        semaphore: Semaphore,
-        timeout: Long = Long.MAX_VALUE,
-        unit: TimeUnit = TimeUnit.MILLISECONDS,
-        action: () -> T
-    ): T {
-        if (!semaphore.tryAcquire(timeout, unit)) {
-            throw TimeoutException("Acquire semaphore timeout")
+        @JvmStatic
+        fun <T> allOf(vararg futures: CompletableFuture<T>): CompletableFuture<List<T>> {
+            return CompletableFuture.allOf(*futures)
+                .thenApply { futures.map { it.get() } }
         }
-        try {
-            return action()
-        } finally {
-            semaphore.release()
+        // endregion
+
+        // region CountDownLatch 增强
+        @JvmStatic
+        fun awaitLatch(
+            latch: CountDownLatch,
+            timeout: Long,
+            unit: TimeUnit
+        ): Boolean {
+            return latch.await(timeout, unit)
         }
-    }
-    // endregion
 
-    // region 定时任务
-    /**
-     * 延迟执行任务
-     */
-    @JvmStatic
-    fun schedule(
-        delay: Long,
-        unit: TimeUnit,
-        task: Runnable
-    ): ScheduledFuture<*> {
-        return scheduler.schedule(task, delay, unit)
-    }
-
-    /**
-     * 固定频率定时任务
-     */
-    @JvmStatic
-    fun scheduleAtFixedRate(
-        initialDelay: Long,
-        period: Long,
-        unit: TimeUnit,
-        task: Runnable
-    ): ScheduledFuture<*> {
-        return scheduler.scheduleWithFixedDelay(task, initialDelay, period, unit)
-    }
-    // endregion
-
-    // region CompletableFuture 扩展
-    /**
-     * 在主线程（或其他指定线程池）继续执行
-     */
-    @JvmStatic
-    fun <T> CompletableFuture<T>.thenRunOnMain(
-        executor: Executor = ForkJoinPool.commonPool(),
-        action: (T) -> Unit
-    ): CompletableFuture<Void> {
-        return this.thenAcceptAsync(action, executor)
-    }
-
-    /**
-     * 异常处理扩展
-     */
-    @JvmStatic
-    @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
-    fun <T> CompletableFuture<T>.exceptionally(handler: (Throwable) -> T): CompletableFuture<T> {
-        return this.exceptionallyAsync(handler, threadPool)
-    }
-    // endregion
-
-    /**
-     * 关闭所有资源（谨慎使用）
-     */
-    @JvmStatic
-    @Synchronized
-    fun shutdown() {
-        if (threadPool !== DEFAULT_THREAD_POOL) {
-            threadPool.shutdown()
+        @JvmStatic
+        fun <T> wrapWithLatch(
+            latch: CountDownLatch,
+            future: CompletableFuture<T>
+        ): CompletableFuture<T> {
+            return future.whenComplete { _, _ -> latch.countDown() }
         }
-        scheduler.shutdown()
-        DEFAULT_THREAD_POOL.shutdown()
+
+        @JvmStatic
+        fun countDown(latch: CountDownLatch) {
+            latch.countDown()
+        }
+        // endregion
+
+        // region ScheduledFuture 增强
+        @JvmStatic
+        fun schedule(
+            command: Runnable,
+            delay: Long,
+            unit: TimeUnit
+        ): ScheduledFuture<*> {
+            return scheduler.schedule(command, delay, unit)
+        }
+
+        @JvmStatic
+        fun scheduleAtFixedRate(
+            command: Runnable,
+            initialDelay: Long,
+            period: Long,
+            unit: TimeUnit
+        ): ScheduledFuture<*> {
+            return scheduler.scheduleAtFixedRate(command, initialDelay, period, unit)
+        }
+
+        @JvmStatic
+        fun cancelFuture(future: ScheduledFuture<*>) {
+            future.cancel(true)
+        }
+        // endregion
+
+        // region Kotlin协程桥接
+        @JvmStatic
+        fun <T> awaitCompletable(future: CompletableFuture<T>): T {
+            return future.get()
+        }
+
+        @JvmStatic
+        fun <T> completableToSuspend(future: CompletableFuture<T>): T {
+            return runBlocking { future.await() }
+        }
+
+        @JvmStatic
+        fun <T> suspendToCompletable(block: suspend () -> T): CompletableFuture<T> {
+            val future = CompletableFuture<T>()
+            launchSuspend {
+                try {
+                    future.complete(block())
+                } catch (e: Exception) {
+                    future.completeExceptionally(e)
+                }
+            }
+            return future
+        }
+
+        private suspend fun <T> CompletableFuture<T>.await(): T = suspendCoroutine { cont ->
+            whenComplete { result, exception ->
+                if (exception == null) {
+                    cont.resume(result)
+                } else {
+                    cont.resumeWithException(exception)
+                }
+            }
+        }
+        // endregion
+
+        @JvmStatic
+        fun shutdown() {
+            scheduler.shutdownNow()
+            ForkJoinPool.commonPool().shutdown()
+        }
     }
 }

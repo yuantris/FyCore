@@ -1,5 +1,6 @@
 package io.core.common.helper
 
+import io.core.common.util.extensions.logE
 import io.core.common.util.log.LogPure
 import io.core.common.util.log.TAG
 import io.core.common.util.log.printOnDebug
@@ -95,7 +96,7 @@ class TryCatchHelper {
             return try {
                 block()
             } catch (e: Exception) {
-                LogPure.logE(TAG, "An error occurred: " + e.message)
+                LogPure.e(TAG, "An error occurred: " + e.message)
                 null
             }
         }
@@ -145,7 +146,7 @@ class TryCatchHelper {
         }
 
         private fun handleException(e: Exception) {
-            LogPure.logE(TAG, "An error occurred: " + e.message)
+            LogPure.e(TAG, "An error occurred: " + e.message)
         }
 
         fun interface CheckedConsumer<T> {

@@ -17,6 +17,10 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 
+fun Fragment.isAlive(): Boolean {
+    return !(isRemoving || isDetached)
+}
+
 inline fun <reified T : DialogFragment> Fragment.showDialogFragment(
     arguments: Bundle.() -> Unit = {}
 ) {

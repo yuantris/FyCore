@@ -7,6 +7,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.viewModelScope
 import io.core.common.helper.coroutine.Coroutine
+import io.core.common.util.log.LogCat
 import io.core.common.util.log.logE
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
@@ -124,7 +125,7 @@ fun LifecycleOwner.launchSync(action: suspend () -> Unit) {
             action()
         } catch (e: CancellationException) {
             // 处理协程取消
-            "协程取消: $e".logE()
+            LogCat.e("协程取消--Sync", tr = e)
         } catch (e: Exception) {
             // 处理其他异常
             "Exception: ${e.message}".logE()
@@ -138,7 +139,7 @@ fun LifecycleOwner.launchAsync(action: suspend () -> Unit) {
             action()
         } catch (e: CancellationException) {
             // 处理协程取消
-            "协程取消".logE()
+            LogCat.e("协程取消--Async")
         } catch (e: Exception) {
             // 处理其他异常
             "Exception: ${e.message}".logE()

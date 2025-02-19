@@ -48,7 +48,7 @@ object ReadAloud {
         intent.putExtra("play", play)
         intent.putExtra("pageIndex", pageIndex)
         intent.putExtra("startPos", startPos)
-        LogPure.logD("ReadAloud", intent.toString())
+        LogPure.d("ReadAloud", intent.toString())
         try {
             context.startForegroundServiceCompat(intent)
         } catch (e: Exception) {

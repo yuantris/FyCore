@@ -19,47 +19,72 @@ object LogPure {
 
     // 展示日志，默认输出到 Logcat
     @JvmStatic
-    fun logD(message: String, tag: String = DEFAULT_TAG) {
+    fun d(tag: String = DEFAULT_TAG, message: String) {
         log(Log.DEBUG, tag, message)
     }
 
-    fun logD(tag: String = DEFAULT_TAG, message: () -> String) {
+    @JvmStatic
+    fun d(message: String) {
+        log(Log.DEBUG, DEFAULT_TAG, message)
+    }
+
+    fun d(tag: String = DEFAULT_TAG, message: () -> String) {
         log(Log.DEBUG, tag, message())
     }
 
     @JvmStatic
-    fun logI(message: String, tag: String = DEFAULT_TAG) {
+    fun i(tag: String = DEFAULT_TAG, message: String) {
         log(Log.INFO, tag, message)
     }
 
-    fun logI(tag: String = DEFAULT_TAG, message: () -> String) {
+    @JvmStatic
+    fun i(message: String) {
+        log(Log.INFO, DEFAULT_TAG, message)
+    }
+
+    fun i(tag: String = DEFAULT_TAG, message: () -> String) {
         log(Log.INFO, tag, message())
     }
 
     @JvmStatic
-    fun logW(message: String, tag: String = DEFAULT_TAG) {
+    fun w(tag: String = DEFAULT_TAG, message: String) {
         log(Log.WARN, tag, message)
     }
 
-    fun logW(tag: String = DEFAULT_TAG, message: () -> String) {
+    @JvmStatic
+    fun w(message: String) {
+        log(Log.WARN, DEFAULT_TAG, message)
+    }
+
+    fun w(tag: String = DEFAULT_TAG, message: () -> String) {
         log(Log.WARN, tag, message())
     }
 
     @JvmStatic
-    fun logE(message: String, tag: String = DEFAULT_TAG) {
+    fun e(tag: String = DEFAULT_TAG, message: String) {
         log(Log.ERROR, tag, message)
     }
 
-    fun logE(tag: String = DEFAULT_TAG, message: () -> String) {
+    @JvmStatic
+    fun e(message: String) {
+        log(Log.ERROR, DEFAULT_TAG, message)
+    }
+
+    fun e(tag: String = DEFAULT_TAG, message: () -> String) {
         log(Log.ERROR, tag, message())
     }
 
     @JvmStatic
-    fun logV(message: String, tag: String = DEFAULT_TAG) {
+    fun v(tag: String = DEFAULT_TAG, message: String) {
         log(Log.VERBOSE, tag, message)
     }
 
-    fun logV(tag: String = DEFAULT_TAG, message: () -> String) {
+    @JvmStatic
+    fun v(message: String) {
+        log(Log.VERBOSE, DEFAULT_TAG, message)
+    }
+
+    fun v(tag: String = DEFAULT_TAG, message: () -> String) {
         log(Log.VERBOSE, tag, message())
     }
 

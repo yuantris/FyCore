@@ -4,6 +4,7 @@ import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import com.core.fy.android.databinding.ActivityMainBinding
 import com.core.fy.android.databinding.HomeNavigationItemBinding
@@ -12,6 +13,7 @@ import com.core.fy.android.main.fragment.HomeFragment
 import com.core.fy.android.main.fragment.SetFragment
 import io.core.common.base.component.activity.ReflectBindingActivity
 import io.core.common.base.component.fragment.BaseFragment
+import io.core.common.helper.AppLifecycleTracker
 import io.core.common.helper.dialogs.showDialog
 import io.core.common.helper.rv.ItemViewHolder
 import io.core.common.helper.rv.RecyclerAdapter
@@ -19,7 +21,11 @@ import io.core.common.util.extensions.exitApp
 import io.core.common.util.extensions.ui.notifyAllDataChanged
 import io.core.common.util.extensions.ui.disableEdgeEffect
 import io.core.common.util.extensions.ui.onClick
+import io.core.common.util.log.LogPure
 import io.core.common.util.processNavigationBar
+import io.core.common.util.tools.toastOnUi
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 class MainActivity : ReflectBindingActivity<ActivityMainBinding>() {
 
@@ -29,6 +35,16 @@ class MainActivity : ReflectBindingActivity<ActivityMainBinding>() {
     override fun initial(savedInstanceState: Bundle?) {
         setTakeOverBackPressed(true)
         super.initial(savedInstanceState)
+
+        lifecycleScope.launch {
+            AppLifecycleTracker.isInForeground.collect { isForeground ->
+                if (isForeground) {
+                    LogPure.d("进入前台")
+                } else {
+                    LogPure.d("进入后台")
+                }
+            }
+        }
 
         navigationAdapter = NavigationAdapter().apply {
             addItem(

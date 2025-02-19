@@ -1,9 +1,13 @@
 package io.core.common.util.extensions.ui
 
 import android.graphics.Color
+import android.os.Build
+import android.util.DisplayMetrics
 import android.view.View
 import android.view.Window
+import android.view.WindowInsets
 import android.view.WindowManager
+import android.view.WindowMetrics
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -40,6 +44,31 @@ fun Window.setupImmersiveBars(
         .navigationBarDarkIcon(navigationBarColor == BarColor.BLACK)
         .init()
 }
+
+val WindowManager.windowSize: DisplayMetrics
+    get() {
+        val displayMetrics = DisplayMetrics()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            val windowMetrics: WindowMetrics = currentWindowMetrics
+            val insets = windowMetrics.windowInsets
+                .getInsetsIgnoringVisibility(WindowInsets.Type.systemBars() or WindowInsets.Type.displayCutout())
+            val windowWidth = windowMetrics.bounds.width()
+            val windowHeight = windowMetrics.bounds.height()
+            var insetsWidth = insets.left + insets.right
+            var insetsHeight = insets.top + insets.bottom
+            if (windowWidth > windowHeight) {
+                val tmp = insetsWidth
+                insetsWidth = insetsHeight
+                insetsHeight = tmp
+            }
+            displayMetrics.widthPixels = windowWidth - insetsWidth
+            displayMetrics.heightPixels = windowHeight - insetsHeight
+        } else {
+            @Suppress("DEPRECATION")
+            defaultDisplay.getMetrics(displayMetrics)
+        }
+        return displayMetrics
+    }
 
 fun Window.transparentStatusBar() {
     clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)

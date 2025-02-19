@@ -3,6 +3,7 @@ package io.core
 import android.app.Application
 import androidx.core.content.FileProvider
 import io.core.common.helper.AppLifecycleTracker
+import io.core.common.util.extensions.registerLifecycleObserver
 import io.core.common.util.log.LogCat
 import io.core.common.util.tools.Preferences
 import io.core.engine.livebus.LiveEventBus
@@ -51,6 +52,7 @@ object Android {
         // 初始化日志
         LogCat.setDebug(debug)
         // 注册Activity生命周期回调
+        registerLifecycleObserver(AppLifecycleTracker)
         application.registerActivityLifecycleCallbacks(AppLifecycleTracker)
         // LiveEventBus 初始化
         LiveEventBus.config()

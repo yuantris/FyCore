@@ -89,9 +89,6 @@
             android:name=".function.TestPageActivity"
             android:exported="false" />
         <activity
-            android:name=".function.TestCodePageActivity"
-            android:exported="false" />
-        <activity
             android:name=".function.GuideActivity"
             android:exported="false" />
         <activity

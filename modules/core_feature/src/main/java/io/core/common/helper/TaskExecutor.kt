@@ -1,217 +1,215 @@
 package io.core.common.helper
 
 import io.core.common.util.tools.runOnUI
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.withContext
-import kotlinx.coroutines.withTimeout
-import java.util.SortedMap
+import kotlinx.coroutines.*
+import java.util.*
 import java.util.concurrent.*
+import java.util.concurrent.atomic.AtomicInteger
+import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.cancellation.CancellationException
 
 // ========================= 增强版并发处理器 =========================
-class TaskExecutor private constructor() {
+class TaskExecutor private constructor(
+    private val javaThreadPool: ExecutorService,
+    private val scheduledExecutor: ScheduledExecutorService
+) {
 
     // ====================== Kotlin 协程版本 ======================
     /**
      * 增强型并发执行模板（协程版）
      * @param tasks 任务集合（每个任务必须是 suspend 函数）
-     * @param onEachComplete 单个任务完成回调（携带结果和索引）
-     * @param onComplete 全部完成回调（主线程）
-     * @param onError 异常回调（主线程）
+     * @param context 协程上下文，默认使用 Dispatchers.IO
+     * @param onEachComplete 单个任务完成回调（主线程）
+     * @param onComplete 全部成功回调（主线程）
+     * @param onPartialComplete 部分完成回调（主线程）
+     * @param onError 异常回调（主线程，携带部分结果）
      * @param timeoutMillis 整体超时时间（null 表示无超时）
-     * @param progressCallback 进度回调（完成数，总数）
+     * @param progressCallback 进度回调（主线程）
      */
     suspend fun <T> executeConcurrent(
         tasks: List<suspend () -> T>,
+        context: CoroutineContext = Dispatchers.IO,
         onEachComplete: ((T, Int) -> Unit)? = null,
         onComplete: (List<T>) -> Unit,
-        onError: (Throwable) -> Unit = {},
+        onPartialComplete: ((List<T>) -> Unit)? = null,
+        onError: (Throwable, List<T>?) -> Unit = { _, _ -> },
         timeoutMillis: Long? = null,
         progressCallback: ((completed: Int, total: Int) -> Unit)? = null
-    ) = coroutineScope {
+    ) = supervisorScope {
         try {
             val totalTasks = tasks.size
-            val results = mutableListOf<T>()
+            val completedCount = AtomicInteger(0)
 
             val deferredResults = tasks.mapIndexed { index, task ->
-                async(Dispatchers.IO) {
+                async(context) {
                     try {
-                        val result = if (timeoutMillis != null) {
-                            withTimeout(timeoutMillis) { task() }
-                        } else {
-                            task()
-                        }
+                        val result = timeoutMillis?.let {
+                            withTimeout(it) { task() }
+                        } ?: task()
 
-                        // 主线程回调
                         withContext(Dispatchers.Main) {
                             onEachComplete?.invoke(result, index)
-                            progressCallback?.invoke(index + 1, totalTasks)
+                            progressCallback?.invoke(completedCount.incrementAndGet(), totalTasks)
                         }
-                        result
+                        Result.Success(index, result)
                     } catch (e: Exception) {
                         if (e is CancellationException) {
-                            throw ConcurrentTimeoutException("Task $index timed out", e)
+                            Result.Failure(index, ConcurrentTimeoutException("Task $index timed out", e))
+                        } else {
+                            Result.Failure(index, e)
                         }
-                        throw e
                     }
                 }
             }
 
-            // 处理整体超时
-            val completedResults = timeoutMillis?.let {
-                withTimeout(it) { deferredResults.awaitAll() }
-            } ?: deferredResults.awaitAll()
+            val collectedResults = if (timeoutMillis != null) {
+                withTimeout(timeoutMillis) { deferredResults.awaitAll() }
+            } else {
+                deferredResults.awaitAll()
+            }
 
-            results.addAll(completedResults)
-            withContext(Dispatchers.Main) { onComplete(results) }
+            // 按原始顺序排序结果和错误
+            val successResults = collectedResults
+                .filterIsInstance<Result.Success<T>>()
+                .sortedBy { it.index }
+                .map { it.value }
+
+            val errors = collectedResults
+                .filterIsInstance<Result.Failure<T>>()
+                .map { it.exception }
+
+            if (errors.isEmpty()) {
+                withContext(Dispatchers.Main) { onComplete(successResults) }
+            } else {
+                withContext(Dispatchers.Main) {
+                    onPartialComplete?.invoke(successResults)
+                    onError(
+                        ConcurrentAggregateException(errors).apply {
+                            partialResults = successResults
+                        },
+                        successResults
+                    )
+                }
+            }
         } catch (e: Exception) {
-            withContext(Dispatchers.Main) { onError(e) }
+            withContext(Dispatchers.Main) { onError(e, null) }
         }
     }
 
     // ====================== Java 兼容版本 ======================
-    private val javaThreadPool = Executors.newCachedThreadPool()
-    private val scheduledExecutor = Executors.newScheduledThreadPool(2)
-
-    /**
-     * 无超时版本（方法重载）
-     */
-    fun <T> executeForJava(
-        tasks: List<ProcessorTask<T>>,
-        callback: ConcurrentCallback<T>
-    ) = executeForJava(tasks, callback, 0, TimeUnit.MILLISECONDS)
-
     /**
      * 增强型并发执行模板（Java 版）
      * @param tasks 任务集合
-     * @param callback 带丰富状态的回调接口
+     * @param callback 回调接口
      * @param timeout 整体超时时间（<=0 表示无超时）
      * @param timeUnit 时间单位
+     * @param executor 自定义线程池（可选）
      */
     fun <T> executeForJava(
         tasks: List<ProcessorTask<T>>,
         callback: ConcurrentCallback<T>,
         timeout: Long = 0,
-        timeUnit: TimeUnit = TimeUnit.MILLISECONDS
+        timeUnit: TimeUnit = TimeUnit.MILLISECONDS,
+        executor: ExecutorService? = null
     ) {
-        val executor = if (timeout > 0) javaThreadPool else ForkJoinPool.commonPool()
+        val actualExecutor = executor ?: javaThreadPool
+        val resultMap = ConcurrentSkipListMap<Int, T>()
+        val errors = ConcurrentLinkedQueue<Throwable>()
+        val latch = CountDownLatch(tasks.size)
 
-        executor.execute {
-            try {
-                val taskPairs = tasks.mapIndexed { index, task ->
-                    index to Callable<T> { task.process() }
-                }
-
-                val futures = if (timeout > 0) {
-                    javaThreadPool.invokeAll(
-                        taskPairs.map { it.second },
-                        timeout,
-                        timeUnit
-                    )
-                } else {
-                    javaThreadPool.invokeAll(taskPairs.map { it.second })
-                }
-
-                val resultMap = ConcurrentHashMap<Int, T>()
-                val errors = ConcurrentLinkedQueue<Throwable>()
-
-                // 并行处理结果（保留原始顺序）
-                futures.forEachIndexed { futureIndex, future ->
+        tasks.forEachIndexed { index, task ->
+            CompletableFuture.supplyAsync(
+                {
                     try {
-                        if (future.isDone) {
-                            val result = future.get()
-                            val originalIndex = taskPairs[futureIndex].first
-                            resultMap[originalIndex] = result
-                            runOnUI {
-                                callback.onEachResult(result, originalIndex)
-                                callback.onProgress(resultMap.size, tasks.size)
-                            }
-                        }
-                    } catch (e: InterruptedException) {
-                        errors.add(ConcurrentException("Task $futureIndex interrupted", e))
-                    } catch (e: ExecutionException) {
-                        errors.add(ConcurrentException("Task $futureIndex failed", e.cause))
-                    } catch (e: CancellationException) {
-                        errors.add(ConcurrentTimeoutException("Task $futureIndex timed out"))
+                        task.process()
+                    } catch (e: Exception) {
+                        throw ConcurrentException("Task $index failed", e)
                     }
-                }
-
-                when {
-                    errors.isNotEmpty() -> {
-                        val sortedMap = resultMap.toSortedMap()
+                },
+                actualExecutor
+            ).whenComplete { result, throwable ->
+                try {
+                    if (throwable != null) {
+                        errors.add(throwable.cause ?: throwable)
+                    } else {
+                        resultMap[index] = result
                         runOnUI {
-                            callback.onPartialComplete(sortedMap)
-                            callback.onError(ConcurrentAggregateException(errors.toList()))
+                            callback.onEachResult(result, index) // 即时回调
+                            callback.onProgress(resultMap.size, tasks.size)
                         }
                     }
-
-                    resultMap.size == tasks.size -> {
-                        runOnUI { callback.onComplete(resultMap.toSortedMap()) }
-                    }
-
-                    else -> {
-                        val sortedMap = resultMap.toSortedMap()
-                        runOnUI {
-                            callback.onPartialComplete(sortedMap)
-                            callback.onError(ConcurrentIncompleteException("Partial completion"))
-                        }
-                    }
+                } finally {
+                    latch.countDown()
                 }
-            } catch (e: Exception) {
-                runOnUI { callback.onError(ConcurrentException("Execution failed", e)) }
             }
         }
 
-        // 定时取消任务（仅限带超时）
-        if (timeout > 0) {
+        // 超时控制
+        val timeoutFuture = if (timeout > 0) {
             scheduledExecutor.schedule({
-                executor.shutdownNow()
-                runOnUI { callback.onError(ConcurrentTimeoutException("Overall timeout reached")) }
+                actualExecutor.shutdownNow()
+                runOnUI {
+                    callback.onPartialComplete(resultMap)
+                    callback.onError(ConcurrentTimeoutException("Overall timeout"))
+                }
             }, timeout, timeUnit)
+        } else null
+
+        // 最终完成检查
+        actualExecutor.execute {
+            try {
+                latch.await()
+
+                when {
+                    errors.isNotEmpty() -> {
+                        runOnUI {
+                            callback.onPartialComplete(resultMap)
+                            callback.onError(ConcurrentAggregateException(errors.toList()))
+                        }
+                    }
+                    else -> runOnUI { callback.onComplete(resultMap) }
+                }
+            } catch (e: InterruptedException) {
+                runOnUI { callback.onError(ConcurrentException("Interrupted", e)) }
+            }
         }
+
+        timeoutFuture?.let { /* 清理逻辑 */ }
     }
 
-    // ====================== 增强回调接口 ======================
-    interface ConcurrentCallback<T> {
-        /**
-         * 全部成功时回调（有序 Map）
-         * @param results 按任务原始顺序排序的结果集
-         */
-        fun onComplete(results: SortedMap<Int, T>)
-
-        /**
-         * 部分完成时回调
-         * @param partialResults 已完成的結果（保留原始顺序）
-         */
-        fun onPartialComplete(partialResults: SortedMap<Int, T>) {}
-
-        fun onError(e: Throwable)
-        fun onProgress(completed: Int, total: Int) {}
-        fun onEachResult(result: T, index: Int) {}
+    fun <T> executeForJava(
+        tasks: List<ProcessorTask<T>>,
+        callback: ConcurrentCallback<T>,
+        executor: ExecutorService? = null
+    ) {
+        executeForJava(tasks, callback, 0, TimeUnit.MILLISECONDS, executor)
     }
 
+    // ====================== 数据结构 & 异常 ======================
+    sealed class Result<out T> {
+        data class Success<out T>(val index: Int, val value: T) : Result<T>()
+        data class Failure<out T>(val index: Int, val exception: Throwable) : Result<T>()
+    }
 
-    // ====================== 数据结构定义 ======================
     interface ProcessorTask<T> {
         @Throws(Exception::class)
         fun process(): T
     }
 
+    interface ConcurrentCallback<T> {
+        fun onComplete(results: SortedMap<Int, T>)
+        fun onPartialComplete(partialResults: SortedMap<Int, T>) {}
+        fun onError(e: Throwable)
+        fun onProgress(completed: Int, total: Int) {}
+        fun onEachResult(result: T, index: Int) {}
+    }
 
-    // ====================== 异常体系 ======================
-    open class ConcurrentException(message: String, cause: Throwable? = null) :
-        Exception(message, cause)
-
-    class ConcurrentTimeoutException(message: String, cause: Throwable? = null) :
-        ConcurrentException(message, cause)
-
-    class ConcurrentAggregateException(val causes: List<Throwable>) :
-        ConcurrentException("Multiple errors occurred")
-
-    class ConcurrentIncompleteException(message: String) : ConcurrentException(message)
+    open class ConcurrentException(message: String, cause: Throwable? = null) : Exception(message, cause)
+    class ConcurrentTimeoutException(message: String, cause: Throwable? = null) : ConcurrentException(message, cause)
+    class ConcurrentAggregateException(
+        val causes: List<Throwable>,
+        var partialResults: Any? = null
+    ) : ConcurrentException("Multiple errors (${causes.size}) occurred")
 
     // ====================== 资源管理 ======================
     fun shutdown() {
@@ -219,13 +217,23 @@ class TaskExecutor private constructor() {
         scheduledExecutor.shutdownNow()
     }
 
-    // ====================== 单例实现 ======================
     companion object {
         @Volatile
         private var instance: TaskExecutor? = null
 
         fun get(): TaskExecutor = instance ?: synchronized(this) {
-            instance ?: TaskExecutor().also { instance = it }
+            instance ?: TaskExecutor(
+                Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors()),
+                Executors.newScheduledThreadPool(2)
+            ).also { instance = it }
         }
+
+        fun newInstance(
+            threadPoolSize: Int = Runtime.getRuntime().availableProcessors(),
+            scheduledThreads: Int = 2
+        ): TaskExecutor = TaskExecutor(
+            Executors.newFixedThreadPool(threadPoolSize),
+            Executors.newScheduledThreadPool(scheduledThreads)
+        )
     }
 }

@@ -3,6 +3,7 @@ package io.core.common.util
 import android.net.Uri
 import android.provider.MediaStore
 import io.core.appCtx
+import io.core.common.util.extensions.logW
 import io.core.common.util.log.LogPure
 
 /**
@@ -67,14 +68,14 @@ class MediaScanner {
                     }
                 }
             }
-            LogPure.logD("Found ${results.size} files")
+            LogPure.d("Found ${results.size} files")
             return results.distinctBy { it.path }
                 .filter { file ->
                     val defaultShouldKeep = defaultFilter(file)
                     val additionalShouldKeep = addFilter?.invoke(file) ?: true
                     val shouldKeep = defaultShouldKeep && additionalShouldKeep
                     if (!shouldKeep) {
-                        LogPure.logW("Filtered out: ${file.path}")
+                        LogPure.w("Filtered out: ${file.path}")
                     }
                     shouldKeep
                 }

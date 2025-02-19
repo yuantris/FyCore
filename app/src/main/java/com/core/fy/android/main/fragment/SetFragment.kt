@@ -2,7 +2,7 @@ package com.core.fy.android.main.fragment
 
 import com.core.fy.android.MainActivity
 import com.core.fy.android.databinding.FragmentSetBinding
-import com.core.fy.android.function.TestCodePageActivity
+import com.core.fy.android.function.TestPageActivity
 import io.core.common.base.component.fragment.ReflectBindingFragment
 import io.core.common.util.extensions.cool.currentTimeFormat
 import io.core.common.util.extensions.currentTimeMillis
@@ -34,7 +34,7 @@ class SetFragment : ReflectBindingFragment<FragmentSetBinding, MainActivity>() {
             version.setRightText(context?.appVersionName)
 
             testCode.onDebouncedClick {
-                startActivity<TestCodePageActivity>()
+                startActivity<TestPageActivity>()
             }
             crash.onDebouncedClick {
                 throw RuntimeException("Crash ${currentTimeMillis.currentTimeFormat(DateFormat.yyyyMMddHHmmssSSS)}")

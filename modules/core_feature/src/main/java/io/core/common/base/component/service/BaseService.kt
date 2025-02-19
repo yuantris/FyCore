@@ -9,6 +9,7 @@ import com.hjq.permissions.Permission
 import com.hjq.permissions.XXPermissions
 import io.core.common.helper.AppLifecycleTracker
 import io.core.common.helper.coroutine.Coroutine
+import io.core.common.util.extensions.logD
 import io.core.common.util.log.LogPure
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
@@ -38,7 +39,7 @@ abstract class BaseService : LifecycleService() {
 
     @CallSuper
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        LogPure.logD(message = "onStartCommand $intent ${intent?.toUri(0)}")
+        LogPure.d(message = "onStartCommand $intent ${intent?.toUri(0)}")
         if (!isForeground && isForegroundService()) {
             startForegroundNotification()
             isForeground = true
@@ -48,7 +49,7 @@ abstract class BaseService : LifecycleService() {
 
     @CallSuper
     override fun onTaskRemoved(rootIntent: Intent?) {
-        LogPure.logD(message = "onTaskRemoved rootIntent:$rootIntent")
+        LogPure.d(message = "onTaskRemoved rootIntent:$rootIntent")
         super.onTaskRemoved(rootIntent)
         stopSelf()
     }

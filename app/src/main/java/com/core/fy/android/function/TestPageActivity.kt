@@ -1,10 +1,14 @@
 package com.core.fy.android.function
 
 import android.os.Bundle
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
+import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.core.fy.android.databinding.ActivityTestPageBinding
+import com.core.fy.android.main.fragment.code.JavaFragment
+import com.core.fy.android.main.fragment.code.KotlinFragment
+import com.google.android.material.tabs.TabLayoutMediator
 import io.core.common.base.component.activity.ReflectBindingActivity
-import io.core.common.helper.TaskExecutor
-import io.core.common.util.extensions.cool.launchAsync
 
 /**
 # ██████████
@@ -21,22 +25,34 @@ import io.core.common.util.extensions.cool.launchAsync
  */
 class TestPageActivity : ReflectBindingActivity<ActivityTestPageBinding>() {
 
-
     override fun initial(savedInstanceState: Bundle?) {
         super.initial(savedInstanceState)
 
-        val tasks = listOf<suspend () -> List<String>>(
-            { /* 扫描图片实现 */ listOf("img1", "img2") },
-            { /* 扫描视频实现 */ listOf("video1") },
-            { /* 扫描音频实现 */ listOf("audio1") }
-        )
-        launchAsync {
-            TaskExecutor.get().executeConcurrent(tasks,
-                onComplete = {
-                    it.size
-
-                })
+        // 初始化 ViewPager2
+        val viewPager = binding.vp.apply {
+            adapter = TabPagerAdapter(this@TestPageActivity)
+            offscreenPageLimit = 1
         }
+        // 绑定 TabLayout 和 ViewPager2
+        TabLayoutMediator(binding.tab, viewPager) { tab, position ->
+            tab.text = when(position) {
+                0 -> "Kotlin"
+                1 -> "Java"
+                else -> null
+            }
+        }.attach()
 
+
+
+    }
+
+    inner class TabPagerAdapter(fragmentActivity: FragmentActivity) : FragmentStateAdapter(fragmentActivity) {
+        override fun getItemCount(): Int = 2
+
+        override fun createFragment(position: Int): Fragment = when(position) {
+            0 -> KotlinFragment()
+            1 -> JavaFragment()
+            else -> throw IllegalArgumentException("Invalid position")
+        }
     }
 }

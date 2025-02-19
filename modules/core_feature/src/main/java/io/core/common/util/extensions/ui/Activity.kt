@@ -48,31 +48,6 @@ fun AppCompatActivity.showDialogFragment(dialogFragment: DialogFragment) {
     dialogFragment.show(supportFragmentManager, dialogFragment::class.simpleName)
 }
 
-val WindowManager.windowSize: DisplayMetrics
-    get() {
-        val displayMetrics = DisplayMetrics()
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            val windowMetrics: WindowMetrics = currentWindowMetrics
-            val insets = windowMetrics.windowInsets
-                .getInsetsIgnoringVisibility(WindowInsets.Type.systemBars() or WindowInsets.Type.displayCutout())
-            val windowWidth = windowMetrics.bounds.width()
-            val windowHeight = windowMetrics.bounds.height()
-            var insetsWidth = insets.left + insets.right
-            var insetsHeight = insets.top + insets.bottom
-            if (windowWidth > windowHeight) {
-                val tmp = insetsWidth
-                insetsWidth = insetsHeight
-                insetsHeight = tmp
-            }
-            displayMetrics.widthPixels = windowWidth - insetsWidth
-            displayMetrics.heightPixels = windowHeight - insetsHeight
-        } else {
-            @Suppress("DEPRECATION")
-            defaultDisplay.getMetrics(displayMetrics)
-        }
-        return displayMetrics
-    }
-
 @Suppress("DEPRECATION")
 fun Activity.fullScreen() {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
@@ -187,6 +162,9 @@ fun Activity.startNoTransition(clazz: Class<*>, finish: Boolean = true) {
     if (finish) finish()
 }
 
+fun Activity.isAlive(): Boolean {
+    return !(isFinishing || isDestroyed)
+}
 
 /**
  * 将Activity移到前台，需将launchMode设置为SingleTop，否则会创建新实例

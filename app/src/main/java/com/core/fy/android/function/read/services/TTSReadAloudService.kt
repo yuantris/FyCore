@@ -13,6 +13,7 @@ import com.core.fy.android.help.config.AppConfig
 import io.core.common.helper.coroutine.Coroutine
 import io.core.common.util.extensions.cool.GSON
 import io.core.common.util.extensions.cool.fromJsonObject
+import io.core.common.util.extensions.logE
 import io.core.common.util.extensions.ui.servicePendingIntent
 import io.core.common.util.log.AppLog
 import io.core.common.util.log.LogPure
@@ -45,7 +46,7 @@ class TTSReadAloudService : BaseReadAloudService(), TextToSpeech.OnInitListener 
     private fun initTts() {
         ttsInitFinish = false
         val engine = GSON.fromJsonObject<SelectItem<String>>(ReadAloud.ttsEngine).getOrNull()?.value
-        LogPure.logD(TAG, "initTts engine:$engine")
+        LogPure.d(TAG, "initTts engine:$engine")
         textToSpeech = if (engine.isNullOrBlank()) {
             TextToSpeech(this, this)
         } else {
@@ -89,8 +90,8 @@ class TTSReadAloudService : BaseReadAloudService(), TextToSpeech.OnInitListener 
         MediaHelp.playSilentSound(this@TTSReadAloudService)
         speakJob?.cancel()
         speakJob = execute {
-            LogPure.logD(TAG, "朗读列表大小 ${contentList.size}")
-            LogPure.logD(TAG, "朗读页数 ${textChapter?.pageSize}")
+            LogPure.d(TAG, "朗读列表大小 ${contentList.size}")
+            LogPure.d(TAG, "朗读页数 ${textChapter?.pageSize}")
             val tts = textToSpeech ?: throw RuntimeException("tts is null")
             val contentList = contentList
             var isAddedText = false
@@ -129,7 +130,7 @@ class TTSReadAloudService : BaseReadAloudService(), TextToSpeech.OnInitListener 
                 }
                 isAddedText = true
             }
-            LogPure.logD(TAG, "朗读内容添加完成")
+            LogPure.d(TAG, "朗读内容添加完成")
             if (!isAddedText) {
                 playStop()
                 delay(1000)
@@ -188,7 +189,7 @@ class TTSReadAloudService : BaseReadAloudService(), TextToSpeech.OnInitListener 
         private val TAG = "TTSUtteranceListener"
 
         override fun onStart(s: String) {
-            LogPure.logD(TAG, "onStart nowSpeak:$nowSpeak pageIndex:$pageIndex utteranceId:$s")
+            LogPure.d(TAG, "onStart nowSpeak:$nowSpeak pageIndex:$pageIndex utteranceId:$s")
             textChapter?.let {
                 if (contentList[nowSpeak].matches(AppPattern.notReadAloudRegex)) {
                     nextParagraph()
@@ -202,7 +203,7 @@ class TTSReadAloudService : BaseReadAloudService(), TextToSpeech.OnInitListener 
         }
 
         override fun onDone(s: String) {
-            LogPure.logD(TAG, "onDone utteranceId:$s")
+            LogPure.d(TAG, "onDone utteranceId:$s")
             nextParagraph()
         }
 
@@ -210,7 +211,7 @@ class TTSReadAloudService : BaseReadAloudService(), TextToSpeech.OnInitListener 
             super.onRangeStart(utteranceId, start, end, frame)
             val msg =
                 "onRangeStart nowSpeak:$nowSpeak pageIndex:$pageIndex utteranceId:$utteranceId start:$start end:$end frame:$frame"
-            LogPure.logD(TAG, msg)
+            LogPure.d(TAG, msg)
             textChapter?.let {
                 if (readAloudNumber + start > it.getReadLength(pageIndex + 1)) {
                     pageIndex++
@@ -221,10 +222,7 @@ class TTSReadAloudService : BaseReadAloudService(), TextToSpeech.OnInitListener 
         }
 
         override fun onError(utteranceId: String?, errorCode: Int) {
-            LogPure.logE(
-                TAG,
-                "onError nowSpeak:$nowSpeak pageIndex:$pageIndex utteranceId:$utteranceId errorCode:$errorCode"
-            )
+            LogPure.e(TAG, "onError nowSpeak:$nowSpeak pageIndex:$pageIndex utteranceId:$utteranceId errorCode:$errorCode")
             nextParagraph()
         }
 
@@ -243,7 +241,7 @@ class TTSReadAloudService : BaseReadAloudService(), TextToSpeech.OnInitListener 
 
         @Deprecated("Deprecated in Java")
         override fun onError(s: String) {
-            LogPure.logE(TAG, "onError nowSpeak:$nowSpeak pageIndex:$pageIndex s:$s")
+            LogPure.e(TAG, "onError nowSpeak:$nowSpeak pageIndex:$pageIndex s:$s")
             nextParagraph()
         }
 

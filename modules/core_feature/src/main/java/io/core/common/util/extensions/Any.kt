@@ -2,7 +2,9 @@ package io.core.common.util.extensions
 
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.OnBackPressedDispatcher
+import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.ProcessLifecycleOwner
 import io.core.appCtx
 import io.core.common.helper.AppLifecycleTracker
 import io.core.common.util.extensions.cool.currentTimeFormat
@@ -72,6 +74,10 @@ fun OnBackPressedDispatcher.addCallback(
         }
     )
     return callback
+}
+
+fun registerLifecycleObserver(observer: LifecycleObserver) {
+    ProcessLifecycleOwner.get().lifecycle.addObserver(observer)
 }
 
 fun Any?.logE() {

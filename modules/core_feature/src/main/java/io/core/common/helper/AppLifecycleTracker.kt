@@ -4,37 +4,73 @@ import android.app.Activity
 import android.app.Application
 import android.app.Service
 import android.os.Bundle
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.OnLifecycleEvent
+import androidx.lifecycle.ProcessLifecycleOwner
+import com.bumptech.glide.Glide.init
 import io.core.common.base.component.service.BaseService
+import io.core.common.util.extensions.currentTimeMillis
+import io.core.common.util.extensions.logD
+import io.core.common.util.extensions.ui.isAlive
 import io.core.common.util.log.LogPure
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import java.lang.ref.WeakReference
+import java.util.UUID
+import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.ConcurrentLinkedQueue
+import java.util.concurrent.CopyOnWriteArrayList
 
+object AppLifecycleTracker : Application.ActivityLifecycleCallbacks, DefaultLifecycleObserver {
 
-object AppLifecycleTracker : Application.ActivityLifecycleCallbacks {
+    private const val TAG = "LifecycleTracker"
 
-    private const val TAG = "LifecycleHelp"
+    // Activity生命周期队列（线程安全）
+    private val activityStack = CopyOnWriteArrayList<WeakReference<Activity>>()
 
-    private val activities: MutableList<WeakReference<Activity>> = arrayListOf()
-    private val services: MutableList<WeakReference<Service>> = arrayListOf()
+    // Service生命周期记录
+    private val serviceStack = CopyOnWriteArrayList<WeakReference<Service>>()
+
     private var appFinishedListener: (() -> Unit)? = null
 
+    private val _isInForeground = MutableStateFlow(false)
+    val isInForeground: StateFlow<Boolean> = _isInForeground
+
+    override fun onStart(owner: LifecycleOwner) {
+        super.onStart(owner)
+        _isInForeground.value = true
+    }
+
+    override fun onStop(owner: LifecycleOwner) {
+        super.onStop(owner)
+        _isInForeground.value = false
+    }
+
+    /**
+     * App退出监听
+     */
+    fun setOnAppFinishedListener(appFinishedListener: (() -> Unit)) {
+        this.appFinishedListener = appFinishedListener
+    }
+
     fun activitySize(): Int {
-        return activities.size
+        return activityStack.size
     }
 
     fun getTopActivity(): Activity? {
         // 判断活动栈是否为空
-        return activities.lastOrNull()?.get()?.takeIf { isActivityAlive(it) }
-    }
-
-    private fun isActivityAlive(activity: Activity?): Boolean {
-        return activity != null && !activity.isFinishing && !activity.isDestroyed
+        return activityStack.lastOrNull()?.get()?.takeIf { it.isAlive() }
     }
 
     /**
      * 判断指定Activity是否存在
      */
+    @JvmStatic
     fun isExistActivity(activityClass: Class<*>): Boolean {
-        activities.forEach { item ->
+        activityStack.forEach { item ->
             if (item.get()?.javaClass == activityClass) {
                 return true
             }
@@ -47,7 +83,7 @@ object AppLifecycleTracker : Application.ActivityLifecycleCallbacks {
      */
     fun finishActivity(vararg activityClasses: Class<*>) {
         val waitFinish = ArrayList<WeakReference<Activity>>()
-        for (temp in activities) {
+        for (temp in activityStack) {
             for (activityClass in activityClasses) {
                 if (temp.get()?.javaClass == activityClass) {
                     waitFinish.add(temp)
@@ -64,33 +100,29 @@ object AppLifecycleTracker : Application.ActivityLifecycleCallbacks {
      * 关闭所有activity(class)
      */
     fun finishAllActivity() {
-        for (temp in activities) {
+        for (temp in activityStack) {
             temp.get()?.finish()
         }
     }
 
-    fun setOnAppFinishedListener(appFinishedListener: (() -> Unit)) {
-        this.appFinishedListener = appFinishedListener
-    }
-
     override fun onActivityPaused(activity: Activity) {
-        LogPure.logD(TAG, "${activity.javaClass.simpleName} onPause")
+        LogPure.d(TAG, "${activity.javaClass.simpleName} onPause")
     }
 
     override fun onActivityResumed(activity: Activity) {
-        LogPure.logD(TAG, "${activity.javaClass.simpleName} onResume")
+        LogPure.d(TAG, "${activity.javaClass.simpleName} onResume")
     }
 
     override fun onActivityStarted(activity: Activity) {
-        LogPure.logD(TAG, "${activity.javaClass.simpleName} onStart")
+        LogPure.d(TAG, "${activity.javaClass.simpleName} onStart")
     }
 
     override fun onActivityDestroyed(activity: Activity) {
-        LogPure.logD(TAG, "${activity.javaClass.simpleName} onDestroy")
-        for (temp in activities) {
+        LogPure.d(TAG, "${activity.javaClass.simpleName} onDestroy")
+        for (temp in activityStack) {
             if (temp.get() != null && temp.get() === activity) {
-                activities.remove(temp)
-                if (services.size == 0 && activities.size == 0) {
+                activityStack.remove(temp)
+                if (serviceStack.size == 0 && activityStack.size == 0) {
                     onAppFinished()
                 }
                 break
@@ -99,31 +131,31 @@ object AppLifecycleTracker : Application.ActivityLifecycleCallbacks {
     }
 
     override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {
-        LogPure.logD(TAG, "${activity.javaClass.simpleName} onSaveInstanceState")
+        LogPure.d(TAG, "${activity.javaClass.simpleName} onSaveInstanceState")
     }
 
     override fun onActivityStopped(activity: Activity) {
-        LogPure.logD(TAG, "${activity.javaClass.simpleName} onStop")
+        LogPure.d(TAG, "${activity.javaClass.simpleName} onStop")
     }
 
     override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
-        LogPure.logD(TAG, "${activity.javaClass.simpleName} onCreate")
-        activities.add(WeakReference(activity))
+        LogPure.d(TAG, "${activity.javaClass.simpleName} onCreate")
+        activityStack.add(WeakReference(activity))
     }
 
     @Synchronized
     fun onServiceCreate(service: BaseService) {
-        LogPure.logD(TAG, "${service::class.simpleName} onCreate")
-        services.add(WeakReference(service))
+        LogPure.d(TAG, "${service::class.simpleName} onCreate")
+        serviceStack.add(WeakReference(service))
     }
 
     @Synchronized
     fun onServiceDestroy(service: BaseService) {
-        LogPure.logD(TAG, "${service::class.simpleName} onDestroy")
-        for (temp in services) {
+        LogPure.d(TAG, "${service::class.simpleName} onDestroy")
+        for (temp in serviceStack) {
             if (temp.get() != null && temp.get() === service) {
-                services.remove(temp)
-                if (services.size == 0 && activities.size == 0) {
+                serviceStack.remove(temp)
+                if (serviceStack.size == 0 && activityStack.size == 0) {
                     onAppFinished()
                 }
                 break

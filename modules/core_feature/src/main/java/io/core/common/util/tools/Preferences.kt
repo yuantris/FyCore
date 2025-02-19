@@ -13,6 +13,7 @@ object Preferences {
         PreferenceManager.getDefaultSharedPreferences(appCtx)
     }
 
+    @JvmStatic
     fun <T> getValue(name: String, default: T): T = with(sp) {
         val res: Any = when (default) {
             is Long -> getLong(name, default)
@@ -20,11 +21,12 @@ object Preferences {
             is Int -> getInt(name, default)
             is Boolean -> getBoolean(name, default)
             is Float -> getFloat(name, default)
-            else -> throw java.lang.IllegalArgumentException()
+            else -> throw IllegalArgumentException("This type is not supported")
         }
         res as T
     }
 
+    @JvmStatic
     fun <T> putValue(name: String, value: T) = with(sp.edit()) {
         when (value) {
             is Long -> putLong(name, value)
@@ -36,6 +38,7 @@ object Preferences {
         }.apply()
     }
 
+    @JvmStatic
     fun clear() {
         sp.edit().clear().apply()
     }
