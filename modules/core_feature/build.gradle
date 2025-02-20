@@ -85,6 +85,7 @@ dependencies {
     implementation libs.kotlin.reflect
     implementation libs.kotlinx.coroutines.core
     implementation libs.kotlinx.coroutines.android
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.0")
 
     compileOnly libs.room.ktx
     //noinspection KaptUsageInsteadOfKsp
