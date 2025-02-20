@@ -35,7 +35,6 @@ object Android {
         get() = _debug
 
 
-
     /**
      * 初始化FyCore全局APPLICATION上下文
      */

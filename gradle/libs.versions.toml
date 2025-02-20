@@ -31,6 +31,7 @@ media3 = "1.4.1"
 brv = "1.6.1"
 glide = "4.16.0"
 immersionbar = "3.2.2"
+dialogx-version = "0.0.49"
 xxpermissions = "18.5"
 lens-version = "1.2.4"
 utilcodex = "1.31.1"
@@ -83,6 +84,8 @@ glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
 immersionbar = { module = "com.geyifeng.immersionbar:immersionbar", version.ref = "immersionbar" }
 immersionbar-ktx = { module = "com.geyifeng.immersionbar:immersionbar-ktx", version.ref = "immersionbar" }
 xxpermissions = { module = "com.github.getActivity:XXPermissions", version.ref = "xxpermissions" }
+kongzue-dialogx = { module = "com.kongzue.dialogx:DialogX", version.ref = "dialogx-version" }
+dialogxkongzuestyle = { module = "com.kongzue.dialogx.style:DialogXKongzueStyle", version.ref = "dialogx-version" }
 utilcodex = { module = "com.blankj:utilcodex", version.ref = "utilcodex" }
 lottie = { module = "com.airbnb.android:lottie", version.ref = "lottie" }
 shapeView = { module = "com.github.getActivity:ShapeView", version.ref = "shapeview" }

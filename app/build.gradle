@@ -105,6 +105,10 @@ dependencies {
     // https://github.com/Blankj/AndroidUtilCode
     implementation libs.utilcodex
 
+    // https://github.com/kongzue/DialogX
+    implementation libs.kongzue.dialogx
+    implementation libs.dialogxkongzuestyle
+
     def camerax_version = "1.2.0"
     implementation "androidx.camera:camera-core:${camerax_version}"
     implementation "androidx.camera:camera-camera2:${camerax_version}"

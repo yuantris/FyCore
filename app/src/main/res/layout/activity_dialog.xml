@@ -67,5 +67,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="custom" />
+
+        <Button
+            android:id="@+id/show4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="DialogX" />
     </androidx.appcompat.widget.LinearLayoutCompat>
 </androidx.constraintlayout.widget.ConstraintLayout>

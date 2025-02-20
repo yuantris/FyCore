@@ -24,25 +24,25 @@ class KotlinFragment : ReflectBindingFragment<FragmentKotlinBinding, TestPageAct
         super.initView()
 
         ctx.requestPermission(Permission.MANAGE_EXTERNAL_STORAGE) {
-            LogPure.i {
+            LogPure.v {
                 "MANAGE_EXTERNAL_STORAGE permission granted"
             }
         }
 
-        val timeoutHandler = TimeoutHandler(1000, object : TimeoutCallback {
+        val timeoutHandler = TimeoutHandler(3000, object : TimeoutCallback {
             override fun onTimeout() {
-                LogPure.i {
+                LogPure.e {
                     "onTimeout"
                 }
             }
         })
         val fixedRate = AsyncUtils.scheduleAtFixedRate({
-            LogPure.i {
+            LogPure.w {
                 "scheduleAtFixedRate"
             }
             timeoutHandler.onProgress()
         }, 0, 2000, TimeUnit.MILLISECONDS)
-        postDelayUI(6000){
+        postDelayUI(16000){
             fixedRate.cancel(true)
         }
     }

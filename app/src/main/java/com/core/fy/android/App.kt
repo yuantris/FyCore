@@ -6,6 +6,7 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.os.Build
 import com.core.fy.android.constants.AppConst.channelIdReadAloud
+import com.core.fy.android.util.initDialogX
 import io.core.Android
 import io.core.BR
 import io.core.common.CoreConfig
@@ -33,7 +34,7 @@ class App : Application() {
     override fun onCreate() {
         super.onCreate()
         Android.initialize(this)
-
+        initDialogX()
 
 //        // 添加日志全局拦截器
 //        LogCat.addHook(object : LogHook {
@@ -57,6 +58,14 @@ class App : Application() {
 
         // SoftKeyboardGlobal.install(this, false)
         createNotificationChannels()
+
+        AppLifecycleTracker.registerAppStatusChangedListener { isForeground ->
+            if (isForeground) {
+                LogPure.d("进入前台")
+            } else {
+                LogPure.d("进入后台")
+            }
+        }
     }
 
     /**

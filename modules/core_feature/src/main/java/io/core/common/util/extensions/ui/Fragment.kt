@@ -37,40 +37,40 @@ fun Fragment.showDialogFragment(dialogFragment: DialogFragment) {
 }
 
 fun Fragment.getPrefBoolean(key: String, defValue: Boolean = false) =
-    requireContext().defaultSharedPreferences.getBoolean(key, defValue)
+    ctx.defaultSharedPreferences.getBoolean(key, defValue)
 
 fun Fragment.putPrefBoolean(key: String, value: Boolean = false) =
-    requireContext().defaultSharedPreferences.edit { putBoolean(key, value) }
+    ctx.defaultSharedPreferences.edit { putBoolean(key, value) }
 
 fun Fragment.getPrefInt(key: String, defValue: Int = 0) =
-    requireContext().defaultSharedPreferences.getInt(key, defValue)
+    ctx.defaultSharedPreferences.getInt(key, defValue)
 
 fun Fragment.putPrefInt(key: String, value: Int) =
-    requireContext().defaultSharedPreferences.edit { putInt(key, value) }
+    ctx.defaultSharedPreferences.edit { putInt(key, value) }
 
 fun Fragment.getPrefLong(key: String, defValue: Long = 0L) =
-    requireContext().defaultSharedPreferences.getLong(key, defValue)
+    ctx.defaultSharedPreferences.getLong(key, defValue)
 
 fun Fragment.putPrefLong(key: String, value: Long) =
-    requireContext().defaultSharedPreferences.edit { putLong(key, value) }
+    ctx.defaultSharedPreferences.edit { putLong(key, value) }
 
 fun Fragment.getPrefString(key: String, defValue: String? = null) =
-    requireContext().defaultSharedPreferences.getString(key, defValue)
+    ctx.defaultSharedPreferences.getString(key, defValue)
 
 fun Fragment.putPrefString(key: String, value: String) =
-    requireContext().defaultSharedPreferences.edit { putString(key, value) }
+    ctx.defaultSharedPreferences.edit { putString(key, value) }
 
 fun Fragment.getPrefStringSet(
     key: String,
     defValue: MutableSet<String>? = null
 ): MutableSet<String>? =
-    requireContext().defaultSharedPreferences.getStringSet(key, defValue)
+    ctx.defaultSharedPreferences.getStringSet(key, defValue)
 
 fun Fragment.putPrefStringSet(key: String, value: MutableSet<String>) =
-    requireContext().defaultSharedPreferences.edit { putStringSet(key, value) }
+    ctx.defaultSharedPreferences.edit { putStringSet(key, value) }
 
 fun Fragment.removePref(key: String) =
-    requireContext().defaultSharedPreferences.edit { remove(key) }
+    ctx.defaultSharedPreferences.edit { remove(key) }
 
 fun Fragment.getCompatColor(@ColorRes id: Int): Int = requireContext().getCompatColor(id)
 
@@ -110,3 +110,6 @@ fun Fragment.addViewToZYLayout(target: RelativeLayout, @LayoutRes layoutId: Int)
 
 val Fragment.ctx
     get() = requireContext()
+
+val Fragment.aty
+    get() = requireActivity()

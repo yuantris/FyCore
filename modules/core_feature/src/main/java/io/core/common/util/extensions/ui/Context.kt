@@ -247,28 +247,28 @@ fun Context.startForegroundServiceCompat(intent: Intent) {
 val Context.defaultSharedPreferences: SharedPreferences get() = Preferences.sp
 
 fun Context.getPrefBoolean(key: String, defValue: Boolean = false) =
-    defaultSharedPreferences.getBoolean(key, defValue)
+    Preferences.getValue(key, defValue)
 
 fun Context.putPrefBoolean(key: String, value: Boolean = false) =
-    defaultSharedPreferences.edit { putBoolean(key, value) }
+    Preferences.putValue(key, value)
 
 fun Context.getPrefInt(key: String, defValue: Int = 0) =
-    defaultSharedPreferences.getInt(key, defValue)
+    Preferences.getValue(key, defValue)
 
 fun Context.putPrefInt(key: String, value: Int) =
-    defaultSharedPreferences.edit { putInt(key, value) }
+    Preferences.putValue(key, value)
 
 fun Context.getPrefLong(key: String, defValue: Long = 0L) =
-    defaultSharedPreferences.getLong(key, defValue)
+    Preferences.getValue(key, defValue)
 
 fun Context.putPrefLong(key: String, value: Long) =
-    defaultSharedPreferences.edit { putLong(key, value) }
+    Preferences.putValue(key, value)
 
 fun Context.getPrefString(key: String, defValue: String? = null) =
-    defaultSharedPreferences.getString(key, defValue)
+    Preferences.getValue(key, defValue)
 
 fun Context.putPrefString(key: String, value: String?) =
-    defaultSharedPreferences.edit { putString(key, value) }
+    Preferences.putValue(key, value)
 
 fun Context.getPrefStringSet(
     key: String,
@@ -463,6 +463,17 @@ val Context.isSystemApp: Boolean
 
 val Context.appPackageName: String
     get() = packageName
+
+val Context.appName: String
+    get() {
+    try {
+        val appInfo = packageManager.getApplicationInfo(packageName, 0)
+        return appInfo.loadLabel(packageManager).toString()
+    } catch (e: Exception) {
+        e.printOnDebug()
+    }
+    return ""
+}
 
 val Context.appVersionName: String
     get() {

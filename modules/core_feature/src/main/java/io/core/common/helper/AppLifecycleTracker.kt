@@ -34,26 +34,25 @@ object AppLifecycleTracker : Application.ActivityLifecycleCallbacks, DefaultLife
     // Service生命周期记录
     private val serviceStack = CopyOnWriteArrayList<WeakReference<Service>>()
 
-    private var appFinishedListener: (() -> Unit)? = null
+    // App前后台监听
+    private var appForegroundListener: ((isForeground:Boolean) -> Unit)? = null
 
-    private val _isInForeground = MutableStateFlow(false)
-    val isInForeground: StateFlow<Boolean> = _isInForeground
 
     override fun onStart(owner: LifecycleOwner) {
         super.onStart(owner)
-        _isInForeground.value = true
+        appForegroundListener?.invoke(true)
     }
 
     override fun onStop(owner: LifecycleOwner) {
         super.onStop(owner)
-        _isInForeground.value = false
+        appForegroundListener?.invoke(false)
     }
 
     /**
-     * App退出监听
+     * App前后台监听
      */
-    fun setOnAppFinishedListener(appFinishedListener: (() -> Unit)) {
-        this.appFinishedListener = appFinishedListener
+    fun registerAppStatusChangedListener(appForegroundListener: (Boolean) -> Unit) {
+        this.appForegroundListener = appForegroundListener
     }
 
     fun activitySize(): Int {
@@ -122,9 +121,6 @@ object AppLifecycleTracker : Application.ActivityLifecycleCallbacks, DefaultLife
         for (temp in activityStack) {
             if (temp.get() != null && temp.get() === activity) {
                 activityStack.remove(temp)
-                if (serviceStack.size == 0 && activityStack.size == 0) {
-                    onAppFinished()
-                }
                 break
             }
         }
@@ -155,15 +151,9 @@ object AppLifecycleTracker : Application.ActivityLifecycleCallbacks, DefaultLife
         for (temp in serviceStack) {
             if (temp.get() != null && temp.get() === service) {
                 serviceStack.remove(temp)
-                if (serviceStack.size == 0 && activityStack.size == 0) {
-                    onAppFinished()
-                }
                 break
             }
         }
     }
 
-    private fun onAppFinished() {
-        appFinishedListener?.invoke()
-    }
 }

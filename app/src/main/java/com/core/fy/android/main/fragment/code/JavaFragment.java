@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import com.blankj.utilcode.util.GsonUtils;
 import com.core.fy.android.databinding.FragmentJavaBinding;
 import com.core.fy.android.function.TestPageActivity;
+import com.core.fy.android.util.SafeJson;
 import com.hjq.permissions.OnPermissionCallback;
 import com.hjq.permissions.Permission;
 import com.hjq.permissions.XXPermissions;
@@ -43,6 +44,10 @@ public class JavaFragment extends ReflectBindingFragment<FragmentJavaBinding, Te
         super.initView();
         ToastUtil.showShort("初始化");
 
+        String name = SafeJson.parse("{\"name\":\"张三\",\"age\":18}").getString("name");
+        LogCat.e(name);
+        SafeJson object = SafeJson.parse("{\"key\": \"{\\\"nested\\\": 123}\"}").getObject("key");
+        LogCat.e(object.getString("nested"));
     }
 
     @Override

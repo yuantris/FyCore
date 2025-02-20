@@ -30,8 +30,7 @@ class TimeoutHandler(
     fun onProgress() {
         synchronized(lock) {
             if (state.get() != State.ACTIVE) return
-
-            RunnablePool.recycle(timeoutRunnable)
+            handler.removeCallbacks(timeoutRunnable)
             handler.postDelayed(timeoutRunnable, timeoutMillis)
         }
     }
@@ -39,6 +38,7 @@ class TimeoutHandler(
     fun cancel() {
         synchronized(lock) {
             if (state.getAndSet(State.CANCELED) == State.ACTIVE) {
+                handler.removeCallbacks(timeoutRunnable)
                 RunnablePool.recycle(timeoutRunnable)
             }
         }
@@ -47,7 +47,7 @@ class TimeoutHandler(
     fun reset() {
         synchronized(lock) {
             if (state.get() != State.TRIGGERED) {
-                RunnablePool.recycle(timeoutRunnable)
+                handler.removeCallbacks(timeoutRunnable)
             }
             state.set(State.ACTIVE)
         }

@@ -11,6 +11,8 @@ import com.core.fy.android.R
 import com.core.fy.android.databinding.ActivityDialogBinding
 import com.core.fy.android.ui.BottomSheetNextDialog
 import com.core.fy.android.ui.WaitDialog
+import com.core.fy.android.util.showDxMessage
+import com.core.fy.android.util.showDxNotification
 import io.core.appCtx
 import io.core.common.base.component.activity.ReflectBindingActivity
 import io.core.common.base.component.dialog.BasePopup
@@ -20,6 +22,8 @@ import io.core.common.helper.dialogs.showDialog
 import io.core.common.util.CoreUtil
 import io.core.common.util.extensions.cool.dpToPx
 import io.core.common.util.extensions.cool.postDelayUI
+import io.core.common.util.extensions.currentTimeMillis
+import io.core.common.util.extensions.ui.ctx
 import io.core.common.util.extensions.ui.getCompatColor
 import io.core.common.util.extensions.ui.onClick
 import io.core.common.util.extensions.ui.screenRealWidthPx
@@ -122,6 +126,12 @@ class DialogActivity : ReflectBindingActivity<ActivityDialogBinding>() {
                     setOnDismissListener {
                         toast("已关闭")
                     }
+                }
+            }
+
+            show4.onClick {
+                showDxMessage("DialogX KongzueStyle show") { _, _ ->
+                    showDxNotification(currentTimeMillis.toString())
                 }
             }
         }
