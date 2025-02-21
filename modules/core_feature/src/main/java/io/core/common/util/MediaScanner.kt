@@ -2,8 +2,10 @@ package io.core.common.util
 
 import android.net.Uri
 import android.provider.MediaStore
+import com.hjq.permissions.Permission
 import io.core.appCtx
-import io.core.common.util.extensions.logW
+import io.core.common.util.extensions.cool.hasReadStoragePermission
+import io.core.common.util.extensions.cool.isGranted
 import io.core.common.util.log.LogPure
 
 /**
@@ -14,6 +16,20 @@ import io.core.common.util.log.LogPure
 class MediaScanner {
 
     companion object {
+
+        private val PROJECTION = arrayOf(
+            MediaStore.MediaColumns.DATA,
+            MediaStore.MediaColumns.SIZE,
+            MediaStore.MediaColumns.DATE_ADDED,
+            MediaStore.MediaColumns.MIME_TYPE
+        )
+
+        private val EXCLUDED_PATTERNS = listOf(
+            "^/storage/emulated/\\d+/Android/.*",
+            "^/storage/emulated/\\d+/.*cache.*",
+            "^/storage/emulated/\\d+/\\..*",
+            "thumbnails"
+        ).map { Regex(it, RegexOption.IGNORE_CASE) }
 
         /**
          * 媒体库查询文件
@@ -26,11 +42,16 @@ class MediaScanner {
          * @param sortOrder 排序顺序，默认按添加日期降序排列
          * @return 返回一个文件信息列表，包含路径、大小、添加日期和MIME类型
          */
+        @JvmStatic
         fun queryFiles(
             types: Set<FileType>,
             addFilter: ((FileInfo) -> Boolean)? = null,
-            sortOrder: String = "${MediaStore.MediaColumns.DATE_ADDED} DESC"
+            sortOrder: String = SQL.timeAddedDESC
         ): List<FileInfo> {
+            if (!appCtx.hasReadStoragePermission()){
+                throw IllegalStateException("No permission to read external storage")
+            }
+
             val groupedTypes = types.groupBy { it.contentUri }
             val results = mutableListOf<FileInfo>()
 
@@ -43,12 +64,7 @@ class MediaScanner {
 
                 appCtx.contentResolver.query(
                     uri,
-                    arrayOf(
-                        MediaStore.MediaColumns.DATA,
-                        MediaStore.MediaColumns.SIZE,
-                        MediaStore.MediaColumns.DATE_ADDED,
-                        MediaStore.MediaColumns.MIME_TYPE
-                    ),
+                    PROJECTION,
                     selection,
                     selectionArgs?.toTypedArray(),
                     sortOrder
@@ -68,18 +84,8 @@ class MediaScanner {
                     }
                 }
             }
-            LogPure.d("Found ${results.size} files")
-            return results.distinctBy { it.path }
-                .filter { file ->
-                    val defaultShouldKeep = defaultFilter(file)
-                    val additionalShouldKeep = addFilter?.invoke(file) ?: true
-                    val shouldKeep = defaultShouldKeep && additionalShouldKeep
-                    if (!shouldKeep) {
-                        LogPure.w("Filtered out: ${file.path}")
-                    }
-                    shouldKeep
-                }
-                .sortedByDescending { it.dateAdded }
+            LogPure.d("MediaScanner---- Found ${results.size} files")
+            return processResults(results, addFilter)
         }
 
         private fun buildSelection(mimeTypes: List<String>, extensions: List<String>): String? {
@@ -106,15 +112,26 @@ class MediaScanner {
             return args.ifEmpty { null }
         }
 
-        private fun defaultFilter(file: FileInfo): Boolean {
-            val excludedPatterns = listOf(
-                "^/storage/emulated/\\d+/Android/.*",
-                "^/storage/emulated/\\d+/.*cache.*",
-                "^/storage/emulated/\\d+/\\..*",
-                "thumbnails"
-            ).map { Regex(it, RegexOption.IGNORE_CASE) }
+        private fun processResults(
+            results: List<FileInfo>,
+            addFilter: ((FileInfo) -> Boolean)?
+        ): List<FileInfo> {
+            return results
+                .distinctBy { it.path }
+                .filter { file ->
+                    val defaultPass = defaultFilter(file)
+                    val additionalPass = addFilter?.invoke(file) ?: true
+                    val shouldKeep = defaultPass && additionalPass
 
-            return file.size > 0 && excludedPatterns.none { it.containsMatchIn(file.path) }
+                    if (!shouldKeep) {
+                        LogPure.v("MediaScanner---- Filtered out: ${file.path}")
+                    }
+                    shouldKeep
+                }
+        }
+
+        private fun defaultFilter(file: FileInfo): Boolean {
+            return file.size > 0 && EXCLUDED_PATTERNS.none { it.containsMatchIn(file.path) }
         }
     }
 

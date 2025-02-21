@@ -5,10 +5,12 @@ import com.core.fy.android.databinding.FragmentKotlinBinding
 import com.core.fy.android.function.TestPageActivity
 import com.hjq.permissions.Permission
 import io.core.common.base.component.fragment.ReflectBindingFragment
-import io.core.common.helper.JsonExpert
 import io.core.common.helper.TaskExecutor
 import io.core.common.helper.TimeoutCallback
 import io.core.common.helper.TimeoutHandler
+import io.core.common.helper.JsonUltra
+import io.core.common.util.extensions.cool.GSON
+import io.core.common.util.extensions.cool.hasReadStoragePermission
 import io.core.common.util.extensions.cool.launchAsync
 import io.core.common.util.extensions.cool.postDelayUI
 import io.core.common.util.extensions.cool.requestPermission
@@ -27,22 +29,31 @@ class KotlinFragment : ReflectBindingFragment<FragmentKotlinBinding, TestPageAct
         super.initView()
 
         // 构建复杂 JSON
-        val jsonString = JsonExpert.build {
+        val jsonString = JsonUltra.build {
             "library" obj {
-                "name" of "Central Library"
+                "name" with "Central Library"
                 "books" array {
-                    plus(mapOf("title" to "Kotlin Coroutines", "year" to 2023))
-                    plus(mapOf("title" to "Android Development", "year" to 2024))
+                    plusAssign(mapOf("title" to "Kotlin Coroutines", "year" to 2023))
+                    plusAssign(mapOf("title" to "Android Development", "year" to 2024))
                 }
-                "features" of listOf("wifi", "cafe", "24h")
+                "features" with listOf("wifi", "cafe", "24h")
             }
+            "author" with "yuan"
         }
         jsonString.logE()
 
-        val parse = JsonExpert.parse("{\"key\": \"{\\\"nested\\\": 1234}\"}")
+        JsonUltra.parse(jsonString)["library.features[2]"]?.asString().logD()
+        JsonUltra.parse(jsonString)["library.books[1].title"]?.asString().logD()
+        val list: List<String>? =
+            JsonUltra.parse(jsonString)["library.features"]?.asList { it.asString() }
+        GSON.toJson(list).logE()
+
+
+        val parse = JsonUltra.parse("{\"key\": \"{\\\"nested\\\": 1234}\"}")
         parse["key.nested"]?.asInt().logD()
 
-        JsonExpert.parse("{\"name\":\"张三\",\"age\":18}")["name"]?.asString()?.logD()
+        JsonUltra.parse("{\"name\":\"张三\",\"age\":18}")["name"]?.asString()?.logD()
+
         ctx.requestPermission(Permission.MANAGE_EXTERNAL_STORAGE) {
             LogPure.v {
                 "MANAGE_EXTERNAL_STORAGE permission granted"
@@ -62,7 +73,7 @@ class KotlinFragment : ReflectBindingFragment<FragmentKotlinBinding, TestPageAct
             }
             timeoutHandler.onProgress()
         }, 0, 2000, TimeUnit.MILLISECONDS)
-        postDelayUI(16000){
+        postDelayUI(16000) {
             fixedRate.cancel(true)
         }
     }

@@ -2,8 +2,17 @@
 
 package io.core.common.util.tools
 
+import android.content.Context
 import android.os.Build
 import androidx.annotation.ChecksSdkIntAtLeast
+import io.core.constant.ANDROID_10
+import io.core.constant.ANDROID_11
+import io.core.constant.ANDROID_12
+import io.core.constant.ANDROID_13
+import io.core.constant.ANDROID_14
+import io.core.constant.ANDROID_15
+import io.core.constant.ANDROID_8
+import io.core.constant.ANDROID_9
 
 val isAndroid15Plus
     get() = OsUtils.atLeastV()
@@ -22,6 +31,12 @@ val isAndroid9Plus
 val isAndroid8Plus
     get() = OsUtils.atLeastO()
 
+val androidApiVersion
+    get() = Build.VERSION.SDK_INT
+
+val androidVersion: String
+    get() = Build.VERSION.RELEASE
+
 object OsUtils {
     /**
      * 检查是否至少是 Android 15 (Vanilla Ice Cream, API 35)
@@ -29,7 +44,7 @@ object OsUtils {
     // @ChecksSdkIntAtLeast(api = Build.VERSION_CODES.VANILLA_ICE_CREAM)
     @JvmStatic
     fun atLeastV(): Boolean {
-        return Build.VERSION.SDK_INT >= 35
+        return Build.VERSION.SDK_INT >= ANDROID_15
     }
 
     /**
@@ -38,7 +53,7 @@ object OsUtils {
     @JvmStatic
     @ChecksSdkIntAtLeast(api = Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
     fun atLeastU(): Boolean {
-        return Build.VERSION.SDK_INT >= 34
+        return Build.VERSION.SDK_INT >= ANDROID_14
     }
 
     /**
@@ -47,7 +62,7 @@ object OsUtils {
     @JvmStatic
     @ChecksSdkIntAtLeast(api = Build.VERSION_CODES.TIRAMISU)
     fun atLeastT(): Boolean {
-        return Build.VERSION.SDK_INT >= 33
+        return Build.VERSION.SDK_INT >= ANDROID_13
     }
 
     /**
@@ -56,7 +71,7 @@ object OsUtils {
     @JvmStatic
     @ChecksSdkIntAtLeast(api = Build.VERSION_CODES.S)
     fun atLeastS(): Boolean {
-        return Build.VERSION.SDK_INT >= 31
+        return Build.VERSION.SDK_INT >= ANDROID_12
     }
 
     /**
@@ -65,7 +80,7 @@ object OsUtils {
     @JvmStatic
     @ChecksSdkIntAtLeast(api = Build.VERSION_CODES.R)
     fun atLeastR(): Boolean {
-        return Build.VERSION.SDK_INT >= 30
+        return Build.VERSION.SDK_INT >= ANDROID_11
     }
 
     /**
@@ -74,7 +89,7 @@ object OsUtils {
     @JvmStatic
     @ChecksSdkIntAtLeast(api = Build.VERSION_CODES.Q)
     fun atLeastQ(): Boolean {
-        return Build.VERSION.SDK_INT >= 29
+        return Build.VERSION.SDK_INT >= ANDROID_10
     }
 
     /**
@@ -83,7 +98,7 @@ object OsUtils {
     @JvmStatic
     @ChecksSdkIntAtLeast(api = Build.VERSION_CODES.P)
     fun atLeastP(): Boolean {
-        return Build.VERSION.SDK_INT >= 28
+        return Build.VERSION.SDK_INT >= ANDROID_9
     }
 
     /**
@@ -92,7 +107,7 @@ object OsUtils {
     @JvmStatic
     @ChecksSdkIntAtLeast(api = Build.VERSION_CODES.O)
     fun atLeastO(): Boolean {
-        return Build.VERSION.SDK_INT >= 26
+        return Build.VERSION.SDK_INT >= ANDROID_8
     }
 
     /**

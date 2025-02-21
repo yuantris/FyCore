@@ -4,6 +4,8 @@ import android.app.Dialog
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
+import android.text.Spannable
+import android.text.style.ForegroundColorSpan
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.lifecycle.lifecycleScope
@@ -13,6 +15,7 @@ import com.core.fy.android.ui.BottomSheetNextDialog
 import com.core.fy.android.ui.WaitDialog
 import com.core.fy.android.util.showDxMessage
 import com.core.fy.android.util.showDxNotification
+import com.core.fy.android.widget.LineControlTextView
 import io.core.appCtx
 import io.core.common.base.component.activity.ReflectBindingActivity
 import io.core.common.base.component.dialog.BasePopup
@@ -86,6 +89,32 @@ class DialogActivity : ReflectBindingActivity<ActivityDialogBinding>() {
             }
             setTitleStyle(Typeface.BOLD)
         }
+
+        val lineControlTextView = LineControlTextView(this)
+        lineControlTextView.apply {
+            addSingleLine("123")
+            addStyledLine("456") { spannable ->
+                spannable.setSpan(
+                    ForegroundColorSpan(Color.RED),
+                    0,
+                    spannable.length,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+            }
+            addSingleLine("789")
+        }
+//        binding.lineText.apply {
+//            addSingleLine("123")
+//            addStyledLine("456") { spannable ->
+//                spannable.setSpan(
+//                    ForegroundColorSpan(Color.RED),
+//                    0,
+//                    spannable.length,
+//                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+//                )
+//            }
+//            addSingleLine("789")
+//        }
     }
 
     override fun setListener() {

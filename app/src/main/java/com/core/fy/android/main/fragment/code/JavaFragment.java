@@ -1,36 +1,29 @@
 package com.core.fy.android.main.fragment.code;
 
-import android.provider.MediaStore;
-
 import androidx.annotation.NonNull;
 
 import com.blankj.utilcode.util.GsonUtils;
 import com.core.fy.android.databinding.FragmentJavaBinding;
 import com.core.fy.android.function.TestPageActivity;
 import com.core.fy.android.util.SafeJson;
-import com.hjq.permissions.OnPermissionCallback;
-import com.hjq.permissions.Permission;
-import com.hjq.permissions.XXPermissions;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.SortedMap;
-import java.util.concurrent.Executors;
 
-import io.core.Android;
 import io.core.common.base.component.fragment.ReflectBindingFragment;
 import io.core.common.helper.AppLifecycleTracker;
 import io.core.common.helper.TaskExecutor;
 import io.core.common.util.MediaScanner;
 import io.core.common.util.ToastUtil;
-import io.core.common.util.extensions.ui.ActivityKt;
-import io.core.common.util.extensions.ui.FragmentKt;
 import io.core.common.util.log.LogCat;
 import io.core.common.util.log.LogPure;
 import io.core.common.util.tools.AsyncUtils;
 import io.core.common.util.tools.CollectionTools;
+import io.core.common.util.SQL;
+import io.core.common.util.tools.OsUtilsKt;
 
 public class JavaFragment extends ReflectBindingFragment<FragmentJavaBinding, TestPageActivity> {
 
@@ -58,8 +51,8 @@ public class JavaFragment extends ReflectBindingFragment<FragmentJavaBinding, Te
                     Set<MediaScanner.FileType> fileTypes = new HashSet<>();
                     fileTypes.add(MediaScanner.FileType.JPG);
                     fileTypes.add(MediaScanner.FileType.TXT);
-                    return MediaScanner.Companion.queryFiles(
-                            fileTypes, null, MediaStore.MediaColumns.DATE_ADDED + " DESC");
+                    return MediaScanner.queryFiles(
+                            fileTypes, null, SQL.getTimeAddedDESC());
                 }, AsyncUtils.getExecutors())
                 .thenAccept(fileInfos -> {
                     ToastUtil.showShort("size:" + fileInfos.size());

@@ -111,69 +111,94 @@ Android.homeActivity = MainActivity::class.java
   )
   ```
   
-- ConcurrentProcessor使用
+- TaskExecutor使用
   ```java
-  List<ConcurrentProcessor.ProcessorTask<String>> tasks = new ArrayList<>();
-  tasks.add(() -> "234");
-  tasks.add(() -> {
-      try {
-          Thread.sleep(2000);
-      } catch (InterruptedException e) {
-      }
-      return "兼容";
-  });
-  ConcurrentProcessor.Companion.get().executeForJava(tasks,
-         new ConcurrentProcessor.ConcurrentCallback<String>() {
-             @Override
-             public void onComplete(@NonNull List<? extends String> results) {
-                 results.forEach(ToastUtil::showShort);
-             }
+        List<TaskExecutor.ProcessorTask<String>> tasks = new ArrayList<>();
+        tasks.add(() -> "234");
+        tasks.add(() -> {
+            try {
+                Thread.sleep(4000);
+            } catch (InterruptedException e) {
+            }
+            return "兼容";
+        });
 
-             @Override
-             public void onError(@NonNull Exception e) {
+        TaskExecutor.Companion.get().executeForJava(tasks,
+                new TaskExecutor.ConcurrentCallback<String>() {
+                    @Override
+                    public void onComplete(@NonNull SortedMap<Integer, String> results) {
+                        boolean existActivity = AppLifecycleTracker.isExistActivity(TestPageActivity.class);
+                        if (existActivity){
+                            List<String> strings = CollectionTools.mapValuesToList(results);
+                            String json = GsonUtils.toJson(strings);
+                            LogPure.e(json);
+                        }
+                    }
 
-             }
+                    @Override
+                    public void onEachResult(String result, int index) {
+                        boolean existActivity = AppLifecycleTracker.isExistActivity(TestPageActivity.class);
+                        if (existActivity){
+                            LogPure.d(result);
+                        }
+                    }
 
-         });
+                    @Override
+                    public void onError(@NonNull Throwable e) {
+                        LogCat.e(e);
+                    }
+                }, AsyncUtils.getExecutors());
   ```
   ```kotlin
-  // 场景1：基本并发
-  suspend fun handleMediaScan() {
-      val tasks = listOf<suspend () -> List<String>>(
-          { /* 扫描图片实现 */ listOf("img1", "img2") },
-          { /* 扫描视频实现 */ listOf("video1") },
-          { /* 扫描音频实现 */ listOf("audio1") }
-      )
+        val tasks = listOf<suspend () -> String>(
+            { /* 扫描图片实现 */ "img1" },
+            { /* 扫描视频实现 */
+                delay(4000)
+                "video1"
+            },
+        )
+        launchAsync {
+            TaskExecutor.get().executeConcurrent(
+                tasks,
+                onComplete = {
+                    LogPure.i {
+                        "onComplete:${GsonUtils.toJson(it)}"
+                    }
+                },
+                onEachComplete = { result, index ->
+                    LogPure.d("result:$result,index:$index")
+                },
+            )
+        }
+  ```
+  
+- JsonUltra (Json解析、生成)
+  ```kotlin
+        // 构建复杂 JSON
+        val jsonString = JsonUltra.build {
+            "library" obj {
+                "name" with "Central Library"
+                "books" array {
+                    plusAssign(mapOf("title" to "Kotlin Coroutines", "year" to 2023))
+                    plusAssign(mapOf("title" to "Android Development", "year" to 2024))
+                }
+                "features" with listOf("wifi", "cafe", "24h")
+            }
+            "author" with "yuan"
+        }
+        jsonString.logE()
 
-      ConcurrentProcessor.get().executeConcurrent(tasks,
-          onComplete = { results ->
-              // 合并结果示例
-              val total = results.flatten()
-              updatePieChart(total.size)
-          },
-          onError = { showError(it) }
-      )
-  }
+        JsonUltra.parse(jsonString)["library.features[2]"]?.asString().logD()
+        JsonUltra.parse(jsonString)["library.books[1].title"]?.asString().logD()
+        val list: List<String>? =
+            JsonUltra.parse(jsonString)["library.features"]?.asList { it.asString() }
+        GSON.toJson(list).logE()
 
-  // 场景2：链式处理
-  suspend fun handleFileProcessing() {
-      val fileTasks = listOf<suspend () -> String>(
-          { File("path1").readText() },
-          { File("path2").readText() }
-      )
 
-      ConcurrentProcessor.get().executeChainedConcurrent(
-          firstTasks = fileTasks,
-          secondProcess = { contents ->
-              // 在IO线程处理中间结果
-              contents.map { it.split("\n") }.flatten()
-          },
-          finalProcess = { processedList ->
-              // 在主线程更新UI
-              updateTextView(processedList.joinToString())
-          }
-      )
-  }
+        val parse = JsonUltra.parse("{\"key\": \"{\\\"nested\\\": 1234}\"}")
+        parse["key.nested"]?.asInt().logD()
+
+        JsonUltra.parse("{\"name\":\"张三\",\"age\":18}")["name"]?.asString()?.logD()
   ```
   
 - DrawableBuilder(ShapeDrawable构造器)

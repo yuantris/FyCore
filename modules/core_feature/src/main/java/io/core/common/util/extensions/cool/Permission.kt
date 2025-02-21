@@ -1,7 +1,12 @@
 package io.core.common.util.extensions.cool
 
+import android.Manifest
 import android.app.Activity
 import android.content.Context
+import android.content.pm.PackageManager
+import android.os.Build
+import android.os.Environment
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.hjq.permissions.OnPermissionCallback
 import com.hjq.permissions.XXPermissions
@@ -52,5 +57,74 @@ fun Context.requestPermission(
             })
     }
 
+}
+
+fun Context.hasReadStoragePermission(): Boolean {
+    // 1. 先检查是否拥有管理所有文件的权限
+    if (hasManageExternalStorage()) return true
+
+    // 2. 分版本检查读权限
+    return when {
+        Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU -> {
+            // Android 13+ 需要检查媒体权限
+            hasPermission(Manifest.permission.READ_MEDIA_VIDEO) ||
+                    hasPermission(Manifest.permission.READ_MEDIA_IMAGES) ||
+                    hasPermission(Manifest.permission.READ_MEDIA_AUDIO)
+        }
+        Build.VERSION.SDK_INT >= Build.VERSION_CODES.M -> {
+            // Android 6.0~12
+            hasPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
+        }
+        else -> {
+            // Android 5.0~5.1 检查清单声明
+            checkManifestPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
+        }
+    }
+}
+
+fun Context.hasWriteStoragePermission(): Boolean {
+    // 1. 先检查是否拥有管理所有文件的权限
+    if (hasManageExternalStorage()) return true
+
+    // 2. 分版本检查写权限
+    return when {
+        Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q -> {
+            // Android 10+ 使用Scoped Storage，默认允许应用私有目录写入
+            true
+        }
+        Build.VERSION.SDK_INT >= Build.VERSION_CODES.M -> {
+            hasPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+        }
+        else -> {
+            checkManifestPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+        }
+    }
+}
+
+fun Context.hasReadWriteStoragePermission(): Boolean {
+    return hasReadStoragePermission() && hasWriteStoragePermission()
+}
+
+fun hasManageExternalStorage(): Boolean {
+    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+        Environment.isExternalStorageManager()
+    } else {
+        false
+    }
+}
+
+// 通用运行时权限检查
+private fun Context.hasPermission(permission: String): Boolean {
+    return ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED
+}
+
+// 检查清单是否声明权限（仅用于API <23）
+private fun Context.checkManifestPermission(permission: String): Boolean {
+    return try {
+        val info = packageManager.getPackageInfo(packageName, PackageManager.GET_PERMISSIONS)
+        info.requestedPermissions?.any { it == permission } ?: false
+    } catch (e: Exception) {
+        false
+    }
 }
 
