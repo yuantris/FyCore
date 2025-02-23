@@ -74,9 +74,19 @@
             android:layout_height="wrap_content"
             android:text="DialogX" />
 
-<!--        <com.core.fy.android.widget.LineControlTextView-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:id="@+id/line_text"/>-->
+        <com.core.fy.android.widget.LineControlTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/line_text"/>
+        <com.core.fy.android.widget.CustomTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/ct"/>
+
+        <io.core.widget.view.SmartTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:id="@+id/span"/>
     </androidx.appcompat.widget.LinearLayoutCompat>
 </androidx.constraintlayout.widget.ConstraintLayout>

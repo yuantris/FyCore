@@ -5,6 +5,7 @@ import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
 import android.text.Spannable
+import android.text.method.LinkMovementMethod
 import android.text.style.ForegroundColorSpan
 import android.widget.ImageView
 import android.widget.TextView
@@ -15,8 +16,8 @@ import com.core.fy.android.ui.BottomSheetNextDialog
 import com.core.fy.android.ui.WaitDialog
 import com.core.fy.android.util.showDxMessage
 import com.core.fy.android.util.showDxNotification
-import com.core.fy.android.widget.LineControlTextView
-import io.core.appCtx
+import com.core.fy.android.widget.buildSpannable
+import com.core.fy.android.widget.enableLinkMovementMethod
 import io.core.common.base.component.activity.ReflectBindingActivity
 import io.core.common.base.component.dialog.BasePopup
 import io.core.common.base.component.dialog.showCustomDialog
@@ -26,13 +27,15 @@ import io.core.common.util.CoreUtil
 import io.core.common.util.extensions.cool.dpToPx
 import io.core.common.util.extensions.cool.postDelayUI
 import io.core.common.util.extensions.currentTimeMillis
-import io.core.common.util.extensions.ui.ctx
+import io.core.common.util.extensions.logD
 import io.core.common.util.extensions.ui.getCompatColor
 import io.core.common.util.extensions.ui.onClick
 import io.core.common.util.extensions.ui.screenRealWidthPx
 import io.core.common.util.extensions.ui.showDialogFragment
 import io.core.common.util.extensions.ui.toast
 import io.core.common.util.tools.DrawableBuilder
+import io.core.common.util.tools.androidApiVersion
+import io.core.common.util.tools.androidVersion
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -89,21 +92,9 @@ class DialogActivity : ReflectBindingActivity<ActivityDialogBinding>() {
             }
             setTitleStyle(Typeface.BOLD)
         }
-
-        val lineControlTextView = LineControlTextView(this)
-        lineControlTextView.apply {
-            addSingleLine("123")
-            addStyledLine("456") { spannable ->
-                spannable.setSpan(
-                    ForegroundColorSpan(Color.RED),
-                    0,
-                    spannable.length,
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-                )
-            }
-            addSingleLine("789")
-        }
-//        binding.lineText.apply {
+//
+//        val lineControlTextView = LineControlTextView(this)
+//        lineControlTextView.apply {
 //            addSingleLine("123")
 //            addStyledLine("456") { spannable ->
 //                spannable.setSpan(
@@ -115,6 +106,52 @@ class DialogActivity : ReflectBindingActivity<ActivityDialogBinding>() {
 //            }
 //            addSingleLine("789")
 //        }
+        binding.lineText.apply {
+            addSingleLine("123")
+            addStyledLine("456") { spannable ->
+                spannable.setSpan(
+                    ForegroundColorSpan(Color.RED),
+                    0,
+                    spannable.length,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+            }
+            addSingleLine("789")
+        }
+
+        binding.ct.apply {
+            addSingleLine("Android $androidVersion")
+            addSingleLine("Api $androidApiVersion")
+        }
+
+        //binding.span.movementMethod = LinkMovementMethod.getInstance()
+        binding.span.apply {
+            enableLinkMovementMethod()
+            buildSpannable {
+                text("Hello") {
+                    bold()
+                    color(Color.RED)
+                    roundedBg(Color.LTGRAY, 12f)
+                }
+
+                text(" Kotlin") {
+                    italic()
+                    bold()
+                    size(80)
+                }
+
+                text("\nClick Me") {
+                    clickable(true) {
+                        "Clicked!".logD()
+                    }
+                }
+
+                text("\nVisit Google") {
+                    url("https://www.google.com")
+                    color(Color.BLUE)
+                }
+            }
+        }
     }
 
     override fun setListener() {

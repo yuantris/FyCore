@@ -4,8 +4,9 @@ import android.os.Bundle
 import androidx.core.view.isVisible
 import com.core.fy.android.databinding.ActivityVisibilityBinding
 import io.core.common.base.component.activity.ReflectBindingActivity
-import io.core.common.util.extensions.ui.hide
 import io.core.common.util.extensions.cool.launchSync
+import io.core.common.util.extensions.cool.postDelayUI
+import io.core.common.util.extensions.ui.hide
 import io.core.common.util.extensions.ui.onDebouncedClick
 import io.core.common.util.extensions.ui.onVisibilityChange
 import io.core.common.util.extensions.ui.setVisible
@@ -24,6 +25,23 @@ class VisibilityActivity : ReflectBindingActivity<ActivityVisibilityBinding>() {
                 toast("ImageView is invisible")
             }
         }
+        postDelayUI(3000){
+            binding.imageView.animations {
+                parallel {
+                    translateY(200f) { duration = 1000 }
+                    sequence {
+                        alpha(0f) { duration = 500 }
+                        alpha(1f) { duration = 500 }
+                    }
+                }
+                sequence {
+                    rotation(360f) { duration = 1000 }
+                    scale(2f) { duration = 500 }
+                }
+            }.start()
+        }
+
+
     }
 
     override fun setListener() {

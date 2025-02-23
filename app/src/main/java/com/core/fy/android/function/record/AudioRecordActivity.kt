@@ -1,18 +1,15 @@
 package com.core.fy.android.function.record
 
 import android.os.Bundle
-import android.os.Environment
-import androidx.lifecycle.lifecycleScope
 import com.core.fy.android.databinding.ActivityAudioRecordBinding
-import com.core.fy.android.util.AudioRecorder
-import com.core.fy.android.util.RecorderConfig
-import com.core.fy.android.util.RecorderState
 import com.hjq.permissions.Permission
 import io.core.common.base.component.activity.ReflectBindingActivity
-import io.core.common.util.extensions.cool.launchSync
+import io.core.common.util.ToastUtil
+import io.core.common.util.extensions.cool.externalMusic
 import io.core.common.util.extensions.cool.requestPermission
+import io.core.common.util.extensions.logD
 import io.core.common.util.extensions.ui.onClick
-import kotlinx.coroutines.flow.collectLatest
+import io.core.common.util.tools.formatDuration
 import java.io.File
 
 /**
@@ -30,57 +27,61 @@ import java.io.File
  */
 class AudioRecordActivity : ReflectBindingActivity<ActivityAudioRecordBinding>() {
 
-    private val config = RecorderConfig()
-    private val recorder = AudioRecorder(config, lifecycleScope)
+    private lateinit var recorder: AudioRecorder
+
+    private fun updateUI(text: String) {
+        runOnUiThread {
+            binding.tip.text = text
+        }
+    }
 
     override fun initial(savedInstanceState: Bundle?) {
         super.initial(savedInstanceState)
 
+        // 初始化录音器
+        val strategy = MediaRecorderStrategy(Format.M4A)
+        recorder = AudioRecorder(
+            strategy = strategy,
+            callback = object : RecorderCallback {
+                override fun onStateChanged(state: RecordingState) {
+                    when (state) {
+                        is RecordingState.Recording -> updateUI("Recording: ${state.duration.formatDuration("mm:ss")}")
+                        is RecordingState.Paused -> updateUI("Paused: ${state.duration.formatDuration("mm:ss")}")
+                        RecordingState.Idle -> updateUI("Ready")
+                    }
+                }
+
+                override fun onTimeUpdate(durationMillis: Long) {
+                    ToastUtil.show("onTimeUpdate: ${durationMillis.formatDuration("mm:ss")}")
+                }
+
+                override fun onError(message: String) {
+                    updateUI("Error: $message")
+                }
+
+                override fun onRecordDone(file: File) {
+                    file.path.logD()
+                }
+            })
+
         binding.start.onClick {
             requestPermission(Permission.RECORD_AUDIO) {
-                val outputFile = File(
-                    Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC),
-                    "recording.wav"
-                )
-                // recorder.start(outputFile, AudioFormatType.WAV)
+                // 开始录音
+                recorder.start(outputDir = externalMusic, fileName = "test")
             }
+        }
 
+        // 暂停/恢复
+        binding.pause.setOnClickListener {
+            recorder.pause()
+        }
+
+        binding.resume.onClick {
+            recorder.resume()
         }
 
         binding.stop.onClick {
-            // recorder.stop()
-        }
-    }
-
-    override fun observers() {
-        launchSync {
-            recorder.state.collectLatest { state ->
-                when (state) {
-                    is RecorderState.Idle -> {
-                        binding.tip.text = "开始"
-                    }
-
-                    is RecorderState.Preparing -> {
-                        binding.tip.text = "准备中"
-                    }
-
-                    is RecorderState.Recording -> {
-                        binding.tip.text = "正在录制"
-                    }
-
-                    is RecorderState.Paused -> {
-                        binding.tip.text = "暂停"
-                    }
-
-                    is RecorderState.Stopped -> {
-                        binding.tip.text = "停止"
-                    }
-
-                    is RecorderState.Error -> {
-                        binding.tip.text = "出错 ${state.exception}"
-                    }
-                }
-            }
+            recorder.stop()
         }
     }
 }
