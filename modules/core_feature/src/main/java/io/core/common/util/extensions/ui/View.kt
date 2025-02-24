@@ -35,8 +35,6 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.get
 import androidx.core.view.marginBottom
-import io.core.common.helper.canvasrecorder.CanvasRecorder
-import io.core.common.helper.canvasrecorder.record
 import io.core.common.util.extensions.currentTimeMillis
 import io.core.common.util.extensions.inputMethodManager
 import io.core.common.util.log.printOnDebug
@@ -175,14 +173,6 @@ fun View.screenshot(picture: Picture) {
             withTranslation(-scrollX.toFloat(), -scrollY.toFloat()) {
                 draw(this)
             }
-        }
-    }
-}
-
-fun View.screenshot(canvasRecorder: CanvasRecorder) {
-    if (width > 0 && height > 0) {
-        canvasRecorder.record(width, height) {
-            draw(this)
         }
     }
 }

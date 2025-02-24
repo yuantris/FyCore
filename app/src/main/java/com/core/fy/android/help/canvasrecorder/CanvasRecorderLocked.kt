@@ -1,4 +1,4 @@
-package io.core.common.helper.canvasrecorder
+package com.core.fy.android.help.canvasrecorder
 
 import android.graphics.Canvas
 import java.util.concurrent.locks.ReentrantLock

@@ -29,10 +29,10 @@ import com.core.fy.android.function.read.page.entities.TextPos
 import com.core.fy.android.function.read.page.provider.ChapterProvider
 import com.core.fy.android.function.read.page.provider.LayoutProgressListener
 import com.core.fy.android.function.read.page.provider.TextPageFactory
+import com.core.fy.android.help.canvasrecorder.pools.BitmapPool
 import com.core.fy.android.help.config.AppConfig
 import com.core.fy.android.help.config.ReadBookConfig
 import com.core.fy.android.help.throttle
-import io.core.common.helper.canvasrecorder.pools.BitmapPool
 import io.core.common.util.extensions.ui.activity
 import io.core.common.util.extensions.ui.invisible
 import java.text.BreakIterator

@@ -20,7 +20,9 @@ import androidx.lifecycle.Observer;
 
 import io.core.Android;
 import io.core.common.util.CoreUtil;
+import io.core.common.util.extensions.cool.HandlerKt;
 import io.core.common.util.tools.HandlerUtilsKt;
+import io.core.common.util.tools.OsUtilsKt;
 import io.core.engine.livebus.ipc.consts.IpcConst;
 import io.core.engine.livebus.ipc.core.ProcessorManager;
 import io.core.engine.livebus.ipc.receiver.LebIpcReceiver;
@@ -123,10 +125,10 @@ public final class LiveEventBusCore {
         if (isRegisterReceiver) {
             return;
         }
-        Application application = Android.INSTANCE.getContext();
+        Application application = Android.getContext();
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(IpcConst.ACTION);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        if (OsUtilsKt.isAndroid8Plus()) {
             application.registerReceiver(receiver, intentFilter, RECEIVER_EXPORTED);
         } else {
             application.registerReceiver(receiver, intentFilter);
@@ -162,7 +164,7 @@ public final class LiveEventBusCore {
          */
         @Override
         public void post(T value) {
-            if (CoreUtil.Companion.isMainThread()) {
+            if (HandlerKt.isMainThread()) {
                 postInternal(value);
             } else {
                 mainHandler.post(new PostValueTask(value));
@@ -245,16 +247,11 @@ public final class LiveEventBusCore {
          */
         @Override
         public void broadcast(final T value, final boolean foreground, final boolean onlyInApp) {
-            if (Android.INSTANCE.getContext() != null) {
-                if (CoreUtil.Companion.isMainThread()) {
+            if (Android.getContext() != null) {
+                if (HandlerKt.isMainThread()) {
                     broadcastInternal(value, foreground, onlyInApp);
                 } else {
-                    mainHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            broadcastInternal(value, foreground, onlyInApp);
-                        }
-                    });
+                    mainHandler.post(() -> broadcastInternal(value, foreground, onlyInApp));
                 }
             } else {
                 post(value);
@@ -269,15 +266,10 @@ public final class LiveEventBusCore {
          */
         @Override
         public void observe(@NonNull final LifecycleOwner owner, @NonNull final Observer<T> observer) {
-            if (CoreUtil.Companion.isMainThread()) {
+            if (HandlerKt.isMainThread()) {
                 observeInternal(owner, observer);
             } else {
-                mainHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        observeInternal(owner, observer);
-                    }
-                });
+                mainHandler.post(() -> observeInternal(owner, observer));
             }
         }
 
@@ -290,15 +282,10 @@ public final class LiveEventBusCore {
          */
         @Override
         public void observeSticky(@NonNull final LifecycleOwner owner, @NonNull final Observer<T> observer) {
-            if (CoreUtil.Companion.isMainThread()) {
+            if (HandlerKt.isMainThread()) {
                 observeStickyInternal(owner, observer);
             } else {
-                mainHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        observeStickyInternal(owner, observer);
-                    }
-                });
+                mainHandler.post(() -> observeStickyInternal(owner, observer));
             }
         }
 
@@ -309,15 +296,10 @@ public final class LiveEventBusCore {
          */
         @Override
         public void observeForever(@NonNull final Observer<T> observer) {
-            if (CoreUtil.Companion.isMainThread()) {
+            if (HandlerKt.isMainThread()) {
                 observeForeverInternal(observer);
             } else {
-                mainHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        observeForeverInternal(observer);
-                    }
-                });
+                mainHandler.post(() -> observeForeverInternal(observer));
             }
         }
 
@@ -329,15 +311,10 @@ public final class LiveEventBusCore {
          */
         @Override
         public void observeStickyForever(@NonNull final Observer<T> observer) {
-            if (CoreUtil.Companion.isMainThread()) {
+            if (HandlerKt.isMainThread()) {
                 observeStickyForeverInternal(observer);
             } else {
-                mainHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        observeStickyForeverInternal(observer);
-                    }
-                });
+                mainHandler.post(() -> observeStickyForeverInternal(observer));
             }
         }
 
@@ -348,15 +325,10 @@ public final class LiveEventBusCore {
          */
         @Override
         public void removeObserver(@NonNull final Observer<T> observer) {
-            if (CoreUtil.Companion.isMainThread()) {
+            if (HandlerKt.isMainThread()) {
                 removeObserverInternal(observer);
             } else {
-                mainHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        removeObserverInternal(observer);
-                    }
-                });
+                mainHandler.post(() -> removeObserverInternal(observer));
             }
         }
 

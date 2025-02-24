@@ -7,10 +7,9 @@ import androidx.core.graphics.withClip
 import com.core.fy.android.R
 import com.core.fy.android.function.read.page.entities.PageDirection
 import com.core.fy.android.help.CanvasRecorderFactory
+import com.core.fy.android.help.canvasrecorder.recordIfNeeded
 import com.core.fy.android.help.config.AppConfig
 import com.core.fy.android.help.config.ReadBookConfig
-import io.core.Android
-import io.core.common.helper.canvasrecorder.recordIfNeeded
 import io.core.appCtx
 
 /**

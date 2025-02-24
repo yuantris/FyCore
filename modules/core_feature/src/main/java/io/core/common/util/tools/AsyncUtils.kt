@@ -35,6 +35,7 @@ class AsyncUtils private constructor() {
 
         // region CompletableFuture 增强
         @JvmStatic
+        @JvmOverloads
         fun <T> supplyAsync(
             supplier: () -> T,
             executor: Executor = ForkJoinPool.commonPool()

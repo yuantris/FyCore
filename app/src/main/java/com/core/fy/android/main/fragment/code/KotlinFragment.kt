@@ -5,13 +5,14 @@ import com.core.fy.android.databinding.FragmentKotlinBinding
 import com.core.fy.android.function.TestPageActivity
 import com.hjq.permissions.Permission
 import io.core.common.base.component.fragment.ReflectBindingFragment
+import io.core.common.helper.JsonUltra
 import io.core.common.helper.TaskExecutor
 import io.core.common.helper.TimeoutCallback
 import io.core.common.helper.TimeoutHandler
-import io.core.common.helper.JsonUltra
 import io.core.common.util.extensions.cool.GSON
-import io.core.common.util.extensions.cool.hasReadStoragePermission
+import io.core.common.util.extensions.cool.createMap
 import io.core.common.util.extensions.cool.launchAsync
+import io.core.common.util.extensions.cool.mapBuilder
 import io.core.common.util.extensions.cool.postDelayUI
 import io.core.common.util.extensions.cool.requestPermission
 import io.core.common.util.extensions.logD
@@ -27,6 +28,12 @@ class KotlinFragment : ReflectBindingFragment<FragmentKotlinBinding, TestPageAct
 
     override fun initView() {
         super.initView()
+
+        val createMap = createMap<String, Any>()
+        createMap["key"] = "value"
+        val builder = mapBuilder<String, Int>()
+        builder.put("key", 1)
+        val map = builder.build()
 
         // 构建复杂 JSON
         val jsonString = JsonUltra.build {
@@ -96,7 +103,7 @@ class KotlinFragment : ReflectBindingFragment<FragmentKotlinBinding, TestPageAct
                     }
                 },
                 onEachComplete = { result, index ->
-                    LogPure.d("result:$result,index:$index")
+                    LogPure.d { "result:$result,index:$index" }
                 },
             )
         }

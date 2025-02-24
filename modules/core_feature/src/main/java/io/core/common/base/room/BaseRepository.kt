@@ -19,6 +19,6 @@ import io.core.common.util.tools.TimeUtils
  */
 open class BaseRepository {
     init {
-        LogPure.v("Repository init: ${TimeUtils.getNowString()}")
+        LogPure.v { "Repository init: ${TimeUtils.getNowString()}" }
     }
 }

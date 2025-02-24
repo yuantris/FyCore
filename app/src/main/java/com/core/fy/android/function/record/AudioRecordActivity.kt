@@ -4,12 +4,18 @@ import android.os.Bundle
 import com.core.fy.android.databinding.ActivityAudioRecordBinding
 import com.hjq.permissions.Permission
 import io.core.common.base.component.activity.ReflectBindingActivity
+import io.core.common.helper.AppLifecycleTracker
 import io.core.common.util.ToastUtil
 import io.core.common.util.extensions.cool.externalMusic
+import io.core.common.util.extensions.cool.postUI
+import io.core.common.util.extensions.cool.refreshMediaLibrary
 import io.core.common.util.extensions.cool.requestPermission
-import io.core.common.util.extensions.logD
+import io.core.common.util.extensions.cool.timeFormat
+import io.core.common.util.extensions.currentTimeMillis
 import io.core.common.util.extensions.ui.onClick
+import io.core.common.util.log.LogPure
 import io.core.common.util.tools.formatDuration
+import io.core.constant.TimeFormat
 import java.io.File
 
 /**
@@ -29,10 +35,8 @@ class AudioRecordActivity : ReflectBindingActivity<ActivityAudioRecordBinding>()
 
     private lateinit var recorder: AudioRecorder
 
-    private fun updateUI(text: String) {
-        runOnUiThread {
-            binding.tip.text = text
-        }
+    private fun updateUI(text: String) = postUI {
+        binding.tip.text = text
     }
 
     override fun initial(savedInstanceState: Bundle?) {
@@ -45,14 +49,29 @@ class AudioRecordActivity : ReflectBindingActivity<ActivityAudioRecordBinding>()
             callback = object : RecorderCallback {
                 override fun onStateChanged(state: RecordingState) {
                     when (state) {
-                        is RecordingState.Recording -> updateUI("Recording: ${state.duration.formatDuration("mm:ss")}")
-                        is RecordingState.Paused -> updateUI("Paused: ${state.duration.formatDuration("mm:ss")}")
+                        is RecordingState.Recording -> updateUI(
+                            "Recording: ${
+                                state.duration.formatDuration(
+                                    TimeFormat.TIME_MM_SS
+                                )
+                            }"
+                        )
+
+                        is RecordingState.Paused -> updateUI(
+                            "Paused: ${
+                                state.duration.formatDuration(
+                                    TimeFormat.TIME_MM_SS
+                                )
+                            }"
+                        )
+
                         RecordingState.Idle -> updateUI("Ready")
                     }
                 }
 
                 override fun onTimeUpdate(durationMillis: Long) {
-                    ToastUtil.show("onTimeUpdate: ${durationMillis.formatDuration("mm:ss")}")
+                    binding.duration.text =
+                        "onTimeUpdate: ${durationMillis.formatDuration(TimeFormat.TIME_MM_SS)}"
                 }
 
                 override fun onError(message: String) {
@@ -60,14 +79,21 @@ class AudioRecordActivity : ReflectBindingActivity<ActivityAudioRecordBinding>()
                 }
 
                 override fun onRecordDone(file: File) {
-                    file.path.logD()
+                    file.refreshMediaLibrary()
+
+                    LogPure.v {
+                        "保存路径：${file.path}"
+                    }
                 }
             })
 
         binding.start.onClick {
             requestPermission(Permission.RECORD_AUDIO) {
                 // 开始录音
-                recorder.start(outputDir = externalMusic, fileName = "test")
+                recorder.start(
+                    outputDir = externalMusic,
+                    fileName = "recording_${currentTimeMillis.timeFormat(TimeFormat.FILE_SAFE_TIMESTAMP)}"
+                )
             }
         }
 
@@ -83,5 +109,10 @@ class AudioRecordActivity : ReflectBindingActivity<ActivityAudioRecordBinding>()
         binding.stop.onClick {
             recorder.stop()
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        recorder.release()
     }
 }

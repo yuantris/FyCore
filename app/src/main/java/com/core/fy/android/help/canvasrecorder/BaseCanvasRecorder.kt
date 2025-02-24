@@ -1,6 +1,7 @@
-package io.core.common.helper.canvasrecorder
+package com.core.fy.android.help.canvasrecorder
 
 import androidx.annotation.CallSuper
+
 
 abstract class BaseCanvasRecorder : CanvasRecorder {
 

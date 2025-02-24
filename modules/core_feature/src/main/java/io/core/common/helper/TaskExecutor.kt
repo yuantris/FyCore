@@ -105,6 +105,7 @@ class TaskExecutor private constructor(
      * @param timeUnit 时间单位
      * @param executor 自定义线程池（可选）
      */
+    @JvmOverloads
     fun <T> executeForJava(
         tasks: List<ProcessorTask<T>>,
         callback: ConcurrentCallback<T>,
@@ -175,14 +176,6 @@ class TaskExecutor private constructor(
         }
 
         timeoutFuture?.let { /* 清理逻辑 */ }
-    }
-
-    fun <T> executeForJava(
-        tasks: List<ProcessorTask<T>>,
-        callback: ConcurrentCallback<T>,
-        executor: ExecutorService? = null
-    ) {
-        executeForJava(tasks, callback, 0, TimeUnit.MILLISECONDS, executor)
     }
 
     // ====================== 数据结构 & 异常 ======================

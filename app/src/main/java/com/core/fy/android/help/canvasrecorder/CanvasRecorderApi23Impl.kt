@@ -1,9 +1,9 @@
-package io.core.common.helper.canvasrecorder
+package com.core.fy.android.help.canvasrecorder
 
 import android.graphics.Canvas
 import android.graphics.Picture
-import io.core.common.helper.canvasrecorder.pools.PicturePool
-import io.core.common.helper.objectpool.synchronized
+import com.core.fy.android.help.canvasrecorder.pools.PicturePool
+import io.core.common.helper.pool.synchronized
 
 class CanvasRecorderApi23Impl : BaseCanvasRecorder() {
 

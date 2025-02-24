@@ -1,7 +1,7 @@
-package io.core.common.helper.canvasrecorder.pools
+package com.core.fy.android.help.canvasrecorder.pools
 
 import android.graphics.Picture
-import io.core.common.helper.objectpool.BaseObjectPool
+import io.core.common.helper.pool.BaseObjectPool
 
 class PicturePool : BaseObjectPool<Picture>(64) {
 

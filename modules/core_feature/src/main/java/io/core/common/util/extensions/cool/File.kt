@@ -3,12 +3,19 @@
 package io.core.common.util.extensions.cool
 
 import android.net.Uri
+import io.core.common.util.CoreUtil
 import io.core.common.util.FileDoc
 import io.core.common.util.FileDocFilter
 import io.core.common.util.extensions.currentTimeMillis
+import io.core.common.util.log.LogCat
 import io.core.common.util.tools.FileUtils
 import java.io.File
 import java.io.FileOutputStream
+
+fun File.refreshMediaLibrary() {
+    CoreUtil.Files.refreshMediaLibrary(file = this)
+}
+
 
 fun File.getFile(vararg subDirFiles: String): File {
     val path = FileUtils.getPath(this, *subDirFiles)

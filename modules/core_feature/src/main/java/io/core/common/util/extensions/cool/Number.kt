@@ -2,9 +2,9 @@ package io.core.common.util.extensions.cool
 
 import android.graphics.Color
 import io.core.common.util.tools.TimeUtils.getDateFormat
-import io.core.constant.DateFormat
+import io.core.constant.TimeFormat
 
-fun Long.currentTimeFormat(pattern: String = DateFormat.yyyyMMddHHmmss): String {
+fun Long.timeFormat(pattern: String = TimeFormat.TIME_FULL): String {
     return getDateFormat(pattern).format(this)
 }
 

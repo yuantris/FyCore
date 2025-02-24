@@ -1,12 +1,12 @@
 package com.core.fy.android.help
 
 import android.os.Build
+import com.core.fy.android.help.canvasrecorder.CanvasRecorder
+import com.core.fy.android.help.canvasrecorder.CanvasRecorderApi23Impl
+import com.core.fy.android.help.canvasrecorder.CanvasRecorderApi29Impl
+import com.core.fy.android.help.canvasrecorder.CanvasRecorderImpl
+import com.core.fy.android.help.canvasrecorder.CanvasRecorderLocked
 import com.core.fy.android.help.config.AppConfig
-import io.core.common.helper.canvasrecorder.CanvasRecorder
-import io.core.common.helper.canvasrecorder.CanvasRecorderApi23Impl
-import io.core.common.helper.canvasrecorder.CanvasRecorderApi29Impl
-import io.core.common.helper.canvasrecorder.CanvasRecorderImpl
-import io.core.common.helper.canvasrecorder.CanvasRecorderLocked
 
 object CanvasRecorderFactory {
 

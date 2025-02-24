@@ -2,7 +2,6 @@
 
 package io.core.common.util.tools
 
-import android.os.Build.VERSION.SDK_INT
 import android.os.Handler
 import android.os.Looper
 import kotlinx.coroutines.CoroutineScope
@@ -17,7 +16,7 @@ private val mainThread: Thread = mainLooper.thread
 private val isMainThread: Boolean inline get() = mainThread === Thread.currentThread()
 
 fun buildMainHandler(): Handler {
-    return if (SDK_INT >= 28) Handler.createAsync(mainLooper) else try {
+    return if (isAndroid9Plus) Handler.createAsync(mainLooper) else try {
         Handler::class.java.getDeclaredConstructor(
             Looper::class.java,
             Handler.Callback::class.java,

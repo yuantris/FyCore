@@ -76,3 +76,51 @@ fun <T> HashMap<String, T>.get(key: String, ignoreCase: Boolean = false): T? {
     }
     return null
 }
+
+fun <T> createSet(vararg items: T): Set<T> {
+    val set = HashSet<T>()
+    for (item in items) {
+        set.add(item)
+    }
+    return set
+}
+
+
+/**
+ * Java专用重载方法（支持链式调用）
+ * 示例：MapUtils.createMap("key1", "value1", "key2", 2)
+ */
+
+@JvmName("create")
+fun <K, V> createMap(vararg entries: Any): HashMap<K, V> {
+    require(entries.size % 2 == 0) { "参数数量必须为偶数" }
+
+    val map = hashMapOf<K, V>()
+    for (i in entries.indices step 2) {
+        @Suppress("UNCHECKED_CAST")
+        map[entries[i] as K] = entries[i + 1] as V
+    }
+    return map
+}
+
+
+/**
+ * 键值对构建器（Java链式调用专用）
+ * 示例：
+ * MapUtils.builder()
+ *     .put("name", "John")
+ *     .put("age", 25)
+ *     .build();
+ */
+class MapBuilder<K, V> {
+    private val map = hashMapOf<K, V>()
+
+    fun put(key: K, value: V): MapBuilder<K, V> {
+        map[key] = value
+        return this
+    }
+
+    fun build(): HashMap<K, V> = HashMap(map)
+}
+
+fun <K, V> mapBuilder(): MapBuilder<K, V> = MapBuilder()

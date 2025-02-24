@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package io.core.common.util
 
 import android.content.Intent
@@ -10,13 +12,18 @@ import android.os.StrictMode
 import android.os.StrictMode.VmPolicy
 import io.core.appCtx
 import io.core.common.helper.tryCatch
+import io.core.common.util.extensions.currentTime
+import io.core.common.util.extensions.fileNameByTime
+import io.core.common.util.extensions.logI
 import io.core.common.util.extensions.ui.ctx
 import io.core.common.util.extensions.verify
 import io.core.common.util.log.LogCat
+import io.core.common.util.log.LogPure
 import io.core.common.util.log.logD
 import io.core.common.util.log.logI
 import io.core.common.util.tools.TimeUtils
 import io.core.constant.FileType
+import java.io.File
 import java.io.FileInputStream
 import java.security.MessageDigest
 
@@ -36,16 +43,16 @@ import java.security.MessageDigest
 class CoreUtil {
 
     companion object {
+        @JvmStatic
         fun toast(text: String) {
             ToastUtil.show(text)
         }
-
-        fun isMainThread(): Boolean {
-            return Looper.myLooper() == Looper.getMainLooper()
-        }
     }
 
-    class File {
+    /**
+     * 文件工具
+     */
+    class Files {
 
         companion object {
             /**
@@ -55,8 +62,9 @@ class CoreUtil {
              * @param format 指定的文件名格式字符串，也是文件的扩展名
              * @return 返回生成的文件名
              */
+            @JvmStatic
             fun generateName(format: String): String {
-                return "${format.uppercase()}_${TimeUtils.getNowString("yyyyMMdd_HHmmss")}.$format"
+                return "${format.uppercase()}_${fileNameByTime}.$format"
             }
 
             /**
@@ -66,23 +74,30 @@ class CoreUtil {
              * @param prefix 指定的文件名前缀字符串
              * @return 返回生成的无后缀文件名
              */
+            @JvmStatic
             fun generateNameNoExtension(prefix: String): String {
-                return "${prefix.uppercase()}_${TimeUtils.getNowString("yyyyMMdd_HHmmss")}"
+                return "${prefix.uppercase()}_${fileNameByTime}"
             }
 
             /**
              * 刷新整个媒体库
              * 该函数通过扫描全部路径来更新系统媒体库，以便媒体文件能够被系统识别和索引
              */
-            fun refreshMediaLibrary() {
+            @JvmStatic
+            @JvmOverloads
+            fun refreshMediaLibrary(
+                file: File? = null,
+                callback: ((String, Uri) -> Unit)? = null
+            ) {
                 MediaScannerConnection.scanFile(
                     appCtx,
-                    arrayOf(Environment.getExternalStorageDirectory().absolutePath),
+                    arrayOf(if (file == null) Environment.getExternalStorageDirectory().absolutePath else file.absolutePath),
                     null
                 ) { path, uri ->
                     // 扫描完成后的回调
-                    "Scanned $path:\nuri=$uri".logD()
-                    "Scanned succeed.".logI()
+                    LogPure.v(message = "Scanned \npath: $path\nuri: $uri")
+                    LogPure.i { "RefreshMediaLibrary Scanned succeed." }
+                    callback?.invoke(path, uri)
                 }
 
             }
@@ -97,7 +112,9 @@ class CoreUtil {
              * 此函数读取指定文件的内容，并使用给定的算法计算文件的哈希值
              * 如果文件不存在或不是文件类型，将抛出 IllegalArgumentException 异常
              */
-            fun getFileHash(file: java.io.File, algorithm: String = "SHA-256"): String {
+            @JvmStatic
+            @JvmOverloads
+            fun getFileHash(file: File, algorithm: String = "SHA-256"): String {
                 if (!file.exists() || !file.isFile) {
                     throw IllegalArgumentException("Invalid file path")
                 }
@@ -117,7 +134,8 @@ class CoreUtil {
             /**
              * 打开这个文件
              */
-            fun openFile(file: java.io.File) {
+            @JvmStatic
+            fun openFile(file: File) {
                 val intent = Intent()
 
                 intent.setAction(Intent.ACTION_VIEW)
@@ -163,14 +181,17 @@ class CoreUtil {
     }
 
 
-    class Activity {
+    /**
+     * 组件相关工具
+     */
+    class Component {
         companion object {
             /**
              * 重启指定的 Activity
              * 此函数通过结束当前 Activity 并使用相同的 Intent 重新启动它，从而实现重启 Activity 的效果
              * @param activity 要重启的 Activity 实例
              */
-            @Suppress("DEPRECATION")
+            @JvmStatic
             fun restartActivity(activity: android.app.Activity) {
                 val intent = activity.intent
                 activity.finish() // 结束当前 Activity

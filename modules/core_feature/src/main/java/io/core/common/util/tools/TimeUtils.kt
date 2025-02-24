@@ -1,7 +1,7 @@
 package io.core.common.util.tools
 
 import io.core.common.util.extensions.currentTimeMillis
-import io.core.constant.DateFormat
+import io.core.constant.TimeFormat
 import java.text.SimpleDateFormat
 import java.util.Locale
 import kotlin.math.abs
@@ -49,11 +49,11 @@ fun Long.toTimeAgo(): String {
 
 object TimeUtils {
 
-    fun getDateFormat(format: String = DateFormat.yyyyMMddHHmmss): SimpleDateFormat {
+    fun getDateFormat(format: String = TimeFormat.TIME_FULL): SimpleDateFormat {
         return SimpleDateFormat(format, Locale.getDefault())
     }
 
-    fun getNowString(pattern: String = DateFormat.yyyyMMddHHmmss): String {
+    fun getNowString(pattern: String = TimeFormat.TIME_FULL): String {
         return getDateFormat(pattern).format(currentTimeMillis)
     }
 

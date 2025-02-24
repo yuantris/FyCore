@@ -5,155 +5,182 @@ import android.app.Application
 import android.app.Service
 import android.os.Bundle
 import androidx.lifecycle.DefaultLifecycleObserver
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.OnLifecycleEvent
 import androidx.lifecycle.ProcessLifecycleOwner
-import com.bumptech.glide.Glide.init
 import io.core.common.base.component.service.BaseService
-import io.core.common.util.extensions.currentTimeMillis
-import io.core.common.util.extensions.logD
 import io.core.common.util.extensions.ui.isAlive
 import io.core.common.util.log.LogPure
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import java.lang.ref.WeakReference
-import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
-import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.concurrent.CopyOnWriteArrayList
 
+/**
+ * 应用生命周期跟踪器，用于监控Activity/Service生命周期及应用前后台状态
+ *
+ * 1. 使用CopyOnWriteArrayList保证线程安全，避免遍历时修改导致的并发问题
+ * 2. 自动维护有效的弱引用，防止内存泄漏
+ * 3. 支持多个前后台状态监听器
+ * 4. 优化无效引用清理逻辑
+ */
 object AppLifecycleTracker : Application.ActivityLifecycleCallbacks, DefaultLifecycleObserver {
 
     private const val TAG = "LifecycleTracker"
 
-    // Activity生命周期队列（线程安全）
+    // region 生命周期栈管理
     private val activityStack = CopyOnWriteArrayList<WeakReference<Activity>>()
-
-    // Service生命周期记录
     private val serviceStack = CopyOnWriteArrayList<WeakReference<Service>>()
 
-    // App前后台监听
-    private var appForegroundListener: ((isForeground:Boolean) -> Unit)? = null
+    /**
+     * 获取有效Activity列表（自动过滤已回收的引用）
+     */
+    private val activeActivities: List<Activity>
+        get() = activityStack
+            .mapNotNull { it.get() }
+            .filter { it.isAlive() }
 
+    /**
+     * 获取有效Service列表（自动过滤已回收的引用）
+     */
+    private val activeServices: List<Service>
+        get() = serviceStack
+            .mapNotNull { it.get() }
+    // endregion
 
+    // region 前后台状态监听
+    private val appForegroundListeners = CopyOnWriteArrayList<(Boolean) -> Unit>()
+    private val listenerMap = ConcurrentHashMap<String, (Boolean) -> Unit>()
+
+    fun registerAppStatusListenerWithTag(tag: String, listener: (Boolean) -> Unit) {
+        listenerMap[tag] = listener
+        appForegroundListeners.add(listener)
+    }
+
+    fun unregisterAppStatusListenerByTag(tag: String) {
+        listenerMap[tag]?.let {
+            appForegroundListeners.remove(it)
+            listenerMap.remove(tag)
+        }
+    }
+
+    /**
+     * 注册应用前后台状态监听
+     */
+    fun registerAppStatusListener(listener: (Boolean) -> Unit) {
+        appForegroundListeners.add(listener)
+    }
+
+    /**
+     * 注销应用前后台状态监听
+     */
+    fun unregisterAppStatusListener(listener: (Boolean) -> Unit) {
+        appForegroundListeners.remove(listener)
+    }
+    // endregion
+
+    // region 生命周期观察者实现
     override fun onStart(owner: LifecycleOwner) {
         super.onStart(owner)
-        appForegroundListener?.invoke(true)
+        appForegroundListeners.forEach { it.invoke(true) }
     }
 
     override fun onStop(owner: LifecycleOwner) {
         super.onStop(owner)
-        appForegroundListener?.invoke(false)
-    }
-
-    /**
-     * App前后台监听
-     */
-    fun registerAppStatusChangedListener(appForegroundListener: (Boolean) -> Unit) {
-        this.appForegroundListener = appForegroundListener
-    }
-
-    fun activitySize(): Int {
-        return activityStack.size
-    }
-
-    fun getTopActivity(): Activity? {
-        // 判断活动栈是否为空
-        return activityStack.lastOrNull()?.get()?.takeIf { it.isAlive() }
-    }
-
-    /**
-     * 判断指定Activity是否存在
-     */
-    @JvmStatic
-    fun isExistActivity(activityClass: Class<*>): Boolean {
-        activityStack.forEach { item ->
-            if (item.get()?.javaClass == activityClass) {
-                return true
-            }
-        }
-        return false
-    }
-
-    /**
-     * 关闭指定 activity(class)
-     */
-    fun finishActivity(vararg activityClasses: Class<*>) {
-        val waitFinish = ArrayList<WeakReference<Activity>>()
-        for (temp in activityStack) {
-            for (activityClass in activityClasses) {
-                if (temp.get()?.javaClass == activityClass) {
-                    waitFinish.add(temp)
-                    break
-                }
-            }
-        }
-        waitFinish.forEach {
-            it.get()?.finish()
-        }
-    }
-
-    /**
-     * 关闭所有activity(class)
-     */
-    fun finishAllActivity() {
-        for (temp in activityStack) {
-            temp.get()?.finish()
-        }
-    }
-
-    override fun onActivityPaused(activity: Activity) {
-        LogPure.d(TAG, "${activity.javaClass.simpleName} onPause")
-    }
-
-    override fun onActivityResumed(activity: Activity) {
-        LogPure.d(TAG, "${activity.javaClass.simpleName} onResume")
-    }
-
-    override fun onActivityStarted(activity: Activity) {
-        LogPure.d(TAG, "${activity.javaClass.simpleName} onStart")
-    }
-
-    override fun onActivityDestroyed(activity: Activity) {
-        LogPure.d(TAG, "${activity.javaClass.simpleName} onDestroy")
-        for (temp in activityStack) {
-            if (temp.get() != null && temp.get() === activity) {
-                activityStack.remove(temp)
-                break
-            }
-        }
-    }
-
-    override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {
-        LogPure.d(TAG, "${activity.javaClass.simpleName} onSaveInstanceState")
-    }
-
-    override fun onActivityStopped(activity: Activity) {
-        LogPure.d(TAG, "${activity.javaClass.simpleName} onStop")
+        appForegroundListeners.forEach { it.invoke(false) }
     }
 
     override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
-        LogPure.d(TAG, "${activity.javaClass.simpleName} onCreate")
+        logLifecycle(activity, "onCreate")
         activityStack.add(WeakReference(activity))
+        cleanUpWeakReferences(activityStack)
     }
 
-    @Synchronized
+    override fun onActivityDestroyed(activity: Activity) {
+        logLifecycle(activity, "onDestroy")
+        activityStack.removeAll { it.get() == null || it.get() == activity }
+    }
+
+    override fun onActivityResumed(activity: Activity) = logLifecycle(activity, "onResume")
+    override fun onActivityPaused(activity: Activity) = logLifecycle(activity, "onPause")
+    override fun onActivityStarted(activity: Activity) = logLifecycle(activity, "onStart")
+    override fun onActivityStopped(activity: Activity) = logLifecycle(activity, "onStop")
+    override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {
+        logLifecycle(activity, "onSaveInstanceState")
+    }
+    // endregion
+
+    // region Service生命周期跟踪
     fun onServiceCreate(service: BaseService) {
-        LogPure.d(TAG, "${service::class.simpleName} onCreate")
+        logLifecycle(service, "onCreate")
         serviceStack.add(WeakReference(service))
+        cleanUpWeakReferences(serviceStack)
     }
 
-    @Synchronized
     fun onServiceDestroy(service: BaseService) {
-        LogPure.d(TAG, "${service::class.simpleName} onDestroy")
-        for (temp in serviceStack) {
-            if (temp.get() != null && temp.get() === service) {
-                serviceStack.remove(temp)
-                break
-            }
-        }
+        logLifecycle(service, "onDestroy")
+        serviceStack.removeAll { it.get() == null || it.get() == service }
+    }
+    // endregion
+
+    // region 公共API
+    /**
+     * 获取栈顶Activity（可能为null）
+     */
+    fun getTopActivity(): Activity? = activeActivities.lastOrNull()
+
+    /**
+     * 当前存活的Activity数量
+     */
+    fun activityCount(): Int = activeActivities.size
+
+    /**
+     * 检查指定类型的Activity是否存在
+     */
+    @JvmStatic
+    fun hasActivity(activityClass: Class<*>): Boolean =
+        activeActivities.any { it.javaClass == activityClass }
+
+    /**
+     * 关闭指定类型的所有Activity
+     */
+    @JvmStatic
+    fun finishActivity(vararg activityClasses: Class<*>) {
+        activeActivities
+            .filter { activity -> activityClasses.any { it == activity.javaClass } }
+            .forEach { it.finish() }
     }
 
+    /**
+     * 关闭所有Activity
+     */
+    @JvmStatic
+    fun finishAllActivities() {
+        activeActivities.forEach { it.finish() }
+    }
+    // endregion
+
+    // region 工具方法
+    /**
+     * 统一生命周期日志记录
+     */
+    private fun logLifecycle(obj: Any, event: String) {
+        LogPure.d(TAG, "${obj::class.simpleName} $event")
+    }
+
+    /**
+     * 清理无效的弱引用（自动维护列表健康）
+     */
+    private fun <T> cleanUpWeakReferences(list: CopyOnWriteArrayList<WeakReference<T>>) {
+        list.removeAll { it.get() == null }
+    }
+    // endregion
+
+    // region 初始化
+    /**
+     * 需要在Application.onCreate中初始化
+     */
+    fun init(application: Application) {
+        application.registerActivityLifecycleCallbacks(this)
+        ProcessLifecycleOwner.get().lifecycle.addObserver(this)
+    }
+    // endregion
 }

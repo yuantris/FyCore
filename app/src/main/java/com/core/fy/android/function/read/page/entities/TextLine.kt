@@ -13,11 +13,11 @@ import com.core.fy.android.function.read.page.entities.column.TextColumn
 import com.core.fy.android.function.read.page.provider.ChapterProvider
 import com.core.fy.android.help.CanvasRecorderFactory
 import com.core.fy.android.help.PaintPool
+import com.core.fy.android.help.canvasrecorder.recordIfNeededThenDraw
 import com.core.fy.android.help.config.AppConfig
 import com.core.fy.android.help.config.ReadBookConfig
 import io.core.common.util.extensions.cool.dpToPx
 import io.core.common.util.extensions.ui.getCompatColor
-import io.core.common.helper.canvasrecorder.recordIfNeededThenDraw
 import io.core.appCtx
 
 /**

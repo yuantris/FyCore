@@ -1,4 +1,4 @@
-package io.core.common.helper.canvasrecorder.pools
+package com.core.fy.android.help.canvasrecorder.pools
 
 import android.graphics.Bitmap
 import io.core.common.util.tools.globalExecutor

@@ -90,7 +90,7 @@ class MediaButtonReceiver : BroadcastReceiver() {
                     // break
                 }
 
-                AppLifecycleTracker.isExistActivity(ReadBookActivity::class.java) ->
+                AppLifecycleTracker.hasActivity(ReadBookActivity::class.java) ->
                 {
                     //postEvent(EventBus.MEDIA_BUTTON, true)
                 }
@@ -100,7 +100,7 @@ class MediaButtonReceiver : BroadcastReceiver() {
 //                    //postEvent(EventBus.MEDIA_BUTTON, true)
 //                }
 
-                else -> if (AppConfig.mediaButtonOnExit || AppLifecycleTracker.activitySize() > 0 || !isMediaKey) {
+                else -> if (AppConfig.mediaButtonOnExit || AppLifecycleTracker.activityCount() > 0 || !isMediaKey) {
                     ReadAloud.upReadAloudClass()
                     if (ReadBook.book != null) {
                         ReadBook.readAloud()

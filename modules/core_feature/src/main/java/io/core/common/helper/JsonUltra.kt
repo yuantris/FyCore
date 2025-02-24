@@ -75,6 +75,7 @@ class JsonUltra private constructor(
         }
 
         @JvmStatic
+        @JvmOverloads
         fun parse(jsonString: String, autoParse: Boolean = true): JsonUltra {
             return JsonUltra(Json.parseToJsonElement(jsonString), autoParse)
         }

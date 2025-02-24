@@ -3,11 +3,7 @@ package com.core.fy.android.main.fragment
 import com.core.fy.android.MainActivity
 import com.core.fy.android.databinding.FragmentSetBinding
 import com.core.fy.android.function.TestPageActivity
-import com.google.common.io.Files.append
 import io.core.common.base.component.fragment.ReflectBindingFragment
-import io.core.common.util.extensions.cool.currentTimeFormat
-import io.core.common.util.extensions.currentTimeMillis
-import io.core.common.util.extensions.logV
 import io.core.common.util.extensions.ui.adaptStatusBarToView
 import io.core.common.util.extensions.ui.appVersionName
 import io.core.common.util.extensions.ui.onDebouncedClick
@@ -15,7 +11,7 @@ import io.core.common.util.extensions.ui.startActivity
 import io.core.common.util.tools.androidApiVersion
 import io.core.common.util.tools.androidVersion
 import io.core.common.util.tools.buildMultiLine
-import io.core.constant.DateFormat
+import io.core.constant.TimeFormat
 
 /**
 # ██████████
@@ -49,7 +45,7 @@ class SetFragment : ReflectBindingFragment<FragmentSetBinding, MainActivity>() {
                 startActivity<TestPageActivity>()
             }
             crash.onDebouncedClick {
-                throw RuntimeException("Crash ${currentTimeMillis.currentTimeFormat(DateFormat.yyyyMMddHHmmssSSS)}")
+                throw RuntimeException("Crash ${TimeFormat.getFormatter(TimeFormat.LOG_TIMESTAMP)}")
             }
         }
     }

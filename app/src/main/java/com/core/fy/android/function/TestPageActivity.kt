@@ -1,14 +1,24 @@
 package com.core.fy.android.function
 
+import android.graphics.Paint
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.core.fy.android.databinding.ActivityTestPageBinding
 import com.core.fy.android.main.fragment.code.JavaFragment
 import com.core.fy.android.main.fragment.code.KotlinFragment
 import com.google.android.material.tabs.TabLayoutMediator
 import io.core.common.base.component.activity.ReflectBindingActivity
+import io.core.common.helper.pool.ObjectPoolBuilder
+import io.core.common.helper.pool.use
+import io.core.common.util.ToastUtil
+import io.core.common.util.extensions.cool.launchSync
+import io.core.common.util.extensions.logE
+import io.core.common.util.extensions.ui.toast
+import io.core.common.util.tools.toastOnUi
+import kotlinx.coroutines.launch
 
 /**
 # ██████████
@@ -35,7 +45,7 @@ class TestPageActivity : ReflectBindingActivity<ActivityTestPageBinding>() {
         }
         // 绑定 TabLayout 和 ViewPager2
         TabLayoutMediator(binding.tab, viewPager) { tab, position ->
-            tab.text = when(position) {
+            tab.text = when (position) {
                 0 -> "Kotlin"
                 1 -> "Java"
                 else -> null
@@ -43,13 +53,30 @@ class TestPageActivity : ReflectBindingActivity<ActivityTestPageBinding>() {
         }.attach()
 
 
+        val paintPool = ObjectPoolBuilder.android(
+            maxSize = 8,
+            create = { "1" }
+        ) {
+            destroy = {
+
+            }
+        }
+
+        lifecycleScope.launch {
+            val paint = paintPool.acquire()
+            ToastUtil.show(paint)
+            paintPool.release("2")
+            val acquire = paintPool.acquire()
+            ToastUtil.show(acquire)
+        }
 
     }
 
-    inner class TabPagerAdapter(fragmentActivity: FragmentActivity) : FragmentStateAdapter(fragmentActivity) {
+    inner class TabPagerAdapter(fragmentActivity: FragmentActivity) :
+        FragmentStateAdapter(fragmentActivity) {
         override fun getItemCount(): Int = 2
 
-        override fun createFragment(position: Int): Fragment = when(position) {
+        override fun createFragment(position: Int): Fragment = when (position) {
             0 -> KotlinFragment()
             1 -> JavaFragment()
             else -> throw IllegalArgumentException("Invalid position")

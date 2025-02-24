@@ -33,6 +33,8 @@ fun View.processNavigationBar() {
 }
 
 object DiveGestureLine {
+
+    @JvmOverloads
     fun adaptXiaomi(
         window: Window,
         navigationBarColor: Int = 0

@@ -19,27 +19,20 @@ object LogPure {
 
     // 展示日志，默认输出到 Logcat
     @JvmStatic
+    @JvmOverloads
     fun d(tag: String = DEFAULT_TAG, message: String) {
         log(Log.DEBUG, tag, message)
     }
 
-    @JvmStatic
-    fun d(message: String) {
-        log(Log.DEBUG, DEFAULT_TAG, message)
-    }
 
     fun d(tag: String = DEFAULT_TAG, message: () -> String) {
         log(Log.DEBUG, tag, message())
     }
 
     @JvmStatic
+    @JvmOverloads
     fun i(tag: String = DEFAULT_TAG, message: String) {
         log(Log.INFO, tag, message)
-    }
-
-    @JvmStatic
-    fun i(message: String) {
-        log(Log.INFO, DEFAULT_TAG, message)
     }
 
     fun i(tag: String = DEFAULT_TAG, message: () -> String) {
@@ -47,13 +40,9 @@ object LogPure {
     }
 
     @JvmStatic
+    @JvmOverloads
     fun w(tag: String = DEFAULT_TAG, message: String) {
         log(Log.WARN, tag, message)
-    }
-
-    @JvmStatic
-    fun w(message: String) {
-        log(Log.WARN, DEFAULT_TAG, message)
     }
 
     fun w(tag: String = DEFAULT_TAG, message: () -> String) {
@@ -61,13 +50,9 @@ object LogPure {
     }
 
     @JvmStatic
+    @JvmOverloads
     fun e(tag: String = DEFAULT_TAG, message: String) {
         log(Log.ERROR, tag, message)
-    }
-
-    @JvmStatic
-    fun e(message: String) {
-        log(Log.ERROR, DEFAULT_TAG, message)
     }
 
     fun e(tag: String = DEFAULT_TAG, message: () -> String) {
@@ -75,13 +60,9 @@ object LogPure {
     }
 
     @JvmStatic
+    @JvmOverloads
     fun v(tag: String = DEFAULT_TAG, message: String) {
         log(Log.VERBOSE, tag, message)
-    }
-
-    @JvmStatic
-    fun v(message: String) {
-        log(Log.VERBOSE, DEFAULT_TAG, message)
     }
 
     fun v(tag: String = DEFAULT_TAG, message: () -> String) {

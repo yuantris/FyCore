@@ -16,9 +16,9 @@ import com.core.fy.android.function.read.page.provider.ChapterProvider.paddingLe
 import com.core.fy.android.function.read.page.provider.ChapterProvider.visibleHeight
 import com.core.fy.android.help.CanvasRecorderFactory
 import com.core.fy.android.help.PaintPool
+import com.core.fy.android.help.canvasrecorder.recordIfNeeded
 import com.core.fy.android.help.config.AppConfig
 import com.core.fy.android.help.config.ReadBookConfig
-import io.core.common.helper.canvasrecorder.recordIfNeeded
 import io.core.appCtx
 import io.core.common.util.extensions.cool.dpToPx
 import java.text.DecimalFormat

@@ -1,10 +1,10 @@
-package io.core.common.helper.canvasrecorder
+package com.core.fy.android.help.canvasrecorder
 
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
-import io.core.common.helper.canvasrecorder.pools.BitmapPool
-import io.core.common.helper.canvasrecorder.pools.CanvasPool
+import com.core.fy.android.help.canvasrecorder.pools.BitmapPool
+import com.core.fy.android.help.canvasrecorder.pools.CanvasPool
 
 class CanvasRecorderImpl : BaseCanvasRecorder() {
 

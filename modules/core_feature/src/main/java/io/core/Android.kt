@@ -51,8 +51,7 @@ object Android {
         // 初始化日志
         LogCat.setDebug(debug)
         // 注册Activity生命周期回调
-        registerLifecycleObserver(AppLifecycleTracker)
-        application.registerActivityLifecycleCallbacks(AppLifecycleTracker)
+        AppLifecycleTracker.init(application)
         // LiveEventBus 初始化
         LiveEventBus.config()
             .lifecycleObserverAlwaysActive(true)

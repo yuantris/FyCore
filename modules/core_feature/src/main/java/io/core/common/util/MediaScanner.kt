@@ -1,12 +1,16 @@
 package io.core.common.util
 
+import android.content.Context
+import android.database.ContentObserver
 import android.net.Uri
+import android.os.Looper
 import android.provider.MediaStore
 import com.hjq.permissions.Permission
 import io.core.appCtx
 import io.core.common.util.extensions.cool.hasReadStoragePermission
 import io.core.common.util.extensions.cool.isGranted
 import io.core.common.util.log.LogPure
+import io.core.common.util.tools.buildMainHandler
 
 /**
  * 媒体库扫描工具
@@ -16,6 +20,8 @@ import io.core.common.util.log.LogPure
 class MediaScanner {
 
     companion object {
+
+        private const val CACHE_EXPIRY_MS = 5 * 60 * 1000 // 5分钟缓存有效期
 
         private val PROJECTION = arrayOf(
             MediaStore.MediaColumns.DATA,
@@ -31,61 +37,170 @@ class MediaScanner {
             "thumbnails"
         ).map { Regex(it, RegexOption.IGNORE_CASE) }
 
+        // 缓存状态跟踪
+        private var cachedResults: List<FileInfo> = emptyList()
+        private var lastQueryParams: Triple<Set<FileType>, String, Long>? = null
+        private var contentObserver: ContentObserver? = null
+
+
         /**
-         * 媒体库查询文件
-         *
-         * 该函数根据指定的文件类型集合、过滤条件和排序顺序，查询设备上的文件信息
-         * 它通过内容解析器查询媒体存储，筛选出符合条件的文件，并返回一个文件信息列表
-         *
-         * @param types 文件类型集合，指定需要查询的文件类型
-         * @param addFilter 可选的附加过滤条件，用于进一步筛选文件，默认为null
-         * @param sortOrder 排序顺序，默认按添加日期降序排列
-         * @return 返回一个文件信息列表，包含路径、大小、添加日期和MIME类型
+         * 带缓存的媒体库查询
+         * @param forceRefresh 是否强制刷新缓存
          */
         @JvmStatic
+        @JvmOverloads
         fun queryFiles(
             types: Set<FileType>,
             addFilter: ((FileInfo) -> Boolean)? = null,
-            sortOrder: String = SQL.timeAddedDESC
+            sortOrder: String = SQL.timeAddedDESC,
+            forceRefresh: Boolean = false
         ): List<FileInfo> {
-            if (!appCtx.hasReadStoragePermission()){
+            if (!appCtx.hasReadStoragePermission()) {
                 throw IllegalStateException("No permission to read external storage")
             }
 
-            val groupedTypes = types.groupBy { it.contentUri }
-            val results = mutableListOf<FileInfo>()
+            val currentParams = Triple(types, sortOrder, System.currentTimeMillis())
 
-            groupedTypes.forEach { (uri, fileTypes) ->
-                val mimeTypes = fileTypes.flatMap { it.mimeTypes }.distinct()
-                val extensions = fileTypes.flatMap { it.extensions }.distinct()
+            return when {
+                forceRefresh -> refreshAndGet(currentParams, addFilter)
+                isCacheValid(currentParams) -> {
+                    LogPure.d { "MediaScanner---- Using cached results" }
+                    processResults(cachedResults, addFilter)
+                }
 
-                val selection = buildSelection(mimeTypes, extensions)
-                val selectionArgs = buildSelectionArgs(mimeTypes, extensions)
+                else -> refreshAndGet(currentParams, addFilter)
+            }
+        }
 
-                appCtx.contentResolver.query(
-                    uri,
-                    PROJECTION,
-                    selection,
-                    selectionArgs?.toTypedArray(),
-                    sortOrder
-                )?.use { cursor ->
-                    val pathIndex = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA)
-                    val sizeIndex = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.SIZE)
-                    val dateIndex = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATE_ADDED)
-                    val mimeIndex = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.MIME_TYPE)
+        /**
+         * 手动清除缓存
+         */
+        @JvmStatic
+        fun clearCache() {
+            cachedResults = emptyList()
+            lastQueryParams = null
+            LogPure.v { "MediaScanner---- Cache cleared" }
+        }
 
-                    while (cursor.moveToNext()) {
-                        val path = cursor.getString(pathIndex) ?: continue
-                        val size = cursor.getLong(sizeIndex)
-                        val date = cursor.getLong(dateIndex)
-                        val mime = cursor.getString(mimeIndex)
-
-                        results.add(FileInfo(path, size, date, mime))
+        /**
+         * 注册内容观察者自动刷新缓存
+         */
+        @JvmStatic
+        fun registerContentObserver() {
+            if (contentObserver == null) {
+                contentObserver = object : ContentObserver(null) {
+                    override fun onChange(selfChange: Boolean, uri: Uri?) {
+                        if (!selfChange) {
+                            LogPure.v { "MediaScanner---- Content changed, invalidating cache" }
+                            clearCache()
+                        }
                     }
                 }
+
+                // 注册所有相关URI的监听
+                val uris = FileType.values().map { it.contentUri }.toSet()
+                uris.forEach { uri ->
+                    appCtx.contentResolver.registerContentObserver(
+                        uri,
+                        true,
+                        contentObserver!!
+                    )
+                }
+                LogPure.d { "MediaScanner---- Content observer registered" }
             }
-            LogPure.d("MediaScanner---- Found ${results.size} files")
-            return processResults(results, addFilter)
+        }
+
+        /**
+         * 注销内容观察者
+         */
+        @JvmStatic
+        fun unregisterContentObserver() {
+            contentObserver?.let {
+                appCtx.contentResolver.unregisterContentObserver(it)
+                contentObserver = null
+                LogPure.d { "MediaScanner---- Content observer unregistered" }
+            }
+        }
+
+        private fun refreshAndGet(
+            params: Triple<Set<FileType>, String, Long>,
+            filter: ((FileInfo) -> Boolean)?
+        ): List<FileInfo> {
+            val (types, sortOrder, timestamp) = params
+
+            val results = mutableListOf<FileInfo>().apply {
+                types.groupBy { it.contentUri }.forEach { (uri, fileTypes) ->
+                    queryMediaStore(uri, fileTypes, sortOrder)?.let { addAll(it) }
+                }
+            }
+
+            cachedResults = processResults(results, null) // 基础缓存不过滤用户条件
+            lastQueryParams = params.copy(third = System.currentTimeMillis())
+
+            LogPure.d { "MediaScanner---- Cache updated (${cachedResults.size} items)" }
+            return processResults(cachedResults, filter)
+        }
+
+        private fun queryMediaStore(
+            uri: Uri,
+            fileTypes: List<FileType>,
+            sortOrder: String
+        ): List<FileInfo>? {
+            val mimeTypes = fileTypes.flatMap { it.mimeTypes }.distinct()
+            val extensions = fileTypes.flatMap { it.extensions }.distinct()
+
+            return appCtx.contentResolver.query(
+                uri,
+                PROJECTION,
+                buildSelection(mimeTypes, extensions),
+                buildSelectionArgs(mimeTypes, extensions)?.toTypedArray(),
+                sortOrder
+            )?.use { cursor ->
+                val pathIndex = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA)
+                val sizeIndex = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.SIZE)
+                val dateIndex = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATE_ADDED)
+                val mimeIndex = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.MIME_TYPE)
+
+                generateSequence { if (cursor.moveToNext()) cursor else null }
+                    .map {
+                        FileInfo(
+                            path = it.getString(pathIndex) ?: return@map null,
+                            size = it.getLong(sizeIndex),
+                            dateAdded = it.getLong(dateIndex),
+                            mimeType = it.getString(mimeIndex)
+                        )
+                    }
+                    .filterNotNull()
+                    .toList()
+            }
+        }
+
+        private fun isCacheValid(currentParams: Triple<Set<FileType>, String, Long>): Boolean {
+            return lastQueryParams?.let { (cachedTypes, cachedSort, cachedTime) ->
+                currentParams.first == cachedTypes &&
+                        currentParams.second == cachedSort &&
+                        (currentParams.third - cachedTime) < CACHE_EXPIRY_MS
+            } ?: false
+        }
+
+        private fun processResults(
+            results: List<FileInfo>,
+            addFilter: ((FileInfo) -> Boolean)?
+        ): List<FileInfo> {
+            return results
+                .distinctBy { it.path }
+                .filter { file ->
+                    val defaultPass = defaultFilter(file)
+                    val additionalPass = addFilter?.invoke(file) ?: true
+                    defaultPass && additionalPass
+                }
+                .also {
+                    LogPure.v { "MediaScanner---- Final results: ${it.size} items after filtering" }
+                }
+        }
+
+        private fun defaultFilter(file: FileInfo): Boolean {
+            return file.size > 0 && EXCLUDED_PATTERNS.none { it.containsMatchIn(file.path) }
         }
 
         private fun buildSelection(mimeTypes: List<String>, extensions: List<String>): String? {
@@ -112,27 +227,6 @@ class MediaScanner {
             return args.ifEmpty { null }
         }
 
-        private fun processResults(
-            results: List<FileInfo>,
-            addFilter: ((FileInfo) -> Boolean)?
-        ): List<FileInfo> {
-            return results
-                .distinctBy { it.path }
-                .filter { file ->
-                    val defaultPass = defaultFilter(file)
-                    val additionalPass = addFilter?.invoke(file) ?: true
-                    val shouldKeep = defaultPass && additionalPass
-
-                    if (!shouldKeep) {
-                        LogPure.v("MediaScanner---- Filtered out: ${file.path}")
-                    }
-                    shouldKeep
-                }
-        }
-
-        private fun defaultFilter(file: FileInfo): Boolean {
-            return file.size > 0 && EXCLUDED_PATTERNS.none { it.containsMatchIn(file.path) }
-        }
     }
 
     data class FileInfo(

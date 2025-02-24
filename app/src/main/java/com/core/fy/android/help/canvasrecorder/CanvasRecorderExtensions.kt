@@ -1,4 +1,4 @@
-package io.core.common.helper.canvasrecorder
+package com.core.fy.android.help.canvasrecorder
 
 import android.graphics.Canvas
 import android.view.View
@@ -41,4 +41,12 @@ inline fun CanvasRecorder.recordIfNeededThenDraw(
 ) {
     recordIfNeeded(width, height, block)
     draw(canvas)
+}
+
+fun View.screenshot(canvasRecorder: CanvasRecorder) {
+    if (width > 0 && height > 0) {
+        canvasRecorder.record(width, height) {
+            draw(this)
+        }
+    }
 }

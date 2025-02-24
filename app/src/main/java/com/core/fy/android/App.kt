@@ -9,8 +9,10 @@ import com.core.fy.android.constants.AppConst.channelIdReadAloud
 import com.core.fy.android.util.initDialogX
 import io.core.Android
 import io.core.BR
+import io.core.appCtx
 import io.core.common.CoreConfig
 import io.core.common.helper.AppLifecycleTracker
+import io.core.common.util.MediaScanner
 import io.core.common.util.extensions.notificationManager
 import io.core.common.util.log.LogPure
 import io.core.engine.brv.utils.BRV
@@ -59,13 +61,13 @@ class App : Application() {
         // SoftKeyboardGlobal.install(this, false)
         createNotificationChannels()
 
-        AppLifecycleTracker.registerAppStatusChangedListener { isForeground ->
-            if (isForeground) {
-                LogPure.d("进入前台")
-            } else {
-                LogPure.d("进入后台")
+        AppLifecycleTracker.registerAppStatusListener { isForeground ->
+            LogPure.v {
+                "进入${if (isForeground) "前台" else "后台"}"
             }
         }
+
+        MediaScanner.registerContentObserver()
     }
 
     /**
