@@ -19,7 +19,6 @@ import android.os.Build
 import android.view.Gravity
 import android.view.View
 import androidx.annotation.ColorInt
-import io.core.common.util.extensions.ifNotNull
 import kotlin.math.min
 
 /**
@@ -76,7 +75,7 @@ class ShapeDrawable(state: ShapeState = ShapeState()) : Drawable() {
     }
 
     override fun getPadding(padding: Rect): Boolean {
-        mPadding.ifNotNull {
+        mPadding?.let {
             padding.set(it)
             return true
         }

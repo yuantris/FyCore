@@ -1,8 +1,10 @@
 package com.core.fy.android.main.fragment.code
 
+import androidx.lifecycle.lifecycleScope
 import com.blankj.utilcode.util.GsonUtils
 import com.core.fy.android.databinding.FragmentKotlinBinding
 import com.core.fy.android.function.TestPageActivity
+import com.core.fy.android.help.ProgressNotifier
 import com.hjq.permissions.Permission
 import io.core.common.base.component.fragment.ReflectBindingFragment
 import io.core.common.helper.JsonUltra
@@ -21,6 +23,7 @@ import io.core.common.util.extensions.ui.ctx
 import io.core.common.util.log.LogPure
 import io.core.common.util.tools.AsyncUtils
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
 
 
@@ -85,8 +88,30 @@ class KotlinFragment : ReflectBindingFragment<FragmentKotlinBinding, TestPageAct
         }
     }
 
+    override fun initData() {
+        super.initData()
+        // 注册监听器
+        ProgressNotifier.register { id, progress ->
+            LogPure.i { "id:$id\nprogress: $progress%" }
+        }
+
+    }
+
     override fun onFragmentResume(first: Boolean) {
         super.onFragmentResume(first)
+
+        lifecycleScope.launch {
+            val totalSteps = 24
+            val taskId = ProgressNotifier.startTask(totalSteps)
+
+            repeat(totalSteps) {
+                ProgressNotifier.incrementProgress(taskId)
+                delay(1000)
+            }
+
+            ProgressNotifier.complete(taskId)
+        }
+
         val tasks = listOf<suspend () -> String>(
             { /* 扫描图片实现 */ "img1" },
             { /* 扫描视频实现 */

@@ -50,7 +50,7 @@ fun Long.toTimeAgo(): String {
 object TimeUtils {
 
     fun getDateFormat(format: String = TimeFormat.TIME_FULL): SimpleDateFormat {
-        return SimpleDateFormat(format, Locale.getDefault())
+        return TimeFormat.getFormatter(format)
     }
 
     fun getNowString(pattern: String = TimeFormat.TIME_FULL): String {

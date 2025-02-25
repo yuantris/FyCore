@@ -28,6 +28,7 @@ import io.core.common.util.extensions.ui.viewBinding
 import io.core.common.util.tools.FileUtils
 import io.core.common.util.tools.UriUtils
 import io.core.common.util.tools.toastOnUi
+import io.core.constant.CRASH_FOLDER_NAME
 import io.core.databinding.DialogRecyclerViewBinding
 import io.core.databinding.Item1lineTextBinding
 import io.core.other.RandomEventGenerator
@@ -142,7 +143,7 @@ class CrashLogsDialog : BaseDialogFragment(R.layout.dialog_recycler_view),
             execute {
                 val list = arrayListOf<FileDoc>()
                 appCtx.externalCacheDir
-                    ?.getFile("crash")
+                    ?.getFile(CRASH_FOLDER_NAME)
                     ?.listFiles(FileFilter { it.isFile })
                     ?.forEach {
                         list.add(FileDoc.fromFile(it))
@@ -166,7 +167,7 @@ class CrashLogsDialog : BaseDialogFragment(R.layout.dialog_recycler_view),
         fun clearCrashLog() {
             execute {
                 appCtx.externalCacheDir
-                    ?.getFile("crash")
+                    ?.getFile(CRASH_FOLDER_NAME)
                     ?.let {
                         FileUtils.delete(it, false)
                     }

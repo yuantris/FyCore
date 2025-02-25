@@ -4,7 +4,6 @@ import android.os.Bundle
 import com.core.fy.android.R
 import com.core.fy.android.databinding.ActivityImgTextBinding
 import io.core.common.base.component.activity.ReflectBindingActivity
-import io.core.common.util.extensions.ifNotNull
 import io.core.common.util.extensions.ui.getCompatDrawable
 import io.core.common.util.extensions.ui.toast
 
@@ -26,7 +25,7 @@ class ImgTextActivity : ReflectBindingActivity<ActivityImgTextBinding>() {
     override fun initial(savedInstanceState: Bundle?) {
         super.initial(savedInstanceState)
 
-        getString("title").ifNotNull {
+        getString("title")?.let {
             binding.titleBar.setTitle(it)
         }
 
@@ -34,7 +33,7 @@ class ImgTextActivity : ReflectBindingActivity<ActivityImgTextBinding>() {
             getCompatDrawable(R.drawable.ic_launcher_background)?.let {
                 civImg.setBackgroundImage(it)
             }
-            getCompatDrawable(R.drawable.splash_1).ifNotNull {
+            getCompatDrawable(R.drawable.splash_1)?.let {
                 civImg.setActiveBackground(it)
             }
             civImg.setOnClickListener {

@@ -6,7 +6,6 @@ import androidx.viewbinding.ViewBinding
 import com.gyf.immersionbar.ImmersionBar
 import io.core.R
 import io.core.common.base.component.activity.BaseActivity
-import io.core.common.util.extensions.ifNull
 import io.core.common.util.extensions.ui.BarColor
 
 /**
@@ -44,9 +43,7 @@ abstract class HomeBindingFragment<VB : ViewBinding, A : BaseActivity> :
      * 获取状态栏沉浸的配置对象
      */
     open fun getStatusBarConfig(): ImmersionBar {
-        immersionBar.ifNull {
-            immersionBar = createStatusBarConfig()
-        }
+        immersionBar = immersionBar ?: createStatusBarConfig()
         return immersionBar!!
     }
 

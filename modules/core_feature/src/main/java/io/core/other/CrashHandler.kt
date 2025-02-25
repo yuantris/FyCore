@@ -1,6 +1,5 @@
 package io.core.other
 
-import android.annotation.SuppressLint
 import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
@@ -13,19 +12,28 @@ import io.core.Android
 import io.core.appCtx
 import io.core.common.base.component.activity.CrashActivity
 import io.core.common.base.component.activity.RestartActivity
+import io.core.common.helper.AppLifecycleTracker
 import io.core.common.helper.tryCatch
 import io.core.common.util.extensions.cool.createFolderReplace
 import io.core.common.util.extensions.cool.externalCache
 import io.core.common.util.extensions.cool.externalDocuments
 import io.core.common.util.extensions.cool.getFile
+import io.core.common.util.extensions.cool.hasWriteStoragePermission
 import io.core.common.util.extensions.cool.isGranted
+import io.core.common.util.extensions.cool.timeFormat
 import io.core.common.util.extensions.currentTimeMillis
+import io.core.common.util.extensions.logE
 import io.core.common.util.log.LogCat
+import io.core.common.util.log.LogPure
 import io.core.common.util.tools.FileUtils
+import io.core.constant.CRASH_FOLDER_NAME
+import io.core.constant.TimeFormat
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import java.io.File
 import java.io.PrintWriter
 import java.io.StringWriter
-import java.text.SimpleDateFormat
-import java.util.Date
 import java.util.concurrent.TimeUnit
 import kotlin.system.exitProcess
 
@@ -64,16 +72,12 @@ class CrashHandler private constructor(private val application: Application) :
                 } catch (e: Throwable) {
                     e.toString()
                 }
-                map["packageName"] = appCtx.packageName
+                map["PACKAGE_NAME"] = appCtx.packageName
+                map["CURRENT_ACTIVITY"] =
+                    AppLifecycleTracker.getTopActivity()?.javaClass?.name ?: "none"
             }
             map
         }
-
-        /**
-         * 格式化时间
-         */
-        @SuppressLint("SimpleDateFormat")
-        private val format = SimpleDateFormat("yyyy-MM-dd-HH-mm-ss")
 
         /**
          * 保存错误信息到文件中
@@ -81,7 +85,7 @@ class CrashHandler private constructor(private val application: Application) :
         fun saveCrashInfo2File(ex: Throwable) {
             val sb = StringBuilder()
             for ((key, value) in paramsMap) {
-                sb.append(key).append("=").append(value).append("\n")
+                sb.append(key).append(" = ").append(value).append("\n")
             }
 
             val writer = StringWriter()
@@ -97,31 +101,35 @@ class CrashHandler private constructor(private val application: Application) :
             sb.append("\n").append(result)
             val crashLog = sb.toString()
             val timestamp = currentTimeMillis
-            val time = format.format(Date())
-            val fileName = "crash-$time-$timestamp.log"
+            val fileName = "crash-${timestamp.timeFormat(TimeFormat.LOG_TIMESTAMP)}.log"
+            val fileNamePublicExternal =
+                "crash-${timestamp.timeFormat(TimeFormat.FILE_SAFE_TIMESTAMP)}.log"
             kotlin.runCatching {
                 appCtx.externalCacheDir?.let { rootFile ->
                     val exceedTimeMillis = currentTimeMillis - TimeUnit.DAYS.toMillis(7)
-                    rootFile.getFile("crash").listFiles()?.forEach {
+                    rootFile.getFile(CRASH_FOLDER_NAME).listFiles()?.forEach {
                         if (it.lastModified() < exceedTimeMillis) {
                             it.delete()
                         }
                     }
-                    FileUtils.createFileIfNotExist(rootFile, "crash", fileName)
+
+                    FileUtils.createFileIfNotExist(rootFile, CRASH_FOLDER_NAME, fileName)
                         .writeText(crashLog)
 
                     // 写入外置存储
-                    if (appCtx.isGranted(Permission.WRITE_EXTERNAL_STORAGE)) {
+                    if (appCtx.hasWriteStoragePermission()) {
                         val folder = FileUtils.createFolderIfNotExist(
                             externalDocuments,
                             "Crash"
                         )
+
                         FileUtils.createFileIfNotExist(
                             externalDocuments,
                             folder.name,
-                            fileName
+                            fileNamePublicExternal
                         ).writeText(crashLog)
                     }
+
                 }
             }
         }

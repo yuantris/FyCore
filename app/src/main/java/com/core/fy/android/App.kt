@@ -9,7 +9,6 @@ import com.core.fy.android.constants.AppConst.channelIdReadAloud
 import com.core.fy.android.util.initDialogX
 import io.core.Android
 import io.core.BR
-import io.core.appCtx
 import io.core.common.CoreConfig
 import io.core.common.helper.AppLifecycleTracker
 import io.core.common.util.MediaScanner
@@ -48,9 +47,6 @@ class App : Application() {
     }
 
     private fun initApp() {
-        CoreConfig.crashAfterJumpActivity = MainActivity::class.java
-        CoreConfig.alert_positive_color = getColor(R.color.md_indigo_500)
-        CoreConfig.alert_negative_color = getColor(R.color.md_red_300)
 
         /**
          * 如果BRV使用DataBinding，需要初始化

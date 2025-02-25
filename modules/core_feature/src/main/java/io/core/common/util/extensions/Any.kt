@@ -14,17 +14,6 @@ import io.core.common.util.log.LogCat
 import io.core.constant.TimeFormat
 import kotlin.system.exitProcess
 
-
-inline fun <T> T?.ifNotNull(action: (T) -> Unit) {
-    if (this != null) action(this)
-}
-
-inline fun Any?.ifNull(action: () -> Unit) {
-    if (this == null) {
-        action()
-    }
-}
-
 inline fun <T> T?.verify(
     ifNull: () -> Unit = {},
     ifNotNull: (T) -> Unit = {}

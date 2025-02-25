@@ -12,8 +12,6 @@ import io.core.common.base.action.BundleAction
 import io.core.common.base.action.TitleBarAction
 import io.core.common.util.DiveGestureLine
 import io.core.common.util.extensions.addCallback
-import io.core.common.util.extensions.ifNotNull
-import io.core.common.util.extensions.ifNull
 import io.core.common.util.extensions.ui.BarColor
 import io.core.common.util.extensions.ui.adaptStatusBarToView
 import io.core.common.util.log.logD
@@ -45,7 +43,7 @@ abstract class BaseActivity : AppCompatActivity(), TitleBarAction, BundleAction 
         val titleBar = getTitleBar()
         getStatusBarConfig().init()
         // 设置标题栏沉浸
-        titleBar.ifNotNull {
+        titleBar?.let {
             ImmersionBar.setTitleBar(this, it)
         }
         adaptOS()
@@ -91,9 +89,7 @@ abstract class BaseActivity : AppCompatActivity(), TitleBarAction, BundleAction 
      * 获取状态栏沉浸的配置对象
      */
     open fun getStatusBarConfig(): ImmersionBar {
-        immersionBar.ifNull {
-            immersionBar = createStatusBarConfig()
-        }
+        immersionBar = immersionBar ?: createStatusBarConfig()
         return immersionBar!!
     }
 
@@ -140,7 +136,7 @@ abstract class BaseActivity : AppCompatActivity(), TitleBarAction, BundleAction 
     }
 
     override fun getTitleBar(): TitleBar? {
-        titleBar.ifNull { titleBar = obtainTitleBar(findViewById(Window.ID_ANDROID_CONTENT)) }
+        titleBar = titleBar ?: obtainTitleBar(findViewById(Window.ID_ANDROID_CONTENT))
         "titleBar= ${titleBar == null}".logD(TAG)
         return titleBar
     }

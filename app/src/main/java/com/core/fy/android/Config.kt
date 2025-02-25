@@ -1,6 +1,8 @@
 package com.core.fy.android
 
 import com.core.fy.android.constants.PreferKey
+import io.core.appCtx
+import io.core.common.CoreConfig
 import io.core.common.util.tools.Preferences
 
 /**
@@ -21,4 +23,11 @@ object Config {
     var isDisplaySplashAnim = Preferences.getValue(PreferKey.isDisplaySplashAnim, true)
     var isDisplayGuide = Preferences.getValue(PreferKey.isDisplayGuide, true)
     var isDisplayHomeSkeletonAnim = Preferences.getValue(PreferKey.isDisplayHomeSkeletonAnim, true)
+
+    init {
+        CoreConfig.crashAfterJumpActivity = MainActivity::class.java
+        CoreConfig.alert_positive_color = appCtx.getColor(R.color.md_indigo_500)
+        CoreConfig.alert_negative_color = appCtx.getColor(R.color.md_red_300)
+    }
+
 }

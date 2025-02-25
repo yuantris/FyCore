@@ -3,7 +3,6 @@
 package io.core.common.util.log
 
 import android.util.Log
-import io.core.common.util.extensions.ifNotNull
 import io.core.common.util.log.LogCat.Type.DEBUG
 import io.core.common.util.log.LogCat.Type.ERROR
 import io.core.common.util.log.LogCat.Type.INFO
@@ -179,8 +178,8 @@ object LogCat {
                 message += " \n...($fileName:$lineNumber)"
             }
             occurred.stackTrace.getOrNull(2)?.run {
-                fileName.ifNotNull {
-                    message += "/($fileName:$lineNumber)"
+                fileName?.let {
+                    message += "/($it:$lineNumber)"
                 }
             }
         }

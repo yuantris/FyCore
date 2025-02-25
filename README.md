@@ -5,7 +5,7 @@
 
 Android.initialize(this)
 // 设置重启对象Activity(Crash设置)
-Android.homeActivity = MainActivity::class.java
+CoreConfig.crashAfterJumpActivity = MainActivity::class.java
 ```
 
 **模块概览**

@@ -1,5 +1,7 @@
 package com.core.fy.android.main.fragment.code;
 
+import android.graphics.Bitmap;
+
 import androidx.annotation.NonNull;
 
 import com.blankj.utilcode.util.GsonUtils;
@@ -8,23 +10,24 @@ import com.core.fy.android.function.TestPageActivity;
 import com.core.fy.android.util.SafeJson;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.SortedMap;
 
+import io.core.Android;
+import io.core.common.CoreConfig;
 import io.core.common.base.component.fragment.ReflectBindingFragment;
 import io.core.common.helper.AppLifecycleTracker;
 import io.core.common.helper.TaskExecutor;
 import io.core.common.util.MediaScanner;
-import io.core.common.util.SQL;
 import io.core.common.util.ToastUtil;
 import io.core.common.util.extensions.cool.CollectionKt;
 import io.core.common.util.log.LogCat;
 import io.core.common.util.log.LogPure;
 import io.core.common.util.tools.AsyncUtils;
 import io.core.common.util.tools.CollectionTools;
+import io.core.common.util.tools.ThreadUltra;
 
 public class JavaFragment extends ReflectBindingFragment<FragmentJavaBinding, TestPageActivity> {
 
@@ -38,10 +41,37 @@ public class JavaFragment extends ReflectBindingFragment<FragmentJavaBinding, Te
         super.initView();
         ToastUtil.show("初始化");
 
+        ThreadUltra.execute(new ThreadUltra.Task<List<Bitmap>>() {
+            @Override
+            public List<Bitmap> doInBackground() throws Throwable {
+                for (int i = 0; i < 20; i++) {
+                    publishProgress(i);
+                    Thread.sleep(1000);
+                }
+                return Collections.emptyList();
+            }
+
+            @Override
+            public void onSuccess(List<Bitmap> result) {
+
+            }
+
+            @Override
+            public void onProgress(@NonNull int... values) {
+                // LogCat.e(values[0]);
+            }
+        });
+    }
+
+    @Override
+    protected void initData() {
+        super.initData();
+
         String name = SafeJson.parse("{\"name\":\"张三\",\"age\":18}").getString("name");
         LogCat.e(name);
         SafeJson object = SafeJson.parse("{\"key\": \"{\\\"nested\\\": 123}\"}").getObject("key");
         LogCat.e(object.getString("nested"));
+
     }
 
     @Override

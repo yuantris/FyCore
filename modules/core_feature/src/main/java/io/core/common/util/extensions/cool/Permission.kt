@@ -4,13 +4,17 @@ import android.Manifest
 import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
-import android.os.Build
 import android.os.Environment
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.hjq.permissions.OnPermissionCallback
 import com.hjq.permissions.XXPermissions
 import io.core.common.util.extensions.ui.ctx
+import io.core.common.util.tools.OsUtils.higherThan
+import io.core.common.util.tools.isAndroid11Plus
+import io.core.constant.ANDROID_10
+import io.core.constant.ANDROID_13
+import io.core.constant.ANDROID_6
 
 /**
 # ██████████
@@ -65,16 +69,18 @@ fun Context.hasReadStoragePermission(): Boolean {
 
     // 2. 分版本检查读权限
     return when {
-        Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU -> {
+        higherThan(ANDROID_13) -> {
             // Android 13+ 需要检查媒体权限
             hasPermission(Manifest.permission.READ_MEDIA_VIDEO) ||
                     hasPermission(Manifest.permission.READ_MEDIA_IMAGES) ||
                     hasPermission(Manifest.permission.READ_MEDIA_AUDIO)
         }
-        Build.VERSION.SDK_INT >= Build.VERSION_CODES.M -> {
+
+        higherThan(ANDROID_6) -> {
             // Android 6.0~12
             hasPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
         }
+
         else -> {
             // Android 5.0~5.1 检查清单声明
             checkManifestPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
@@ -88,13 +94,15 @@ fun Context.hasWriteStoragePermission(): Boolean {
 
     // 2. 分版本检查写权限
     return when {
-        Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q -> {
+        higherThan(ANDROID_10) -> {
             // Android 10+ 使用Scoped Storage，默认允许应用私有目录写入
             true
         }
-        Build.VERSION.SDK_INT >= Build.VERSION_CODES.M -> {
+
+        higherThan(ANDROID_6) -> {
             hasPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
         }
+
         else -> {
             checkManifestPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
         }
@@ -106,7 +114,7 @@ fun Context.hasReadWriteStoragePermission(): Boolean {
 }
 
 fun hasManageExternalStorage(): Boolean {
-    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+    return if (isAndroid11Plus) {
         Environment.isExternalStorageManager()
     } else {
         false
