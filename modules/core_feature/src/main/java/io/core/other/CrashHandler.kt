@@ -102,7 +102,7 @@ class CrashHandler private constructor(private val application: Application) :
             val crashLog = sb.toString()
             val timestamp = currentTimeMillis
             val fileName = "crash-${timestamp.timeFormat(TimeFormat.LOG_TIMESTAMP)}.log"
-            val fileNamePublicExternal =
+            val fileNameExternal =
                 "crash-${timestamp.timeFormat(TimeFormat.FILE_SAFE_TIMESTAMP)}.log"
             kotlin.runCatching {
                 appCtx.externalCacheDir?.let { rootFile ->
@@ -126,7 +126,7 @@ class CrashHandler private constructor(private val application: Application) :
                         FileUtils.createFileIfNotExist(
                             externalDocuments,
                             folder.name,
-                            fileNamePublicExternal
+                            fileNameExternal
                         ).writeText(crashLog)
                     }
 

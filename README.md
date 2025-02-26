@@ -15,6 +15,18 @@ CoreConfig.crashAfterJumpActivity = MainActivity::class.java
     - 崩溃信息
 
 **模块功能**
+- 工具类位置
+
+  | io.core.common.**helper**                   | io.core.common.**util**        | io.core.**other**                       |
+  |---------------------------------------------|--------------------------------|-----------------------------------------|
+  | `AppLifecycleTracker`<br />（生命周期追踪类）        | `DiveGestureLine`<br />（手势小白条） | `ClickSequenceHandler`<br />（三击+长按隐藏操作） |
+  | `JsonUltra`                                 | `FileSharer`<br />（文件分享）       | `CrashHandler`<br />（崩溃捕获）              |
+  | `ReflectHelper`<br />（反射帮助类）                | `MediaScanner`<br />（媒体扫描）     | `DoubleClickProcessor`<br />（单击回调内双击处理） |
+  | `TaskExecutor`<br />（Java并发任务处理）            |                                | `RandomEventGenerator`<br />（随机事件生产类）   |
+  | `TimeoutHandler`<br />（超时处理，设计场景FFmpeg进度回调） |                                | `SelectionController`<br />（多选控制）       |
+  | `TryCatchHelper`                            |                                |                                         |
+  |                                             |                                |                                         |
+
 - ColorUtils
   - getRandomColor
   - isColorLight
@@ -85,7 +97,7 @@ CoreConfig.crashAfterJumpActivity = MainActivity::class.java
   
 - MediaScanner使用
   ```kotlin
-
+  
   // 查询图片文件（JPG/PNG）
   val imageFiles = MediaScanner.queryFiles(setOf(
       MediaScanner.FileType.JPG,
@@ -122,7 +134,7 @@ CoreConfig.crashAfterJumpActivity = MainActivity::class.java
             }
             return "兼容";
         });
-
+  
         TaskExecutor.Companion.get().executeForJava(tasks,
                 new TaskExecutor.ConcurrentCallback<String>() {
                     @Override
@@ -134,7 +146,7 @@ CoreConfig.crashAfterJumpActivity = MainActivity::class.java
                             LogPure.e(json);
                         }
                     }
-
+  
                     @Override
                     public void onEachResult(String result, int index) {
                         boolean existActivity = AppLifecycleTracker.isExistActivity(TestPageActivity.class);
@@ -142,7 +154,7 @@ CoreConfig.crashAfterJumpActivity = MainActivity::class.java
                             LogPure.d(result);
                         }
                     }
-
+  
                     @Override
                     public void onError(@NonNull Throwable e) {
                         LogCat.e(e);
@@ -187,7 +199,7 @@ CoreConfig.crashAfterJumpActivity = MainActivity::class.java
             "author" with "yuan"
         }
         jsonString.logE()
-
+  
         JsonUltra.parse(jsonString)["library.features[2]"]?.asString().logD()
         JsonUltra.parse(jsonString)["library.books[1].title"]?.asString().logD()
         val list: List<String>? =
@@ -197,7 +209,7 @@ CoreConfig.crashAfterJumpActivity = MainActivity::class.java
 
         val parse = JsonUltra.parse("{\"key\": \"{\\\"nested\\\": 1234}\"}")
         parse["key.nested"]?.asInt().logD()
-
+    
         JsonUltra.parse("{\"name\":\"张三\",\"age\":18}")["name"]?.asString()?.logD()
   ```
   
@@ -210,27 +222,27 @@ CoreConfig.crashAfterJumpActivity = MainActivity::class.java
 
 - Widget
 
-  | 类名                       | 作用                      | 说明 |
-  |--------------------------|-------------------------| --- |
-  | `AccentTextView`         | accentColor颜色的TextView  |  |
-  | `BadgeView`              | 角标TextView              |  |
+  | 类名                       | 作用                      | 说明         |
+  |--------------------------|-------------------------|------------|
+  | `AccentTextView`         | accentColor颜色的TextView  |            |
+  | `BadgeView`              | 角标TextView              |            |
   | `ClickableTextView`      | 可点击的TextView            | 标点符号后会加换行符 |
-  | `CustomImageView`        | 可任意位置展示文字的View          | 自定义UI首页 |
-  | `DrawableTextView`       | 支持限定Drawable大小的TextView |  |
-  | `LoadingView`            | 加载View                  | IOS风格 |
-  | `MarqueeTextView`        | 跑马灯TextView             |  |
-  | `PressEffectImageView`   | 按压效果的ImageView          |  |
-  | `RotateLoading`          | 旋转加载View                |  |
-  | `ScrollTextView`         | 嵌套滑动的TextView           |  |
-  | `SmartTextView`          | 自动显示和隐藏的TextView        |  |
-  | `FastScrollRecyclerView` | 支持可快速定位滚动的RecyclerView  |  |
-  | `SettingBar`             | 设置条自定义控件                |  |
+  | `CustomImageView`        | 可任意位置展示文字的View          | 自定义UI首页    |
+  | `DrawableTextView`       | 支持限定Drawable大小的TextView |            |
+  | `LoadingView`            | 加载View                  | IOS风格      |
+  | `MarqueeTextView`        | 跑马灯TextView             |            |
+  | `PressEffectImageView`   | 按压效果的ImageView          |            |
+  | `RotateLoading`          | 旋转加载View                |            |
+  | `ScrollTextView`         | 嵌套滑动的TextView           |            |
+  | `SmartTextView`          | 自动显示和隐藏的TextView        |            |
+  | `FastScrollRecyclerView` | 支持可快速定位滚动的RecyclerView  |            |
+  | `SettingBar`             | 设置条自定义控件                |            |
 
-  | 类名 | 作用 | 说明 |
-  | --- | --- | --- |
-  | `RatioFrameLayout` | 按照比例显示的FrameLayout |  |
-  | `RootLayout` | 带自定义TitleBar的根布局 |  |
-  | `FixedScrollView` | 禁止滚动/禁止显示滚动条的ScrollView | 配合[android.widget.ImageView.ScaleType.FIT_START]可实现图片顶部对齐裁剪 |
+  | 类名                 | 作用                      | 说明                                                          |
+  |--------------------|-------------------------|-------------------------------------------------------------|
+  | `RatioFrameLayout` | 按照比例显示的FrameLayout      |                                                             |
+  | `RootLayout`       | 带自定义TitleBar的根布局        |                                                             |
+  | `FixedScrollView`  | 禁止滚动/禁止显示滚动条的ScrollView | 配合[android.widget.ImageView.ScaleType.FIT_START]可实现图片顶部对齐裁剪 |
 
 **注意事项**
 

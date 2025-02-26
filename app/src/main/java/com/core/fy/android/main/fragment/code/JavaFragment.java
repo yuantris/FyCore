@@ -15,10 +15,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.SortedMap;
 
-import io.core.Android;
-import io.core.common.CoreConfig;
 import io.core.common.base.component.fragment.ReflectBindingFragment;
 import io.core.common.helper.AppLifecycleTracker;
+import io.core.common.helper.JsonUltra;
 import io.core.common.helper.TaskExecutor;
 import io.core.common.util.MediaScanner;
 import io.core.common.util.ToastUtil;
@@ -41,6 +40,9 @@ public class JavaFragment extends ReflectBindingFragment<FragmentJavaBinding, Te
         super.initView();
         ToastUtil.show("初始化");
 
+        String format = JsonUltra.format("{\"name\":\"张三\",\"age\":18}",false);
+        LogCat.e(format);
+
         ThreadUltra.execute(new ThreadUltra.Task<List<Bitmap>>() {
             @Override
             public List<Bitmap> doInBackground() throws Throwable {
@@ -60,6 +62,11 @@ public class JavaFragment extends ReflectBindingFragment<FragmentJavaBinding, Te
             public void onProgress(@NonNull int... values) {
                 // LogCat.e(values[0]);
             }
+
+            @Override
+            public void onFail(@NonNull ThreadUltra.ErrorType errorType, @NonNull Throwable ex) {
+                LogCat.e(ex);
+            }
         });
     }
 
@@ -72,6 +79,7 @@ public class JavaFragment extends ReflectBindingFragment<FragmentJavaBinding, Te
         SafeJson object = SafeJson.parse("{\"key\": \"{\\\"nested\\\": 123}\"}").getObject("key");
         LogCat.e(object.getString("nested"));
 
+        JsonUltra.parse("{\"key\": \"{\\\"nested\\\": 123}\"}");
     }
 
     @Override

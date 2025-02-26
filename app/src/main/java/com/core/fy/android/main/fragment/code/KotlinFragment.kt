@@ -19,6 +19,7 @@ import io.core.common.util.extensions.cool.postDelayUI
 import io.core.common.util.extensions.cool.requestPermission
 import io.core.common.util.extensions.logD
 import io.core.common.util.extensions.logE
+import io.core.common.util.extensions.logW
 import io.core.common.util.extensions.ui.ctx
 import io.core.common.util.log.LogPure
 import io.core.common.util.tools.AsyncUtils
@@ -52,6 +53,7 @@ class KotlinFragment : ReflectBindingFragment<FragmentKotlinBinding, TestPageAct
         }
         jsonString.logE()
 
+        JsonUltra.parse(jsonString).getAllPaths().forEach { LogPure.i { it } }
         JsonUltra.parse(jsonString)["library.features[2]"]?.asString().logD()
         JsonUltra.parse(jsonString)["library.books[1].title"]?.asString().logD()
         val list: List<String>? =
@@ -65,22 +67,22 @@ class KotlinFragment : ReflectBindingFragment<FragmentKotlinBinding, TestPageAct
         JsonUltra.parse("{\"name\":\"张三\",\"age\":18}")["name"]?.asString()?.logD()
 
         ctx.requestPermission(Permission.MANAGE_EXTERNAL_STORAGE) {
-            LogPure.v {
-                "MANAGE_EXTERNAL_STORAGE permission granted"
-            }
+//            LogPure.v {
+//                "MANAGE_EXTERNAL_STORAGE permission granted"
+//            }
         }
 
         val timeoutHandler = TimeoutHandler(3000, object : TimeoutCallback {
             override fun onTimeout() {
-                LogPure.e {
-                    "onTimeout"
-                }
+//                LogPure.e {
+//                    "onTimeout"
+//                }
             }
         })
         val fixedRate = AsyncUtils.scheduleAtFixedRate({
-            LogPure.w {
-                "scheduleAtFixedRate"
-            }
+//            LogPure.w {
+//                "scheduleAtFixedRate"
+//            }
             timeoutHandler.onProgress()
         }, 0, 2000, TimeUnit.MILLISECONDS)
         postDelayUI(16000) {
@@ -92,7 +94,7 @@ class KotlinFragment : ReflectBindingFragment<FragmentKotlinBinding, TestPageAct
         super.initData()
         // 注册监听器
         ProgressNotifier.register { id, progress ->
-            LogPure.i { "id:$id\nprogress: $progress%" }
+            // LogPure.i { "id:$id\nprogress: $progress%" }
         }
 
     }

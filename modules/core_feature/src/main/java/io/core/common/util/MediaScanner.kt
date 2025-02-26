@@ -1,16 +1,12 @@
 package io.core.common.util
 
-import android.content.Context
 import android.database.ContentObserver
 import android.net.Uri
-import android.os.Looper
 import android.provider.MediaStore
-import com.hjq.permissions.Permission
 import io.core.appCtx
 import io.core.common.util.extensions.cool.hasReadStoragePermission
-import io.core.common.util.extensions.cool.isGranted
 import io.core.common.util.log.LogPure
-import io.core.common.util.tools.buildMainHandler
+import io.core.constant.SQL
 
 /**
  * 媒体库扫描工具

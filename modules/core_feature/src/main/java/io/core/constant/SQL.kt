@@ -1,4 +1,4 @@
-package io.core.common.util
+package io.core.constant
 
 import android.provider.MediaStore
 

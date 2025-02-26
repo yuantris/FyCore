@@ -13,6 +13,9 @@ import java.util.concurrent.atomic.AtomicLong
 typealias ProgressCallback = (taskId: String, percent: Int) -> Unit
 typealias TimeoutCallback = (taskId: String) -> Unit
 
+/**
+ * 进度通知器，用于通知进度变化和超时
+ */
 object ProgressNotifier {
     // 主线程Handler，用于回调到UI线程
     private val mainHandler = buildMainHandler()
