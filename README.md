@@ -254,6 +254,9 @@ CoreConfig.crashAfterJumpActivity = MainActivity::class.java
     - Preferences.getValue
     - Preferences.setValue
 
+- BRV
+  - BRV.modelId = BR.m（搭配DataBinding使用时需开启）
+
 - Room
   - `BaseDao`
       - 用与封装常用如增删改查的Dao语句

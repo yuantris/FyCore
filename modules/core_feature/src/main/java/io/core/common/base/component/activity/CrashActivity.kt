@@ -17,6 +17,7 @@ import android.text.style.UnderlineSpan
 import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.view.GravityCompat
@@ -26,20 +27,28 @@ import com.gyf.immersionbar.ImmersionBar
 import com.hjq.permissions.Permission
 import com.hjq.permissions.XXPermissions
 import io.core.R
-import io.core.common.base.component.dialog.specific.CrashLogsDialog
+import io.core.appCtx
+import io.core.common.base.component.dialog.showPopupWindow
+import io.core.common.util.FileSharer
+import io.core.common.util.extensions.cool.dp
+import io.core.common.util.extensions.cool.getFile
+import io.core.common.util.extensions.cool.hasReadWriteStoragePermission
 import io.core.common.util.extensions.ui.appVersionCode
 import io.core.common.util.extensions.ui.appVersionName
+import io.core.common.util.extensions.ui.onClick
 import io.core.common.util.extensions.ui.onDebouncedClick
-import io.core.common.util.extensions.ui.showDialogFragment
+import io.core.constant.CRASH_FOLDER_NAME
+import io.core.constant.TimeFormat
+import io.core.engine.effect.ViewClickEffect
+import io.core.widget.view.SettingBar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.io.File
 import java.io.PrintWriter
 import java.io.StringWriter
 import java.net.InetAddress
 import java.net.UnknownHostException
-import java.text.SimpleDateFormat
 import java.util.Date
-import java.util.Locale
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 import kotlin.math.min
@@ -62,6 +71,7 @@ class CrashActivity : BaseActivity() {
     companion object {
 
         private const val INTENT_KEY_IN_THROWABLE: String = "throwable"
+        private const val INTENT_KEY_IN_LOG_FILE_NAME: String = "log_file"
 
         /** 系统包前缀列表 */
         private val SYSTEM_PACKAGE_PREFIX_LIST: Array<String> = arrayOf(
@@ -72,12 +82,13 @@ class CrashActivity : BaseActivity() {
         /** 报错代码行数正则表达式 */
         private val CODE_REGEX: Pattern = Pattern.compile("\\(\\w+\\.\\w+:\\d+\\)")
 
-        fun start(application: Application, throwable: Throwable?) {
+        fun start(application: Application, log: String, throwable: Throwable?) {
             if (throwable == null) {
                 return
             }
             val intent = Intent(application, CrashActivity::class.java)
             intent.putExtra(INTENT_KEY_IN_THROWABLE, throwable)
+            intent.putExtra(INTENT_KEY_IN_LOG_FILE_NAME, log)
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             application.startActivity(intent)
         }
@@ -88,6 +99,7 @@ class CrashActivity : BaseActivity() {
     private val infoView: TextView? by lazy { findViewById(R.id.tv_crash_info) }
     private val messageView: TextView? by lazy { findViewById(R.id.tv_crash_message) }
     private var stackTrace: String? = null
+    private var logFiles: List<File>? = null
 
     @SuppressLint("InflateParams")
     override fun contentViewBind(): View? {
@@ -106,6 +118,13 @@ class CrashActivity : BaseActivity() {
 
     private fun initData() {
         val throwable: Throwable = getSerializable(INTENT_KEY_IN_THROWABLE) ?: return
+        val logFileName = getString(INTENT_KEY_IN_LOG_FILE_NAME)
+        logFiles = listOf(
+            File(
+                appCtx.externalCacheDir?.getFile(CRASH_FOLDER_NAME),
+                logFileName ?: "crash.log"
+            )
+        )
         titleView?.text = throwable.javaClass.simpleName
         val stringWriter = StringWriter()
         val printWriter = PrintWriter(stringWriter)
@@ -202,7 +221,7 @@ class CrashActivity : BaseActivity() {
             .append("\n版本代码：\t").append(appVersionCode)
 
         try {
-            val dateFormat = SimpleDateFormat("MM-dd HH:mm", Locale.getDefault())
+            val dateFormat = TimeFormat.getFormatter("MM-dd HH:mm")
             val packageInfo: PackageInfo =
                 packageManager.getPackageInfo(packageName, PackageManager.GET_PERMISSIONS)
             builder.append("\n首次安装：\t")
@@ -214,11 +233,7 @@ class CrashActivity : BaseActivity() {
                 permissions.contains(Permission.WRITE_EXTERNAL_STORAGE)
             ) {
                 builder.append("\n存储权限：\t").append(
-                    if (XXPermissions.isGranted(
-                            this,
-                            *Permission.Group.STORAGE
-                        )
-                    ) "已获得" else "未获得"
+                    if (this.hasReadWriteStoragePermission()) "已获得" else "未获得"
                 )
             }
             if (permissions.contains(Permission.ACCESS_FINE_LOCATION) ||
@@ -314,18 +329,38 @@ class CrashActivity : BaseActivity() {
         info.onDebouncedClick {
             drawerLayout?.openDrawer(GravityCompat.START)
         }
+        ViewClickEffect.applyScaleToViews(share)
         share.onDebouncedClick {
             // 分享文本
-            val intent = Intent(Intent.ACTION_SEND)
-            intent.type = "text/plain"
-            intent.putExtra(Intent.EXTRA_TEXT, stackTrace)
-            startActivity(Intent.createChooser(intent, ""))
+            share.showPopupWindow {
+                setLayout(R.layout.popup_crash_log_share)
+                setSize(200.dp(), ViewGroup.LayoutParams.WRAP_CONTENT)
+                setViewInitializer { popupView ->
+                    val tvShare = findViewById<SettingBar>(R.id.text)
+                    val tvLog = findViewById<SettingBar>(R.id.log)
+
+                    tvShare.onClick {
+                        val intent = Intent(Intent.ACTION_SEND)
+                        intent.type = "text/plain"
+                        intent.putExtra(Intent.EXTRA_TEXT, stackTrace)
+                        startActivity(Intent.createChooser(intent, ""))
+                    }
+
+                    tvLog.onClick {
+                        logFiles?.let {
+                            lifecycleScope.launch(Dispatchers.IO) {
+                                FileSharer.Builder()
+                                    .setChooserTitle("分享崩溃日志")
+                                    .setFileList(it)
+                                    .share(this@CrashActivity)
+                            }
+                        }
+                    }
+                }
+            }
         }
         restart.onDebouncedClick {
             onBackPressedCall()
-        }
-        titleView?.onDebouncedClick {
-            showDialogFragment<CrashLogsDialog>()
         }
     }
 

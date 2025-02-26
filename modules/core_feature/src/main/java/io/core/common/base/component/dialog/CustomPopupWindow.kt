@@ -20,26 +20,28 @@ class CustomPopupWindow private constructor(
 
     override fun show() {
         dismiss() // 防止重复显示
+        val contentView = LayoutInflater.from(context).inflate(layoutId, null)
+        popupWindow?.let {
+            initView?.invoke(contentView, it)
+        } ?: run {
+            PopupWindow(contentView, width, height).apply {
+                isFocusable = true
+                isOutsideTouchable = isCancelable
+                setBackgroundDrawable(ColorDrawable(0))
+                anim = PopupAnimation.FADE
+                animationStyle = createAnimationStyle()
 
-        val contentView = LayoutInflater.from(context).inflate(layoutId, null).apply {
-            initView?.invoke(this, popupWindow!!)
-        }
+                setOnDismissListener {
+                    onDismissListener?.invoke()
+                    popupWindow = null
+                }
 
-        PopupWindow(contentView, width, height).apply {
-            isFocusable = true
-            isOutsideTouchable = isCancelable
-            setBackgroundDrawable(ColorDrawable(0))
-            animationStyle = createAnimationStyle()
-
-            setOnDismissListener {
-                onDismissListener?.invoke()
-                popupWindow = null
+                popupWindow = this
+            }.also {
+                onShowListener?.invoke()
+                initView?.invoke(contentView, it)
+                // playEnterAnimation(it.contentView)
             }
-
-            popupWindow = this
-        }.also {
-            onShowListener?.invoke()
-            // playEnterAnimation(it.contentView)
         }
     }
 
@@ -104,6 +106,7 @@ class CustomPopupWindow private constructor(
 // 扩展函数
 fun View.showPopupWindow(block: CustomPopupWindow.Builder.() -> Unit): CustomPopupWindow {
     return CustomPopupWindow.Builder(context).apply(block).build().also {
+        it.show()
         it.showAsDropDown(this)
     }
 }

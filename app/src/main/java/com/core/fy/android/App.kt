@@ -6,10 +6,11 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.os.Build
 import com.core.fy.android.constants.AppConst.channelIdReadAloud
+import com.core.fy.android.util.MMKVUltra
 import com.core.fy.android.util.initDialogX
 import io.core.Android
 import io.core.BR
-import io.core.common.CoreConfig
+import io.core.appCtx
 import io.core.common.helper.AppLifecycleTracker
 import io.core.common.util.MediaScanner
 import io.core.common.util.extensions.notificationManager
@@ -35,6 +36,7 @@ class App : Application() {
     override fun onCreate() {
         super.onCreate()
         Android.initialize(this)
+
         initDialogX()
 
 //        // 添加日志全局拦截器
@@ -64,6 +66,8 @@ class App : Application() {
         }
 
         MediaScanner.registerContentObserver()
+
+        MMKVUltra.init(appCtx)
     }
 
     /**

@@ -26,6 +26,7 @@ import io.core.common.util.log.LogCat;
 import io.core.common.util.log.LogPure;
 import io.core.common.util.tools.AsyncUtils;
 import io.core.common.util.tools.CollectionTools;
+import io.core.common.util.tools.Preferences;
 import io.core.common.util.tools.ThreadUltra;
 
 public class JavaFragment extends ReflectBindingFragment<FragmentJavaBinding, TestPageActivity> {

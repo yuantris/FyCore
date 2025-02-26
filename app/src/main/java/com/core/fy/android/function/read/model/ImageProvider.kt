@@ -23,7 +23,7 @@ import java.io.FileOutputStream
 object ImageProvider {
 
     private val errorBitmap: Bitmap by lazy {
-        BitmapFactory.decodeResource(appCtx.resources, R.drawable.info_ic)
+        BitmapFactory.decodeResource(appCtx.resources, R.drawable.ic_error_24)
     }
 
     /**
@@ -131,7 +131,7 @@ object ImageProvider {
 //            //错误图片占位,防止重复获取
 //            bitmapLruCache.put(vFile.absolutePath, errorBitmap)
 //        }.getOrDefault(errorBitmap)
-        return ImageUtils.getBitmap(R.drawable.info_ic)
+        return ImageUtils.getBitmap(R.drawable.ic_error_24)
     }
 
     fun clear() {

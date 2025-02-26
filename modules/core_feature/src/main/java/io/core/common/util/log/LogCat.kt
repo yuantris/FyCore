@@ -1,5 +1,3 @@
-@file:Suppress("SENSELESS_COMPARISON")
-
 package io.core.common.util.log
 
 import android.util.Log
@@ -17,8 +15,6 @@ import org.json.JSONObject
 import org.json.JSONTokener
 import kotlin.math.min
 
-
-@Suppress("MemberVisibilityCanBePrivate")
 /**
  * @property tag 默认日志标签
  * @property enabled 日志全局开关
@@ -174,13 +170,34 @@ object LogCat {
         }
 
         if (traceEnabled && occurred != null) {
-            occurred.stackTrace.getOrNull(1)?.run {
-                message += " \n...($fileName:$lineNumber)"
-            }
-            occurred.stackTrace.getOrNull(2)?.run {
-                fileName?.let {
-                    message += "/($it:$lineNumber)"
+            val stackTrace = occurred.stackTrace
+            val logClass = LogCat::class.java.name
+
+            // 寻找第一个非LogCat的堆栈帧
+            val startIndex = stackTrace.indexOfFirst {
+                !it.className.startsWith(logClass)
+            }.coerceAtLeast(0)
+
+            val locations = mutableListOf<String>()
+            var prevFileName: String? = null
+
+            // 遍历后续3个有效堆栈帧
+            for (i in startIndex until (startIndex + 3).coerceAtMost(stackTrace.size)) {
+                val element = stackTrace.getOrNull(i) ?: break
+                val fileName = element.fileName?.takeIf { it.isNotBlank() }
+
+                // 过滤无效文件名和重复文件名
+                if (fileName != null && fileName != prevFileName && filterAndroidPrefix(element)) {
+                    locations += "($fileName:${element.lineNumber})"
+                    prevFileName = fileName
                 }
+            }
+
+            // 拼接位置信息
+            message += when {
+                locations.isEmpty() -> " \n[Unknown Source]"
+                locations.size == 1 -> " \n...${locations[0]}"
+                else -> " \n..." + locations.joinToString("/")
             }
         }
         val max = 3800
@@ -256,6 +273,16 @@ object LogCat {
             ERROR -> Log.e(tag, msg, tr)
             WTF -> Log.wtf(tag, msg, tr)
         }
+    }
+
+    private fun filterAndroidPrefix(element: StackTraceElement): Boolean {
+        return !(element.className.startsWith("androidx.")
+                || element.className.startsWith("android.")
+                || element.className.startsWith("java.")
+                || element.className.startsWith("kotlin.")
+                || element.className.startsWith("kotlinx.")
+                || element.className.startsWith("com.google.")
+                )
     }
     // </editor-fold>
 }

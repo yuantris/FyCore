@@ -82,7 +82,7 @@ class CrashHandler private constructor(private val application: Application) :
         /**
          * 保存错误信息到文件中
          */
-        fun saveCrashInfo2File(ex: Throwable) {
+        fun saveCrashInfo2File(timestamp: Long, ex: Throwable): String {
             val sb = StringBuilder()
             for ((key, value) in paramsMap) {
                 sb.append(key).append(" = ").append(value).append("\n")
@@ -100,7 +100,6 @@ class CrashHandler private constructor(private val application: Application) :
             val result = writer.toString()
             sb.append("\n").append(result)
             val crashLog = sb.toString()
-            val timestamp = currentTimeMillis
             val fileName = "crash-${timestamp.timeFormat(TimeFormat.LOG_TIMESTAMP)}.log"
             val fileNameExternal =
                 "crash-${timestamp.timeFormat(TimeFormat.FILE_SAFE_TIMESTAMP)}.log"
@@ -132,6 +131,7 @@ class CrashHandler private constructor(private val application: Application) :
 
                 }
             }
+            return fileName
         }
 
         /**
@@ -173,7 +173,7 @@ class CrashHandler private constructor(private val application: Application) :
         sharedPreferences.edit().putLong(KEY_CRASH_TIME, currentCrashTime).commit()
 
         // 保存崩溃信息
-        saveCrashInfo2File(throwable)
+        val fileName = saveCrashInfo2File(currentTimeMillis, throwable)
         if ((throwable is OutOfMemoryError || throwable.cause is OutOfMemoryError)) {
             doHeapDump()
         }
@@ -183,7 +183,7 @@ class CrashHandler private constructor(private val application: Application) :
         if (Android.debug) {
             tryCatch(
                 tryBlock = {
-                    CrashActivity.start(application, throwable)
+                    CrashActivity.start(application, fileName, throwable)
                 },
                 catchBlock = {
                     LogCat.e(throwable)
