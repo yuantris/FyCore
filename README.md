@@ -4,8 +4,15 @@
 ```kotlin
 
 Android.initialize(this)
+
+// （以下可选）
 // 设置重启对象Activity(Crash设置)
 CoreConfig.crashAfterJumpActivity = MainActivity::class.java
+// 页面追踪配置
+PageTracker.initialize(this) {
+  enable(!BuildConfig.DEBUG) // Release模式启用
+  setLogger(ReleaseLogger())
+}
 ```
 
 **模块概览**
@@ -17,15 +24,15 @@ CoreConfig.crashAfterJumpActivity = MainActivity::class.java
 **模块功能**
 - 工具类位置
 
-  | io.core.common.**helper**                   | io.core.common.**util**        | io.core.**other**                       |
-  |---------------------------------------------|--------------------------------|-----------------------------------------|
-  | `AppLifecycleTracker`<br />（生命周期追踪类）        | `DiveGestureLine`<br />（手势小白条） | `ClickSequenceHandler`<br />（三击+长按隐藏操作） |
-  | `JsonUltra`                                 | `FileSharer`<br />（文件分享）       | `CrashHandler`<br />（崩溃捕获）              |
-  | `ReflectHelper`<br />（反射帮助类）                | `MediaScanner`<br />（媒体扫描）     | `DoubleClickProcessor`<br />（单击回调内双击处理） |
-  | `TaskExecutor`<br />（Java并发任务处理）            |                                | `RandomEventGenerator`<br />（随机事件生产类）   |
-  | `TimeoutHandler`<br />（超时处理，设计场景FFmpeg进度回调） |                                | `SelectionController`<br />（多选控制）       |
-  | `TryCatchHelper`                            |                                |                                         |
-  |                                             |                                |                                         |
+  | io.core.common.**helper**                      | io.core.common.**util**        | io.core.**other**                       |
+  |------------------------------------------------|--------------------------------|-----------------------------------------|
+  | `AppLifecycleTracker`<br />（生命周期追踪类）           | `DiveGestureLine`<br />（手势小白条） | `ClickSequenceHandler`<br />（三击+长按隐藏操作） |
+  | `JsonUltra`                                    | `FileSharer`<br />（文件分享）       | `CrashHandler`<br />（崩溃捕获）              |
+  | `ReflectHelper`<br />（反射帮助类）                   | `MediaScanner`<br />（媒体扫描）     | `DoubleClickProcessor`<br />（单击回调内双击处理） |
+  | `TaskExecutor`<br />（Java并发任务处理）               |                                | `RandomEventGenerator`<br />（随机事件生产类）   |
+  | `TimeoutHandler`<br />（超时处理，设计场景FFmpeg进度回调）    |                                | `SelectionController`<br />（多选控制）       |
+  | `TryCatchHelper`                               |                                |                                         |
+  | `PageTracker`<br />（页面追踪，日志输出，可单独在Release环境开启） |                                |                                         |)                     |                                |                                         |                                |                                         |
 
 - ColorUtils
   - getRandomColor
@@ -210,7 +217,31 @@ CoreConfig.crashAfterJumpActivity = MainActivity::class.java
         val parse = JsonUltra.parse("{\"key\": \"{\\\"nested\\\": 1234}\"}")
         parse["key.nested"]?.asInt().logD()
     
-        JsonUltra.parse("{\"name\":\"张三\",\"age\":18}")["name"]?.asString()?.logD()
+        JsonUltra.format("{\"name\":\"张三\",\"age\":18}")["name"]?.asString()?.logD()
+  ```
+
+- MMKVUltra
+  ```kotlin
+    object Account : MMKVOwner(mmapID = "account") {
+        //default后可传默认值
+         var accountName by mmkvString(default = "")
+         var accountId by mmkvInt(default = -1)
+         var userId by mmkvLong(default = -1)
+         var isShow by mmkvBool(false)
+      }
+    
+      //赋值
+      Account.accountName = "aaaaa"
+    
+      //取值
+      val name = Account.accountName
+    
+      //常规使用
+      MMKVUltra.init(appCtx)
+      MMKVs.put("key", "value")
+      MMKVs.get<String>("key")
+    
+    
   ```
   
 - DrawableBuilder(ShapeDrawable构造器)

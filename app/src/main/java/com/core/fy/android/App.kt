@@ -36,6 +36,10 @@ class App : Application() {
     override fun onCreate() {
         super.onCreate()
         Android.initialize(this)
+        PageTracker.initialize(this){
+            enable(true)
+            brief(true)
+        }
 
         initDialogX()
 

@@ -11,7 +11,6 @@ import com.core.fy.android.util.SafeJson;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.SortedMap;
@@ -23,12 +22,10 @@ import io.core.common.helper.TaskExecutor;
 import io.core.common.util.MediaScanner;
 import io.core.common.util.ToastUtil;
 import io.core.common.util.extensions.cool.CollectionKt;
-import io.core.common.util.extensions.cool.ThreadKt;
 import io.core.common.util.log.LogCat;
 import io.core.common.util.log.LogPure;
 import io.core.common.util.tools.AsyncUtils;
 import io.core.common.util.tools.CollectionTools;
-import io.core.common.util.tools.Preferences;
 import io.core.common.util.tools.ThreadUltra;
 
 public class JavaFragment extends ReflectBindingFragment<FragmentJavaBinding, TestPageActivity> {

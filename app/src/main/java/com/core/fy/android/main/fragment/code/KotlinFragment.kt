@@ -5,7 +5,10 @@ import com.blankj.utilcode.util.GsonUtils
 import com.core.fy.android.databinding.FragmentKotlinBinding
 import com.core.fy.android.function.TestPageActivity
 import com.core.fy.android.help.ProgressNotifier
+import com.core.fy.android.util.MMKVUltra
+import com.core.fy.android.util.MMKVs
 import com.hjq.permissions.Permission
+import io.core.appCtx
 import io.core.common.base.component.fragment.ReflectBindingFragment
 import io.core.common.helper.JsonUltra
 import io.core.common.helper.TaskExecutor
@@ -13,14 +16,12 @@ import io.core.common.helper.TimeoutCallback
 import io.core.common.helper.TimeoutHandler
 import io.core.common.util.extensions.cool.GSON
 import io.core.common.util.extensions.cool.createMap
-import io.core.common.util.extensions.cool.hasReadStoragePermission
 import io.core.common.util.extensions.cool.launchAsync
 import io.core.common.util.extensions.cool.mapBuilder
 import io.core.common.util.extensions.cool.postDelayUI
 import io.core.common.util.extensions.cool.requestPermission
 import io.core.common.util.extensions.logD
 import io.core.common.util.extensions.logE
-import io.core.common.util.extensions.logW
 import io.core.common.util.extensions.ui.ctx
 import io.core.common.util.log.LogPure
 import io.core.common.util.tools.AsyncUtils
@@ -89,6 +90,10 @@ class KotlinFragment : ReflectBindingFragment<FragmentKotlinBinding, TestPageAct
         postDelayUI(16000) {
             fixedRate.cancel(true)
         }
+
+        MMKVUltra.init(appCtx)
+        MMKVs.put("key", "value")
+        MMKVs.get<String>("key")
     }
 
     override fun initData() {
