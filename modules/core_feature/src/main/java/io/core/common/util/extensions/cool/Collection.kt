@@ -1,5 +1,7 @@
 package io.core.common.util.extensions.cool
 
+import com.google.gson.reflect.TypeToken
+
 fun List<Float>.fastSum(): Float {
     var sum = 0f
     for (i in indices) {
@@ -76,6 +78,25 @@ fun <T> HashMap<String, T>.get(key: String, ignoreCase: Boolean = false): T? {
     }
     return null
 }
+
+inline fun <reified T> String.jsonToMap(): T {
+    val type = object : TypeToken<T>() {}.type
+    return GSON.fromJson(this, type)
+}
+
+/**
+ * 为Kotlin [List]扩展排序函数（返回新列表）
+ * @param selector 提供需要转换成整数的字段（如：Wallpaper::getTypeId）
+ */
+fun <T> List<T>.sortedByInt(selector: (T) -> String) =
+    this.sortedBy { selector(it).toInt() }
+
+/**
+ * 为Kotlin [MutableList]扩展排序函数（原地排序）
+ * @param selector 提供需要转换成整数的字段（如：Wallpaper::getTypeId）
+ */
+fun <T> MutableList<T>.sortByInt(selector: (T) -> String) =
+    this.sortBy { selector(it).toInt() }
 
 fun <T> createSet(vararg items: T): Set<T> {
     val set = HashSet<T>()

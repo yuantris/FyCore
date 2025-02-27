@@ -9,7 +9,7 @@ import android.os.Build
 import android.os.Environment
 import android.provider.DocumentsContract
 import android.provider.MediaStore
-import io.core.common.util.log.printOnDebug
+import io.core.common.util.extensions.cool.printOnDebug
 
 import java.io.File
 import java.io.FileInputStream

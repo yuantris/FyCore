@@ -12,7 +12,6 @@ import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import io.core.appCtx
 import io.core.common.util.extensions.ui.defaultSharedPreferences
-import io.core.common.util.log.printOnDebug
 import java.io.File
 
 /**

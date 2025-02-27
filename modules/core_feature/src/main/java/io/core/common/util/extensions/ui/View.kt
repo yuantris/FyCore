@@ -35,9 +35,9 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.get
 import androidx.core.view.marginBottom
+import io.core.common.util.extensions.cool.printOnDebug
 import io.core.common.util.extensions.currentTimeMillis
 import io.core.common.util.extensions.inputMethodManager
-import io.core.common.util.log.printOnDebug
 import java.lang.reflect.Field
 
 private tailrec fun getCompatActivity(context: Context?): AppCompatActivity? {

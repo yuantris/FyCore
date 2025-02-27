@@ -11,6 +11,7 @@ import com.core.fy.android.util.SafeJson;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.SortedMap;
@@ -22,6 +23,7 @@ import io.core.common.helper.TaskExecutor;
 import io.core.common.util.MediaScanner;
 import io.core.common.util.ToastUtil;
 import io.core.common.util.extensions.cool.CollectionKt;
+import io.core.common.util.extensions.cool.ThreadKt;
 import io.core.common.util.log.LogCat;
 import io.core.common.util.log.LogPure;
 import io.core.common.util.tools.AsyncUtils;
@@ -41,7 +43,7 @@ public class JavaFragment extends ReflectBindingFragment<FragmentJavaBinding, Te
         super.initView();
         ToastUtil.show("初始化");
 
-        String format = JsonUltra.format("{\"name\":\"张三\",\"age\":18}",false);
+        String format = JsonUltra.format("{\"name\":\"张三\",\"age\":18}", false);
         LogCat.e(format);
 
         ThreadUltra.execute(new ThreadUltra.Task<List<Bitmap>>() {
@@ -80,7 +82,9 @@ public class JavaFragment extends ReflectBindingFragment<FragmentJavaBinding, Te
         SafeJson object = SafeJson.parse("{\"key\": \"{\\\"nested\\\": 123}\"}").getObject("key");
         LogCat.e(object.getString("nested"));
 
-        JsonUltra.parse("{\"key\": \"{\\\"nested\\\": 123}\"}");
+        String formatted = JsonUltra.format("{\"key\": \"{\\\"nested\\\": 123}\"}");
+        LogCat.e(formatted);
+
     }
 
     @Override

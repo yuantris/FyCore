@@ -13,6 +13,7 @@ import io.core.common.helper.TimeoutCallback
 import io.core.common.helper.TimeoutHandler
 import io.core.common.util.extensions.cool.GSON
 import io.core.common.util.extensions.cool.createMap
+import io.core.common.util.extensions.cool.hasReadStoragePermission
 import io.core.common.util.extensions.cool.launchAsync
 import io.core.common.util.extensions.cool.mapBuilder
 import io.core.common.util.extensions.cool.postDelayUI
@@ -66,7 +67,7 @@ class KotlinFragment : ReflectBindingFragment<FragmentKotlinBinding, TestPageAct
 
         JsonUltra.parse("{\"name\":\"张三\",\"age\":18}")["name"]?.asString()?.logD()
 
-        ctx.requestPermission(Permission.MANAGE_EXTERNAL_STORAGE) {
+        ctx.requestPermission(Permission.READ_MEDIA_AUDIO) {
 //            LogPure.v {
 //                "MANAGE_EXTERNAL_STORAGE permission granted"
 //            }

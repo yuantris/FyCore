@@ -15,13 +15,13 @@ import io.core.common.util.extensions.cool.externalFiles
 import io.core.common.util.extensions.cool.fromJsonArray
 import io.core.common.util.extensions.cool.fromJsonObject
 import io.core.common.util.extensions.cool.hexString
+import io.core.common.util.extensions.cool.printOnDebug
 import io.core.common.util.extensions.ui.getCompatColor
 import io.core.common.util.extensions.ui.getPrefBoolean
 import io.core.common.util.extensions.ui.getPrefInt
 import io.core.common.util.extensions.ui.putPrefBoolean
 import io.core.common.util.extensions.ui.putPrefInt
 import io.core.common.util.log.AppLog
-import io.core.common.util.log.printOnDebug
 import io.core.common.util.tools.BitmapUtils
 import io.core.common.util.tools.FileUtils
 import io.core.common.util.tools.getMeanColor

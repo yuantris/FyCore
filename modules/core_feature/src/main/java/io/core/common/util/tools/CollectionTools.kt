@@ -14,6 +14,7 @@ package io.core.common.util.tools
  * @author Yuan
  */
 
+// region Kotlin 扩展方法
 /**
  * 在集合中查找第一个具有指定属性值的元素
  * 场景1：直接匹配Long值本身

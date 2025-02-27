@@ -7,8 +7,8 @@ import android.os.Build
 import io.core.common.util.extensions.connectivityManager
 import io.core.common.util.extensions.cool.isAbsUrl
 import io.core.common.util.extensions.cool.isDataUrl
+import io.core.common.util.extensions.cool.printOnDebug
 import io.core.common.util.log.AppLog
-import io.core.common.util.log.printOnDebug
 import java.net.URL
 import java.util.BitSet
 

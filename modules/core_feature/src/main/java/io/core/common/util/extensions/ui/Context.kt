@@ -1,4 +1,4 @@
-@file:Suppress("unused", "UnusedReceiverParameter")
+@file:Suppress("unused", "UnusedReceiverParameter", "DEPRECATION")
 
 package io.core.common.util.extensions.ui
 
@@ -41,10 +41,11 @@ import androidx.lifecycle.LifecycleOwner
 import io.core.R
 import io.core.common.base.component.dialog.CustomToast
 import io.core.common.util.ToastUtil
+import io.core.common.util.extensions.cool.logPrint
+import io.core.common.util.extensions.cool.printOnDebug
 import io.core.common.util.extensions.cool.pxToDp
 import io.core.common.util.extensions.layoutInflater
 import io.core.common.util.extensions.windowManager
-import io.core.common.util.log.printOnDebug
 import io.core.common.util.tools.Preferences
 import kotlin.system.exitProcess
 
@@ -466,22 +467,22 @@ val Context.appPackageName: String
 
 val Context.appName: String
     get() {
-    try {
-        val appInfo = packageManager.getApplicationInfo(packageName, 0)
-        return appInfo.loadLabel(packageManager).toString()
-    } catch (e: Exception) {
-        e.printOnDebug()
+        try {
+            val appInfo = packageManager.getApplicationInfo(packageName, 0)
+            return appInfo.loadLabel(packageManager).toString()
+        } catch (e: Exception) {
+            e.logPrint()
+        }
+        return ""
     }
-    return ""
-}
 
 val Context.appVersionName: String
     get() {
         try {
             val pInfo = packageManager.getPackageInfo(packageName, 0)
-            return pInfo.versionName
+            return pInfo.versionName ?: ""
         } catch (e: Exception) {
-            e.printOnDebug()
+            e.logPrint()
         }
         return ""
     }
@@ -492,7 +493,7 @@ val Context.appVersionCode: Int
             val pInfo = packageManager.getPackageInfo(packageName, 0)
             return pInfo.versionCode
         } catch (e: Exception) {
-            e.printOnDebug()
+            e.logPrint()
         }
         return 0
     }

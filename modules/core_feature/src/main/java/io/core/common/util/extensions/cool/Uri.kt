@@ -13,7 +13,6 @@ import io.core.common.util.FileDoc
 import io.core.appCtx
 import io.core.common.util.extensions.ui.checkSelfUriPermission
 import io.core.common.util.log.AppLog
-import io.core.common.util.log.printOnDebug
 import io.core.common.util.tools.DocumentUtils
 import io.core.common.util.tools.FileUtils
 import io.core.common.util.tools.RealPathUtil

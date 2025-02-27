@@ -7,8 +7,8 @@ import io.core.appCtx
 import io.core.common.util.extensions.cool.ConvertUtils
 import io.core.common.util.extensions.cool.cnCompare
 import io.core.common.util.extensions.cool.externalCache
+import io.core.common.util.extensions.cool.printOnDebug
 import io.core.common.util.extensions.currentTimeMillis
-import io.core.common.util.log.printOnDebug
 import java.io.ByteArrayOutputStream
 import java.io.Closeable
 import java.io.File
@@ -26,9 +26,18 @@ import java.util.Collections
 import java.util.Locale
 import java.util.regex.Pattern
 
-@Suppress("unused", "MemberVisibilityCanBePrivate")
 object FileUtils {
 
+    /**
+     * 创建指定路径的文件（若不存在），自动创建所有必需的父目录
+     *
+     * @param root 基础目录路径，作为文件路径的根节点
+     * @param subDirFiles 可变参数，表示从根目录开始的子目录层级结构及最终文件名。
+     *                    例如：["dir1", "dir2", "file.txt"]
+     * @return 已存在或新创建的文件对象
+     *
+     * @throws IOException 当文件创建失败或路径中的某个元素是已存在的非目录文件时抛出
+     */
     fun createFileIfNotExist(root: File, vararg subDirFiles: String): File {
         val filePath = getPath(root, *subDirFiles)
         return createFileIfNotExist(filePath)
@@ -66,6 +75,12 @@ object FileUtils {
         return file
     }
 
+    /**
+     * 创建文件，如果文件已存在则删除并重新创建
+     *
+     * @param filePath 文件路径
+     * @return 返回创建的文件对象
+     */
     fun createFileWithReplace(filePath: String): File {
         val file = File(filePath)
         if (!file.exists()) {
@@ -82,6 +97,16 @@ object FileUtils {
         return file
     }
 
+    /**
+     * 生成完整的文件路径
+     *
+     * 该函数从一个根路径开始，根据可变数量的子目录文件名参数，构建一个完整的文件路径
+     * 它确保了路径的正确性，即每个子目录之间用正确的文件分隔符隔开，并且不会在路径末尾重复添加分隔符
+     *
+     * @param rootPath 根路径，路径构建的起点
+     * @param subDirFiles 可变数量的子目录文件名，用于构建最终路径
+     * @return 返回构建完成的完整文件路径
+     */
     fun getPath(rootPath: String, vararg subDirFiles: String): String {
         val path = StringBuilder(rootPath)
         subDirFiles.forEach {
@@ -95,6 +120,17 @@ object FileUtils {
         return path.toString()
     }
 
+    /**
+     * 根据根目录和子目录文件名生成完整路径字符串
+     *
+     * 该函数接受一个根目录文件对象和一个可变长度的子目录文件名数组，
+     * 并构建起一个完整的文件路径字符串它通过在根目录的绝对路径之后，
+     * 依次添加每个子目录文件名，使用系统文件分隔符连接
+     *
+     * @param root 根目录的文件对象，是构建路径的起点
+     * @param subDirFiles 可变长度的子目录文件名数组，表示路径中的子目录或文件名
+     * @return 返回构建的完整路径字符串
+     */
     fun getPath(root: File, vararg subDirFiles: String): String {
         val path = StringBuilder(root.absolutePath)
         subDirFiles.forEach {
@@ -145,6 +181,12 @@ object FileUtils {
         return path1
     }
 
+    /**
+     * 关闭一个可关闭的资源，忽略任何由此产生的IOException。
+     * 这个方法主要用于简化资源的关闭操作，避免在关闭资源时处理异常。
+     *
+     * @param c 可关闭的资源，如文件流或网络连接。如果为null，则方法直接返回。
+     */
     fun closeSilently(c: Closeable?) {
         if (c == null) {
             return
@@ -432,6 +474,17 @@ object FileUtils {
      */
     fun rename(src: File, tar: File): Boolean {
         return src.renameTo(tar)
+    }
+
+    /**
+     * 读取 assets 目录下的文件内容
+     * @param fileName 文件名或相对路径（例如：`"data/config.json"`）
+     * @return 文件内容字符串
+     * @throws IOException 文件不存在或读取失败时抛出
+     */
+    @Throws(IOException::class)
+    fun readFromAssets(fileName: String): String {
+        return appCtx.assets.open(fileName).bufferedReader().use { it.readText() }
     }
 
     /**

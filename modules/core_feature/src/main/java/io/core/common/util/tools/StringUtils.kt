@@ -3,7 +3,7 @@ package io.core.common.util.tools
 import android.annotation.SuppressLint
 import android.text.TextUtils.isEmpty
 import android.util.Base64
-import io.core.common.util.log.printOnDebug
+import io.core.common.util.extensions.cool.printOnDebug
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.IOException

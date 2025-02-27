@@ -145,6 +145,7 @@ class JsonUltra private constructor(
     // region 构建功能
     companion object Builder {
 
+
         private val jsonFormatter by lazy {
             Json {
                 prettyPrint = true
@@ -205,11 +206,17 @@ class JsonUltra private constructor(
         }
 
         private fun serializeProcessedValue(value: Any, compress: Boolean): String {
-            return when (value) {
+            val jsonStr = when (value) {
                 is JSONObject -> if (compress) value.toString() else value.toString(2)
                 is JSONArray -> if (compress) value.toString() else value.toString(2)
                 else -> value.toString()
             }
+            /**
+             * 替换转义的斜杠为普通斜杠
+             * 如输出为：
+             * "imageUrlPrefix": "https:\/\/zycdn.ss.bscstorage.com\/wallpaper\/"
+             */
+            return jsonStr.replace("\\/", "/")
         }
 
         private fun String.cleanString(): String {

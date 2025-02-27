@@ -1,9 +1,8 @@
 package io.core.common.helper
 
-import io.core.common.util.extensions.logE
+import io.core.common.util.extensions.cool.printOnDebug
 import io.core.common.util.log.LogPure
 import io.core.common.util.log.TAG
-import io.core.common.util.log.printOnDebug
 import kotlinx.coroutines.*
 import java.util.function.Supplier
 import kotlin.coroutines.CoroutineContext

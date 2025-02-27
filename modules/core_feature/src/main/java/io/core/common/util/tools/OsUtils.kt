@@ -1,8 +1,6 @@
-@file:Suppress("AnnotateVersionCheck")
-
+@file:Suppress("AnnotateVersionCheck,ObsoleteSdkInt")
 package io.core.common.util.tools
 
-import android.content.Context
 import android.os.Build
 import androidx.annotation.ChecksSdkIntAtLeast
 import io.core.constant.ANDROID_10
@@ -11,6 +9,7 @@ import io.core.constant.ANDROID_12
 import io.core.constant.ANDROID_13
 import io.core.constant.ANDROID_14
 import io.core.constant.ANDROID_15
+import io.core.constant.ANDROID_7
 import io.core.constant.ANDROID_8
 import io.core.constant.ANDROID_9
 
@@ -30,6 +29,8 @@ val isAndroid9Plus
     get() = OsUtils.atLeastP()
 val isAndroid8Plus
     get() = OsUtils.atLeastO()
+val isAndroid7Plus
+    get() = OsUtils.atLeastN()
 
 val androidApiVersion
     get() = Build.VERSION.SDK_INT
@@ -41,8 +42,8 @@ object OsUtils {
     /**
      * 检查是否至少是 Android 15 (Vanilla Ice Cream, API 35)
      */
-    // @ChecksSdkIntAtLeast(api = Build.VERSION_CODES.VANILLA_ICE_CREAM)
     @JvmStatic
+    @ChecksSdkIntAtLeast(api = Build.VERSION_CODES.VANILLA_ICE_CREAM)
     fun atLeastV(): Boolean {
         return Build.VERSION.SDK_INT >= ANDROID_15
     }
@@ -108,6 +109,15 @@ object OsUtils {
     @ChecksSdkIntAtLeast(api = Build.VERSION_CODES.O)
     fun atLeastO(): Boolean {
         return Build.VERSION.SDK_INT >= ANDROID_8
+    }
+
+    /**
+     * 检查是否至少是 Android 7 (Oreo, API 24)
+     */
+    @JvmStatic
+    @ChecksSdkIntAtLeast(api = Build.VERSION_CODES.N)
+    fun atLeastN(): Boolean {
+        return Build.VERSION.SDK_INT >= ANDROID_7
     }
 
     /**

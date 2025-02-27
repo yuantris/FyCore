@@ -12,7 +12,7 @@ android {
     defaultConfig {
         applicationId "com.core.fy.android"
         minSdk 24
-        targetSdk 33
+        targetSdk 34
         versionCode 1
         versionName "1.0"
 
@@ -109,7 +109,11 @@ dependencies {
     implementation libs.kongzue.dialogx
     implementation libs.dialogxkongzuestyle
 
-    implementation 'com.tencent:mmkv:1.3.4'
+    // https://github.com/junixapp/XPopup
+    implementation libs.xpopup
+
+    // https://github.com/Tencent/MMKV
+    implementation libs.mmkv
 
     def camerax_version = "1.2.0"
     implementation "androidx.camera:camera-core:${camerax_version}"

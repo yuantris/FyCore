@@ -1,6 +1,6 @@
 package io.core.common.helper.coroutine
 
-import io.core.common.util.log.printOnDebug
+import io.core.common.util.extensions.cool.printOnDebug
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CompletionHandler
 import kotlinx.coroutines.CoroutineScope

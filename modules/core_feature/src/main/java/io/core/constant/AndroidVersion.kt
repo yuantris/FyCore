@@ -2,7 +2,7 @@ package io.core.constant
 
 import android.os.Build
 
-const val ANDROID_15 = 35 /*Build.VERSION_CODES.VANILLA_ICE_CREAM*/
+const val ANDROID_15 = Build.VERSION_CODES.VANILLA_ICE_CREAM
 const val ANDROID_14 = Build.VERSION_CODES.UPSIDE_DOWN_CAKE
 const val ANDROID_13 = Build.VERSION_CODES.TIRAMISU
 const val ANDROID_12_L = Build.VERSION_CODES.S_V2

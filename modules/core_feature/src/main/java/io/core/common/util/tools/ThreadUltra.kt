@@ -1,3 +1,5 @@
+@file:Suppress("UNCHECKED_CAST")
+
 package io.core.common.util.tools
 
 import androidx.annotation.AnyThread
@@ -113,6 +115,11 @@ object ThreadUltra {
         }
     }
 
+    fun getIoPool() = threadPoolMap[ThreadType.IO]!!
+    fun getCachedPool() = threadPoolMap[ThreadType.CACHED]!!
+    fun getCpuPool() = threadPoolMap[ThreadType.COMPUTATION]!!
+    fun getSinglePool() = threadPoolMap[ThreadType.SINGLE]!!
+
     private fun <T> checkCancellation(task: Task<T>) {
         if (task.isCancelled()) {
             throw CancellationException()
@@ -223,7 +230,7 @@ object ThreadUltra {
 
     private class NamedThreadFactory(private val prefix: String) : ThreadFactory {
         private val counter = AtomicInteger(0)
-        override fun newThread(r: Runnable) = Thread(r, "ThreadUtils-$prefix-${counter.incrementAndGet()}").apply {
+        override fun newThread(r: Runnable) = Thread(r, "ThreadUltra-$prefix-${counter.incrementAndGet()}").apply {
             priority = Thread.NORM_PRIORITY
             isDaemon = false
         }
