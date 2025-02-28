@@ -3,23 +3,20 @@ package io.core.common.helper
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Application
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.annotation.VisibleForTesting
-import io.core.BuildConfig
+import io.core.common.CoreConfig
 import io.core.common.util.extensions.activityManager
 import io.core.common.util.tools.isAndroid9Plus
-import java.lang.ref.WeakReference
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
-import java.util.concurrent.ConcurrentLinkedDeque
 import java.util.concurrent.atomic.AtomicReference
 
-object PageTracker {
+object TurboTracker {
 
-    private const val DEFAULT_TAG = "PageTracker"
+    private const val DEFAULT_TAG = "TurboTracker"
     private const val DEFAULT_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss.SSS"
 
     private val config = AtomicReference(TrackConfig.createDefault())
@@ -80,7 +77,6 @@ object PageTracker {
         event: String
     ): LinkedHashMap<String, Any> {
         return linkedMapOf(
-            "timestamp" to getCurrentTime(),
             "process" to getProcessInfo(),
             "page" to getActivityName(activity),
             "event" to event,
@@ -101,7 +97,7 @@ object PageTracker {
 
     private fun formatLogMessage(logInfo: Map<String, Any>, tag: String): String {
         return buildString {
-            append("[$tag]")
+            append("[$tag] ${getCurrentTime()}")
             logInfo.forEach { (key, value) ->
                 append(" $key=${value.toString().replace(" ", "_")}")
             }
@@ -125,13 +121,13 @@ object PageTracker {
         return try {
             val pid = android.os.Process.myPid()
             if (isAndroid9Plus) {
-                "[$pid-${Application.getProcessName()}]"
+                "<$pid-${Application.getProcessName()}>"
             } else {
-                "[$pid-${
+                "<$pid-${
                     activityManager.runningAppProcesses
                         ?.find { it.pid == pid }
                         ?.processName ?: "unknown"
-                }]"
+                }>"
             }
         } catch (e: Exception) {
             "unknown"
@@ -168,7 +164,7 @@ object PageTracker {
         ) = TrackConfig(enabled, brief, tag, dateFormat, logger, extraProviders)
 
         class Builder {
-            private var enabled = !BuildConfig.DEBUG
+            private var enabled = CoreConfig.RELEASE
             private var brief = false
             private var tag = DEFAULT_TAG
             private var dateFormat = DEFAULT_DATE_FORMAT

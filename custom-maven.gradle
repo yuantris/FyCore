@@ -6,10 +6,8 @@ allprojects {
                 username '63d4d579378edb0fd9aa3b2d'
                 password 'nXJxEWiiObre'
             }
-            //url 'https://packages.aliyun.com/67789758cdfeb44ae202deb7/maven/2512815-release-ndmhzu'
             url 'https://packages.aliyun.com/maven/repository/2512815-release-NDmHZu/'
         }
-
 //        maven {
 //            url = uri("https://maven.pkg.github.com/yuantris/FyCore")
 //            credentials {

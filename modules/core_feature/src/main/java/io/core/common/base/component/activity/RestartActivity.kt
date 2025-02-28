@@ -7,7 +7,7 @@ import android.graphics.Color
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
-import io.core.common.CoreConfig.crashAfterJumpActivity
+import io.core.common.CoreConfig.CRASH_AFTER_JUMP
 import io.core.common.util.extensions.ui.restart
 import io.core.common.util.extensions.ui.startActivity
 
@@ -33,8 +33,8 @@ class RestartActivity : AppCompatActivity() {
         }
 
         fun restart(context: Context) {
-            crashAfterJumpActivity?.let {
-                val intent = Intent(context, crashAfterJumpActivity)
+            CRASH_AFTER_JUMP?.let {
+                val intent = Intent(context, CRASH_AFTER_JUMP)
                 if (context !is Activity) {
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 }

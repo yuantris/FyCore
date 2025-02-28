@@ -38,7 +38,7 @@ inline fun <T> tryCatch(
 inline fun <T> tryCatchWithDefault(
     default: T, // 提供默认返回值
     tryBlock: () -> T,
-    catchBlock: (Throwable) -> Unit = { it.printStackTrace() },
+    catchBlock: (Throwable) -> Unit = { it.printOnDebug() },
     finallyBlock: () -> Unit = {}
 ): T {
     return try {

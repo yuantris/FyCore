@@ -80,7 +80,7 @@ object AppConfig {
     var ttsEngine: String?
         get() = appCtx.getPrefString(PreferKey.ttsEngine)
         set(value) {
-            appCtx.putPrefString(PreferKey.ttsEngine, value)
+            appCtx.putPrefString(PreferKey.ttsEngine, value ?: "")
         }
 
     var ttsFlowSys: Boolean

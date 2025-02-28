@@ -268,3 +268,8 @@
 -keep class io.core.engine.livebus.** { *; }
 -keep class androidx.lifecycle.** { *; }
 -keep class androidx.arch.core.** { *; }
+
+-keep class io.core.common.helper.TurboTracker { *; }
+-keep class io.core.common.helper.TurboTracker$DefaultLogger { *; }
+-keep interface io.core.common.helper.TurboTracker$Logger { *; }
+-keep interface io.core.common.helper.TurboTracker$ExtraInfoProvider { *; }

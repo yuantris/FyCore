@@ -1,8 +1,10 @@
 package io.core.common
 
+import io.core.BuildConfig
 import io.core.R
 import io.core.appCtx
 import io.core.common.util.extensions.ui.getCompatColor
+import io.core.common.util.extensions.ui.isDebuggable
 
 /**
 # ██████████
@@ -24,6 +26,12 @@ object CoreConfig {
     var alert_positive_color = accentColor
     var alert_negative_color = accentColor
 
+    /*运行环境*/
     @JvmStatic
-    var crashAfterJumpActivity: Class<*>? = null // 设置闪退后要跳转的Activity
+    var DEBUG = BuildConfig.DEBUG && appCtx.isDebuggable
+    @JvmStatic
+    var RELEASE = !DEBUG
+
+    @JvmStatic
+    var CRASH_AFTER_JUMP: Class<*>? = null // 设置闪退后要跳转的Activity
 }

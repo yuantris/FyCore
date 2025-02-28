@@ -265,10 +265,10 @@ fun Context.getPrefLong(key: String, defValue: Long = 0L) =
 fun Context.putPrefLong(key: String, value: Long) =
     Preferences.putValue(key, value)
 
-fun Context.getPrefString(key: String, defValue: String? = null) =
+fun Context.getPrefString(key: String, defValue: String = "") =
     Preferences.getValue(key, defValue)
 
-fun Context.putPrefString(key: String, value: String?) =
+fun Context.putPrefString(key: String, value: String) =
     Preferences.putValue(key, value)
 
 fun Context.getPrefStringSet(
@@ -456,6 +456,8 @@ val Context.channel: String
         return ""
     }
 
+// **Context.isDebuggable：关注系统层面是否允许调试，适合安全校验。
+// **BuildConfig.DEBUG：关注构建类型，适合功能开关。
 val Context.isDebuggable: Boolean
     get() = applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE != 0
 

@@ -17,7 +17,7 @@ import io.core.common.util.tools.TimeUtils
  * @param view 需要监听点击事件的视图
  * @param hideAction 长按触发的隐藏操作回调
  */
-class ClickSequenceHandler(private val view: View, private val hideAction: () -> Unit) {
+class ClickSequenceHandler(private val view: View, private val hideAction: OnHideActionListener) {
     private var clickCount = 0
     private var lastClickTime = 0L
     private val handler = Handler(Looper.getMainLooper())
@@ -82,7 +82,7 @@ class ClickSequenceHandler(private val view: View, private val hideAction: () ->
 
     private fun triggerHideAction() {
         LogCat.i("响应时间：${TimeUtils.getNowString()}")
-        hideAction()
+        hideAction.callback()
         resetState()
     }
 
@@ -93,5 +93,9 @@ class ClickSequenceHandler(private val view: View, private val hideAction: () ->
         isWaitingForLongPress = false
         view.setOnTouchListener(null)
         setupClickListeners()
+    }
+
+    fun interface OnHideActionListener {
+        fun callback()
     }
 }

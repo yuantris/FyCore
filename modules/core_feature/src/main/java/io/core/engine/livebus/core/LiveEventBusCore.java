@@ -22,6 +22,7 @@ import io.core.Android;
 import io.core.common.util.CoreUtil;
 import io.core.common.util.extensions.cool.HandlerKt;
 import io.core.common.util.tools.HandlerUtilsKt;
+import io.core.common.util.tools.OsUtils;
 import io.core.common.util.tools.OsUtilsKt;
 import io.core.engine.livebus.ipc.consts.IpcConst;
 import io.core.engine.livebus.ipc.core.ProcessorManager;
@@ -342,13 +343,13 @@ public final class LiveEventBusCore {
         private void broadcastInternal(T value, boolean foreground, boolean onlyInApp) {
             logger.log(Level.INFO, "broadcast: " + value + " foreground: " + foreground +
                     " with key: " + key);
-            Application application = Android.INSTANCE.getContext();
+            Application application = Android.getContext();
             if (application == null) {
                 logger.log(Level.WARNING, "application is null, you can try setContext() when config");
                 return;
             }
             Intent intent = new Intent(IpcConst.ACTION);
-            if (foreground && Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            if (foreground && OsUtils.higherThan(Build.VERSION_CODES.JELLY_BEAN)) {
                 intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
             }
             if (onlyInApp) {
@@ -533,7 +534,7 @@ public final class LiveEventBusCore {
                     .append("logger enable: ").append(logger.isEnable()).append("\n")
                     .append("logger: ").append(logger.getLogger()).append("\n")
                     .append("Receiver register: ").append(isRegisterReceiver).append("\n")
-                    .append("Application: ").append(Android.INSTANCE.getContext()).append("\n");
+                    .append("Application: ").append(Android.getContext()).append("\n");
             return sb.toString();
         }
 

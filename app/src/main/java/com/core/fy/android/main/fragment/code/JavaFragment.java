@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.SortedMap;
 
+import io.core.Android;
 import io.core.common.base.component.fragment.ReflectBindingFragment;
 import io.core.common.helper.AppLifecycleTracker;
 import io.core.common.helper.JsonUltra;

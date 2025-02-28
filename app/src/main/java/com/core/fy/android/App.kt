@@ -11,7 +11,9 @@ import com.core.fy.android.util.initDialogX
 import io.core.Android
 import io.core.BR
 import io.core.appCtx
+import io.core.common.CoreConfig
 import io.core.common.helper.AppLifecycleTracker
+import io.core.common.helper.TurboTracker
 import io.core.common.util.MediaScanner
 import io.core.common.util.extensions.notificationManager
 import io.core.common.util.log.LogPure
@@ -35,9 +37,9 @@ class App : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        Android.initialize(this)
-        PageTracker.initialize(this){
-            enable(true)
+        Android.initialize(this, debug = true)
+        TurboTracker.initialize(this) {
+            enable(CoreConfig.DEBUG)
             brief(true)
         }
 

@@ -2,6 +2,7 @@ package io.core.common.helper
 
 import java.lang.reflect.Field
 import java.lang.reflect.Method
+import java.lang.reflect.Modifier
 
 class ReflectHelper(private val clazz: Class<*>) {
     companion object {
@@ -30,9 +31,11 @@ class ReflectHelper(private val clazz: Class<*>) {
 
     // 获取方法
     fun getMethod(methodName: String, vararg parameterTypes: Class<*>): Method {
-        return clazz.getDeclaredMethod(methodName, *parameterTypes).apply {
-            isAccessible = true
-        }
+        return try {
+            clazz.getMethod(methodName, *parameterTypes)
+        } catch (e: NoSuchMethodException) {
+            clazz.getDeclaredMethod(methodName, *parameterTypes)
+        }.apply { isAccessible = true }
     }
 
     // 调用方法
@@ -44,7 +47,9 @@ class ReflectHelper(private val clazz: Class<*>) {
     fun chainInvoke(methodName: String, vararg args: Any): ReflectHelper {
         val parameterTypes = args.map { it.javaClass }.toTypedArray()
         val method = getMethod(methodName, *parameterTypes)
-        val result = method.invoke(instance, *args)
+        // 判断是否为静态方法
+        val targetInstance = if (Modifier.isStatic(method.modifiers)) null else instance
+        val result = method.invoke(targetInstance, *args)
         return if (result != null && result != Unit) {
             with(result)
         } else {
@@ -55,7 +60,11 @@ class ReflectHelper(private val clazz: Class<*>) {
     // 获取字段值
     fun getField(fieldName: String): Any? {
         val field = findField(fieldName)
-        return field.get(instance)
+        return if (Modifier.isStatic(field.modifiers)) {
+            field.get(null) // 静态字段强制用 null 实例
+        } else {
+            field.get(instance)
+        }
     }
 
     // 设置字段值
@@ -65,7 +74,7 @@ class ReflectHelper(private val clazz: Class<*>) {
     }
 
     private fun findField(fieldName: String): Field {
-        return clazz.declaredFields.first { it.name == fieldName }.apply {
+        return clazz.getDeclaredField(fieldName).apply {
             isAccessible = true
         }
     }

@@ -42,7 +42,7 @@ import kotlin.math.abs
 /**
  * 阅读视图
  */
-class ReadView(context: Context, attrs: AttributeSet) :
+class ReadView(context: Context, attrs: AttributeSet? = null) :
     FrameLayout(context, attrs),
     DataSource, LayoutProgressListener {
 

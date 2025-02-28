@@ -1,9 +1,13 @@
+@file:Suppress("PrivateApi")
+
 package io.core.common.helper
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Application
 import android.app.Service
 import android.os.Bundle
+import android.util.Log
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ProcessLifecycleOwner
@@ -156,6 +160,24 @@ object AppLifecycleTracker : Application.ActivityLifecycleCallbacks, DefaultLife
     fun finishAllActivities() {
         activeActivities.forEach { it.finish() }
     }
+
+    /**
+     * 反射获取当前应用的Application实例
+     */
+    fun getApplicationByReflect(): Application? {
+        return try {
+            // 获取 ActivityThread 实例
+            val thread = getActivityThread() ?: return null
+            // 通过 ActivityThread 实例调用 getApplication() 方法
+            val app = ReflectHelper.on("android.app.ActivityThread")
+                .getMethod("getApplication")
+                .invoke(thread) ?: return null
+            return app as Application
+        } catch (e: Exception) {
+            null
+        }
+    }
+
     // endregion
 
     // region 工具方法
@@ -172,6 +194,31 @@ object AppLifecycleTracker : Application.ActivityLifecycleCallbacks, DefaultLife
     private fun <T> cleanUpWeakReferences(list: CopyOnWriteArrayList<WeakReference<T>>) {
         list.removeAll { it.get() == null }
     }
+
+    /**
+     * 反射获取ActivityThread实例
+     */
+    private fun getActivityThread(): Any? {
+        // 优先尝试通过静态字段获取
+        val fromField = try {
+            ReflectHelper.on("android.app.ActivityThread")
+                .getField("sCurrentActivityThread")
+        } catch (e: Exception) {
+            Log.e(TAG, "getActivityThreadInActivityThreadStaticField: ${e.message}")
+            null
+        }
+
+        return fromField ?: try {
+            // 字段获取失败后尝试通过静态方法获取
+            ReflectHelper.on("android.app.ActivityThread")
+                .chainInvoke("currentActivityThread")
+                .get() as Any?
+        } catch (e: Exception) {
+            Log.e(TAG, "getActivityThreadInActivityThreadStaticMethod: ${e.message}")
+            null
+        }
+    }
+
     // endregion
 
     // region 初始化
