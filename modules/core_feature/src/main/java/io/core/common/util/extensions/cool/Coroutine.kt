@@ -165,25 +165,6 @@ fun ViewModel.launchSafe(action: suspend () -> Unit) {
     }
 }
 
-//----------------------------------GlobalScope---------------------------------------------
-
-@OptIn(DelicateCoroutinesApi::class)
-fun launchGlobal(action: suspend () -> Unit) {
-    GlobalScope.launch {
-        action()
-    }
-}
-
-@OptIn(DelicateCoroutinesApi::class)
-fun launchGlobalSafe(action: suspend () -> Unit) {
-    GlobalScope.launch {
-        try {
-            action()
-        } catch (e: Exception) {
-            // 处理异常
-        }
-    }
-}
 
 //------------------------------------------------------------------------------------------
 

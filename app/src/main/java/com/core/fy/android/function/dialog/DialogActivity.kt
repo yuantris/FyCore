@@ -5,7 +5,6 @@ import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
 import android.text.Spannable
-import android.text.method.LinkMovementMethod
 import android.text.style.ForegroundColorSpan
 import android.widget.ImageView
 import android.widget.TextView
@@ -196,8 +195,13 @@ class DialogActivity : ReflectBindingActivity<ActivityDialogBinding>() {
             }
 
             show4.onClick {
-                showDxMessage("DialogX KongzueStyle show") { _, _ ->
-                    showDxNotification(currentTimeMillis.toString())
+                showDxMessage {
+                    content = "DialogX KongzueStyle show"
+                    onMessageConfirm = { _, _ ->
+                        showDxNotification {
+                            content = currentTimeMillis.toString()
+                        }
+                    }
                 }
             }
         }

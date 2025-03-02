@@ -115,7 +115,7 @@ object AudioPlay : CoroutineScope by MainScope() {
 //                WebBook.getContent(this, bookSource, book, chapter)
 //                    .onSuccess { content ->
 //                        if (content.isEmpty()) {
-//                            appCtx.toastOnUi("未获取到资源链接")
+//                            appCtx.toastOnUI("未获取到资源链接")
 //                        } else {
 //                            contentLoadFinish(chapter, content)
 //                        }
@@ -127,7 +127,7 @@ object AudioPlay : CoroutineScope by MainScope() {
 //                    }
 //            } else {
 //                removeLoading(index)
-//                appCtx.toastOnUi("book or source is null")
+//                appCtx.toastOnUI("book or source is null")
 //            }
         }
     }

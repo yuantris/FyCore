@@ -11,7 +11,7 @@ import io.core.appCtx
 import io.core.common.util.extensions.ui.startForegroundServiceCompat
 import io.core.common.util.log.AppLog
 import io.core.common.util.log.LogPure
-import io.core.common.util.tools.toastOnUi
+import io.core.common.util.tools.toastOnUI
 
 object ReadAloud {
     private var aloudClass: Class<*> = getReadAloudClass()
@@ -54,7 +54,7 @@ object ReadAloud {
         } catch (e: Exception) {
             val msg = "启动朗读服务出错\n${e.localizedMessage}"
             AppLog.put(msg, e)
-            context.toastOnUi(msg)
+            context.toastOnUI(msg)
         }
     }
 

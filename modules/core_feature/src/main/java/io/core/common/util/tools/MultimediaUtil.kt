@@ -3,11 +3,8 @@ package io.core.common.util.tools
 import android.media.MediaMetadataRetriever
 import io.core.common.helper.coroutine.launchSuspend
 import io.core.common.helper.coroutine.runSuspend
-import io.core.common.helper.tryCatchWithDefault
 import io.core.common.util.log.LogCat
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine

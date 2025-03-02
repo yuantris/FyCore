@@ -35,7 +35,7 @@ import io.core.common.util.extensions.ui.navigationBarGravity
 import io.core.common.util.extensions.ui.sysScreenOffTime
 import io.core.common.util.extensions.ui.toast
 import io.core.common.util.extensions.ui.visible
-import io.core.common.util.tools.toastOnUi
+import io.core.common.util.tools.toastOnUI
 import kotlinx.coroutines.launch
 
 /**
@@ -174,7 +174,7 @@ class ReadBookActivity : ReflectBindingActivity<ActivityBookReadBinding>(),
         get() = true
 
     override fun showActionMenu() {
-        toastOnUi("showActionMenu")
+        toastOnUI("showActionMenu")
         DiveGestureLine.adaptXiaomi(window, Color.parseColor("#F4F4F4"))
         binding.readMenu.runMenuIn()
     }
@@ -234,46 +234,46 @@ class ReadBookActivity : ReflectBindingActivity<ActivityBookReadBinding>(),
     }
 
     override fun openReplaceRule() {
-        toastOnUi("打开替换规则")
+        toastOnUI("打开替换规则")
     }
 
     override fun openChapterList() {
         ReadBook.book?.let {
             // tocActivity.launch(it.bookUrl)
-            toastOnUi("打开目录")
+            toastOnUI("打开目录")
         }
     }
 
     override fun addBookmark() {
-        toastOnUi("addBookmark")
+        toastOnUI("addBookmark")
     }
 
     override fun changeReplaceRuleState() {
-        toastOnUi("changeReplaceRuleState")
+        toastOnUI("changeReplaceRuleState")
     }
 
     override fun openSearchActivity(searchWord: String?) {
-        toastOnUi("openSearchActivity")
+        toastOnUI("openSearchActivity")
     }
 
     override fun openSourceEditActivity() {
-        toastOnUi("openSourceEditActivity")
+        toastOnUI("openSourceEditActivity")
     }
 
     override fun openBookInfoActivity() {
-        toastOnUi("openBookInfoActivity")
+        toastOnUI("openBookInfoActivity")
     }
 
     override fun showReadStyle() {
-        toastOnUi("showReadStyle")
+        toastOnUI("showReadStyle")
     }
 
     override fun showMoreSetting() {
-        toastOnUi("showMoreSetting")
+        toastOnUI("showMoreSetting")
     }
 
     override fun showReadAloudDialog() {
-        toastOnUi("showReadAloudDialog")
+        toastOnUI("showReadAloudDialog")
     }
 
     override fun upSystemUiVisibility() {
@@ -282,36 +282,36 @@ class ReadBookActivity : ReflectBindingActivity<ActivityBookReadBinding>(),
     }
 
     override fun onClickReadAloud() {
-        toastOnUi("onClickReadAloud")
+        toastOnUI("onClickReadAloud")
     }
 
     override fun showHelp() {
-        toastOnUi("showHelp")
+        toastOnUI("showHelp")
     }
 
     override fun showLogin() {
-        toastOnUi("showLogin")
+        toastOnUI("showLogin")
     }
 
     override fun payAction() {
-        toastOnUi("payAction")
+        toastOnUI("payAction")
     }
 
     override fun disableSource() {
-        toastOnUi("disableSource")
+        toastOnUI("disableSource")
     }
 
     override fun skipToChapter(index: Int) {
-        toastOnUi("skipToChapter")
+        toastOnUI("skipToChapter")
     }
 
     override fun onMenuShow() {
-        //toastOnUi("onMenuShow")
+        //toastOnUI("onMenuShow")
         binding.readView.autoPager.pause()
     }
 
     override fun onMenuHide() {
-        toastOnUi("onMenuHide")
+        toastOnUI("onMenuHide")
         DiveGestureLine.adaptXiaomi(window)
         binding.readView.autoPager.resume()
     }
@@ -357,7 +357,7 @@ class ReadBookActivity : ReflectBindingActivity<ActivityBookReadBinding>(),
     }
 
     override fun sureNewProgress(progress: BookProgress) {
-        toastOnUi("sureNewProgress")
+        toastOnUI("sureNewProgress")
     }
 
     override fun cancelSelect() {
@@ -435,7 +435,7 @@ class ReadBookActivity : ReflectBindingActivity<ActivityBookReadBinding>(),
             R.id.menu_bookmark -> binding.readView.curPage.let {
                 val bookmark = it.createBookmark()
                 if (bookmark == null) {
-                    //toastOnUi(R.string.create_bookmark_error)
+                    //toastOnUI(R.string.create_bookmark_error)
                 } else {
                     //showDialogFragment(BookmarkDialog(bookmark))
                 }

@@ -17,7 +17,7 @@ import io.core.common.util.extensions.logE
 import io.core.common.util.extensions.ui.servicePendingIntent
 import io.core.common.util.log.AppLog
 import io.core.common.util.log.LogPure
-import io.core.common.util.tools.toastOnUi
+import io.core.common.util.tools.toastOnUI
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.ensureActive
 
@@ -73,7 +73,7 @@ class TTSReadAloudService : BaseReadAloudService(), TextToSpeech.OnInitListener 
                 play()
             }
         } else {
-            toastOnUi(R.string.tts_init_failed)
+            toastOnUI(R.string.tts_init_failed)
         }
     }
 

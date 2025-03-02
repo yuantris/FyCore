@@ -30,7 +30,7 @@ import io.core.common.util.extensions.cool.printOnDebug
 import io.core.common.util.extensions.ui.getPrefBoolean
 import io.core.common.util.extensions.ui.gone
 import io.core.common.util.extensions.ui.visible
-import io.core.common.util.tools.toastOnUi
+import io.core.common.util.tools.toastOnUI
 
 @SuppressLint("RestrictedApi")
 class TextActionMenu(private val context: Context, private val callBack: CallBack) :
@@ -197,10 +197,10 @@ class TextActionMenu(private val context: Context, private val callBack: CallBac
             holder.itemView.setOnLongClickListener {
                 if (AppConfig.contentSelectSpeakMod == 0) {
                     AppConfig.contentSelectSpeakMod = 1
-                    context.toastOnUi("切换为从选择的地方开始一直朗读")
+                    context.toastOnUI("切换为从选择的地方开始一直朗读")
                 } else {
                     AppConfig.contentSelectSpeakMod = 0
-                    context.toastOnUi("切换为朗读选择内容")
+                    context.toastOnUI("切换为朗读选择内容")
                 }
                 true
             }
@@ -225,7 +225,7 @@ class TextActionMenu(private val context: Context, private val callBack: CallBac
                     context.startActivity(intent)
                 }.onFailure {
                     it.printOnDebug()
-                    context.toastOnUi(it.localizedMessage ?: "ERROR")
+                    context.toastOnUI(it.localizedMessage ?: "ERROR")
                 }
             }
 
@@ -274,7 +274,7 @@ class TextActionMenu(private val context: Context, private val callBack: CallBac
                 ).intent = createProcessTextIntentForResolveInfo(resolveInfo)
             }
         }.onFailure {
-            context.toastOnUi("获取文字操作菜单出错:${it.localizedMessage}")
+            context.toastOnUI("获取文字操作菜单出错:${it.localizedMessage}")
         }
     }
 

@@ -31,7 +31,7 @@ TurboTracker.initialize(this) {
   | `ReflectHelper`<br />（反射帮助类）                    | `MediaScanner`<br />（媒体扫描）     | `DoubleClickProcessor`<br />（单击回调内双击处理） |
   | `TaskExecutor`<br />（Java并发任务处理）                |                                | `RandomEventGenerator`<br />（随机事件生产类）   |
   | `TimeoutHandler`<br />（超时处理，设计场景FFmpeg进度回调）     |                                | `SelectionController`<br />（多选控制）       |
-  | `TryCatchHelper`                                |                                |                                         |
+  | `TryCatchTurbo`                                 |                                |                                         |
   | `TurboTracker`<br />（页面追踪，日志输出，可单独在Release环境开启） |                                |                                         |)                     |                                |                                         |                                |                                         |
 
 - ColorUtils

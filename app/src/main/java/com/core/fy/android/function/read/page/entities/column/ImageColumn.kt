@@ -9,7 +9,7 @@ import com.core.fy.android.function.read.page.ContentTextView
 import com.core.fy.android.function.read.page.entities.TextLine
 import com.core.fy.android.function.read.page.entities.TextLine.Companion.emptyTextLine
 import io.core.appCtx
-import io.core.common.util.tools.toastOnUi
+import io.core.common.util.tools.toastOnUI
 
 /**
  * 图片列
@@ -45,7 +45,7 @@ data class ImageColumn(
         kotlin.runCatching {
             canvas.drawBitmap(bitmap, null, rectF, view.imagePaint)
         }.onFailure { e ->
-            appCtx.toastOnUi(e.localizedMessage)
+            appCtx.toastOnUI(e.localizedMessage)
         }
     }
 

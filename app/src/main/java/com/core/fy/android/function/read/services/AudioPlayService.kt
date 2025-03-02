@@ -45,7 +45,7 @@ import io.core.common.util.extensions.ui.broadcastPendingIntent
 import io.core.common.util.extensions.ui.servicePendingIntent
 import io.core.common.util.extensions.wifiManager
 import io.core.common.util.log.AppLog
-import io.core.common.util.tools.toastOnUi
+import io.core.common.util.tools.toastOnUI
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -234,7 +234,7 @@ class AudioPlayService : BaseService(),
             exoPlayer.prepare()
         }.onError {
             AppLog.put("播放出错\n${it.localizedMessage}", it)
-            toastOnUi("$url ${it.localizedMessage}")
+            toastOnUI("$url ${it.localizedMessage}")
             stopSelf()
         }
     }
@@ -377,7 +377,7 @@ class AudioPlayService : BaseService(),
         AudioPlay.upLoading(false)
         val errorMsg = "音频播放出错\n${error.errorCodeName} ${error.errorCode}"
         AppLog.put(errorMsg, error)
-        toastOnUi(errorMsg)
+        toastOnUI(errorMsg)
     }
 
     private fun setTimer(minute: Int) {

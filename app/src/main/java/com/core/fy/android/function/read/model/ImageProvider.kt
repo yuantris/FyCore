@@ -14,7 +14,7 @@ import com.core.fy.android.room.entity.Book
 import io.core.appCtx
 import io.core.common.util.log.AppLog.putDebug
 import io.core.common.util.tools.BitmapUtils
-import io.core.common.util.tools.toastOnUi
+import io.core.common.util.tools.toastOnUI
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.withContext
 import java.io.File
@@ -113,7 +113,7 @@ object ImageProvider {
 //        //src为空白时 可能被净化替换掉了 或者规则失效
 //        if (book.getUseReplaceRule() && src.isBlank()) {
 //            book.setUseReplaceRule(false)
-//            appCtx.toastOnUi(R.string.error_image_url_empty)
+//            appCtx.toastOnUI(R.string.error_image_url_empty)
 //        }
 //        val vFile = BookHelp.getImage(book, src)
 //        if (!vFile.exists()) return errorBitmap

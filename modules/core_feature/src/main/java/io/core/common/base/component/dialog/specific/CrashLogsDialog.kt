@@ -27,7 +27,7 @@ import io.core.common.util.extensions.ui.toast
 import io.core.common.util.extensions.ui.viewBinding
 import io.core.common.util.tools.FileUtils
 import io.core.common.util.tools.UriUtils
-import io.core.common.util.tools.toastOnUi
+import io.core.common.util.tools.toastOnUI
 import io.core.constant.CRASH_FOLDER_NAME
 import io.core.databinding.DialogRecyclerViewBinding
 import io.core.databinding.Item1lineTextBinding
@@ -160,7 +160,7 @@ class CrashLogsDialog : BaseDialogFragment(R.layout.dialog_recycler_view),
             }.onSuccess {
                 success.invoke(it)
             }.onError {
-                appCtx.toastOnUi(it.localizedMessage)
+                appCtx.toastOnUI(it.localizedMessage)
             }
         }
 
@@ -172,7 +172,7 @@ class CrashLogsDialog : BaseDialogFragment(R.layout.dialog_recycler_view),
                         FileUtils.delete(it, false)
                     }
             }.onError {
-                appCtx.toastOnUi(it.localizedMessage)
+                appCtx.toastOnUI(it.localizedMessage)
             }.onFinally {
                 initData()
             }

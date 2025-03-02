@@ -10,7 +10,6 @@ import android.os.Environment
 import android.os.StrictMode
 import android.os.StrictMode.VmPolicy
 import io.core.appCtx
-import io.core.common.helper.tryCatch
 import io.core.common.util.extensions.fileNameByTime
 import io.core.common.util.extensions.ui.ctx
 import io.core.common.util.extensions.verify
@@ -39,7 +38,7 @@ class CoreUtil {
     companion object {
         @JvmStatic
         fun toast(text: String) {
-            ToastUtil.show(text)
+            Toaster.show(text)
         }
     }
 
@@ -143,32 +142,29 @@ class CoreUtil {
                     .firstOrNull { fileName.endsWith(it[0], ignoreCase = true) }
                     ?.get(1) ?: ""
 
-                tryCatch(
-                    tryBlock = {
-                        // 直接跳过权限
-                        val builder = VmPolicy.Builder()
-                        StrictMode.setVmPolicy(builder.build())
-                        val fileURI = Uri.fromFile(file)
+                runCatching {
+                    // 直接跳过权限
+                    val builder = VmPolicy.Builder()
+                    StrictMode.setVmPolicy(builder.build())
+                    val fileURI = Uri.fromFile(file)
 
-                        //设置intent的data和Type属性
-                        intent.setDataAndType(fileURI, type)
-                        appCtx.packageManager.resolveActivity(
-                            intent,
-                            PackageManager.MATCH_DEFAULT_ONLY
-                        ).verify(
-                            ifNull = {
-                                toast("无法打开该格式文件")
-                            },
-                            ifNotNull = {
-                                appCtx.startActivity(intent)
-                                appCtx.ctx?.overridePendingTransition(0, 0)
-                            })
-                    },
-                    catchBlock = {
-                        toast("无法打开该格式文件")
-                        LogCat.e(it)
-                    }
-                )
+                    //设置intent的data和Type属性
+                    intent.setDataAndType(fileURI, type)
+                    appCtx.packageManager.resolveActivity(
+                        intent,
+                        PackageManager.MATCH_DEFAULT_ONLY
+                    ).verify(
+                        ifNull = {
+                            toast("无法打开该格式文件")
+                        },
+                        ifNotNull = {
+                            appCtx.startActivity(intent)
+                            appCtx.ctx?.overridePendingTransition(0, 0)
+                        })
+                }.onFailure {
+                    toast("无法打开该格式文件")
+                    LogCat.e(it)
+                }
             }
 
         }

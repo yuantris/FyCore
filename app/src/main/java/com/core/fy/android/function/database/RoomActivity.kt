@@ -11,7 +11,7 @@ import com.core.fy.android.viewmodel.UserVM
 import io.core.common.base.component.activity.ReflectBindingActivity
 import io.core.common.base.vm.ViewStatus
 import io.core.common.util.CoreUtil
-import io.core.common.util.ToastUtil
+import io.core.common.util.Toaster
 import io.core.common.util.extensions.cool.launchAsync
 import io.core.common.util.extensions.cool.launchSync
 import io.core.common.util.extensions.ui.toast
@@ -61,7 +61,7 @@ class RoomActivity : ReflectBindingActivity<ActivityRoomBinding>() {
                 launchAsync {
                     val user = User(name = name.text.toString(), age = age.text.toString().toInt())
                     val insert = userVM.insert(user)
-                    ToastUtil.show("插入成功")
+                    Toaster.show("插入成功")
                 }
             }
 
@@ -71,7 +71,7 @@ class RoomActivity : ReflectBindingActivity<ActivityRoomBinding>() {
                         if (it.isNotEmpty()) {
                             val user = it.last()
                             userVM.delete(user)
-                            ToastUtil.show("删除成功")
+                            Toaster.show("删除成功")
                         }
                     }
                 }
@@ -85,7 +85,7 @@ class RoomActivity : ReflectBindingActivity<ActivityRoomBinding>() {
                             user.name = name.text.toString()
                             user.age = age.text.toString().toInt()
                             userVM.update(user)
-                            ToastUtil.show("更新成功")
+                            Toaster.show("更新成功")
                         }
                     }
                 }

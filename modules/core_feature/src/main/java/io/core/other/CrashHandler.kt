@@ -7,31 +7,22 @@ import android.os.Build
 import android.os.Debug
 import android.os.Process
 import android.webkit.WebSettings
-import com.hjq.permissions.Permission
 import io.core.Android
 import io.core.appCtx
 import io.core.common.base.component.activity.CrashActivity
 import io.core.common.base.component.activity.RestartActivity
 import io.core.common.helper.AppLifecycleTracker
-import io.core.common.helper.tryCatch
 import io.core.common.util.extensions.cool.createFolderReplace
 import io.core.common.util.extensions.cool.externalCache
 import io.core.common.util.extensions.cool.externalDocuments
 import io.core.common.util.extensions.cool.getFile
 import io.core.common.util.extensions.cool.hasWriteStoragePermission
-import io.core.common.util.extensions.cool.isGranted
 import io.core.common.util.extensions.cool.timeFormat
 import io.core.common.util.extensions.currentTimeMillis
-import io.core.common.util.extensions.logE
 import io.core.common.util.log.LogCat
-import io.core.common.util.log.LogPure
 import io.core.common.util.tools.FileUtils
 import io.core.constant.CRASH_FOLDER_NAME
 import io.core.constant.TimeFormat
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import java.io.File
 import java.io.PrintWriter
 import java.io.StringWriter
 import java.util.concurrent.TimeUnit
@@ -181,15 +172,12 @@ class CrashHandler private constructor(private val application: Application) :
         // 致命异常标记：如果上次崩溃的时间距离当前崩溃小于 5 分钟，那么判定为致命异常
         val deadlyCrash: Boolean = currentCrashTime - lastCrashTime < 1000 * 60 * 5
         if (Android.debug) {
-            tryCatch(
-                tryBlock = {
-                    CrashActivity.start(application, fileName, throwable)
-                },
-                catchBlock = {
-                    LogCat.e(throwable)
-                    RestartActivity.start(application)
-                }
-            )
+            runCatching {
+                CrashActivity.start(application, fileName, throwable)
+            }.onFailure {
+                LogCat.e(it)
+                RestartActivity.start(application)
+            }
 
         } else {
             if (!deadlyCrash) {

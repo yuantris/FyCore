@@ -710,7 +710,7 @@ object ReadBook : CoroutineScope by MainScope() {
 //            return@async
 //        }.onError {
 //            AppLog.put("ChapterProvider ERROR", it)
-//            appCtx.toastOnUi("ChapterProvider ERROR:\n${it.stackTraceStr}")
+//            appCtx.toastOnUI("ChapterProvider ERROR:\n${it.stackTraceStr}")
 //        }.onSuccess {
 //            success?.invoke()
 //        }
@@ -783,7 +783,7 @@ object ReadBook : CoroutineScope by MainScope() {
 //            return
 //        }.onFailure {
 //            AppLog.put("ChapterProvider ERROR", it)
-//            appCtx.toastOnUi("ChapterProvider ERROR:\n${it.stackTraceStr}")
+//            appCtx.toastOnUI("ChapterProvider ERROR:\n${it.stackTraceStr}")
 //        }
     }
 

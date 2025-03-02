@@ -1,37 +1,27 @@
 package com.core.fy.android.main.fragment
 
-import android.content.res.AssetManager
 import com.core.fy.android.MainActivity
 import com.core.fy.android.databinding.FragmentSetBinding
 import com.core.fy.android.function.TestPageActivity
-import com.core.fy.android.util.showXpConfirm
-import com.core.fy.android.util.showXpLoading
+import com.core.fy.android.util.showDxNotification
 import io.core.common.base.component.fragment.ReflectBindingFragment
-import io.core.common.helper.AppLifecycleTracker
 import io.core.common.helper.JsonUltra
 import io.core.common.util.extensions.cool.coolThread
-import io.core.common.util.extensions.cool.jsonToMap
-import io.core.common.util.extensions.cool.logPrint
 import io.core.common.util.extensions.cool.timeFormat
 import io.core.common.util.extensions.currentTimeMillis
 import io.core.common.util.extensions.logD
-import io.core.common.util.extensions.logE
 import io.core.common.util.extensions.ui.adaptStatusBarToView
 import io.core.common.util.extensions.ui.appVersionName
 import io.core.common.util.extensions.ui.ctx
 import io.core.common.util.extensions.ui.onClick
 import io.core.common.util.extensions.ui.onDebouncedClick
 import io.core.common.util.extensions.ui.startActivity
-import io.core.common.util.extensions.ui.toast
 import io.core.common.util.log.LogCat
-import io.core.common.util.log.LogPure
-import io.core.common.util.tools.FileUtils
 import io.core.common.util.tools.ThreadUltra
 import io.core.common.util.tools.androidApiVersion
 import io.core.common.util.tools.androidVersion
 import io.core.common.util.tools.buildMultiLine
 import io.core.constant.TimeFormat
-import kotlinx.serialization.json.JsonNull.content
 
 /**
 # ██████████
@@ -55,7 +45,10 @@ class SetFragment : ReflectBindingFragment<FragmentSetBinding, MainActivity>() {
             version.setLeftText("版本")
             version.setRightText(context?.appVersionName)
             version.onClick {
-                ctx.showXpLoading {
+//                ctx.showXpLoading {
+//                    content = ctx.appVersionName
+//                }
+                showDxNotification {
                     content = ctx.appVersionName
                 }
             }

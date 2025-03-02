@@ -43,7 +43,7 @@ import io.core.common.util.extensions.ui.broadcastPendingIntent
 import io.core.common.util.extensions.ui.getPrefBoolean
 import io.core.common.util.extensions.wifiManager
 import io.core.common.util.log.AppLog
-import io.core.common.util.tools.toastOnUi
+import io.core.common.util.tools.toastOnUI
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.Job
@@ -139,7 +139,7 @@ abstract class BaseReadAloudService : BaseService(),
         upMediaSessionPlaybackState(PlaybackStateCompat.STATE_PLAYING)
         setTimer(AppConfig.ttsTimer)
         if (AppConfig.ttsTimer > 0) {
-            toastOnUi("朗读定时 ${AppConfig.ttsTimer} 分钟")
+            toastOnUI("朗读定时 ${AppConfig.ttsTimer} 分钟")
         }
         execute {
             @Suppress("BlockingMethodInNonBlockingContext")
@@ -408,7 +408,7 @@ abstract class BaseReadAloudService : BaseService(),
         val requestFocus = MediaHelp.requestFocus(mFocusRequest)
         if (!requestFocus) {
             pauseReadAloud(false)
-            toastOnUi("未获取到音频焦点")
+            toastOnUI("未获取到音频焦点")
         }
         return requestFocus
     }

@@ -6,15 +6,12 @@ import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.core.fy.android.databinding.ActivityTestPageBinding
-import com.core.fy.android.function.read.page.BatteryView
-import com.core.fy.android.function.read.page.ContentTextView
-import com.core.fy.android.function.read.page.ReadView
 import com.core.fy.android.main.fragment.code.JavaFragment
 import com.core.fy.android.main.fragment.code.KotlinFragment
 import com.google.android.material.tabs.TabLayoutMediator
 import io.core.common.base.component.activity.ReflectBindingActivity
 import io.core.common.helper.pool.ObjectPoolBuilder
-import io.core.common.util.ToastUtil
+import io.core.common.util.Toaster
 import io.core.common.util.extensions.logD
 import io.core.common.util.tools.Preferences
 import kotlinx.coroutines.launch
@@ -63,10 +60,10 @@ class TestPageActivity : ReflectBindingActivity<ActivityTestPageBinding>() {
 
         lifecycleScope.launch {
             val paint = paintPool.acquire()
-            ToastUtil.show(paint)
+            Toaster.show(paint)
             paintPool.release("2")
             val acquire = paintPool.acquire()
-            ToastUtil.show(acquire)
+            Toaster.show(acquire)
         }
 
         Preferences.putValue("test", setOf(1, 2, 3))

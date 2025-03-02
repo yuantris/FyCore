@@ -40,7 +40,7 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import io.core.R
 import io.core.common.base.component.dialog.CustomToast
-import io.core.common.util.ToastUtil
+import io.core.common.util.Toaster
 import io.core.common.util.extensions.cool.logPrint
 import io.core.common.util.extensions.cool.printOnDebug
 import io.core.common.util.extensions.cool.pxToDp
@@ -294,7 +294,7 @@ fun CustomToast.Builder.quickShow() = build().show()
  */
 fun Context.toast(message: String) {
     takeIf { !it.isActivity }?.let {
-        ToastUtil.show(message)
+        Toaster.show(message)
     } ?: run {
         CustomToast.Builder(this)
             .setMessage(message)
@@ -308,7 +308,7 @@ fun Context.toast(message: String) {
  */
 fun Context.toastLong(message: String) {
     takeIf { !it.isActivity }?.let {
-        ToastUtil.show(message)
+        Toaster.show(message)
     } ?: run {
         CustomToast.Builder(this)
             .setMessage(message)

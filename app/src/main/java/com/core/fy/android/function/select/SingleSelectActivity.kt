@@ -12,7 +12,7 @@ import com.blankj.utilcode.util.GsonUtils
 import com.core.fy.android.R
 import com.core.fy.android.databinding.ActivitySingleSelectBinding
 import io.core.common.base.component.activity.ReflectBindingActivity
-import io.core.common.util.ToastUtil
+import io.core.common.util.Toaster
 import io.core.common.util.extensions.ui.notifyAllDataChanged
 import io.core.common.util.extensions.ui.onClick
 import io.core.common.util.extensions.ui.toast
@@ -82,12 +82,12 @@ class SingleSelectActivity : ReflectBindingActivity<ActivitySingleSelectBinding>
         binding.tip.text = "已选择 $selectedCount 项，\n：$toJson"
         controller.getSelectedIds().apply {
             if (this.isEmpty()) {
-                ToastUtil.show("没有选择")
+                Toaster.show("没有选择")
             } else {
                 val longs = this.toList()
                 val firstByProperty = longs.findFirstByProperty({ it }, 0)
                 firstByProperty?.let {
-                    ToastUtil.show("$firstByProperty")
+                    Toaster.show("$firstByProperty")
                 }
             }
         }
@@ -108,7 +108,7 @@ class SingleSelectActivity : ReflectBindingActivity<ActivitySingleSelectBinding>
         }
 
         override fun onNormalClick(item: SelectItem) {
-            ToastUtil.show("点击了${item.title}")
+            Toaster.show("点击了${item.title}")
         }
 
         override fun onItemBind(holder: ViewHolder, item: SelectItem, isSelected: Boolean) {

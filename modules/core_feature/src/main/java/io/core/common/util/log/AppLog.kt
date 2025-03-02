@@ -2,7 +2,7 @@ package io.core.common.util.log
 
 import io.core.appCtx
 import io.core.common.util.extensions.currentTimeMillis
-import io.core.common.util.tools.toastOnUi
+import io.core.common.util.tools.toastOnUI
 
 object AppLog {
 
@@ -14,7 +14,7 @@ object AppLog {
     fun put(message: String?, throwable: Throwable? = null, toast: Boolean = false) {
         message ?: return
         if (toast) {
-            appCtx.toastOnUi(message)
+            appCtx.toastOnUI(message)
         }
         if (mLogs.size > 100) {
             mLogs.removeLastOrNull()

@@ -4,8 +4,6 @@ import android.os.Bundle
 import com.core.fy.android.databinding.ActivityAudioRecordBinding
 import com.hjq.permissions.Permission
 import io.core.common.base.component.activity.ReflectBindingActivity
-import io.core.common.helper.AppLifecycleTracker
-import io.core.common.util.ToastUtil
 import io.core.common.util.extensions.cool.externalMusic
 import io.core.common.util.extensions.cool.postUI
 import io.core.common.util.extensions.cool.refreshMediaLibrary

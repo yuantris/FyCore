@@ -1,37 +1,55 @@
 package com.core.fy.android.util
 
 import android.app.Application
-import android.content.Context
 import android.view.View
 import com.kongzue.dialogx.DialogX
 import com.kongzue.dialogx.dialogs.MessageDialog
 import com.kongzue.dialogx.dialogs.PopNotification
 import com.kongzue.dialogx.style.KongzueStyle
-import io.core.common.util.extensions.ui.appName
+import io.core.common.helper.coroutine.SafeCoroutineManager
 
+// DSL 配置类
+class DialogXConfig {
+    var title: String = "温馨提示"
+    var content: String = ""
+    var confirmText: String = "确定"
+    var cancelText: String = "取消"
+    var inputContent: String = ""
+    var hint: String = ""
+    var onConfirm: (() -> Unit)? = null
+    var onCancel: (() -> Unit)? = null
+    var onInputConfirm: ((String) -> Unit)? = null
+    var onMessageConfirm: ((MessageDialog, View) -> Unit)? = null
+    var onMessageCancel: ((MessageDialog, View) -> Unit)? = null
+}
+
+class NotificationConfig {
+    var title: String = "温馨提示"
+    var content: String = ""
+    var icon: Int = 0
+}
 
 fun Application.initDialogX() {
-    DialogX.init(this)
-    DialogX.globalStyle = KongzueStyle.style()
+    SafeCoroutineManager.getInstance().launch {
+        DialogX.init(this@initDialogX)
+        DialogX.globalStyle = KongzueStyle.style()
+    }
 }
 
-fun Context.showDxNotification(message: String): PopNotification {
-    return PopNotification.show("${appName}通知", message)
+fun showDxNotification(block: NotificationConfig.() -> Unit): PopNotification {
+    val config = NotificationConfig().apply(block)
+    return PopNotification.show(config.icon,config.title, config.content)
 }
 
-fun Context.showDxMessage(
-    message: String,
-    title: String = "温馨提示",
-    onCancel: () -> Unit = {},
-    onOk: (dialog: MessageDialog, v: View) -> Unit = { _, _ -> }
-): MessageDialog {
-    return MessageDialog.show(title, message)
-        .setOkButton("确定") { dialog, v ->
-            onOk.invoke(dialog, v)
+fun showDxMessage(block: DialogXConfig.() -> Unit): MessageDialog {
+    val config = DialogXConfig().apply(block)
+    return MessageDialog.show(config.title, config.content)
+        .setOkButton(config.confirmText) { dialog, v ->
+            config.onMessageConfirm?.invoke(dialog, v)
             false
         }
-        .setCancelButton("取消") { _, _ ->
-            onCancel.invoke()
+        .setCancelButton(config.cancelText) { dialog, v ->
+            config.onMessageCancel?.invoke(dialog, v)
             false
         }
 }

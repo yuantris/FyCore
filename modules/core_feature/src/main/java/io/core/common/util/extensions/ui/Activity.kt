@@ -3,35 +3,20 @@ package io.core.common.util.extensions.ui
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
-import android.content.ContextWrapper
 import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import android.util.DisplayMetrics
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowInsets
 import android.view.WindowInsetsController
 import android.view.WindowManager
-import android.view.WindowMetrics
 import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.DialogFragment
-import androidx.fragment.app.Fragment
-import io.core.common.util.tools.buildMainHandler
-import io.core.common.base.component.dialog.CustomToast
-import io.core.common.util.ToastUtil
 import io.core.common.util.extensions.cool.isDarkColor
-import io.core.common.util.extensions.verify
 
 inline fun <reified T : DialogFragment> AppCompatActivity.showDialogFragment(
     arguments: Bundle.() -> Unit = {}

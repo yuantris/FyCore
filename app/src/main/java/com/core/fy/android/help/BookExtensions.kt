@@ -113,7 +113,7 @@ private val localUriCache by lazy {
 //        val treeUri = Uri.parse(defaultBookDir)
 //        val treeFileDoc = FileDoc.fromUri(treeUri, true)
 //        if (!treeFileDoc.exists()) {
-//            Android.context.toastOnUi("书籍保存目录失效，请重新设置！")
+//            Android.context.toastOnUI("书籍保存目录失效，请重新设置！")
 //        } else {
 //            val fileDoc = treeFileDoc.find(originName, 5)
 //            if (fileDoc != null) {

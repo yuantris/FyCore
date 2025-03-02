@@ -23,7 +23,7 @@ import com.core.fy.android.help.config.AppConfig
 import com.core.fy.android.room.entity.Bookmark
 import io.core.common.util.extensions.cool.dpToPx
 import io.core.common.util.extensions.ui.activity
-import io.core.common.util.tools.toastOnUi
+import io.core.common.util.tools.toastOnUI
 import java.util.concurrent.Executors
 import kotlin.math.max
 import kotlin.math.min
@@ -232,12 +232,12 @@ class ContentTextView(context: Context, attrs: AttributeSet?) : View(context, at
         touch(x, y) { _, textPos, textPage, textLine, column ->
             when (column) {
                 is ButtonColumn -> {
-                    context.toastOnUi("Button Pressed!")
+                    context.toastOnUI("Button Pressed!")
                     handled = true
                 }
 
                 is ReviewColumn -> {
-                    context.toastOnUi("Button Pressed!")
+                    context.toastOnUI("Button Pressed!")
                     handled = true
                 }
 

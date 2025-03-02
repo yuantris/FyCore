@@ -7,7 +7,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 
-object ToastUtil : CoroutineScope by MainScope() {
+object Toaster : CoroutineScope by MainScope() {
 
     private var currentToast: Toast? = null
 

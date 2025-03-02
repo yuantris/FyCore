@@ -15,13 +15,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.SortedMap;
 
-import io.core.Android;
 import io.core.common.base.component.fragment.ReflectBindingFragment;
 import io.core.common.helper.AppLifecycleTracker;
 import io.core.common.helper.JsonUltra;
 import io.core.common.helper.TaskExecutor;
 import io.core.common.util.MediaScanner;
-import io.core.common.util.ToastUtil;
+import io.core.common.util.Toaster;
 import io.core.common.util.extensions.cool.CollectionKt;
 import io.core.common.util.log.LogCat;
 import io.core.common.util.log.LogPure;
@@ -39,12 +38,12 @@ public class JavaFragment extends ReflectBindingFragment<FragmentJavaBinding, Te
     @Override
     protected void initView() {
         super.initView();
-        ToastUtil.show("初始化");
+        Toaster.show("初始化");
 
         String format = JsonUltra.format("{\"name\":\"张三\",\"age\":18}", false);
         LogCat.e(format);
 
-        ThreadUltra.execute(new ThreadUltra.Task<List<Bitmap>>() {
+        ThreadUltra.executeWithLifecycle(new ThreadUltra.Task<List<Bitmap>>() {
             @Override
             public List<Bitmap> doInBackground() throws Throwable {
                 for (int i = 0; i < 20; i++) {
@@ -68,7 +67,7 @@ public class JavaFragment extends ReflectBindingFragment<FragmentJavaBinding, Te
             public void onFail(@NonNull ThreadUltra.ErrorType errorType, @NonNull Throwable ex) {
                 LogCat.e(ex);
             }
-        });
+        },this);
     }
 
     @Override
@@ -108,7 +107,7 @@ public class JavaFragment extends ReflectBindingFragment<FragmentJavaBinding, Te
 
         AsyncUtils.supplyAsync(() -> MediaScanner.queryFiles(CollectionKt.createSet(MediaScanner.FileType.M4A)))
                 .thenAccept(fileInfos -> {
-                    ToastUtil.show("size:" + fileInfos.size());
+                    Toaster.show("size:" + fileInfos.size());
                 }).exceptionally(throwable -> {
                     LogCat.e(throwable);
                     return null;

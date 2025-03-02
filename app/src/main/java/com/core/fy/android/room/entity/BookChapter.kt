@@ -119,7 +119,7 @@ data class BookChapter(
 //                        return@run
 //                    } catch (e: Exception) {
 //                        AppLog.put("${item.name}替换出错\n替换内容\n${displayTitle}", e)
-//                        appCtx.toastOnUi("${item.name}替换出错")
+//                        appCtx.toastOnUI("${item.name}替换出错")
 //                    }
 //                }
 //            }

@@ -16,7 +16,7 @@ import io.core.common.util.log.LogCat
 import io.core.common.util.tools.UriUtils
 import io.core.common.util.tools.formatDuration
 import io.core.common.util.tools.runOnUI
-import io.core.common.util.tools.toastOnUi
+import io.core.common.util.tools.toastOnUI
 import kotlinx.coroutines.launch
 import java.io.File
 import java.util.concurrent.atomic.AtomicBoolean
@@ -131,16 +131,16 @@ class MediaPlayerActivity : ReflectBindingActivity<ActivityMediaPlayerBinding>()
                         }
 
                         is PlayerState.Paused -> {
-                            toastOnUi("暂停")
+                            toastOnUI("暂停")
                         }
 
                         is PlayerState.Error -> {
-                            toastOnUi("错误")
+                            toastOnUI("错误")
                             LogCat.e(state.error)
                         }
 
                         is PlayerState.Completed -> {
-                            toastOnUi("完成")
+                            toastOnUI("完成")
                         }
 
                         else -> {

@@ -11,7 +11,7 @@ import android.text.SpannableString
 import android.text.Spanned
 import android.text.style.ForegroundColorSpan
 import androidx.annotation.ColorInt
-import io.core.common.util.ToastUtil
+import io.core.common.util.Toaster
 import java.io.File
 import java.lang.Character.codePointCount
 import java.lang.Character.offsetByCodePoints
@@ -148,6 +148,6 @@ fun String.spanForeColor(@ColorInt color: Int): SpannableString {
 }
 
 fun String.toast(){
-    ToastUtil.show(this)
+    Toaster.show(this)
 }
 
