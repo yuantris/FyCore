@@ -106,7 +106,7 @@ class TaskExecutor private constructor(
      * @param executor 自定义线程池（可选）
      */
     @JvmOverloads
-    fun <T> executeForJava(
+    fun <T> execute(
         tasks: List<ProcessorTask<T>>,
         callback: ConcurrentCallback<T>,
         timeout: Long = 0,
@@ -214,6 +214,7 @@ class TaskExecutor private constructor(
         @Volatile
         private var instance: TaskExecutor? = null
 
+        @JvmStatic
         fun get(): TaskExecutor = instance ?: synchronized(this) {
             instance ?: TaskExecutor(
                 Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors()),
@@ -221,6 +222,7 @@ class TaskExecutor private constructor(
             ).also { instance = it }
         }
 
+        @JvmStatic
         fun newInstance(
             threadPoolSize: Int = Runtime.getRuntime().availableProcessors(),
             scheduledThreads: Int = 2

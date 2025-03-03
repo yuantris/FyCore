@@ -3,7 +3,6 @@ package io.core
 import android.app.Application
 import androidx.core.content.FileProvider
 import io.core.common.helper.AppLifecycleTracker
-import io.core.common.helper.coroutine.SafeCoroutine
 import io.core.common.util.log.LogCat
 import io.core.common.util.tools.Preferences
 import io.core.engine.livebus.LiveEventBus
@@ -52,19 +51,16 @@ object Android {
         _context = application
         // 注册Activity生命周期回调
         AppLifecycleTracker.init(application)
-        SafeCoroutine.launch {
-            // 注册全局CrashHandler
-            CrashHandler.register(application)
-            // 初始化日志
-            LogCat.setDebug(debug)
-            // LiveEventBus 初始化
-            LiveEventBus.config()
-                .lifecycleObserverAlwaysActive(true)
-                .autoClear(true)
-                .enableLogger(debug)
-                .setLogger(DefaultLogger())
-        }
-
+        // 注册全局CrashHandler
+        CrashHandler.register(application)
+        // 初始化日志
+        LogCat.setDebug(debug)
+        // LiveEventBus 初始化
+        LiveEventBus.config()
+            .lifecycleObserverAlwaysActive(true)
+            .autoClear(true)
+            .enableLogger(debug)
+            .setLogger(DefaultLogger())
     }
 
     @JvmStatic

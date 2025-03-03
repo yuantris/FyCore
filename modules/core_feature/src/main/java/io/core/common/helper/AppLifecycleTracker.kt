@@ -2,7 +2,6 @@
 
 package io.core.common.helper
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Application
 import android.app.Service
@@ -54,11 +53,13 @@ object AppLifecycleTracker : Application.ActivityLifecycleCallbacks, DefaultLife
     private val appForegroundListeners = CopyOnWriteArrayList<(Boolean) -> Unit>()
     private val listenerMap = ConcurrentHashMap<String, (Boolean) -> Unit>()
 
+    @JvmStatic
     fun registerAppStatusListenerWithTag(tag: String, listener: (Boolean) -> Unit) {
         listenerMap[tag] = listener
         appForegroundListeners.add(listener)
     }
 
+    @JvmStatic
     fun unregisterAppStatusListenerByTag(tag: String) {
         listenerMap[tag]?.let {
             appForegroundListeners.remove(it)
@@ -69,6 +70,7 @@ object AppLifecycleTracker : Application.ActivityLifecycleCallbacks, DefaultLife
     /**
      * 注册应用前后台状态监听
      */
+    @JvmStatic
     fun registerAppStatusListener(listener: (Boolean) -> Unit) {
         appForegroundListeners.add(listener)
     }
@@ -76,6 +78,7 @@ object AppLifecycleTracker : Application.ActivityLifecycleCallbacks, DefaultLife
     /**
      * 注销应用前后台状态监听
      */
+    @JvmStatic
     fun unregisterAppStatusListener(listener: (Boolean) -> Unit) {
         appForegroundListeners.remove(listener)
     }
@@ -129,6 +132,7 @@ object AppLifecycleTracker : Application.ActivityLifecycleCallbacks, DefaultLife
     /**
      * 获取栈顶Activity（可能为null）
      */
+    @JvmStatic
     fun getTopActivity(): Activity? = activeActivities.lastOrNull()
 
     /**
@@ -164,6 +168,7 @@ object AppLifecycleTracker : Application.ActivityLifecycleCallbacks, DefaultLife
     /**
      * 反射获取当前应用的Application实例
      */
+    @JvmStatic
     fun getApplicationByReflect(): Application? {
         return try {
             // 获取 ActivityThread 实例

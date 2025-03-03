@@ -6,7 +6,7 @@ import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.Observer
 import io.core.engine.livebus.LiveEventBus
 
-object LiveDataCompat {
+object LiveDataPro {
 
     // ==================================================
     // 发送事件优化 (Java 中可省略 Class 参数)

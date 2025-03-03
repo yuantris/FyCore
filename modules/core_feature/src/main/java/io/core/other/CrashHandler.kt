@@ -9,6 +9,7 @@ import android.os.Process
 import android.webkit.WebSettings
 import io.core.Android
 import io.core.appCtx
+import io.core.common.CoreConfig
 import io.core.common.base.component.activity.CrashActivity
 import io.core.common.base.component.activity.RestartActivity
 import io.core.common.helper.AppLifecycleTracker
@@ -17,6 +18,7 @@ import io.core.common.util.extensions.cool.externalCache
 import io.core.common.util.extensions.cool.externalDocuments
 import io.core.common.util.extensions.cool.getFile
 import io.core.common.util.extensions.cool.hasWriteStoragePermission
+import io.core.common.util.extensions.cool.ifNext
 import io.core.common.util.extensions.cool.timeFormat
 import io.core.common.util.extensions.currentTimeMillis
 import io.core.common.util.log.LogCat
@@ -173,7 +175,14 @@ class CrashHandler private constructor(private val application: Application) :
         val deadlyCrash: Boolean = currentCrashTime - lastCrashTime < 1000 * 60 * 5
         if (Android.debug) {
             runCatching {
-                CrashActivity.start(application, fileName, throwable)
+                CoreConfig.enableCrashPage.ifNext {
+                    ifTrue = {
+                        CrashActivity.start(application, fileName, throwable)
+                    }
+                    ifFalse = {
+                        RestartActivity.start(application)
+                    }
+                }
             }.onFailure {
                 LogCat.e(it)
                 RestartActivity.start(application)

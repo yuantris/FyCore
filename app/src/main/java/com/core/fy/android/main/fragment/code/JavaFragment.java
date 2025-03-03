@@ -3,6 +3,7 @@ package com.core.fy.android.main.fragment.code;
 import android.graphics.Bitmap;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.Observer;
 
 import com.blankj.utilcode.util.GsonUtils;
 import com.core.fy.android.databinding.FragmentJavaBinding;
@@ -27,6 +28,8 @@ import io.core.common.util.log.LogPure;
 import io.core.common.util.tools.AsyncUtils;
 import io.core.common.util.tools.CollectionTools;
 import io.core.common.util.tools.ThreadUltra;
+import io.core.engine.livebus.LiveEventBus;
+import io.core.other.LiveDataPro;
 
 public class JavaFragment extends ReflectBindingFragment<FragmentJavaBinding, TestPageActivity> {
 
@@ -88,6 +91,10 @@ public class JavaFragment extends ReflectBindingFragment<FragmentJavaBinding, Te
     protected void onFragmentResume(boolean first) {
         super.onFragmentResume(first);
 
+        LiveDataPro.on("12", String.class)
+                .with(this, LogPure::d);
+        LiveDataPro.postEvent("12", "12");
+
         if (first) {
             MediaScanner.registerContentObserver();
         }
@@ -124,7 +131,7 @@ public class JavaFragment extends ReflectBindingFragment<FragmentJavaBinding, Te
             return "兼容";
         });
 
-        TaskExecutor.Companion.get().executeForJava(tasks,
+        TaskExecutor.get().execute(tasks,
                 new TaskExecutor.ConcurrentCallback<String>() {
                     @Override
                     public void onComplete(@NonNull SortedMap<Integer, String> results) {

@@ -1,17 +1,19 @@
-## FyCore
+# FyCore 🚀
+Android核心工具库 | [![](https://img.shields.io/badge/Version-0.1.6-brightgreen)]() [![](https://img.shields.io/badge/License-Apache%202.0-blue)]() 
+
 > 项目初始化
-
 ```kotlin
-
+// Application初始化
 Android.initialize(this)
 
-// （以下可选）
-// 设置重启对象Activity(Crash设置)
-CoreConfig.crashAfterJumpActivity = MainActivity::class.java
-// 页面追踪配置
+// ---------- 可选配置 ----------
+// 崩溃后跳转Activity（建议配置主Activity）
+CoreConfig.CRASH_AFTER_JUMP = MainActivity::class.java
+
+// 页面追踪配置（Release模式自动开启）
 TurboTracker.initialize(this) {
-  enable(CoreConfig.RELEASE) // Release模式启用
-  setLogger(ReleaseLogger())
+    enable(CoreConfig.RELEASE)
+    setLogger(ReleaseLogger()) // 生产环境日志
 }
 ```
 
@@ -275,7 +277,7 @@ TurboTracker.initialize(this) {
   | `RootLayout`       | 带自定义TitleBar的根布局        |                                                             |
   | `FixedScrollView`  | 禁止滚动/禁止显示滚动条的ScrollView | 配合[android.widget.ImageView.ScaleType.FIT_START]可实现图片顶部对齐裁剪 |
 
-**注意事项**
+**⚠️ 重要提醒**
 
 - 事件总线
     - sentEvent与receiveEvent方法绑定使用

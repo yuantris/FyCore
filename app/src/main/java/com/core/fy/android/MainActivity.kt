@@ -16,7 +16,9 @@ import io.core.common.helper.dialogs.showDialog
 import io.core.common.helper.rv.ItemViewHolder
 import io.core.common.helper.rv.RecyclerAdapter
 import io.core.common.util.extensions.exitApp
+import io.core.common.util.extensions.ui.ctx
 import io.core.common.util.extensions.ui.disableEdgeEffect
+import io.core.common.util.extensions.ui.getCompatDrawable
 import io.core.common.util.extensions.ui.notifyAllDataChanged
 import io.core.common.util.extensions.ui.onClick
 import io.core.common.util.processNavigationBar
@@ -31,31 +33,28 @@ class MainActivity : ReflectBindingActivity<ActivityMainBinding>() {
         super.initial(savedInstanceState)
 
         navigationAdapter = NavigationAdapter().apply {
-            addItem(
-                MenuItem(
-                    "首页",
-                    ContextCompat.getDrawable(this@MainActivity, R.drawable.home_home_selector)
-                )
-            )
-            addItem(
-                MenuItem(
-                    "我的",
-                    ContextCompat.getDrawable(this@MainActivity, R.drawable.home_me_selector)
-                )
-            )
-            binding.rvHomeNavigation.layoutManager =
-                GridLayoutManager(this@MainActivity, this.itemCount)
-            binding.rvHomeNavigation.adapter = this
-            binding.rvHomeNavigation.processNavigationBar()
-            binding.rvHomeNavigation.disableEdgeEffect()
+            listOf(
+                "首页" to R.drawable.home_home_selector,
+                "我的" to R.drawable.home_me_selector
+            ).forEach { (title, iconRes) ->
+                addItem(MenuItem(title, this@MainActivity.getCompatDrawable(iconRes)))
+            }
+
+            with(binding.rvHomeNavigation) {
+                layoutManager = GridLayoutManager(this@MainActivity, itemCount)
+                adapter = this@apply
+                processNavigationBar()
+                disableEdgeEffect()
+            }
         }
 
         pagerAdapter = FragmentPagerAdapter<BaseFragment<*>>(this).apply {
-            addFragment(HomeFragment())
-            addFragment(SetFragment())
-            binding.vpHomePager.adapter = this
-            binding.vpHomePager.addOnPageSelectedListener {
-                navigationAdapter?.setSelectedPosition(it)
+            listOf(HomeFragment(), SetFragment()).forEach(::addFragment)
+            with(binding.vpHomePager) {
+                adapter = this@apply
+                addOnPageSelectedListener {
+                    navigationAdapter?.setSelectedPosition(it)
+                }
             }
         }
 

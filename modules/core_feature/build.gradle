@@ -108,7 +108,7 @@ dependencies {
 }
 
 /*当前版本*/
-def version_number = '0.1.64'
+def version_number = '0.1.66'
 def version_github = version_number + '-github'
 
 //publishing {

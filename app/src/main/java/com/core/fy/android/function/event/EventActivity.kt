@@ -13,7 +13,7 @@ import io.core.common.util.extensions.ui.onClick
 import io.core.common.util.extensions.ui.toast
 import io.core.common.util.log.logD
 import io.core.common.util.tools.DrawableBuilder
-import io.core.other.LiveDataCompat
+import io.core.other.LiveDataPro
 
 class EventActivity : ReflectBindingActivity<ActivityEventBinding>() {
 
@@ -49,7 +49,7 @@ class EventActivity : ReflectBindingActivity<ActivityEventBinding>() {
                         .build()
                 onClick {
                     // toast(currentTimeMillis.toString())
-                    LiveDataCompat.postEvent("123", "")
+                    LiveDataPro.postEvent("123", "")
                 }
             }
         }
@@ -72,7 +72,7 @@ class EventActivity : ReflectBindingActivity<ActivityEventBinding>() {
             }
         }
 
-        LiveDataCompat.on("123", String::class.java)
+        LiveDataPro.on("123", String::class.java)
             .with(this) { toast(currentTimeMillis.toString()) }
     }
 

@@ -20,8 +20,13 @@ import java.util.concurrent.CancellationException
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.coroutines.coroutineContext
 
-internal val SafeCoroutine = SafeCoroutineManager.getInstance()
+val SafeCoroutine = SafeCoroutineManager.getInstance()
 
+/**
+ * 安全协程管理器
+ * 封装了协程的启动、生命周期绑定、异常处理等功能，提供更安全的协程管理。
+ * 防止内存泄露
+ */
 class SafeCoroutineManager private constructor() {
 
     companion object {
@@ -169,11 +174,10 @@ class SafeCoroutineManager private constructor() {
 
 // 扩展函数
 fun LifecycleOwner.launchSafely(
-    manager: SafeCoroutineManager = SafeCoroutine,
     dispatcher: CoroutineDispatcher = Dispatchers.IO,
     block: suspend CoroutineScope.() -> Unit
 ): Job {
-    return manager.launch(
+    return SafeCoroutine.launch(
         dispatcher = dispatcher,
         strategy = SafeCoroutineManager.LifecycleStrategy.BindTo(this.lifecycle),
         block = block
@@ -181,10 +185,9 @@ fun LifecycleOwner.launchSafely(
 }
 
 fun WeakReference<Lifecycle>.launchSafely(
-    manager: SafeCoroutineManager = SafeCoroutineManager.getInstance(),
     block: suspend CoroutineScope.() -> Unit
 ): Job {
-    return manager.launch(
+    return SafeCoroutine.launch(
         strategy = SafeCoroutineManager.LifecycleStrategy.BindToWeak(this),
         block = block
     )
