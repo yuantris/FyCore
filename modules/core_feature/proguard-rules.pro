@@ -274,3 +274,6 @@
 -keep class io.core.common.helper.TurboTracker$DefaultLogger { *; }
 -keep interface io.core.common.helper.TurboTracker$Logger { *; }
 -keep interface io.core.common.helper.TurboTracker$ExtraInfoProvider { *; }
+
+# 保持继承了MultiState的类不被混淆
+-keep public class * extends io.core.engine.multi_state.MultiState { *; }

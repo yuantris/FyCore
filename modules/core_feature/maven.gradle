@@ -1,0 +1,53 @@
+apply plugin: 'maven-publish'
+
+def version_number = '0.1.67'
+
+afterEvaluate {
+    publishing {
+        publications {
+            plugin(MavenPublication) {
+                from components.release
+                groupId = 'io.core'
+                artifactId = 'fylibs'
+                version = version_number
+            }
+        }
+        repositories {
+            maven {
+                url = 'https://packages.aliyun.com/maven/repository/2512815-release-NDmHZu/'
+                credentials {
+                    username = '63d4d579378edb0fd9aa3b2d'
+                    password = 'nXJxEWiiObre'
+                }
+            }
+        }
+    }
+}
+
+//publishing {
+//    publications {
+//        // register 和 create 都类似，这里用 create
+//        create("lib-base", MavenPublication) {
+//            // 配置信息，使用: classpath("groupId:artifactId:version") (不能有空格)
+//            groupId = "io.core"
+//            artifactId = "fylibs"
+//            version = version_github
+//
+//            // 这条要加上，不然不会包含代码文件
+//            afterEvaluate {
+//                from components.release
+//            }
+//        }
+//    }
+//    repositories {
+//        // 远程仓库
+//        maven {
+//            name = "GitHubPackages"
+//            url = uri("https://maven.pkg.github.com/yuantris/FyCore")
+//            credentials {
+//                username = 'yuantris'
+//                password = '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'
+//            }
+//        }
+//    }
+//}
