@@ -73,6 +73,12 @@ class KotlinFragment : ReflectBindingFragment<FragmentKotlinBinding, TestPageAct
 
         JsonUltra.parse("{\"name\":\"张三\",\"age\":18}")["name"]?.asString()?.logD()
 
+        val ultra =
+            JsonUltra.parse("{\"code\":1,\"message\":\"success\",\"data\":{\"邮政平邮\":\"youzhengbk\",\"申通快递\":\"shentong\",\"圆通快递\":\"yuantong\",\"中通快递\":\"zhongtong\",\"极兔速递\":\"jtexpress\",\"韵达快递\":\"yunda\",\"德邦快递\":\"debangkuaidi\",\"顺丰快递\":\"shunfeng\"}}")
+
+        ultra["data"]?.asMap()?.let { m ->
+            m["邮政平邮"]?.asString()?.logD()
+        }
         ctx.requestPermission(Permission.READ_MEDIA_AUDIO) {
 //            LogPure.v {
 //                "MANAGE_EXTERNAL_STORAGE permission granted"

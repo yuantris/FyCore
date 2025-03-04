@@ -61,7 +61,12 @@ class JsonUltra private constructor(
      * 获取当前节点的字符串值
      * @throws IllegalArgumentException 当节点不是基本类型或转换失败时抛出，包含详细类型和路径信息
      */
-    fun asString(): String = getPrimitiveValue("String") { content }
+    fun asString(): String {
+        if (jsonElement is JsonObject) {
+            throw IllegalArgumentException("当前为JSON对象，请使用convertJsonString()")
+        }
+        return getPrimitiveValue("String") { content }
+    }
 
     /**
      * 安全获取字符串值
@@ -117,6 +122,31 @@ class JsonUltra private constructor(
         }
     }
 
+    //    fun asMap(): Map<String, Any> = when (val element = jsonElement.autoParseStringContent()) {
+//        is JsonObject -> element.mapValues { (_, v) -> v.toAny() }
+//        else -> throw typeMismatchException("JsonObject", element)
+//    }
+    fun asMap(): Map<String, JsonUltra> {
+        return when (val element = jsonElement.autoParseStringContent()) {
+            is JsonObject -> element.mapValues { JsonUltra(it.value) }
+            else -> throw typeMismatchException("JsonObject", element)
+        }
+    }
+
+    private fun JsonElement.toAny(): Any = when (this) {
+        is JsonPrimitive -> when {
+            isString -> content
+            booleanOrNull != null -> boolean
+            intOrNull != null -> int
+            doubleOrNull != null -> double
+            else -> content
+        }
+
+        is JsonArray -> map { it.toAny() }
+        is JsonObject -> mapValues { (_, v) -> v.toAny() }
+        else -> this
+    }
+
     /**
      * 获取所有路径
      */
@@ -128,11 +158,13 @@ class JsonUltra private constructor(
                     add(newPath)
                     traverse(newPath, v)
                 }
+
                 is JsonArray -> element.forEachIndexed { i, e ->
                     val newPath = "$path[$i]"
                     add(newPath)
                     traverse(newPath, e)
                 }
+
                 else -> if (path.isNotEmpty()) add(path)
             }
         }
@@ -165,11 +197,13 @@ class JsonUltra private constructor(
             return runCatching {
                 JsonUltra(jsonFormatter.parseToJsonElement(jsonString), autoParse)
             }.getOrElse { e ->
-                throw IllegalArgumentException("""
+                throw IllegalArgumentException(
+                    """
                 JSON解析失败：${e.message}
                 原始内容：${jsonString.take(200)}${if (jsonString.length > 200) "..." else ""}
                 建议：使用JsonUltra.format()预处理字符串
-            """.trimIndent())
+            """.trimIndent()
+                )
             }
         }
 
@@ -361,6 +395,7 @@ class JsonUltra private constructor(
                             "可用路径：${getAllPaths().take(5).joinToString()}"
                 )
             }
+
             else -> throw typeMismatchException("JsonPrimitive", element)
         }
     }

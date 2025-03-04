@@ -59,7 +59,7 @@ TurboTracker.initialize(this) {
   - LiveEventBus (https://github.com/michaellee123/LiveEventBus)
   - ShapeView (https://github.com/getActivity/ShapeView)
   - StateLayout (https://github.com/liangjingkanji/StateLayout)
-  - 
+  - MultiStatePage (https://github.com/Zhao-Yan-Yan/MultiStatePage)
 
 - AppLifecycleTracker
   - Lifecycle管理器,管理项目中Activity、service的状态

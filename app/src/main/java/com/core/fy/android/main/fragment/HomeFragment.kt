@@ -9,16 +9,16 @@ import com.core.fy.android.interfaces.FragmentPagerAdapter
 import com.core.fy.android.model.Tab
 import com.core.fy.android.ui.ConfigDialog
 import io.core.common.base.component.fragment.BaseFragment
-import io.core.engine.brv.BindingAdapter
-import io.core.engine.brv.utils.grid
-import io.core.engine.brv.utils.setup
 import io.core.common.base.component.fragment.ReflectBindingFragment
-import io.core.common.util.extensions.ui.notifyAllDataChanged
 import io.core.common.util.extensions.ui.adaptStatusBarToView
 import io.core.common.util.extensions.ui.getCompatColor
 import io.core.common.util.extensions.ui.hide
+import io.core.common.util.extensions.ui.notifyAllDataChanged
 import io.core.common.util.extensions.ui.show
 import io.core.common.util.extensions.ui.showDialogFragment
+import io.core.engine.brv.BindingAdapter
+import io.core.engine.brv.utils.grid
+import io.core.engine.brv.utils.setup
 import io.core.other.ClickSequenceHandler
 
 /**
