@@ -2,6 +2,7 @@ package com.core.fy.android.main.fragment.code
 
 import androidx.lifecycle.lifecycleScope
 import com.blankj.utilcode.util.GsonUtils
+import com.core.fy.android.App
 import com.core.fy.android.databinding.FragmentKotlinBinding
 import com.core.fy.android.function.TestPageActivity
 import com.core.fy.android.help.ProgressNotifier
@@ -16,6 +17,7 @@ import io.core.common.helper.TimeoutCallback
 import io.core.common.helper.TimeoutHandler
 import io.core.common.util.extensions.cool.GSON
 import io.core.common.util.extensions.cool.createMap
+import io.core.common.util.extensions.cool.externalDownloads
 import io.core.common.util.extensions.cool.launchAsync
 import io.core.common.util.extensions.cool.mapBuilder
 import io.core.common.util.extensions.cool.postDelayUI
@@ -23,10 +25,12 @@ import io.core.common.util.extensions.cool.requestPermission
 import io.core.common.util.extensions.logD
 import io.core.common.util.extensions.logE
 import io.core.common.util.extensions.ui.ctx
+import io.core.common.util.log.AppLog
 import io.core.common.util.log.LogPure
 import io.core.common.util.tools.AsyncUtils
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.io.File
 import java.util.concurrent.TimeUnit
 
 
@@ -53,14 +57,15 @@ class KotlinFragment : ReflectBindingFragment<FragmentKotlinBinding, TestPageAct
             }
             "author" with "yuan"
         }
-        jsonString.logE()
+        AppLog.put("jsonString", toast = true)
+        AppLog.put(jsonString, toast = true)
 
         JsonUltra.parse(jsonString).getAllPaths().forEach { LogPure.i { it } }
-        JsonUltra.parse(jsonString)["library.features[2]"]?.asString().logD()
-        JsonUltra.parse(jsonString)["library.books[1].title"]?.asString().logD()
+        AppLog.debug(JsonUltra.parse(jsonString)["library.features[2]"]?.asString() ?: "")
+        AppLog.debug(JsonUltra.parse(jsonString)["library.books[1].title"]?.asString() ?: "")
         val list: List<String>? =
             JsonUltra.parse(jsonString)["library.features"]?.asList { it.asString() }
-        GSON.toJson(list).logE()
+        AppLog.error(GSON.toJson(list))
 
 
         val parse = JsonUltra.parse("{\"key\": \"{\\\"nested\\\": 1234}\"}")
@@ -94,6 +99,8 @@ class KotlinFragment : ReflectBindingFragment<FragmentKotlinBinding, TestPageAct
         MMKVUltra.init(appCtx)
         MMKVs.put("key", "value")
         MMKVs.get<String>("key")
+
+        AppLog.exportToFileAsync(File(externalDownloads, "log.txt"), true)
     }
 
     override fun initData() {

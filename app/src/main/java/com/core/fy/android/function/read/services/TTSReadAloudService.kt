@@ -16,6 +16,7 @@ import io.core.common.util.extensions.cool.fromJsonObject
 import io.core.common.util.extensions.logE
 import io.core.common.util.extensions.ui.servicePendingIntent
 import io.core.common.util.log.AppLog
+import io.core.common.util.log.LogCat
 import io.core.common.util.log.LogPure
 import io.core.common.util.tools.toastOnUI
 import kotlinx.coroutines.delay
@@ -82,7 +83,7 @@ class TTSReadAloudService : BaseReadAloudService(), TextToSpeech.OnInitListener 
         if (!ttsInitFinish) return
         if (!requestFocus()) return
         if (contentList.isEmpty()) {
-            AppLog.putDebug("朗读列表为空")
+            LogCat.d("朗读列表为空")
             ReadBook.readAloud()
             return
         }
@@ -108,11 +109,11 @@ class TTSReadAloudService : BaseReadAloudService(), TextToSpeech.OnInitListener 
                     val result = tts.runCatching {
                         speak(text, TextToSpeech.QUEUE_FLUSH, null, TAG + i)
                     }.getOrElse {
-                        AppLog.put("tts出错\n${it.localizedMessage}", it, true)
+                        LogCat.e(it, msg = "tts出错\n${it.localizedMessage}")
                         TextToSpeech.ERROR
                     }
                     if (result == TextToSpeech.ERROR) {
-                        AppLog.put("tts出错 尝试重新初始化")
+                        LogCat.e("tts出错 尝试重新初始化")
                         clearTTS()
                         initTts()
                         return@execute
@@ -121,11 +122,11 @@ class TTSReadAloudService : BaseReadAloudService(), TextToSpeech.OnInitListener 
                     val result = tts.runCatching {
                         speak(text, TextToSpeech.QUEUE_ADD, null, TAG + i)
                     }.getOrElse {
-                        AppLog.put("tts出错\n${it.localizedMessage}", it, true)
+                        LogCat.e(it, msg = "tts出错\n${it.localizedMessage}")
                         TextToSpeech.ERROR
                     }
                     if (result == TextToSpeech.ERROR) {
-                        AppLog.put("tts朗读出错:$text")
+                        LogCat.e("tts朗读出错:$text")
                     }
                 }
                 isAddedText = true
@@ -137,7 +138,7 @@ class TTSReadAloudService : BaseReadAloudService(), TextToSpeech.OnInitListener 
                 nextChapter()
             }
         }.onError {
-            AppLog.put("tts朗读出错\n${it.localizedMessage}", it, true)
+            LogCat.e(it, msg = "tts朗读出错\n${it.localizedMessage}")
         }
     }
 
@@ -222,7 +223,10 @@ class TTSReadAloudService : BaseReadAloudService(), TextToSpeech.OnInitListener 
         }
 
         override fun onError(utteranceId: String?, errorCode: Int) {
-            LogPure.e(TAG, "onError nowSpeak:$nowSpeak pageIndex:$pageIndex utteranceId:$utteranceId errorCode:$errorCode")
+            LogPure.e(
+                TAG,
+                "onError nowSpeak:$nowSpeak pageIndex:$pageIndex utteranceId:$utteranceId errorCode:$errorCode"
+            )
             nextParagraph()
         }
 

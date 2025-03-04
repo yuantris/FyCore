@@ -56,7 +56,6 @@ fun AppCompatActivity.readUri(
         }
     } catch (e: Exception) {
         e.printOnDebug()
-        AppLog.put("读取Uri出错\n$e", e, true)
         if (e is SecurityException) {
             throw e
         }
@@ -90,7 +89,6 @@ fun Fragment.readUri(uri: Uri?, success: (fileDoc: FileDoc, inputStream: InputSt
         }
     } catch (e: Exception) {
         e.printOnDebug()
-        AppLog.put("读取Uri出错\n$e", e, true)
     }
 }
 
@@ -187,7 +185,6 @@ fun Uri.inputStream(context: Context): Result<InputStream> {
             }
         } catch (e: Exception) {
             e.printOnDebug()
-            AppLog.put("读取inputStream失败：${e.localizedMessage}", e)
             throw e
         }
     }
@@ -213,7 +210,6 @@ fun Uri.outputStream(context: Context): Result<OutputStream> {
             }
         } catch (e: Exception) {
             e.printOnDebug()
-            AppLog.put("读取inputStream失败：${e.localizedMessage}", e)
             throw e
         }
     }
@@ -244,7 +240,6 @@ fun Uri.toReadPfd(context: Context): Result<ParcelFileDescriptor> {
 
         } catch (e: Exception) {
             e.printOnDebug()
-            AppLog.put("读取inputStream失败：${e.localizedMessage}", e)
             throw e
         }
     }
@@ -275,7 +270,6 @@ fun Uri.toWritePfd(context: Context): Result<ParcelFileDescriptor> {
 
         } catch (e: Exception) {
             e.printOnDebug()
-            AppLog.put("读取inputStream失败：${e.localizedMessage}", e)
             throw e
         }
     }

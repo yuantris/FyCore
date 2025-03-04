@@ -13,6 +13,9 @@ import io.core.R
 import io.core.common.helper.coroutine.Coroutine
 import io.core.common.util.extensions.ui.getCompatColor
 import io.core.common.util.log.AppLog
+import io.core.common.util.log.LogCat
+import io.core.common.util.log.LogPure
+import io.core.common.util.log.TAG
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlin.coroutines.CoroutineContext
@@ -63,7 +66,8 @@ abstract class BaseDialogFragment(
             manager.beginTransaction().remove(this).commit()
             super.show(manager, tag)
         }.onFailure {
-            AppLog.put("显示对话框失败 tag:$tag", it)
+            LogCat.d("显示对话框失败 tag:$tag", TAG, it)
+
         }
     }
 

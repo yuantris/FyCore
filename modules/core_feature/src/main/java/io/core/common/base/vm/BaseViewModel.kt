@@ -45,16 +45,17 @@ open class BaseViewModel : ViewModel() {
      * 通用协程启动器
      */
     protected fun launch(
-        block: Block<Unit>,
         error: Error? = null,
         cancel: Cancel? = null,
         handleError: Boolean = true,
-        context: CoroutineContext = Dispatchers.Default
+        context: CoroutineContext = Dispatchers.Default,
+        block: Block<Unit>
     ): Job = viewModelScope.launch(context) {
+        setLoading()
         runCatching {
             block(this)
         }.onSuccess {
-            _status.postValue(ViewStatus.SUCCESS)
+            setSuccess()
         }.onFailure { e ->
             when (e) {
                 is CancellationException -> {
@@ -63,9 +64,7 @@ open class BaseViewModel : ViewModel() {
 
                 else -> {
                     val exception = e as? Exception ?: RuntimeException("Unknown error", e)
-                    if (handleError) {
-                        handleCommonError(exception)
-                    }
+                    if (handleError) setError(exception)
                     error?.invoke(exception)
                 }
             }
@@ -154,6 +153,7 @@ open class BaseViewModel : ViewModel() {
         flowOnDispatcher: CoroutineDispatcher? = null
     ): Job {
         return viewModelScope.launch {
+            setLoading()
             try {
                 val flow = flowBlock()
                     .apply {
@@ -185,13 +185,13 @@ open class BaseViewModel : ViewModel() {
                     flow.collect { result -> onSuccess(result) }
                 }
 
-                _status.postValue(ViewStatus.SUCCESS)
+                setSuccess()
             } catch (e: TimeoutCancellationException) {
+                setError(e)
                 onError?.invoke(e)
-                _status.postValue(ViewStatus.ERROR)
             } catch (e: Exception) {
+                setError(e)
                 onError?.invoke(e)
-                _status.postValue(ViewStatus.ERROR)
             }
         }
     }
@@ -228,6 +228,14 @@ open class BaseViewModel : ViewModel() {
             is NetworkOnMainThreadException -> "线程异常".logE()
             else -> e.message?.logE()
         }
+        _status.postValue(ViewStatus.ERROR)
+    }
+
+    // 新增快捷状态设置方法
+    protected fun setLoading() = _status.postValue(ViewStatus.LOADING)
+    protected fun setSuccess() = _status.postValue(ViewStatus.SUCCESS)
+    protected fun setError(e: Exception? = null) {
+        e?.let { handleCommonError(it) }
         _status.postValue(ViewStatus.ERROR)
     }
 

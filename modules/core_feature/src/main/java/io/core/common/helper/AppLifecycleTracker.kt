@@ -169,7 +169,7 @@ object AppLifecycleTracker : Application.ActivityLifecycleCallbacks, DefaultLife
      * 反射获取当前应用的Application实例
      */
     @JvmStatic
-    fun getApplicationByReflect(): Application? {
+    fun getApplicationReflect(): Application? {
         return try {
             // 获取 ActivityThread 实例
             val thread = getActivityThread() ?: return null

@@ -24,6 +24,7 @@ import io.core.common.util.extensions.ui.getCompatColor
 import io.core.common.util.extensions.ui.setLayout
 import io.core.common.util.extensions.ui.showDialogFragment
 import io.core.common.util.extensions.ui.toast
+import io.core.common.util.extensions.ui.toastLong
 import io.core.common.util.extensions.ui.viewBinding
 import io.core.common.util.tools.FileUtils
 import io.core.common.util.tools.UriUtils
@@ -77,8 +78,8 @@ class CrashLogsDialog : BaseDialogFragment(R.layout.dialog_recycler_view),
     private val randomProcessor by lazy {
         RandomEventGenerator()
             .addEvent { ctx.toast("NoNoNoNo~ 好孩子是不会想着销毁日志的") }
-            .addEvent { ctx.toast("心理阴暗！居然想着删除日志！！！") }
-            .addEvent { ctx.toast("点击后，心里默念 `quickly quickly biu biu biu~` 就删除了") }
+            .addEvent { ctx.toast("心理阴暗！居然想着清除日志！！！") }
+            .addEvent { ctx.toastLong("心里要默念 `Tai Shang Lao Jun, quickly quickly biu biu biu!` 就删除了~") }
     }
 
     private val clearProcessor by lazy {

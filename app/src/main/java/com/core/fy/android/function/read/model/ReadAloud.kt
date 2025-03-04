@@ -53,7 +53,7 @@ object ReadAloud {
             context.startForegroundServiceCompat(intent)
         } catch (e: Exception) {
             val msg = "启动朗读服务出错\n${e.localizedMessage}"
-            AppLog.put(msg, e)
+            LogPure.e { msg }
             context.toastOnUI(msg)
         }
     }

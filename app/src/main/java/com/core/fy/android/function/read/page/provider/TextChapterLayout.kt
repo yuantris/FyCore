@@ -23,6 +23,7 @@ import io.core.common.util.extensions.cool.fastSum
 import io.core.common.util.extensions.cool.splitNotBlank
 import io.core.common.helper.coroutine.Coroutine
 import io.core.common.util.log.AppLog
+import io.core.common.util.log.LogCat
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
@@ -111,8 +112,7 @@ class TextChapterLayout(
                 listener = l
             }
         } catch (e: Exception) {
-            e.printStackTrace()
-            AppLog.put("调用布局进度监听回调出错\n${e.localizedMessage}", e)
+            LogCat.e(e, msg = "调用布局进度监听回调出错\n${e.localizedMessage}")
         }
     }
 
@@ -136,8 +136,7 @@ class TextChapterLayout(
         try {
             listener?.onLayoutPageCompleted(textPages.lastIndex, textPage)
         } catch (e: Exception) {
-            e.printStackTrace()
-            AppLog.put("调用布局进度监听回调出错\n${e.localizedMessage}", e)
+            LogCat.e(e, msg = "调用布局进度监听回调出错\n${e.localizedMessage}")
         }
     }
 
@@ -146,8 +145,7 @@ class TextChapterLayout(
         try {
             listener?.onLayoutCompleted()
         } catch (e: Exception) {
-            e.printStackTrace()
-            AppLog.put("调用布局进度监听回调出错\n${e.localizedMessage}", e)
+            LogCat.e(e, msg = "调用布局进度监听回调出错\n${e.localizedMessage}")
         } finally {
             listener = null
         }
@@ -162,8 +160,7 @@ class TextChapterLayout(
         try {
             listener?.onLayoutException(e)
         } catch (e: Exception) {
-            e.printStackTrace()
-            AppLog.put("调用布局进度监听回调出错\n${e.localizedMessage}", e)
+            LogCat.e(e, msg = "调用布局进度监听回调出错\n${e.localizedMessage}")
         } finally {
             listener = null
         }

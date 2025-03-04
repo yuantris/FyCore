@@ -7,18 +7,8 @@ import androidx.collection.LruCache
 import com.blankj.utilcode.util.ImageUtils
 import com.core.fy.android.R
 import com.core.fy.android.help.config.AppConfig
-import com.core.fy.android.help.isEpub
-import com.core.fy.android.help.isMobi
-import com.core.fy.android.help.isPdf
 import com.core.fy.android.room.entity.Book
 import io.core.appCtx
-import io.core.common.util.log.AppLog.putDebug
-import io.core.common.util.tools.BitmapUtils
-import io.core.common.util.tools.toastOnUI
-import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.withContext
-import java.io.File
-import java.io.FileOutputStream
 
 object ImageProvider {
 

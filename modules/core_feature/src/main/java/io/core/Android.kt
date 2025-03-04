@@ -23,11 +23,9 @@ object Android {
     val context: Application // 获取全局APPLICATION上下文
         get() {
             if (!::_context.isInitialized) {
-                AppLifecycleTracker.getApplicationByReflect()?.let {
+                AppLifecycleTracker.getApplicationReflect()?.let {
                     _context = it
-                }
-                if (!::_context.isInitialized)
-                    throw IllegalStateException("请先调用 initialize() 方法完成初始化")
+                } ?: throw IllegalStateException("请先调用 initialize() 方法完成初始化")
             }
             return _context
         }

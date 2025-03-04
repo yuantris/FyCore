@@ -22,6 +22,7 @@ import io.core.common.util.extensions.ui.getPrefInt
 import io.core.common.util.extensions.ui.putPrefBoolean
 import io.core.common.util.extensions.ui.putPrefInt
 import io.core.common.util.log.AppLog
+import io.core.common.util.log.LogCat
 import io.core.common.util.tools.BitmapUtils
 import io.core.common.util.tools.FileUtils
 import io.core.common.util.tools.getMeanColor
@@ -55,8 +56,8 @@ object ReadBookConfig {
     val textColor: Int get() = durConfig.curTextColor()
 
     init {
-         initConfigs()
-         initShareConfig()
+        initConfigs()
+        initShareConfig()
     }
 
     @Synchronized
@@ -75,7 +76,7 @@ object ReadBookConfig {
                 val json = configFile.readText()
                 configs = GSON.fromJsonArray<Config>(json).getOrThrow()
             } catch (e: Exception) {
-                AppLog.put("读取排版配置文件出错", e)
+                LogCat.e(e, msg = "读取排版配置文件出错")
             }
         }
         (configs ?: DefaultData.readConfigs).let {

@@ -15,17 +15,17 @@ class UserVM(private var repository: UserRepository) : BaseViewModel() {
     val userLiveData: LiveData<List<User>>
         get() = _userLiveData
 
-    fun insert(user: User) = launch({
+    fun insert(user: User) = launch {
         repository.dao.insert(user)
-    })
+    }
 
-    fun delete(user: User) = launch({
+    fun delete(user: User) = launch {
         repository.dao.delete(user)
-    })
+    }
 
-    fun update(user: User) = launch({
+    fun update(user: User) = launch {
         repository.dao.update(user)
-    })
+    }
 
 
     fun getUserByName(name: String): User {

@@ -9,6 +9,7 @@ import io.core.common.util.extensions.cool.isAbsUrl
 import io.core.common.util.extensions.cool.isDataUrl
 import io.core.common.util.extensions.cool.printOnDebug
 import io.core.common.util.log.AppLog
+import io.core.common.util.log.TAG
 import java.net.URL
 import java.util.BitSet
 
@@ -137,7 +138,7 @@ object NetworkUtils {
             relativeUrl = parseUrl.toString()
             return relativeUrl
         } catch (e: Exception) {
-            AppLog.put("网址拼接出错\n${e.localizedMessage}", e)
+            AppLog.error("网址拼接出错\n${e.localizedMessage}", TAG, e)
         }
         return relativeUrl
     }

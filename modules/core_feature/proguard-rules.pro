@@ -269,6 +269,7 @@
 -keep class androidx.lifecycle.** { *; }
 -keep class androidx.arch.core.** { *; }
 
+-keep class io.core.common.helper.AppLifecycleTracker { *; }
 -keep class io.core.common.helper.TurboTracker { *; }
 -keep class io.core.common.helper.TurboTracker$DefaultLogger { *; }
 -keep interface io.core.common.helper.TurboTracker$Logger { *; }

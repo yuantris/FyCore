@@ -15,6 +15,8 @@ import com.core.fy.android.function.read.services.BaseReadAloudService
 import io.core.common.helper.coroutine.Coroutine
 import io.core.appCtx
 import io.core.common.util.log.AppLog
+import io.core.common.util.log.LogCat
+import io.core.common.util.log.LogPure
 import io.core.common.util.tools.globalExecutor
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
@@ -53,6 +55,7 @@ object ReadBook : CoroutineScope by MainScope() {
             field?.cancelLayout()
             field = value
         }
+
     //var bookSource: BookSource? = null
     var msg: String? = null
     private val loadingChapters = arrayListOf<Int>()
@@ -68,6 +71,7 @@ object ReadBook : CoroutineScope by MainScope() {
     var preDownloadTask: Job? = null
     val downloadedChapters = hashSetOf<Int>()
     val downloadFailChapters = hashMapOf<Int, Int>()
+
     //var contentProcessor: ContentProcessor? = null
     val downloadScope = CoroutineScope(SupervisorJob() + IO)
     val executor = globalExecutor
@@ -215,7 +219,7 @@ object ReadBook : CoroutineScope by MainScope() {
             Coroutine.async {
                 //AppWebDav.getBookProgress(it)
             }.onError {
-                AppLog.put("拉取阅读进度失败", it)
+                LogCat.e(it, msg = "拉取阅读进度失败")
             }.onSuccess { progress ->
 //                if (progress == null || progress.durChapterIndex < it.durChapterIndex ||
 //                    (progress.durChapterIndex == it.durChapterIndex
@@ -295,21 +299,21 @@ object ReadBook : CoroutineScope by MainScope() {
             curTextChapter = nextTextChapter
             nextTextChapter = null
             if (curTextChapter == null) {
-                AppLog.putDebug("moveToNextChapter-章节未加载,开始加载")
+                LogPure.d(message = "moveToNextChapter-章节未加载,开始加载")
                 if (upContentInPlace) callBack?.upContent()
                 loadContent(durChapterIndex, upContent, resetPageOffset = false)
             } else if (upContent && upContentInPlace) {
-                AppLog.putDebug("moveToNextChapter-章节已加载,刷新视图")
+                LogPure.d(message = "moveToNextChapter-章节已加载,刷新视图")
                 callBack?.upContent()
             }
             loadContent(durChapterIndex.plus(1), upContent, false)
             saveRead()
             callBack?.upMenuView()
-            AppLog.putDebug("moveToNextChapter-curPageChanged()")
+            LogPure.d(message = "moveToNextChapter-curPageChanged()")
             curPageChanged()
             return true
         } else {
-            AppLog.putDebug("跳转下一章失败,没有下一章")
+            LogPure.d(message = "跳转下一章失败,没有下一章")
             return false
         }
     }
@@ -325,21 +329,22 @@ object ReadBook : CoroutineScope by MainScope() {
             curTextChapter = nextTextChapter
             nextTextChapter = null
             if (curTextChapter == null) {
-                AppLog.putDebug("moveToNextChapter-章节未加载,开始加载")
+                LogPure.d(message = "moveToNextChapter-章节未加载,开始加载")
                 if (upContentInPlace) callBack?.upContentAwait()
                 loadContentAwait(durChapterIndex, upContent, resetPageOffset = false)
             } else if (upContent && upContentInPlace) {
-                AppLog.putDebug("moveToNextChapter-章节已加载,刷新视图")
+                LogPure.d(message = "moveToNextChapter-章节已加载,刷新视图")
                 callBack?.upContentAwait()
             }
             loadContent(durChapterIndex.plus(1), upContent, false)
             saveRead()
             callBack?.upMenuView()
-            AppLog.putDebug("moveToNextChapter-curPageChanged()")
+            LogPure.d(message = "moveToNextChapter-curPageChanged()")
             curPageChanged()
             return true
         } else {
-            AppLog.putDebug("跳转下一章失败,没有下一章")
+            LogPure.d(message = "跳转下一章失败,没有下一章")
+
             return false
         }
     }
@@ -621,7 +626,7 @@ object ReadBook : CoroutineScope by MainScope() {
 //            return CacheBook.getOrCreate(bookSource, book).downloadAwait(chapter)
 //        } else {
 //            val msg = if (book.isLocal) "无内容" else "没有书源"
-            return "加载正文失败\n$msg"
+        return "加载正文失败\n$msg"
 //        }
     }
 

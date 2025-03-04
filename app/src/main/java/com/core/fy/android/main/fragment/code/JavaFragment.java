@@ -3,7 +3,6 @@ package com.core.fy.android.main.fragment.code;
 import android.graphics.Bitmap;
 
 import androidx.annotation.NonNull;
-import androidx.lifecycle.Observer;
 
 import com.blankj.utilcode.util.GsonUtils;
 import com.core.fy.android.databinding.FragmentJavaBinding;
@@ -28,7 +27,6 @@ import io.core.common.util.log.LogPure;
 import io.core.common.util.tools.AsyncUtils;
 import io.core.common.util.tools.CollectionTools;
 import io.core.common.util.tools.ThreadUltra;
-import io.core.engine.livebus.LiveEventBus;
 import io.core.other.LiveDataPro;
 
 public class JavaFragment extends ReflectBindingFragment<FragmentJavaBinding, TestPageActivity> {
