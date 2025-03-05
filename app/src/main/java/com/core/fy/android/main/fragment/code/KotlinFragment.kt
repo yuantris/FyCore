@@ -15,9 +15,11 @@ import io.core.common.helper.JsonUltra
 import io.core.common.helper.TaskExecutor
 import io.core.common.helper.TimeoutCallback
 import io.core.common.helper.TimeoutHandler
+import io.core.common.helper.jetpack.SingleLiveData
 import io.core.common.util.extensions.cool.GSON
 import io.core.common.util.extensions.cool.createMap
 import io.core.common.util.extensions.cool.externalDownloads
+import io.core.common.util.extensions.cool.jsonToMap
 import io.core.common.util.extensions.cool.launchAsync
 import io.core.common.util.extensions.cool.mapBuilder
 import io.core.common.util.extensions.cool.postDelayUI
@@ -25,9 +27,11 @@ import io.core.common.util.extensions.cool.requestPermission
 import io.core.common.util.extensions.logD
 import io.core.common.util.extensions.logE
 import io.core.common.util.extensions.ui.ctx
+import io.core.common.util.extensions.ui.onClick
 import io.core.common.util.log.AppLog
 import io.core.common.util.log.LogPure
 import io.core.common.util.tools.AsyncUtils
+import io.core.common.util.tools.CollectionTools
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.io.File
@@ -36,8 +40,18 @@ import java.util.concurrent.TimeUnit
 
 class KotlinFragment : ReflectBindingFragment<FragmentKotlinBinding, TestPageActivity>() {
 
+    private val _data = SingleLiveData<String>()
+
     override fun initView() {
         super.initView()
+
+        _data.observe(this){
+            it.logD()
+        }
+
+        binding.tv.onClick {
+            _data.setValue("${System.currentTimeMillis()}")
+        }
 
         val createMap = createMap<String, Any>()
         createMap["key"] = "value"
@@ -77,8 +91,10 @@ class KotlinFragment : ReflectBindingFragment<FragmentKotlinBinding, TestPageAct
             JsonUltra.parse("{\"code\":1,\"message\":\"success\",\"data\":{\"邮政平邮\":\"youzhengbk\",\"申通快递\":\"shentong\",\"圆通快递\":\"yuantong\",\"中通快递\":\"zhongtong\",\"极兔速递\":\"jtexpress\",\"韵达快递\":\"yunda\",\"德邦快递\":\"debangkuaidi\",\"顺丰快递\":\"shunfeng\"}}")
 
         ultra["data"]?.asMap()?.let { m ->
-            m["邮政平邮"]?.asString()?.logD()
+            m["邮政平邮"]?.logD()
         }
+        ultra.getNotNull("data").asString().logD()
+
         ctx.requestPermission(Permission.READ_MEDIA_AUDIO) {
 //            LogPure.v {
 //                "MANAGE_EXTERNAL_STORAGE permission granted"
@@ -117,6 +133,7 @@ class KotlinFragment : ReflectBindingFragment<FragmentKotlinBinding, TestPageAct
         }
 
     }
+
 
     override fun onFragmentResume(first: Boolean) {
         super.onFragmentResume(first)

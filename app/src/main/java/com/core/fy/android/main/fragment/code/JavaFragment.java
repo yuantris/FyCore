@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.SortedMap;
 
 import io.core.common.base.component.fragment.ReflectBindingFragment;
@@ -44,6 +45,11 @@ public class JavaFragment extends ReflectBindingFragment<FragmentJavaBinding, Te
         String format = JsonUltra.format("{\"name\":\"张三\",\"age\":18}", false);
         LogCat.e(format);
 
+        JsonUltra ultra = JsonUltra.parse("{\"code\":1,\"message\":\"success\",\"data\":{\"邮政平邮\":\"youzhengbk\",\"申通快递\":\"shentong\",\"圆通快递\":\"yuantong\",\"中通快递\":\"zhongtong\",\"极兔速递\":\"jtexpress\",\"韵达快递\":\"yunda\",\"德邦快递\":\"debangkuaidi\",\"顺丰快递\":\"shunfeng\"}}");
+        String data = ultra.getNotNull("data").asString();
+        Map<String, String> map = CollectionTools.jsonToMap(data);
+        LogCat.e(map);
+
         ThreadUltra.executeWithLifecycle(new ThreadUltra.Task<List<Bitmap>>() {
             @Override
             public List<Bitmap> doInBackground() throws Throwable {
@@ -68,7 +74,7 @@ public class JavaFragment extends ReflectBindingFragment<FragmentJavaBinding, Te
             public void onFail(@NonNull ThreadUltra.ErrorType errorType, @NonNull Throwable ex) {
                 LogCat.e(ex);
             }
-        },this);
+        }, this);
     }
 
     @Override

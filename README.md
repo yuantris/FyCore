@@ -4,7 +4,7 @@ Android核心工具库 | [![](https://img.shields.io/badge/Version-0.1.6-brightg
 > 项目初始化
 ```kotlin
 // Application初始化
-Android.initialize(this)
+Android.initialize(this, debug = true)
 
 // ---------- 可选配置 ----------
 // 崩溃后跳转Activity（建议配置主Activity）

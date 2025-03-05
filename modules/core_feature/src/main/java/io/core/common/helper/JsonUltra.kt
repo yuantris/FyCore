@@ -27,6 +27,34 @@ class JsonUltra private constructor(
         return JsonUltra(current, autoParse)
     }
 
+    /**
+     * 获取当前节点，并确保节点存在，否则抛出异常
+     * 用于Java环境调用者已知存在此节点的情况下使用，如{code,message,data}结构直接取code
+     */
+    fun getNotNull(path: String): JsonUltra {
+        val segments = parsePath(path)
+        var current: JsonElement = jsonElement
+        val processedPath = mutableListOf<String>()
+
+        for (segment in segments) {
+            current = current.autoParseStringContent()
+            val parsedSegment = parseSegment(segment)
+            current = when {
+                parsedSegment.isArray -> handleArray(current, parsedSegment)
+                else -> handleObject(current, parsedSegment)
+            } ?: throw IllegalArgumentException(
+                "路径 '$path' 不存在\n" +
+                        "失败位置：'${parsedSegment.key}' (段: ${processedPath.joinToString(".") + "." + segment})\n" +
+                        "可能原因：\n" +
+                        "1. 实际JSON结构缺少该字段\n" +
+                        "2. 节点类型不匹配（尝试访问对象但实际是数组）\n" +
+                        "可用路径：${getAllPaths().take(5).joinToString()}"
+            )
+            processedPath.add(segment)
+        }
+        return JsonUltra(current, autoParse)
+    }
+
     private fun JsonElement.autoParseStringContent(): JsonElement {
         if (!autoParse) return this
         return when (this) {
@@ -56,59 +84,101 @@ class JsonUltra private constructor(
         }
     }
 
+    // 统一类型转换模板
+    private inline fun <reified T> asType(
+        typeName: String,
+        crossinline primitiveGetter: JsonPrimitive.() -> T
+    ): T {
+        return when (val element = jsonElement.autoParseStringContent()) {
+            is JsonPrimitive -> try {
+                element.primitiveGetter()
+            } catch (e: Exception) {
+                throw conversionException(typeName, element, e)
+            }
+
+            else -> throw typeMismatchException(typeName, element)
+        }
+    }
+
+    // 生成统一的转换异常
+    private fun conversionException(
+        typeName: String,
+        element: JsonElement,
+        cause: Exception
+    ): IllegalArgumentException {
+        val currentValue = when (element) {
+            is JsonPrimitive -> element.content
+            else -> element.toString()
+        }
+
+        return IllegalArgumentException(
+            """
+        JSON值转换失败：${cause.message}
+        目标类型：$typeName
+        当前值：$currentValue
+        可用路径：${getAllPaths().take(5).joinToString()}
+        解决方案：
+        1. 使用get()获取具体子节点
+        2. 使用asMap()/asList()处理复杂结构
+        3. 使用convertJsonString()获取完整JSON
+        """.trimIndent()
+        )
+    }
+
     // region 安全类型转换方法
     /**
      * 获取当前节点的字符串值
      * @throws IllegalArgumentException 当节点不是基本类型或转换失败时抛出，包含详细类型和路径信息
      */
     fun asString(): String {
-        if (jsonElement is JsonObject) {
-            throw IllegalArgumentException("当前为JSON对象，请使用convertJsonString()")
+        return when (val element = jsonElement.autoParseStringContent()) {
+            is JsonPrimitive -> asType("String") { content }
+            is JsonObject, is JsonArray -> Json.encodeToString(jsonElement)
+            else -> throw typeMismatchException("String", element)
         }
-        return getPrimitiveValue("String") { content }
     }
 
     /**
      * 安全获取字符串值
      * @return 字符串值或null（当节点不存在或类型不匹配时）
      */
-    fun asStringOrNull() = (jsonElement as? JsonPrimitive)?.contentOrNull
+    fun asStringOrNull() = runCatching { asString() }.getOrNull()
 
     /**
      * 获取整型值
      * @throws IllegalArgumentException 当节点不是数值类型或转换失败时抛出
      */
-    fun asInt(): Int = getPrimitiveValue("Int") { int }
+    fun asInt(): Int = asType("Int") { int }
 
     /**
      * 安全获取整型值
      * @return 整型值或null（当节点不存在或类型不匹配时）
      */
-    fun asIntOrNull() = (jsonElement as? JsonPrimitive)?.intOrNull
+    fun asIntOrNull() = runCatching { asInt() }.getOrNull()
 
     /**
      * 获取布尔值
      * @throws IllegalArgumentException 当节点不是布尔类型时抛出
      */
-    fun asBoolean(): Boolean = getPrimitiveValue("Boolean") { boolean }
+    fun asBoolean(): Boolean = asType("Boolean") { boolean }
 
     /**
      * 安全获取布尔值
      * @return 布尔值或null（当节点不存在或类型不匹配时）
      */
-    fun asBooleanOrNull() = (jsonElement as? JsonPrimitive)?.booleanOrNull
+    fun asBooleanOrNull() = runCatching { asBoolean() }.getOrNull()
 
     /**
      * 获取双精度浮点值
      * @throws IllegalArgumentException 当节点不是数值类型时抛出
      */
-    fun asDouble(): Double = getPrimitiveValue("Double") { double }
+    fun asDouble(): Double = asType("Double") { double }
 
     /**
      * 安全获取双精度浮点值
      * @return 双精度值或null（当节点不存在或类型不匹配时）
      */
-    fun asDoubleOrNull() = (jsonElement as? JsonPrimitive)?.doubleOrNull
+    fun asDoubleOrNull() = runCatching { asDouble() }.getOrNull()
 
     /**
      * 通用列表转换方法
@@ -122,15 +192,13 @@ class JsonUltra private constructor(
         }
     }
 
-    //    fun asMap(): Map<String, Any> = when (val element = jsonElement.autoParseStringContent()) {
-//        is JsonObject -> element.mapValues { (_, v) -> v.toAny() }
-//        else -> throw typeMismatchException("JsonObject", element)
-//    }
-    fun asMap(): Map<String, JsonUltra> {
-        return when (val element = jsonElement.autoParseStringContent()) {
-            is JsonObject -> element.mapValues { JsonUltra(it.value) }
-            else -> throw typeMismatchException("JsonObject", element)
-        }
+    /**
+     * 获取键值对
+     * @throws IllegalArgumentException 当当前节点不是对象时抛出
+     */
+    fun asMap(): Map<String, Any> = when (val element = jsonElement.autoParseStringContent()) {
+        is JsonObject -> element.mapValues { (_, v) -> v.toAny() }
+        else -> throw typeMismatchException("JsonObject", element)
     }
 
     private fun JsonElement.toAny(): Any = when (this) {
@@ -171,6 +239,9 @@ class JsonUltra private constructor(
         traverse("", jsonElement.autoParseStringContent())
     }.distinct()
 
+    /**
+     * 转换为JSON字符串
+     */
     fun convertJsonString() = Json.encodeToString(jsonElement)
     // endregion
 
@@ -379,26 +450,6 @@ class JsonUltra private constructor(
         val index: Int?,
         val isArray: Boolean
     )
-
-    private inline fun <T> getPrimitiveValue(
-        typeName: String,
-        converter: JsonPrimitive.() -> T
-    ): T {
-        return when (val element = jsonElement.autoParseStringContent()) {
-            is JsonPrimitive -> try {
-                element.converter()
-            } catch (e: Exception) {
-                throw IllegalArgumentException(
-                    "JSON值转换失败：${e.message}\n" +
-                            "目标类型：$typeName\n" +
-                            "当前值：${element.content}\n" +
-                            "可用路径：${getAllPaths().take(5).joinToString()}"
-                )
-            }
-
-            else -> throw typeMismatchException("JsonPrimitive", element)
-        }
-    }
 
     private fun typeMismatchException(expected: String, actual: JsonElement): Exception {
         return IllegalArgumentException(
