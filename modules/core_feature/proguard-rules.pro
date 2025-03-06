@@ -118,6 +118,8 @@
 -keep public class * extends android.app.backup.BackupAgentHelper
 -keep public class * extends android.preference.Preference
 -keep public class * extends android.view.View
+-keep public class * extends android.app.Dialog
+-keep public class * extends androidx.fragment.app.Fragment
 
 # 保留androidx下的所有类及其内部类
 -keep class androidx.** {*;}
