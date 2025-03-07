@@ -3,6 +3,7 @@ package io.core
 import android.app.Application
 import androidx.core.content.FileProvider
 import io.core.common.helper.AppLifecycleTracker
+import io.core.common.util.log.AppLog
 import io.core.common.util.log.LogCat
 import io.core.common.util.tools.Preferences
 import io.core.engine.livebus.LiveEventBus
@@ -65,6 +66,7 @@ object Android {
     fun clearData() {
         // 清除sp数据
         Preferences.clear()
+        AppLog.clear()
     }
 
 }

@@ -1,3 +1,5 @@
+@file:Suppress("unused", "MemberVisibilityCanBePrivate")
+
 package io.core.common.util.log
 
 import android.util.Log
@@ -13,150 +15,187 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
-import java.io.FileOutputStream
 import java.io.IOException
-import java.io.OutputStreamWriter
-import java.io.PrintWriter
+import java.io.RandomAccessFile
+import java.nio.MappedByteBuffer
+import java.nio.channels.FileChannel
 import java.nio.charset.Charset
-import java.util.concurrent.CopyOnWriteArrayList
-import java.util.concurrent.locks.ReentrantReadWriteLock
-import kotlin.concurrent.read
-import kotlin.concurrent.write
+import java.util.concurrent.ConcurrentLinkedQueue
+import java.util.concurrent.atomic.AtomicLong
+import kotlin.math.abs
 
 /**
- * 增强版应用日志管理工具
+ * 增强型日志工具（支持埋点统计）
  *
- * 新增特性：
- * 1. 异步批量写入（提升性能）
- * 2. 线程信息记录
- * 3. 智能缓冲区管理
- * 4. 增强错误处理
+ * 主要功能：
+ * - 多级别日志记录
+ * - 异步批量处理
+ * - 内存映射文件导出
+ * - 用户行为埋点
+ * - 性能监控
  */
 object AppLog {
     // region 日志级别常量
-    const val VERBOSE = 0
-    const val DEBUG = 1
-    const val INFO = 2
-    const val WARN = 3
-    const val ERROR = 4
+    private const val VERBOSE = 0
+    private const val DEBUG = 1
+    private const val INFO = 2
+    private const val WARN = 3
+    private const val ERROR = 4
 
     private const val DEFAULT_TAG = "AppLog"
     // endregion
 
     // region 配置参数
     var maxStoreCount = 200               // 内存最大存储条数
-    var enableLogcat = true               // 是否输出到Android Logcat
-    var defaultTag: String = DEFAULT_TAG  // 默认日志标签
-    var bufferSize: Int = 50              // 日志批量写入缓冲区
+    var enableLogcat = true               // 是否输出到Logcat
+    var bufferSize: Int = 100              // 内存缓冲区条数
+    var asyncQueueCapacity: Int = 1000    // 异步队列容量
     var fileEncoding: String = "UTF-8"    // 文件编码格式
-    var autoFlushInterval: Long = 5000    // 自动刷新间隔（毫秒）
+    var autoFlushInterval: Long = 5000    // 自动刷新间隔（ms）
     // endregion
 
     // region 数据结构
-    data class LogEntry(
+    private data class LogEntry(
         val timestamp: String,
         val level: Int,
-        val tag: String = defaultTag,
+        val tag: String,
         val message: String,
         val throwable: Throwable?,
-        val threadId: Long = Thread.currentThread().id,
-        val threadName: String = Thread.currentThread().name
+        val threadId: Long,
+        val threadName: String
     )
 
-    private val logEntries = CopyOnWriteArrayList<LogEntry>()
+    private val logQueue = ConcurrentLinkedQueue<LogEntry>()
     private val buffer = ArrayDeque<LogEntry>()
-    private val outputChannels = CopyOnWriteArrayList<(LogEntry) -> Unit>()
-    private val lock = ReentrantReadWriteLock()
-    private val scope = CoroutineScope(Dispatchers.Default + Job())
+    private val scope = CoroutineScope(Dispatchers.IO + Job())
+    private val flushCounter = AtomicLong(0)
     // endregion
 
     init {
         startAutoFlush()
-        addDefaultLogcatChannel()
     }
 
-    private fun addDefaultLogcatChannel() {
-        if (enableLogcat) {
-            outputChannels.add { entry ->
-                try {
-                    when (entry.level) {
-                        VERBOSE -> Log.v(entry.tag, entry.message, entry.throwable)
-                        DEBUG -> Log.d(entry.tag, entry.message, entry.throwable)
-                        INFO -> Log.i(entry.tag, entry.message, entry.throwable)
-                        WARN -> Log.w(entry.tag, entry.message, entry.throwable)
-                        ERROR -> Log.e(entry.tag, entry.message, entry.throwable)
+    /*---------------- 核心日志方法 ----------------*/
+
+    @JvmStatic
+    @JvmOverloads
+    fun verbose(message: String, tag: String = getCallerTag(), toast: Boolean = false) {
+        logInternal(VERBOSE, tag, message, null, toast)
+    }
+
+    @JvmStatic
+    @JvmOverloads
+    fun debug(message: String, tag: String = getCallerTag()) {
+        logInternal(DEBUG, tag, message)
+    }
+
+    @JvmStatic
+    @JvmOverloads
+    fun info(message: String, tag: String = getCallerTag()) {
+        logInternal(INFO, tag, message)
+    }
+
+    @JvmStatic
+    @JvmOverloads
+    fun warn(message: String, tag: String = getCallerTag(), throwable: Throwable? = null) {
+        logInternal(WARN, tag, message, throwable)
+    }
+
+    @JvmStatic
+    @JvmOverloads
+    fun error(message: String, tag: String = getCallerTag(), throwable: Throwable? = null) {
+        logInternal(ERROR, tag, message, throwable)
+    }
+
+    /*---------------- 埋点专用方法 ----------------*/
+
+    @JvmStatic
+    fun trackEvent(eventName: String, params: Map<String, Any?> = emptyMap()) {
+        val safeParams = params.mapValues { (_, v) ->
+            v?.toString()?.replace(Regex("[\n|]"), "_") ?: "null"
+        }
+        val message = buildString {
+            append("EVENT:$eventName")
+            safeParams.forEach { (k, v) -> append("|$k=$v") }
+        }
+        logInternal(INFO, "TRACKING", message)
+    }
+
+    @JvmStatic
+    fun <T> trackDuration(eventName: String, block: () -> T): T {
+        val start = System.currentTimeMillis()
+        val result = block()
+        val cost = System.currentTimeMillis() - start
+        logInternal(INFO, "PERF", "$eventName cost:${cost}ms")
+        return result
+    }
+
+    /*---------------- 日志管理方法 ----------------*/
+
+    @JvmStatic
+    fun exportToFile(file: File, append: Boolean = false, callback: ((Boolean, String?) -> Unit)? = null) {
+        scope.launch {
+            try {
+                flushBuffer()
+                val success = withContext(Dispatchers.IO) {
+                    RandomAccessFile(file, "rw").use { raf ->
+                        val channel = raf.channel
+                        val buffer = channel.map(
+                            FileChannel.MapMode.READ_WRITE,
+                            if (append) raf.length() else 0,
+                            calculateExportSize()
+                        )
+                        logQueue.forEach { writeEntryToBuffer(buffer, it) }
+                        true
                     }
-                } catch (e: Exception) {
-                    Log.e(DEFAULT_TAG, "Logcat output failed: ${e.message}")
                 }
+                callback?.invoke(success, null)
+            } catch (e: Exception) {
+                callback?.invoke(false, parseExportError(e))
             }
         }
     }
 
-    private fun log(
-        level: Int = INFO,
-        tag: String = defaultTag,
+
+    @JvmStatic
+    fun clear() {
+        logQueue.clear()
+        buffer.clear()
+    }
+
+    /*---------------- 内部实现 ----------------*/
+
+    private fun logInternal(
+        level: Int,
+        tag: String,
         message: String,
         throwable: Throwable? = null,
         toast: Boolean = false
     ) {
-        if (toast && message.isNotBlank()) appCtx.toastOnUI(message)
+        if (toast) appCtx.toastOnUI(message)
 
         val entry = LogEntry(
             timestamp = currentTimeMillis.timeFormat(TimeFormat.LOG_TIMESTAMP),
-            level = level.coerceIn(VERBOSE, ERROR),
+            level = level,
             tag = tag,
             message = message,
-            throwable = throwable
+            throwable = throwable,
+            threadId = Thread.currentThread().id,
+            threadName = Thread.currentThread().name
         )
 
-        // 新增实时输出（不经过缓冲区）
+        // 异步队列处理
+        if (logQueue.size >= asyncQueueCapacity) {
+            logQueue.poll()
+        }
+        logQueue.offer(entry)
+
+        // 实时输出到Logcat
         if (enableLogcat) {
-            outputChannels.forEach { it(entry) }
-        }
-
-        buffer.add(entry)
-        if (buffer.size >= bufferSize) {
-            flushBuffer()
+            outputToLogcat(entry)
         }
     }
 
-    // region 公共API
-    fun addOutputChannel(channel: (LogEntry) -> Unit) {
-        outputChannels.add(channel)
-    }
-
-    fun getFiltered(predicate: (LogEntry) -> Boolean): List<LogEntry> {
-        return lock.read { logEntries.filter(predicate) }
-    }
-
-    fun exportToFileAsync(
-        file: File,
-        append: Boolean = false,
-        callback: (Boolean, String?) -> Unit = { _, _ -> }
-    ) {
-        scope.launch(Dispatchers.IO) {
-            try {
-                flushBuffer()
-                val result = exportToFileSync(file, append)
-                withContext(Dispatchers.Main) {
-                    callback(result, null)
-                }
-            } catch (e: Exception) {
-                withContext(Dispatchers.Main) {
-                    callback(false, parseExportError(e))
-                }
-            }
-        }
-    }
-
-    fun clear() = lock.write {
-        logEntries.clear()
-        buffer.clear()
-    }
-    // endregion
-
-    // region 私有方法
     private fun startAutoFlush() {
         scope.launch {
             while (true) {
@@ -166,26 +205,38 @@ object AppLog {
         }
     }
 
-    private fun flushBuffer() = lock.write {
-        logEntries.addAll(0, buffer)
-        while (logEntries.size > maxStoreCount) {
-            logEntries.removeAt(logEntries.lastIndex)
+    private fun flushBuffer() {
+        synchronized(buffer) {
+            logQueue.addAll(buffer)
+            buffer.clear()
+            while (logQueue.size > maxStoreCount) {
+                logQueue.poll()
+            }
+            flushCounter.incrementAndGet()
         }
-        buffer.clear()
     }
 
-    private fun exportToFileSync(file: File, append: Boolean): Boolean {
-        return PrintWriter(
-            OutputStreamWriter(
-                FileOutputStream(file, append),
-                Charset.forName(fileEncoding)
-            )
-        ).use { writer ->
-            logEntries.forEach { entry ->
-                writer.println(buildLogString(entry))
+    private fun outputToLogcat(entry: LogEntry) {
+        try {
+            when (entry.level) {
+                VERBOSE -> Log.v(entry.tag, entry.message, entry.throwable)
+                DEBUG -> Log.d(entry.tag, entry.message, entry.throwable)
+                INFO -> Log.i(entry.tag, entry.message, entry.throwable)
+                WARN -> Log.w(entry.tag, entry.message, entry.throwable)
+                ERROR -> Log.e(entry.tag, entry.message, entry.throwable)
             }
-            true
+        } catch (e: Exception) {
+            Log.e(DEFAULT_TAG, "Logcat输出失败: ${e.message}")
         }
+    }
+
+    private fun calculateExportSize(): Long {
+        return logQueue.sumOf { buildLogString(it).toByteArray(Charset.forName(fileEncoding)).size.toLong() }
+    }
+
+    private fun writeEntryToBuffer(buffer: MappedByteBuffer, entry: LogEntry) {
+        val logStr = buildLogString(entry)
+        buffer.put(logStr.toByteArray(Charset.forName(fileEncoding)))
     }
 
     private fun buildLogString(entry: LogEntry): String {
@@ -197,6 +248,7 @@ object AppLog {
             entry.throwable?.let {
                 append("\n${Log.getStackTraceString(it)}")
             }
+            append("\n")
         }.toString()
     }
 
@@ -215,42 +267,12 @@ object AppLog {
         WARN -> "W"
         else -> "E"
     }
-    // endregion
 
-    // region 快捷方法
-    @JvmStatic
-    @JvmOverloads
-    fun verbose(message: String, tag: String = defaultTag) =
-        log(VERBOSE, tag, message, toast = true)
-
-    @JvmStatic
-    @JvmOverloads
-    fun debug(message: String, tag: String = defaultTag) =
-        log(DEBUG, tag, message)
-
-    @JvmStatic
-    @JvmOverloads
-    fun info(message: String, tag: String = defaultTag) =
-        log(INFO, tag, message)
-
-    @JvmStatic
-    @JvmOverloads
-    fun warn(message: String, tag: String = defaultTag, throwable: Throwable? = null) =
-        log(WARN, tag, message, throwable)
-
-    @JvmStatic
-    @JvmOverloads
-    fun error(message: String, tag: String = defaultTag, throwable: Throwable? = null) =
-        log(ERROR, tag, message, throwable)
-
-    @JvmStatic
-    @JvmOverloads
-    fun put(
-        message: Any,
-        tag: String = defaultTag,
-        toast: Boolean = false,
-        throwable: Throwable? = null
-    ) =
-        log(INFO, tag, message.toString(), throwable, toast)
-    // endregion
+    private fun getCallerTag(): String {
+        return Throwable().stackTrace
+            .firstOrNull { it.className != this::class.java.name }
+            ?.className
+            ?.substringAfterLast('.')
+            ?: DEFAULT_TAG
+    }
 }

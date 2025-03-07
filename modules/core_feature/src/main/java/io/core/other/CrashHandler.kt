@@ -13,9 +13,10 @@ import io.core.common.CoreConfig
 import io.core.common.base.component.activity.CrashActivity
 import io.core.common.base.component.activity.RestartActivity
 import io.core.common.helper.AppLifecycleTracker
+import io.core.common.util.extensions.cool.PathType
 import io.core.common.util.extensions.cool.createFolderReplace
-import io.core.common.util.extensions.cool.externalCache
-import io.core.common.util.extensions.cool.externalDocuments
+import io.core.common.util.extensions.cool.documentsDir
+import io.core.common.util.extensions.cool.getBasePath
 import io.core.common.util.extensions.cool.getFile
 import io.core.common.util.extensions.cool.hasWriteStoragePermission
 import io.core.common.util.extensions.cool.ifNext
@@ -111,12 +112,12 @@ class CrashHandler private constructor(private val application: Application) :
                     // 写入外置存储
                     if (appCtx.hasWriteStoragePermission()) {
                         val folder = FileUtils.createFolderIfNotExist(
-                            externalDocuments,
+                            documentsDir,
                             "Crash"
                         )
 
                         FileUtils.createFileIfNotExist(
-                            externalDocuments,
+                            documentsDir,
                             folder.name,
                             fileNameExternal
                         ).writeText(crashLog)
@@ -131,7 +132,7 @@ class CrashHandler private constructor(private val application: Application) :
          * 进行堆转储
          */
         fun doHeapDump(manually: Boolean = false) {
-            val heapDir = appCtx.externalCache
+            val heapDir = appCtx.getBasePath(PathType.EXTERNAL_CACHE)
                 .getFile("heapDump")
             heapDir.createFolderReplace()
             val fileName = if (manually) {

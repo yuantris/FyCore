@@ -24,7 +24,7 @@ import io.core.common.base.component.dialog.specific.BubbleDialog
 import io.core.common.helper.dialogs.showDialog
 import io.core.common.util.CoreUtil
 import io.core.common.util.extensions.cool.dpToPx
-import io.core.common.util.extensions.cool.postDelayUI
+import io.core.common.util.extensions.cool.runDelayedMain
 import io.core.common.util.extensions.currentTimeMillis
 import io.core.common.util.extensions.logD
 import io.core.common.util.extensions.ui.getCompatColor
@@ -211,7 +211,7 @@ class DialogActivity : ReflectBindingActivity<ActivityDialogBinding>() {
      * 等待2秒关闭对话框
      */
     private fun waitDismiss(dialog: Dialog) {
-        postDelayUI(3000) {
+        runDelayedMain(3000) {
             dialog.dismiss()
         }
     }

@@ -11,9 +11,10 @@ import com.core.fy.android.constants.PreferKey
 import io.core.appCtx
 import io.core.common.helper.coroutine.Coroutine
 import io.core.common.util.extensions.cool.GSON
-import io.core.common.util.extensions.cool.externalFiles
+import io.core.common.util.extensions.cool.PathType
 import io.core.common.util.extensions.cool.fromJsonArray
 import io.core.common.util.extensions.cool.fromJsonObject
+import io.core.common.util.extensions.cool.getBasePath
 import io.core.common.util.extensions.cool.hexString
 import io.core.common.util.extensions.cool.printOnDebug
 import io.core.common.util.extensions.ui.getCompatColor
@@ -21,7 +22,6 @@ import io.core.common.util.extensions.ui.getPrefBoolean
 import io.core.common.util.extensions.ui.getPrefInt
 import io.core.common.util.extensions.ui.putPrefBoolean
 import io.core.common.util.extensions.ui.putPrefInt
-import io.core.common.util.log.AppLog
 import io.core.common.util.log.LogCat
 import io.core.common.util.tools.BitmapUtils
 import io.core.common.util.tools.FileUtils
@@ -589,7 +589,7 @@ object ReadBookConfig {
                     else -> {
                         val path = curBgStr().let {
                             if (it.contains(File.separator)) it
-                            else FileUtils.getPath(appCtx.externalFiles, "bg", curBgStr())
+                            else FileUtils.getPath(appCtx.getBasePath(PathType.EXTERNAL_FILES), "bg", curBgStr())
                         }
                         val bitmap = BitmapUtils.decodeBitmap(path, width, height)
                         BitmapDrawable(resources, bitmap?.resizeAndRecycle(width, height))

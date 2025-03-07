@@ -1,8 +1,7 @@
 package io.core.common.helper
 
-import io.core.common.util.extensions.cool.MainLooper
+import io.core.common.util.extensions.cool.MainThreadHandler
 import java.util.concurrent.ConcurrentLinkedQueue
-import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicReference
 
 /**
@@ -15,7 +14,7 @@ class TimeoutHandler(
     private val timeoutCallback: TimeoutCallback
 ) {
     private val lock = Any()
-    private val handler = MainLooper.handler
+    private val handler = MainThreadHandler.handler
     private val timeoutRunnable = RunnablePool.obtain {
         synchronized(lock) {
             if (state.getAndSet(State.TRIGGERED) == State.ACTIVE) {

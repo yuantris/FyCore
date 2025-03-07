@@ -2,14 +2,11 @@ package com.core.fy.android.main.fragment.code
 
 import androidx.lifecycle.lifecycleScope
 import com.blankj.utilcode.util.GsonUtils
-import com.core.fy.android.App
 import com.core.fy.android.databinding.FragmentKotlinBinding
 import com.core.fy.android.function.TestPageActivity
 import com.core.fy.android.help.ProgressNotifier
-import com.core.fy.android.util.MMKVUltra
 import com.core.fy.android.util.MMKVs
 import com.hjq.permissions.Permission
-import io.core.appCtx
 import io.core.common.base.component.fragment.ReflectBindingFragment
 import io.core.common.helper.JsonUltra
 import io.core.common.helper.TaskExecutor
@@ -17,21 +14,23 @@ import io.core.common.helper.TimeoutCallback
 import io.core.common.helper.TimeoutHandler
 import io.core.common.helper.jetpack.SingleLiveData
 import io.core.common.util.extensions.cool.GSON
+import io.core.common.util.extensions.cool.PathType
 import io.core.common.util.extensions.cool.createMap
-import io.core.common.util.extensions.cool.externalDownloads
-import io.core.common.util.extensions.cool.jsonToMap
+import io.core.common.util.extensions.cool.downloadsDir
+import io.core.common.util.extensions.cool.getSettingsPathV2
+import io.core.common.util.extensions.cool.joinPath
 import io.core.common.util.extensions.cool.launchAsync
 import io.core.common.util.extensions.cool.mapBuilder
-import io.core.common.util.extensions.cool.postDelayUI
 import io.core.common.util.extensions.cool.requestPermission
+import io.core.common.util.extensions.cool.runDelayedMain
+import io.core.common.util.extensions.cool.runMain
 import io.core.common.util.extensions.logD
-import io.core.common.util.extensions.logE
 import io.core.common.util.extensions.ui.ctx
 import io.core.common.util.extensions.ui.onClick
 import io.core.common.util.log.AppLog
 import io.core.common.util.log.LogPure
 import io.core.common.util.tools.AsyncUtils
-import io.core.common.util.tools.CollectionTools
+import io.core.common.util.tools.FileUtils
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.io.File
@@ -45,7 +44,7 @@ class KotlinFragment : ReflectBindingFragment<FragmentKotlinBinding, TestPageAct
     override fun initView() {
         super.initView()
 
-        _data.observe(this){
+        _data.observe(this) {
             it.logD()
         }
 
@@ -71,8 +70,8 @@ class KotlinFragment : ReflectBindingFragment<FragmentKotlinBinding, TestPageAct
             }
             "author" with "yuan"
         }
-        AppLog.put("jsonString", toast = true)
-        AppLog.put(jsonString, toast = true)
+        AppLog.verbose("jsonString", toast = true)
+        AppLog.info(jsonString)
 
         JsonUltra.parse(jsonString).getAllPaths().forEach { LogPure.i { it } }
         AppLog.debug(JsonUltra.parse(jsonString)["library.features[2]"]?.asString() ?: "")
@@ -114,15 +113,30 @@ class KotlinFragment : ReflectBindingFragment<FragmentKotlinBinding, TestPageAct
 //            }
             timeoutHandler.onProgress()
         }, 0, 2000, TimeUnit.MILLISECONDS)
-        postDelayUI(16000) {
+        runDelayedMain(16000) {
             fixedRate.cancel(true)
         }
 
-        MMKVUltra.init(appCtx)
         MMKVs.put("key", "value")
-        MMKVs.get<String>("key")
+        MMKVs.get<String>("key").logD()
 
-        AppLog.exportToFileAsync(File(externalDownloads, "log.txt"), true)
+        launchAsync {
+            val listFiles =
+                FileUtils.listFiles(ctx.getSettingsPathV2(PathType.CACHE, "mmkv_fy"))
+            listFiles.forEach {
+                LogPure.i {
+                    "file:${it.absolutePath}"
+                }
+            }
+        }
+
+        AppLog.exportToFile(File(downloadsDir, "log1.txt"))
+
+        joinPath("a", "b", "c").logD()
+        runMain {
+
+        }
+
     }
 
     override fun initData() {

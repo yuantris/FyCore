@@ -10,12 +10,12 @@ import io.core.common.helper.media.FlowMediaPlayer
 import io.core.common.helper.media.PlayerState
 import io.core.common.util.MediaScanner
 import io.core.common.util.extensions.cool.requestPermission
+import io.core.common.util.extensions.cool.runMain
 import io.core.common.util.extensions.ui.onClick
 import io.core.common.util.extensions.ui.onTrackingTouch
 import io.core.common.util.log.LogCat
 import io.core.common.util.tools.UriUtils
 import io.core.common.util.tools.formatDuration
-import io.core.common.util.tools.runOnUI
 import io.core.common.util.tools.toastOnUI
 import kotlinx.coroutines.launch
 import java.io.File
@@ -112,7 +112,7 @@ class MediaPlayerActivity : ReflectBindingActivity<ActivityMediaPlayerBinding>()
                         is PlayerState.Ready -> {
                             binding.playerProgressbar.max = state.duration
                             val duration = state.duration.toLong().formatDuration("mm:ss")
-                            runOnUI {
+                            runMain {
                                 binding.playerProgressMax.text = duration
                                 binding.playerProgressCurrent.text = "00:00"
                             }
@@ -120,7 +120,7 @@ class MediaPlayerActivity : ReflectBindingActivity<ActivityMediaPlayerBinding>()
 
                         is PlayerState.Playing -> {
                             val progress = state.progress
-                            runOnUI {
+                            runMain {
                                 if (!isTouch.get()) {
                                     binding.playerProgressbar.progress = progress
                                 }

@@ -25,7 +25,7 @@ import androidx.camera.video.VideoRecordEvent
 import androidx.camera.view.PreviewView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
-import io.core.common.util.tools.runOnUI
+import io.core.common.util.extensions.cool.runMain
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -158,13 +158,13 @@ class CameraHelper private constructor(
             object : ImageCapture.OnImageSavedCallback {
                 override fun onImageSaved(output: ImageCapture.OutputFileResults) {
                     val bitmap = BitmapFactory.decodeFile(output.savedUri?.path)
-                    runOnUI {
+                    runMain {
                         callback(bitmap, null)
                     }
                 }
 
                 override fun onError(exc: ImageCaptureException) {
-                    runOnUI {
+                    runMain {
                         callback(null, exc)
                     }
                 }

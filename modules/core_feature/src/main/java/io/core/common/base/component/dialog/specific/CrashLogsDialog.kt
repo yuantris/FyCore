@@ -4,20 +4,20 @@ import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import io.core.R
+import io.core.appCtx
+import io.core.common.base.component.adapter.BaseRecyclerAdapter
+import io.core.common.base.component.adapter.SingleTypeAdapter
 import io.core.common.base.component.dialog.BaseDialogFragment
 import io.core.common.base.vm.BaseViewModel
-import io.core.common.helper.rv.ItemViewHolder
-import io.core.common.helper.rv.RecyclerAdapter
 import io.core.common.util.FileDoc
 import io.core.common.util.FileSharer
-import io.core.appCtx
-import io.core.other.DoubleClickProcessor
 import io.core.common.util.extensions.cool.getFile
 import io.core.common.util.extensions.ui.ctx
 import io.core.common.util.extensions.ui.getCompatColor
@@ -31,7 +31,7 @@ import io.core.common.util.tools.UriUtils
 import io.core.common.util.tools.toastOnUI
 import io.core.constant.CRASH_FOLDER_NAME
 import io.core.databinding.DialogRecyclerViewBinding
-import io.core.databinding.Item1lineTextBinding
+import io.core.other.DoubleClickProcessor
 import io.core.other.RandomEventGenerator
 import kotlinx.coroutines.isActive
 import java.io.FileFilter
@@ -41,7 +41,32 @@ class CrashLogsDialog : BaseDialogFragment(R.layout.dialog_recycler_view),
 
     private val binding by viewBinding(DialogRecyclerViewBinding::bind)
     private val viewModel by viewModels<CrashViewModel>()
-    private val adapter by lazy { LogAdapter() }
+    private val adapter by lazy {
+        SingleTypeAdapter(
+            layoutRes = R.layout.item_1line_text,
+            bindFunction = { holder, item ->
+                holder.itemView.findViewById<TextView>(R.id.text_view).text = item.name
+            },
+            itemClickListener = { item, _ ->
+                showLogFile(item)
+            },
+            itemLongClickListener = object : BaseRecyclerAdapter.OnItemLongClickListener<FileDoc> {
+                override fun onItemLongClick(item: FileDoc, position: Int): Boolean {
+                    viewModel.readFile(item) {
+                        if (lifecycleScope.isActive) {
+                            UriUtils.uri2File(item.uri)?.let {
+                                FileSharer.Builder()
+                                    .setChooserTitle("分享崩溃日志")
+                                    .setFileList(listOf(it))
+                                    .share(requireContext())
+                            }
+                        }
+                    }
+                    return true
+                }
+            }
+        )
+    }
 
     override fun onStart() {
         super.onStart()
@@ -56,23 +81,9 @@ class CrashLogsDialog : BaseDialogFragment(R.layout.dialog_recycler_view),
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerView.adapter = adapter
         viewModel.logLiveData.observe(viewLifecycleOwner) {
-            adapter.setItems(it)
+            adapter.submitList(it)
         }
         viewModel.initData()
-
-        adapter.setOnItemLongClickListener { _, item ->
-            viewModel.readFile(item) {
-                if (lifecycleScope.isActive) {
-                    UriUtils.uri2File(item.uri)?.let {
-                        FileSharer.Builder()
-                            .setChooserTitle("分享崩溃日志")
-                            .setFileList(listOf(it))
-                            .share(requireContext())
-                    }
-                }
-            }
-            true
-        }
     }
 
     private val randomProcessor by lazy {
@@ -110,33 +121,7 @@ class CrashLogsDialog : BaseDialogFragment(R.layout.dialog_recycler_view),
 
     }
 
-    inner class LogAdapter : RecyclerAdapter<FileDoc, Item1lineTextBinding>(requireContext()) {
-
-        override fun getViewBinding(parent: ViewGroup): Item1lineTextBinding {
-            return Item1lineTextBinding.inflate(inflater, parent, false)
-        }
-
-        override fun registerListener(holder: ItemViewHolder, binding: Item1lineTextBinding) {
-            binding.root.setOnClickListener {
-                getItemByLayoutPosition(holder.layoutPosition)?.let { item ->
-                    showLogFile(item)
-                }
-            }
-        }
-
-        override fun convert(
-            holder: ItemViewHolder,
-            binding: Item1lineTextBinding,
-            item: FileDoc,
-            payloads: MutableList<Any>
-        ) {
-            binding.textView.requestFocus()
-            binding.textView.text = item.name
-        }
-
-    }
-
-    class CrashViewModel() : BaseViewModel() {
+    class CrashViewModel : BaseViewModel() {
 
         val logLiveData = MutableLiveData<List<FileDoc>>()
 

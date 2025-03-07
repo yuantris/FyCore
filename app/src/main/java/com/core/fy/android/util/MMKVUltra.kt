@@ -1,113 +1,128 @@
-@file:Suppress("UNCHECKED_CAST")
-
 package com.core.fy.android.util
 
 import android.content.Context
 import android.os.Parcelable
 import androidx.lifecycle.MutableLiveData
 import com.tencent.mmkv.MMKV
+import com.tencent.mmkv.MMKVLogLevel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.properties.ReadOnlyProperty
 import kotlin.properties.ReadWriteProperty
-import kotlin.reflect.KClass
 import kotlin.reflect.KProperty
 
 internal val MMKVs by lazy { MMKVUltra.getInstance() }
 
-class MMKVUltra private constructor(val mmkv: MMKV) {
-
+class MMKVUltra private constructor(
+    val mmkv: MMKV,
+    private val config: MMKVConfig
+) {
     companion object {
-        private val instances = ConcurrentHashMap<Pair<String, String?>, MMKVUltra>()
-        private var isInitialized = false
+        private val instances = ConcurrentHashMap<String, MMKVUltra>()
+        private lateinit var globalConfig: MMKVConfig
 
+        /**
+         * 初始化全局配置
+         * @param context Context对象
+         * @param config 全局配置项（可选）
+         */
         @JvmStatic
         @JvmOverloads
-        fun init(
-            context: Context,
-            rootDir: String? = null,
-            defaultCryptKey: String? = null
-        ) {
-            if (!isInitialized) {
-                rootDir?.let { MMKV.initialize(context, it) } ?: MMKV.initialize(context)
-                defaultCryptKey?.let { MMKV.defaultMMKV(MMKV.SINGLE_PROCESS_MODE, it) }
-                isInitialized = true
+        fun init(context: Context, config: MMKVConfig = MMKVConfig()) {
+            globalConfig = config
+            MMKV.initialize(context, config.rootDir)
+            applyGlobalSettings()
+        }
+
+        /**
+         * 获取MMKV实例（带自定义配置）
+         * @param mmapID 存储实例ID（默认全局实例）
+         * @param config 自定义配置（可选）
+         */
+        @JvmStatic
+        @JvmOverloads
+        fun getInstance(mmapID: String = "global_mmkv", config: MMKVConfig = globalConfig): MMKVUltra {
+            return instances.getOrPut(mmapID) {
+                val kv = when {
+                    config.cryptKey.isNotEmpty() -> MMKV.mmkvWithID(
+                        mmapID,
+                        config.mode,
+                        config.cryptKey,
+                        config.rootDir ?: globalConfig.rootDir
+                    )
+                    else -> MMKV.mmkvWithID(mmapID, config.mode)
+                }
+
+                applyInstanceSettings(kv, config)
+                MMKVUltra(kv, config)
             }
         }
 
-        @JvmStatic
-        @JvmOverloads
-        fun getInstance(
-            mmapID: String = "MMKV_FyCore",
-            cryptKey: String? = null
-        ): MMKVUltra {
-            check(isInitialized) { "MMKVUltra must be initialized first" }
-
-            return instances.getOrPut(Pair(mmapID, cryptKey)) {
-                val kv = cryptKey?.let {
-                    MMKV.mmkvWithID(mmapID, MMKV.SINGLE_PROCESS_MODE, it)
-                } ?: MMKV.mmkvWithID(mmapID)
-                MMKVUltra(kv)
+        private fun applyGlobalSettings() {
+            with(globalConfig) {
+                MMKV.setLogLevel(logLevel)
             }
         }
-    }
 
-    // 泛型存取方法
-    inline fun <reified T : Any> put(key: String, value: T) {
-        when (T::class) {
-            String::class -> mmkv.encode(key, value as String)
-            Int::class -> mmkv.encode(key, value as Int)
-            Long::class -> mmkv.encode(key, value as Long)
-            Float::class -> mmkv.encode(key, value as Float)
-            Double::class -> mmkv.encode(key, value as Double)
-            Boolean::class -> mmkv.encode(key, value as Boolean)
-            ByteArray::class -> mmkv.encode(key, value as ByteArray)
-            else -> throw IllegalArgumentException("Unsupported type: ${T::class.java.name}")
+        private fun applyInstanceSettings(kv: MMKV, config: MMKVConfig) {
+            kv.reKey(config.cryptKey)
         }
     }
 
-    inline fun <reified T : Any> get(key: String, defaultValue: T): T {
-        return when (T::class) {
-            String::class -> mmkv.decodeString(key, defaultValue as String) as T
-            Int::class -> mmkv.decodeInt(key, defaultValue as Int) as T
-            Long::class -> mmkv.decodeLong(key, defaultValue as Long) as T
-            Float::class -> mmkv.decodeFloat(key, defaultValue as Float) as T
-            Double::class -> mmkv.decodeDouble(key, defaultValue as Double) as T
-            Boolean::class -> mmkv.decodeBool(key, defaultValue as Boolean) as T
-            ByteArray::class -> mmkv.decodeBytes(key, defaultValue as ByteArray) as T
-            else -> throw IllegalArgumentException("Unsupported type: ${T::class.java.name}")
+    // region 核心操作方法
+    fun put(key: String, value: Any?) = value?.let {
+        when (it) {
+            is String -> mmkv.encode(key, it)
+            is Int -> mmkv.encode(key, it)
+            is Long -> mmkv.encode(key, it)
+            is Float -> mmkv.encode(key, it)
+            is Double -> mmkv.encode(key, it)
+            is Boolean -> mmkv.encode(key, it)
+            is ByteArray -> mmkv.encode(key, it)
+            else -> throw IllegalArgumentException("Unsupported type: ${it.javaClass.name}")
         }
+    } ?: mmkv.removeValueForKey(key)
+
+    inline fun <reified T> get(key: String): T? = when (T::class) {
+        String::class -> mmkv.decodeString(key) as? T
+        Int::class -> mmkv.decodeInt(key, -1) as? T
+        Long::class -> mmkv.decodeLong(key, -1L) as? T
+        Float::class -> mmkv.decodeFloat(key, -1f) as? T
+        Double::class -> mmkv.decodeDouble(key, -1.0) as? T
+        Boolean::class -> mmkv.decodeBool(key, false) as? T
+        ByteArray::class -> mmkv.decodeBytes(key) as? T
+        else -> throw IllegalArgumentException("Unsupported type: ${T::class.java.name}")
     }
 
-    // 带类型推断的快捷方法
-    inline fun <reified T : Any> get(key: String): T? {
-        return if (containsKey(key)) {
-            get(key, T::class.getDefaultValue())
-        } else {
-            null
-        }
+    fun contains(key: String) = mmkv.containsKey(key)
+    fun clear() = mmkv.clearAll()
+    // endregion
+
+    // region 配置管理
+    fun reconfigure(newConfig: MMKVConfig) {
+        mmkv.reKey(newConfig.cryptKey)
     }
 
-    // 类型安全校验的默认值获取
-    fun <T : Any> KClass<T>.getDefaultValue(): T {
-        return when (this.java) {
-            String::class.java -> "" as T
-            Int::class.java -> 0 as T
-            Long::class.java -> 0L as T
-            Float::class.java -> 0f as T
-            Double::class.java -> 0.0 as T
-            Boolean::class.java -> false as T
-            ByteArray::class.java -> byteArrayOf() as T
-            else -> throw IllegalArgumentException("Unsupported type: ${this.java.name}")
-        }
-    }
+    fun currentConfig() = config.copy()
+    // endregion
+}
 
-    // 常用扩展方法
-    fun containsKey(key: String) = mmkv.containsKey(key)
-    fun getAllKeys() = mmkv.allKeys()?.toSet() ?: emptySet()
-    fun remove(key: String) = mmkv.removeValueForKey(key)
-    fun clearAll() = mmkv.clearAll()
-    fun sync() = mmkv.sync()
+/**
+ * MMKV配置项
+ * @property cryptKey 加密密钥（16/32字节）
+ * @property mode 存储模式（默认单进程）
+ * @property rootDir 自定义存储路径
+ * @property logLevel 日志级别（默认INFO）
+ */
+data class MMKVConfig(
+    val cryptKey: String = "",
+    val mode: Int = MMKV.SINGLE_PROCESS_MODE,
+    val rootDir: String? = null,
+    val logLevel: MMKVLogLevel = MMKVLogLevel.LevelInfo,
+) {
+    fun isValidKey() = cryptKey.isEmpty() || cryptKey.toByteArray().let {
+        it.size == 16 || it.size == 32
+    }
 }
 
 interface IMMKVOwner {
@@ -194,24 +209,5 @@ class MMKVProperty<V>(
 
     override fun setValue(thisRef: IMMKVOwner, property: KProperty<*>, value: V) {
         encode((key ?: property.name) to value)
-    }
-}
-
-// 扩展函数增强易用性
-inline fun <reified T : Any> MMKVUltra.put(key: String, value: T?) {
-    if (value != null) {
-        put(key, value)
-    } else {
-        remove(key)
-    }
-}
-
-inline fun <reified T : Any> MMKVUltra.getOrPut(key: String, defaultValue: () -> T): T {
-    return if (containsKey(key)) {
-        get(key, defaultValue())
-    } else {
-        val value = defaultValue()
-        put(key, value)
-        value
     }
 }

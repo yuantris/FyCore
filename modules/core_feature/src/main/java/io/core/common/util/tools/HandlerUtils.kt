@@ -28,16 +28,6 @@ fun buildMainHandler(): Handler {
     }
 }
 
-private val mainHandler by lazy { buildMainHandler() }
-
-fun runOnUI(function: () -> Unit) {
-    if (isMainThread) {
-        function()
-    } else {
-        mainHandler.post(function)
-    }
-}
-
 fun CoroutineScope.runOnIO(function: () -> Unit) {
     if (isMainThread) {
         launch(IO) {

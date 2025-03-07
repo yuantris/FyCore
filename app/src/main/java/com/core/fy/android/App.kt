@@ -6,6 +6,7 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.os.Build
 import com.core.fy.android.constants.AppConst.channelIdReadAloud
+import com.core.fy.android.util.MMKVConfig
 import com.core.fy.android.util.MMKVUltra
 import com.core.fy.android.util.initDialogX
 import io.core.Android
@@ -14,12 +15,14 @@ import io.core.appCtx
 import io.core.common.CoreConfig
 import io.core.common.helper.AppLifecycleTracker
 import io.core.common.helper.TurboTracker
-import io.core.common.helper.coroutine.SafeCoroutine
 import io.core.common.util.MediaScanner
-import io.core.common.util.extensions.cool.toast
+import io.core.common.util.extensions.cool.PathType
+import io.core.common.util.extensions.cool.getSettingsPath
+import io.core.common.util.extensions.cool.getSettingsPathV2
 import io.core.common.util.extensions.notificationManager
 import io.core.common.util.log.LogPure
 import io.core.engine.brv.utils.BRV
+import java.io.File
 
 
 /**
@@ -75,7 +78,10 @@ class App : Application() {
 
         MediaScanner.registerContentObserver()
 
-        MMKVUltra.init(appCtx)
+        MMKVUltra.init(
+            appCtx,
+            MMKVConfig("yuan", rootDir = getSettingsPathV2(PathType.CACHE, "mmkv_fy"))
+        )
     }
 
     /**

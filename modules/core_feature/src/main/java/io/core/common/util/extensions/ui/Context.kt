@@ -103,6 +103,7 @@ inline fun <reified T : Service> Context.startService(configIntent: Intent.() ->
     startService(Intent(this, T::class.java).apply(configIntent))
 }
 
+@SuppressLint("ImplicitSamInstance")
 inline fun <reified T : Service> Context.stopService() {
     stopService(Intent(this, T::class.java))
 }

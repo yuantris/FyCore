@@ -5,7 +5,7 @@ import androidx.core.view.isVisible
 import com.core.fy.android.databinding.ActivityVisibilityBinding
 import io.core.common.base.component.activity.ReflectBindingActivity
 import io.core.common.util.extensions.cool.launchSync
-import io.core.common.util.extensions.cool.postDelayUI
+import io.core.common.util.extensions.cool.runDelayedMain
 import io.core.common.util.extensions.ui.hide
 import io.core.common.util.extensions.ui.onDebouncedClick
 import io.core.common.util.extensions.ui.onVisibilityChange
@@ -25,7 +25,7 @@ class VisibilityActivity : ReflectBindingActivity<ActivityVisibilityBinding>() {
                 toast("ImageView is invisible")
             }
         }
-        postDelayUI(3000){
+        runDelayedMain(3000){
             binding.imageView.animations {
                 parallel {
                     translateY(200f) { duration = 1000 }

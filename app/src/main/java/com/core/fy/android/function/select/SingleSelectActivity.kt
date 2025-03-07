@@ -17,9 +17,10 @@ import io.core.common.util.extensions.ui.notifyAllDataChanged
 import io.core.common.util.extensions.ui.onClick
 import io.core.common.util.extensions.ui.toast
 import io.core.common.util.tools.findFirstByProperty
-import io.core.other.SelectableAdapter
-import io.core.other.SelectableItem
-import io.core.other.SelectionController
+import io.core.common.base.component.adapter.SelectableAdapter
+import io.core.common.base.component.adapter.SelectableItem
+import io.core.common.base.component.adapter.SelectionController
+import io.core.common.base.component.adapter.SingleTypeAdapter
 
 class SingleSelectActivity : ReflectBindingActivity<ActivitySingleSelectBinding>(),
     SelectionController.SelectionStateListener {
@@ -46,6 +47,19 @@ class SingleSelectActivity : ReflectBindingActivity<ActivitySingleSelectBinding>
     }
 
     private fun setupRecyclerView() {
+
+        // 适配器测试
+        val singleTypeAdapter = SingleTypeAdapter<SelectItem>(
+            layoutRes = R.layout.item_select_data,
+            bindFunction = { holder, item ->
+                holder.apply {
+                    itemView.findViewById<CheckBox>(R.id.checkbox)
+                }
+            },
+            itemClickListener = { item, position ->
+
+            }
+        ).submitList(demoData)
         adapter = SelectAdapter(demoData, controller)
         binding.recyclerView.apply {
             layoutManager = LinearLayoutManager(this@SingleSelectActivity)

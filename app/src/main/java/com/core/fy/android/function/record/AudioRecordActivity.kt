@@ -4,10 +4,11 @@ import android.os.Bundle
 import com.core.fy.android.databinding.ActivityAudioRecordBinding
 import com.hjq.permissions.Permission
 import io.core.common.base.component.activity.ReflectBindingActivity
-import io.core.common.util.extensions.cool.externalMusic
-import io.core.common.util.extensions.cool.postUI
+import io.core.common.util.extensions.cool.PathType
+import io.core.common.util.extensions.cool.getBasePath
 import io.core.common.util.extensions.cool.refreshMediaLibrary
 import io.core.common.util.extensions.cool.requestPermission
+import io.core.common.util.extensions.cool.runMain
 import io.core.common.util.extensions.cool.timeFormat
 import io.core.common.util.extensions.currentTimeMillis
 import io.core.common.util.extensions.ui.onClick
@@ -33,7 +34,7 @@ class AudioRecordActivity : ReflectBindingActivity<ActivityAudioRecordBinding>()
 
     private lateinit var recorder: AudioRecorder
 
-    private fun updateUI(text: String) = postUI {
+    private fun updateUI(text: String) = runMain {
         binding.tip.text = text
     }
 
@@ -89,7 +90,7 @@ class AudioRecordActivity : ReflectBindingActivity<ActivityAudioRecordBinding>()
             requestPermission(Permission.RECORD_AUDIO) {
                 // 开始录音
                 recorder.start(
-                    outputDir = externalMusic,
+                    outputDir = getBasePath(PathType.MUSIC),
                     fileName = "recording_${currentTimeMillis.timeFormat(TimeFormat.FILE_SAFE_TIMESTAMP)}"
                 )
             }

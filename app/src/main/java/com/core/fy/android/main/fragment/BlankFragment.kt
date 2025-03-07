@@ -15,11 +15,11 @@ import io.core.common.helper.coroutine.Coroutine
 import io.core.common.helper.dialogs.showDialog
 import io.core.common.util.extensions.cool.observeEvent
 import io.core.common.util.extensions.cool.observeEventSticky
+import io.core.common.util.extensions.cool.runMain
 import io.core.common.util.extensions.ui.addViewToZYLayout
 import io.core.common.util.extensions.ui.getCompatColor
 import io.core.common.util.extensions.ui.onClick
 import io.core.common.util.tools.ColorUtils
-import io.core.common.util.tools.runOnUI
 import io.core.widget.view.LoadingView
 import io.core.widget.view.RotateLoading
 import kotlinx.coroutines.CoroutineScope
@@ -80,7 +80,7 @@ class BlankFragment : ReflectBindingFragment<FragmentBlankBinding, MainActivity>
             executeContext = Dispatchers.Main,      // 指定回调执行上下文，默认为 Dispatchers.Main
         ) {
             while (isActive) { // 循环条件
-                runOnUI {
+                runMain {
                     loadingView.setColor(ColorUtils.getRandomColor())
                     loading.loadingColor = ColorUtils.getRandomColor()
                 }

@@ -7,7 +7,7 @@ import android.view.Gravity
 import android.view.WindowManager
 import android.widget.TextView
 import io.core.R
-import io.core.common.util.tools.runOnUI
+import io.core.common.util.extensions.cool.runMain
 
 /**
  * 加载对话框
@@ -40,18 +40,17 @@ class BubbleDialog @JvmOverloads constructor(
         tvTitle?.text = title
     }
 
-    override fun show() {
-        runOnUI {
-            super.show()
-        }
+    override fun show() = runMain {
+        super.show()
     }
+
 
     /**
      * 更新标题文本
      */
     fun updateTitle(text: String) {
         if (isShowing) {
-            runOnUI {
+            runMain {
                 tvTitle?.text = text
             }
         } else {

@@ -1,4 +1,4 @@
-package io.core.other
+package io.core.common.base.component.adapter
 
 import androidx.recyclerview.widget.RecyclerView
 import io.core.common.util.extensions.ui.notifyAllDataChanged

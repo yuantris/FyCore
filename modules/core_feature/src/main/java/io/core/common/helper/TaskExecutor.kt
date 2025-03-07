@@ -1,6 +1,6 @@
 package io.core.common.helper
 
-import io.core.common.util.tools.runOnUI
+import io.core.common.util.extensions.cool.runMain
 import kotlinx.coroutines.*
 import java.util.*
 import java.util.concurrent.*
@@ -134,7 +134,7 @@ class TaskExecutor private constructor(
                         errors.add(throwable.cause ?: throwable)
                     } else {
                         resultMap[index] = result
-                        runOnUI {
+                        runMain {
                             callback.onEachResult(result, index) // 即时回调
                             callback.onProgress(resultMap.size, tasks.size)
                         }
@@ -149,7 +149,7 @@ class TaskExecutor private constructor(
         val timeoutFuture = if (timeout > 0) {
             scheduledExecutor.schedule({
                 actualExecutor.shutdownNow()
-                runOnUI {
+                runMain {
                     callback.onPartialComplete(resultMap)
                     callback.onError(ConcurrentTimeoutException("Overall timeout"))
                 }
@@ -163,15 +163,15 @@ class TaskExecutor private constructor(
 
                 when {
                     errors.isNotEmpty() -> {
-                        runOnUI {
+                        runMain {
                             callback.onPartialComplete(resultMap)
                             callback.onError(ConcurrentAggregateException(errors.toList()))
                         }
                     }
-                    else -> runOnUI { callback.onComplete(resultMap) }
+                    else -> runMain { callback.onComplete(resultMap) }
                 }
             } catch (e: InterruptedException) {
-                runOnUI { callback.onError(ConcurrentException("Interrupted", e)) }
+                runMain { callback.onError(ConcurrentException("Interrupted", e)) }
             }
         }
 

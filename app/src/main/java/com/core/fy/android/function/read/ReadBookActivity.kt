@@ -25,7 +25,7 @@ import com.core.fy.android.help.config.ReadBookConfig
 import com.core.fy.android.room.entity.Book
 import io.core.common.base.component.activity.ReflectBindingActivity
 import io.core.common.util.DiveGestureLine
-import io.core.common.util.extensions.cool.MainLooper.handler
+import io.core.common.util.extensions.cool.MainThreadHandler.handler
 import io.core.common.util.log.logD
 import io.core.common.util.extensions.ui.getCompatColor
 import io.core.common.util.extensions.ui.getPrefString

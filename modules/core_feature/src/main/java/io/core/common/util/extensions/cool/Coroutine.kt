@@ -132,7 +132,7 @@ fun LifecycleOwner.launchSync(action: suspend () -> Unit) {
 }
 
 fun LifecycleOwner.launchAsync(action: suspend () -> Unit) {
-    lifecycleScope.launch(Dispatchers.Default) {
+    lifecycleScope.launch(Dispatchers.IO) {
         try {
             action()
         } catch (e: CancellationException) {

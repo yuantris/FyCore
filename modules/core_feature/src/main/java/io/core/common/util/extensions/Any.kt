@@ -7,7 +7,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ProcessLifecycleOwner
 import io.core.appCtx
 import io.core.common.helper.AppLifecycleTracker
-import io.core.common.util.extensions.cool.postDelayUI
+import io.core.common.util.extensions.cool.runDelayedMain
 import io.core.common.util.extensions.cool.timeFormat
 import io.core.common.util.extensions.ui.appPackageName
 import io.core.common.util.log.LogCat
@@ -28,7 +28,7 @@ inline fun <T> T?.verify(
 
 fun Any?.exitApp() {
     AppLifecycleTracker.finishAllActivities()
-    postDelayUI(10) {
+    runDelayedMain(10) {
         exitProcess(0)
     }
 }
