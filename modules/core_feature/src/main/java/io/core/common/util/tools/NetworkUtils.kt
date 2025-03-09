@@ -8,8 +8,8 @@ import io.core.common.util.extensions.connectivityManager
 import io.core.common.util.extensions.cool.isAbsUrl
 import io.core.common.util.extensions.cool.isDataUrl
 import io.core.common.util.extensions.cool.printOnDebug
-import io.core.common.util.log.AppLog
-import io.core.common.util.log.TAG
+import io.core.common.util.extensions.simpleName
+import io.core.common.util.log.bury.AppLog
 import java.net.URL
 import java.util.BitSet
 
@@ -138,7 +138,7 @@ object NetworkUtils {
             relativeUrl = parseUrl.toString()
             return relativeUrl
         } catch (e: Exception) {
-            AppLog.error("网址拼接出错\n${e.localizedMessage}", TAG, e)
+            AppLog.error(simpleName(),"网址拼接出错\n${e.localizedMessage}", e)
         }
         return relativeUrl
     }

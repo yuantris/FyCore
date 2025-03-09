@@ -16,7 +16,6 @@ import io.core.common.helper.jetpack.SingleLiveData
 import io.core.common.util.extensions.cool.GSON
 import io.core.common.util.extensions.cool.PathType
 import io.core.common.util.extensions.cool.createMap
-import io.core.common.util.extensions.cool.downloadsDir
 import io.core.common.util.extensions.cool.getSettingsPathV2
 import io.core.common.util.extensions.cool.joinPath
 import io.core.common.util.extensions.cool.launchAsync
@@ -25,15 +24,16 @@ import io.core.common.util.extensions.cool.requestPermission
 import io.core.common.util.extensions.cool.runDelayedMain
 import io.core.common.util.extensions.cool.runMain
 import io.core.common.util.extensions.logD
+import io.core.common.util.extensions.simpleName
 import io.core.common.util.extensions.ui.ctx
 import io.core.common.util.extensions.ui.onClick
-import io.core.common.util.log.AppLog
+import io.core.common.util.log.bury.AppLog
+import io.core.common.util.log.LogCat
 import io.core.common.util.log.LogPure
 import io.core.common.util.tools.AsyncUtils
 import io.core.common.util.tools.FileUtils
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import java.io.File
 import java.util.concurrent.TimeUnit
 
 
@@ -70,15 +70,15 @@ class KotlinFragment : ReflectBindingFragment<FragmentKotlinBinding, TestPageAct
             }
             "author" with "yuan"
         }
-        AppLog.verbose("jsonString", toast = true)
-        AppLog.info(jsonString)
+        AppLog.debug(simpleName(),"jsonString")
+        AppLog.info(simpleName(),jsonString)
 
         JsonUltra.parse(jsonString).getAllPaths().forEach { LogPure.i { it } }
-        AppLog.debug(JsonUltra.parse(jsonString)["library.features[2]"]?.asString() ?: "")
-        AppLog.debug(JsonUltra.parse(jsonString)["library.books[1].title"]?.asString() ?: "")
+        AppLog.debug(simpleName(),JsonUltra.parse(jsonString)["library.features[2]"]?.asString() ?: "")
+        AppLog.debug(simpleName(),JsonUltra.parse(jsonString)["library.books[1].title"]?.asString() ?: "")
         val list: List<String>? =
             JsonUltra.parse(jsonString)["library.features"]?.asList { it.asString() }
-        AppLog.error(GSON.toJson(list))
+        AppLog.error(simpleName(),GSON.toJson(list))
 
 
         val parse = JsonUltra.parse("{\"key\": \"{\\\"nested\\\": 1234}\"}")
@@ -130,7 +130,9 @@ class KotlinFragment : ReflectBindingFragment<FragmentKotlinBinding, TestPageAct
             }
         }
 
-        AppLog.exportToFile(File(downloadsDir, "log1.txt"))
+        AppLog.getLogFiles().forEach {
+            LogCat.i(it.readText())
+        }
 
         joinPath("a", "b", "c").logD()
         runMain {

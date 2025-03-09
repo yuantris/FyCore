@@ -44,7 +44,6 @@ import io.core.common.util.extensions.powerManager
 import io.core.common.util.extensions.ui.broadcastPendingIntent
 import io.core.common.util.extensions.ui.servicePendingIntent
 import io.core.common.util.extensions.wifiManager
-import io.core.common.util.log.AppLog
 import io.core.common.util.log.LogCat
 import io.core.common.util.tools.toastOnUI
 import kotlinx.coroutines.Dispatchers.Main

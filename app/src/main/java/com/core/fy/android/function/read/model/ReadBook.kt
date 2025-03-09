@@ -14,7 +14,6 @@ import com.core.fy.android.room.entity.ReadRecord
 import com.core.fy.android.function.read.services.BaseReadAloudService
 import io.core.common.helper.coroutine.Coroutine
 import io.core.appCtx
-import io.core.common.util.log.AppLog
 import io.core.common.util.log.LogCat
 import io.core.common.util.log.LogPure
 import io.core.common.util.tools.globalExecutor

@@ -26,6 +26,7 @@ import io.core.common.util.extensions.ui.showDialogFragment
 import io.core.common.util.extensions.ui.toast
 import io.core.common.util.extensions.ui.toastLong
 import io.core.common.util.extensions.ui.viewBinding
+import io.core.common.util.log.bury.AppLog
 import io.core.common.util.tools.FileUtils
 import io.core.common.util.tools.UriUtils
 import io.core.common.util.tools.toastOnUI
@@ -74,10 +75,36 @@ class CrashLogsDialog : BaseDialogFragment(R.layout.dialog_recycler_view),
     }
 
     override fun onFragmentCreated(view: View, savedInstanceState: Bundle?) {
-        binding.toolBar.setBackgroundColor(getCompatColor(R.color.md_amber_300))
-        binding.toolBar.setTitle("崩溃日志")
-        binding.toolBar.inflateMenu(R.menu.crash_log)
-        binding.toolBar.setOnMenuItemClickListener(this)
+        binding.toolBar.apply {
+            setBackgroundColor(getCompatColor(R.color.md_amber_300))
+            title = "崩溃日志"
+            inflateMenu(R.menu.crash_log)
+            setOnMenuItemClickListener(this@CrashLogsDialog)
+            getChildAt(0).apply {
+                // ToolBar标题单击查看AppLog详细信息
+                setOnClickListener {
+                    execute {
+                        AppLog.getLogFiles()[0].readText()
+                    }.onSuccess {
+                        showDialogFragment(TextDialog("运行日志", it))
+                    }
+                }
+                // 长按分享AppLog
+                setOnLongClickListener {
+                    AppLog.getLogFiles().let {
+                        if (it.isNotEmpty()) {
+                            val file = it[0]
+                            FileSharer.Builder()
+                                .setChooserTitle("分享运行日志")
+                                .setFileList(listOf(file))
+                                .share(ctx)
+                        }
+                    }
+                    true
+                }
+            }
+        }
+
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerView.adapter = adapter
         viewModel.logLiveData.observe(viewLifecycleOwner) {

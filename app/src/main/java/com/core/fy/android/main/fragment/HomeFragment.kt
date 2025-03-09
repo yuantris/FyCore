@@ -106,6 +106,8 @@ class HomeFragment : ReflectBindingFragment<FragmentHomeBinding, MainActivity>()
             ClickSequenceHandler(binding.toolbar) {
                 showDialogFragment<ConfigDialog>()
             }
+
+
         }
     }
 

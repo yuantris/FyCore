@@ -42,7 +42,6 @@ import io.core.common.util.extensions.telephonyManager
 import io.core.common.util.extensions.ui.broadcastPendingIntent
 import io.core.common.util.extensions.ui.getPrefBoolean
 import io.core.common.util.extensions.wifiManager
-import io.core.common.util.log.AppLog
 import io.core.common.util.log.LogCat
 import io.core.common.util.tools.toastOnUI
 import kotlinx.coroutines.Dispatchers.IO

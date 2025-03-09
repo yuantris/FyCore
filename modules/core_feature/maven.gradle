@@ -8,6 +8,9 @@ def version_number = '0.1.67'
 def version_number_snapshot = isRelease ? version_number : "${version_number}-SNAPSHOT"
 
 /**
+ * # Mac给 gradlew 添加执行权限（在项目根目录执行）
+ chmod +x gradlew
+ *
  * # 发布快照版本（默认）
  ./gradlew publishSnapshot
 

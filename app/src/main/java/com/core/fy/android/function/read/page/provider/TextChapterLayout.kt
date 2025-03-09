@@ -22,7 +22,6 @@ import io.core.common.util.extensions.cool.dpToPx
 import io.core.common.util.extensions.cool.fastSum
 import io.core.common.util.extensions.cool.splitNotBlank
 import io.core.common.helper.coroutine.Coroutine
-import io.core.common.util.log.AppLog
 import io.core.common.util.log.LogCat
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope

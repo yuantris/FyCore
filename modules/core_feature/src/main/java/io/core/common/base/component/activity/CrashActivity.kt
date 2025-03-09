@@ -30,6 +30,7 @@ import io.core.R
 import io.core.appCtx
 import io.core.common.base.component.dialog.showPopupWindow
 import io.core.common.util.FileSharer
+import io.core.common.util.ShareAir
 import io.core.common.util.extensions.cool.dp
 import io.core.common.util.extensions.cool.getFile
 import io.core.common.util.extensions.cool.hasReadWriteStoragePermission
@@ -86,11 +87,13 @@ class CrashActivity : BaseActivity() {
             if (throwable == null) {
                 return
             }
-            val intent = Intent(application, CrashActivity::class.java)
-            intent.putExtra(INTENT_KEY_IN_THROWABLE, throwable)
-            intent.putExtra(INTENT_KEY_IN_LOG_FILE_NAME, log)
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            application.startActivity(intent)
+            Intent(application, CrashActivity::class.java).apply {
+                putExtra(INTENT_KEY_IN_THROWABLE, throwable)
+                putExtra(INTENT_KEY_IN_LOG_FILE_NAME, log)
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            }.also {
+                application.startActivity(it)
+            }
         }
     }
 
@@ -341,10 +344,9 @@ class CrashActivity : BaseActivity() {
                     val tvLog = findViewById<SettingBar>(R.id.log)
 
                     tvShare.onClick {
-                        val intent = Intent(Intent.ACTION_SEND)
-                        intent.type = "text/plain"
-                        intent.putExtra(Intent.EXTRA_TEXT, stackTrace)
-                        startActivity(Intent.createChooser(intent, ""))
+                        ShareAir.share {
+                            text(stackTrace ?: "")
+                        }
                     }
 
                     tvLog.onClick {

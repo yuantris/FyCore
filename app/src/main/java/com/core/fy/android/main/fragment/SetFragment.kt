@@ -3,16 +3,13 @@ package com.core.fy.android.main.fragment
 import com.core.fy.android.MainActivity
 import com.core.fy.android.databinding.FragmentSetBinding
 import com.core.fy.android.function.TestPageActivity
-import com.core.fy.android.util.showDxNotification
 import io.core.common.base.component.fragment.ReflectBindingFragment
-import io.core.common.helper.JsonUltra
+import io.core.common.util.ShareAir
 import io.core.common.util.extensions.cool.coolThread
 import io.core.common.util.extensions.cool.timeFormat
 import io.core.common.util.extensions.currentTimeMillis
-import io.core.common.util.extensions.logD
 import io.core.common.util.extensions.ui.adaptStatusBarToView
 import io.core.common.util.extensions.ui.appVersionName
-import io.core.common.util.extensions.ui.ctx
 import io.core.common.util.extensions.ui.onClick
 import io.core.common.util.extensions.ui.onDebouncedClick
 import io.core.common.util.extensions.ui.startActivity
@@ -22,6 +19,7 @@ import io.core.common.util.tools.androidApiVersion
 import io.core.common.util.tools.androidVersion
 import io.core.common.util.tools.buildMultiLine
 import io.core.constant.TimeFormat
+import androidx.core.net.toUri
 
 /**
 # ██████████
@@ -48,8 +46,12 @@ class SetFragment : ReflectBindingFragment<FragmentSetBinding, MainActivity>() {
 //                ctx.showXpLoading {
 //                    content = ctx.appVersionName
 //                }
-                showDxNotification {
-                    content = ctx.appVersionName
+//                showDxNotification {
+//                    content = ctx.appVersionName
+//                }
+
+                ShareAir.share {
+                    text("分享到")
                 }
             }
 
@@ -72,11 +74,7 @@ class SetFragment : ReflectBindingFragment<FragmentSetBinding, MainActivity>() {
 
     override fun initData() {
         super.initData()
-        val json =
-            "{\"Ids\":{\"11\":\"212-226\",\"12\":\"227-246\"},\"imageUrlPrefix\":\"https://zycdn.ss.bscstorage.com/wallpaper/\"}"
 
-        val format = JsonUltra.format(json)
-        format.logD()
 
     }
 

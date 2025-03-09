@@ -4,7 +4,7 @@ import android.app.Activity
 import android.os.Handler
 import android.os.Looper
 import androidx.fragment.app.Fragment
-import io.core.common.util.log.AppLog
+import io.core.common.util.log.LogPure
 import io.core.common.util.tools.buildMainHandler
 import java.util.concurrent.atomic.AtomicBoolean
 
@@ -69,7 +69,7 @@ private fun <T> T.isSafeToRun(): Boolean where T : Any? {
         is Activity -> !isFinishing && !isDestroyed
         else -> {
             // 可选：添加日志警告
-            AppLog.warn("Unknown type for isSafeToRun: $this")
+            LogPure.w(message = "Unknown type for isSafeToRun: $this")
             true
         }
     }

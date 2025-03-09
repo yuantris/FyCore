@@ -1,13 +1,10 @@
 package io.core.common.helper.coroutine
 
 import android.util.Log
-import io.core.common.util.log.LogCat
 import io.core.common.util.log.TAG
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch

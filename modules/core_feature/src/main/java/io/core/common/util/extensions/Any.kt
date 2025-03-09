@@ -25,6 +25,11 @@ inline fun <T> T?.verify(
     }
 }
 
+/**
+ * 获取类名(常用作TAG)
+ */
+fun Any.simpleName(): String = this::class.simpleName ?: "Unknown"
+
 
 fun Any?.exitApp() {
     AppLifecycleTracker.finishAllActivities()
