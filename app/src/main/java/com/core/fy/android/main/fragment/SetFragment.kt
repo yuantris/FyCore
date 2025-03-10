@@ -20,6 +20,11 @@ import io.core.common.util.tools.androidVersion
 import io.core.common.util.tools.buildMultiLine
 import io.core.constant.TimeFormat
 import androidx.core.net.toUri
+import com.core.fy.android.constants.PreferKey
+import io.core.common.util.extensions.logD
+import io.core.common.util.extensions.storageManager
+import io.core.engine.storage.getWithAnnotation
+import io.core.engine.storage.storage
 
 /**
 # ██████████
@@ -38,6 +43,9 @@ class SetFragment : ReflectBindingFragment<FragmentSetBinding, MainActivity>() {
 
     override fun initView() {
         super.initView()
+
+        val withAnnotation = storage.getWithAnnotation<Int>(PreferKey.SP_TEST)
+        LogCat.d("测试一下工厂默认值 结果为：$withAnnotation")
 
         with(binding) {
             version.setLeftText("版本")

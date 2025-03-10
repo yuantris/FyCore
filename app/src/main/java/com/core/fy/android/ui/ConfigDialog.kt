@@ -16,7 +16,9 @@ import io.core.common.util.extensions.ui.onClick
 import io.core.common.util.extensions.ui.setLayout
 import io.core.common.util.extensions.ui.showDialogFragment
 import io.core.common.util.extensions.ui.viewBinding
-import io.core.common.util.tools.Preferences
+import io.core.engine.storage.getWithAnnotation
+import io.core.engine.storage.put
+import io.core.engine.storage.storage
 
 
 /**
@@ -61,30 +63,30 @@ class ConfigDialog : BaseDialogFragment(R.layout.dialog_app_config) {
             binding.toolBar.title = "应用配置"
         }
 
-        val isDisplaySplashAnim = Preferences.getValue(PreferKey.isDisplaySplashAnim, true)
-        val isDisplayGuide = Preferences.getValue(PreferKey.isDisplayGuide, true)
-        val isDisplayHomeSkeletonAnim = Preferences.getValue(PreferKey.isDisplayHomeSkeletonAnim, true)
+        val isDisplaySplashAnim = storage.getWithAnnotation<Boolean>(PreferKey.SPLASH_ANIM)
+        val isDisplayGuide = storage.getWithAnnotation<Boolean>(PreferKey.GUIDE_PAGE)
+        val isDisplayHomeSkeletonAnim = storage.getWithAnnotation<Boolean>(PreferKey.HOME_SKELETON_ANIM)
 
         binding.apply {
             radioStartAnim.isChecked = isDisplaySplashAnim
             radioStartAnim.onClick {
-                val check = Preferences.getValue(PreferKey.isDisplaySplashAnim, true)
+                val check = storage.getWithAnnotation<Boolean>(PreferKey.SPLASH_ANIM)
                 radioStartAnim.isChecked = !check
-                Preferences.putValue(PreferKey.isDisplaySplashAnim, !check)
+                storage.put(PreferKey.SPLASH_ANIM, !check)
             }
 
             radioGuideShow.isChecked = isDisplayGuide
             radioGuideShow.onClick {
-                val check = Preferences.getValue(PreferKey.isDisplayGuide, true)
+                val check = storage.getWithAnnotation<Boolean>(PreferKey.GUIDE_PAGE)
                 radioGuideShow.isChecked = !check
-                Preferences.putValue(PreferKey.isDisplayGuide, !check)
+                storage.put(PreferKey.GUIDE_PAGE, !check)
             }
 
             radioHomeSkeletonAnim.isChecked = isDisplayHomeSkeletonAnim
             radioHomeSkeletonAnim.onClick {
-                val check = Preferences.getValue(PreferKey.isDisplayHomeSkeletonAnim, true)
+                val check = storage.getWithAnnotation<Boolean>(PreferKey.HOME_SKELETON_ANIM)
                 radioHomeSkeletonAnim.isChecked = !check
-                Preferences.putValue(PreferKey.isDisplayHomeSkeletonAnim, !check)
+                storage.put(PreferKey.HOME_SKELETON_ANIM, !check)
             }
 
             crumble.onClick {

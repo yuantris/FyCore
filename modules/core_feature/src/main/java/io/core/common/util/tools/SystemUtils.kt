@@ -9,22 +9,22 @@ import android.view.Display
 import io.core.appCtx
 import io.core.common.util.extensions.displayManager
 import io.core.common.util.extensions.powerManager
+import androidx.core.net.toUri
+import io.core.constant.ANDROID_6
 
 
-@Suppress("unused")
 object SystemUtils {
 
-    @SuppressLint("ObsoleteSdkInt")
+    @SuppressLint("BatteryLife")
     fun ignoreBatteryOptimization(activity: Activity) {
-        if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.M) return
+        if (OsUtils.lowerThan(ANDROID_6)) return
 
         val hasIgnored = powerManager.isIgnoringBatteryOptimizations(activity.packageName)
         //  判断当前APP是否有加入电池优化的白名单，如果没有，弹出加入电池优化的白名单的设置对话框。
         if (!hasIgnored) {
             try {
-                @SuppressLint("BatteryLife")
                 val intent = Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS)
-                intent.data = Uri.parse("package:" + activity.packageName)
+                intent.data = "package:${activity.packageName}".toUri()
                 activity.startActivity(intent)
             } catch (ignored: Throwable) {
             }

@@ -14,7 +14,7 @@ import io.core.common.util.extensions.cool.runMain
 import io.core.common.util.extensions.ui.onClick
 import io.core.common.util.extensions.ui.onTrackingTouch
 import io.core.common.util.log.LogCat
-import io.core.common.util.tools.UriUtils
+import io.core.common.util.tools.UriTools
 import io.core.common.util.tools.formatDuration
 import io.core.common.util.tools.toastOnUI
 import kotlinx.coroutines.launch
@@ -68,7 +68,7 @@ class MediaPlayerActivity : ReflectBindingActivity<ActivityMediaPlayerBinding>()
                     }.onSuccess { result ->
                         list = result
                         val file = File(result[0].path)
-                        val uri = UriUtils.file2Uri(File(file.path))
+                        val uri = UriTools.file2Uri(File(file.path))
                         tip.text = "文件路径：${file.path}"
                         player.prepare(uri)
                     }

@@ -143,19 +143,19 @@ object ShareAir {
         }
     }
 
-    private fun handleResource(content: ShareContent.Resource) {
-        try {
-            val uri = createTempFileFromResource(content.config.context, content.resId, content.fileName)
-            Intent(Intent.ACTION_SEND).apply {
-                type = "image/*"
-                putExtra(Intent.EXTRA_STREAM, uri)
-                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                startSharing(content.config)
-            }
-        } catch (e: IOException) {
-            throw ResourceProcessingException("资源文件处理失败", e)
+    private fun handleResource(content: ShareContent.Resource) = try {
+        val uri =
+            createTempFileFromResource(content.config.context, content.resId, content.fileName)
+        Intent(Intent.ACTION_SEND).apply {
+            type = "image/*"
+            putExtra(Intent.EXTRA_STREAM, uri)
+            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            startSharing(content.config)
         }
+    } catch (e: IOException) {
+        throw ResourceProcessingException("资源文件处理失败", e)
     }
+
 
     private fun createTempFileFromResource(context: Context, resId: Int, fileName: String?): Uri {
         val resources = context.resources
@@ -172,22 +172,21 @@ object ShareAir {
         return outputFile.getUri()
     }
 
-    private fun Intent.startSharing(config: ShareConfig) {
-        try {
-            val finalIntent = Intent.createChooser(this, config.title).apply {
-                if (config.context !is Activity) {
-                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                }
+    private fun Intent.startSharing(config: ShareConfig) = try {
+        val finalIntent = Intent.createChooser(this, config.title).apply {
+            if (config.context !is Activity) {
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             }
-
-            when (config.context) {
-                is Activity -> config.context.startActivity(finalIntent)
-                else -> config.context.applicationContext.startActivity(finalIntent)
-            }
-        } catch (e: ActivityNotFoundException) {
-            throw SharingException("未找到可用的分享应用", e)
         }
+
+        when (config.context) {
+            is Activity -> config.context.startActivity(finalIntent)
+            else -> config.context.applicationContext.startActivity(finalIntent)
+        }
+    } catch (e: ActivityNotFoundException) {
+        throw SharingException("未找到可用的分享应用", e)
     }
+
 
     private fun showDetailedError(context: Context, e: Exception) {
         val errorMessage = when (e) {

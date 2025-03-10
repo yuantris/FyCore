@@ -93,6 +93,8 @@ dependencies {
     kapt libs.room.compiler
     annotationProcessor libs.room.compiler
 
+    // MMKV
+    compileOnly libs.mmkv
     // Glide
     compileOnly(libs.glide)
     // 权限请求框架

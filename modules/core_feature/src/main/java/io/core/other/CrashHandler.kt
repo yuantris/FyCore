@@ -23,7 +23,7 @@ import io.core.common.util.extensions.cool.ifNext
 import io.core.common.util.extensions.cool.timeFormat
 import io.core.common.util.extensions.currentTimeMillis
 import io.core.common.util.log.LogCat
-import io.core.common.util.tools.FileUtils
+import io.core.common.util.tools.FileTools
 import io.core.constant.CRASH_FOLDER_NAME
 import io.core.constant.TimeFormat
 import java.io.PrintWriter
@@ -106,17 +106,17 @@ class CrashHandler private constructor(private val application: Application) :
                         }
                     }
 
-                    FileUtils.createFileIfNotExist(rootFile, CRASH_FOLDER_NAME, fileName)
+                    FileTools.createFileIfNotExist(rootFile, CRASH_FOLDER_NAME, fileName)
                         .writeText(crashLog)
 
                     // 写入外置存储
                     if (appCtx.hasWriteStoragePermission()) {
-                        val folder = FileUtils.createFolderIfNotExist(
+                        val folder = FileTools.createFolderIfNotExist(
                             documentsDir,
                             "Crash"
                         )
 
-                        FileUtils.createFileIfNotExist(
+                        FileTools.createFileIfNotExist(
                             documentsDir,
                             folder.name,
                             fileNameExternal

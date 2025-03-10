@@ -1,5 +1,7 @@
 package com.core.fy.android.constants
 
+import io.core.engine.storage.StorageKey
+
 /**
 # ██████████
 # █▄█████▄█
@@ -14,10 +16,14 @@ package com.core.fy.android.constants
  * @author Yuan
  */
 object PreferKey {
-    // 是否显示启动动画
-    const val isDisplaySplashAnim = "isDisplaySplashAnim"
-    const val isDisplayGuide = "isDisplayGuide"
-    const val isDisplayHomeSkeletonAnim = "isDisplayHomeSkeletonAnim"
+    @StorageKey(description = "展示启动动画", defaultValue = "true")
+    const val SPLASH_ANIM = "isDisplaySplashAnim"
+    @StorageKey(description = "展示启动引导页面", defaultValue = "true")
+    const val GUIDE_PAGE = "isDisplayGuide"
+    @StorageKey(description = "展示首页骨架过渡动画", defaultValue = "false")
+    const val HOME_SKELETON_ANIM = "isDisplayHomeSkeletonAnim"
+    @StorageKey(description = "测试默认值", defaultValue = "1110")
+    const val SP_TEST = "isTest_1110"
 
     /** --------------read-------------- */
     const val language = "language"

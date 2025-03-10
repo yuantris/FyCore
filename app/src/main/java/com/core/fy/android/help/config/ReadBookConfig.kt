@@ -24,7 +24,7 @@ import io.core.common.util.extensions.ui.putPrefBoolean
 import io.core.common.util.extensions.ui.putPrefInt
 import io.core.common.util.log.LogCat
 import io.core.common.util.tools.BitmapUtils
-import io.core.common.util.tools.FileUtils
+import io.core.common.util.tools.FileTools
 import io.core.common.util.tools.getMeanColor
 import io.core.common.util.tools.resizeAndRecycle
 import java.io.File
@@ -37,8 +37,8 @@ import java.io.File
 object ReadBookConfig {
     const val configFileName = "readConfig.json"
     const val shareConfigFileName = "shareReadConfig.json"
-    val configFilePath = FileUtils.getPath(appCtx.filesDir, configFileName)
-    val shareConfigFilePath = FileUtils.getPath(appCtx.filesDir, shareConfigFileName)
+    val configFilePath = FileTools.getPath(appCtx.filesDir, configFileName)
+    val shareConfigFilePath = FileTools.getPath(appCtx.filesDir, shareConfigFileName)
     val configList: ArrayList<Config> = arrayListOf()
     lateinit var shareConfig: Config
     var durConfig
@@ -115,12 +115,12 @@ object ReadBookConfig {
         Coroutine.async {
             synchronized(this) {
                 GSON.toJson(configList).let {
-                    FileUtils.delete(configFilePath)
-                    FileUtils.createFileIfNotExist(configFilePath).writeText(it)
+                    FileTools.delete(configFilePath)
+                    FileTools.createFileIfNotExist(configFilePath).writeText(it)
                 }
                 GSON.toJson(shareConfig).let {
-                    FileUtils.delete(shareConfigFilePath)
-                    FileUtils.createFileIfNotExist(shareConfigFilePath).writeText(it)
+                    FileTools.delete(shareConfigFilePath)
+                    FileTools.createFileIfNotExist(shareConfigFilePath).writeText(it)
                 }
             }
         }
@@ -589,7 +589,7 @@ object ReadBookConfig {
                     else -> {
                         val path = curBgStr().let {
                             if (it.contains(File.separator)) it
-                            else FileUtils.getPath(appCtx.getBasePath(PathType.EXTERNAL_FILES), "bg", curBgStr())
+                            else FileTools.getPath(appCtx.getBasePath(PathType.EXTERNAL_FILES), "bg", curBgStr())
                         }
                         val bitmap = BitmapUtils.decodeBitmap(path, width, height)
                         BitmapDrawable(resources, bitmap?.resizeAndRecycle(width, height))

@@ -5,7 +5,6 @@ import com.blankj.utilcode.util.GsonUtils
 import com.core.fy.android.databinding.FragmentKotlinBinding
 import com.core.fy.android.function.TestPageActivity
 import com.core.fy.android.help.ProgressNotifier
-import com.core.fy.android.util.MMKVs
 import com.hjq.permissions.Permission
 import io.core.common.base.component.fragment.ReflectBindingFragment
 import io.core.common.helper.JsonUltra
@@ -27,11 +26,18 @@ import io.core.common.util.extensions.logD
 import io.core.common.util.extensions.simpleName
 import io.core.common.util.extensions.ui.ctx
 import io.core.common.util.extensions.ui.onClick
-import io.core.common.util.log.bury.AppLog
 import io.core.common.util.log.LogCat
 import io.core.common.util.log.LogPure
+import io.core.common.util.log.bury.AppLog
 import io.core.common.util.tools.AsyncUtils
-import io.core.common.util.tools.FileUtils
+import io.core.common.util.tools.FileTools
+import io.core.common.util.tools.Preferences
+import io.core.engine.storage.MMKVEngine
+import io.core.engine.storage.StorageFactory
+import io.core.engine.storage.StorageKey
+import io.core.engine.storage.get
+import io.core.engine.storage.put
+import io.core.engine.storage.storage
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
@@ -70,15 +76,21 @@ class KotlinFragment : ReflectBindingFragment<FragmentKotlinBinding, TestPageAct
             }
             "author" with "yuan"
         }
-        AppLog.debug(simpleName(),"jsonString")
-        AppLog.info(simpleName(),jsonString)
+        AppLog.debug(simpleName(), "jsonString")
+        AppLog.info(simpleName(), jsonString)
 
         JsonUltra.parse(jsonString).getAllPaths().forEach { LogPure.i { it } }
-        AppLog.debug(simpleName(),JsonUltra.parse(jsonString)["library.features[2]"]?.asString() ?: "")
-        AppLog.debug(simpleName(),JsonUltra.parse(jsonString)["library.books[1].title"]?.asString() ?: "")
+        AppLog.debug(
+            simpleName(),
+            JsonUltra.parse(jsonString)["library.features[2]"]?.asString() ?: ""
+        )
+        AppLog.debug(
+            simpleName(),
+            JsonUltra.parse(jsonString)["library.books[1].title"]?.asString() ?: ""
+        )
         val list: List<String>? =
             JsonUltra.parse(jsonString)["library.features"]?.asList { it.asString() }
-        AppLog.error(simpleName(),GSON.toJson(list))
+        AppLog.error(simpleName(), GSON.toJson(list))
 
 
         val parse = JsonUltra.parse("{\"key\": \"{\\\"nested\\\": 1234}\"}")
@@ -117,12 +129,10 @@ class KotlinFragment : ReflectBindingFragment<FragmentKotlinBinding, TestPageAct
             fixedRate.cancel(true)
         }
 
-        MMKVs.put("key", "value")
-        MMKVs.get<String>("key").logD()
 
         launchAsync {
             val listFiles =
-                FileUtils.listFiles(ctx.getSettingsPathV2(PathType.CACHE, "mmkv_fy"))
+                FileTools.listFiles(ctx.getSettingsPathV2(PathType.CACHE, "mmkv_fy"))
             listFiles.forEach {
                 LogPure.i {
                     "file:${it.absolutePath}"
@@ -185,6 +195,10 @@ class KotlinFragment : ReflectBindingFragment<FragmentKotlinBinding, TestPageAct
                     LogPure.d { "result:$result,index:$index" }
                 },
             )
+        }
+
+        storage.getAllKeys().forEach {
+            LogCat.e(it)
         }
     }
 }

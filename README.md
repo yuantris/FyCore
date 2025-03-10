@@ -15,6 +15,14 @@ TurboTracker.initialize(this) {
     enable(CoreConfig.RELEASE)
     setLogger(ReleaseLogger()) // 生产环境日志
 }
+// 存储工厂初始化
+StorageFactory.initialize(
+  StorageConfig(
+    type = StorageType.MMKV,
+    mmkvMode = MMKV.MULTI_PROCESS_MODE,
+    validateClass = PreferKey::class.java
+  )
+)
 ```
 
 **模块概览**
@@ -222,28 +230,31 @@ TurboTracker.initialize(this) {
         JsonUltra.format("{\"name\":\"张三\",\"age\":18}")["name"]?.asString()?.logD()
   ```
 
-- MMKVUltra
+- StorageFactory 存储工厂
   ```kotlin
-    object Account : MMKVOwner(mmapID = "account") {
-        //default后可传默认值
-         var accountName by mmkvString(default = "")
-         var accountId by mmkvInt(default = -1)
-         var userId by mmkvLong(default = -1)
-         var isShow by mmkvBool(false)
-      }
-    
-      //赋值
-      Account.accountName = "aaaaa"
-    
-      //取值
-      val name = Account.accountName
-    
-      //常规使用
-      MMKVUltra.init(appCtx)
-      MMKVs.put("key", "value")
-      MMKVs.get<String>("key")
-    
-    
+  // 存储工厂初始化配置
+  StorageFactory.initialize(
+    StorageConfig(
+      type = StorageType.MMKV,
+      mmkvMode = MMKV.MULTI_PROCESS_MODE,
+      validateClass = SPKey::class.java
+    )
+  )
+  
+  // 统一定义存储Key [使用const val约束]
+  object SPKey {
+      @StorageKey(description = "展示启动动画", defaultValue = "true")
+      const val SPLASH_ANIM = "isDisplaySplashAnim"
+      @StorageKey(description = "展示启动引导页面", defaultValue = "true")
+      const val GUIDE_PAGE = "isDisplayGuide"
+      @StorageKey(description = "展示首页骨架过渡动画", defaultValue = "false")
+      const val HOME_SKELETON_ANIM = "isDisplayHomeSkeletonAnim"
+  }
+  
+  //获取值
+  val check = storage.getWithAnnotation<Boolean>(SPKey.GUIDE_PAGE)
+  //设置值
+  storage.put(PreferKey.GUIDE_PAGE, false)
   ```
   
 - DrawableBuilder(ShapeDrawable构造器)

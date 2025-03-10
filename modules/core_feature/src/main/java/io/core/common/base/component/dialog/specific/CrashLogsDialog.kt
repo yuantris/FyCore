@@ -27,8 +27,8 @@ import io.core.common.util.extensions.ui.toast
 import io.core.common.util.extensions.ui.toastLong
 import io.core.common.util.extensions.ui.viewBinding
 import io.core.common.util.log.bury.AppLog
-import io.core.common.util.tools.FileUtils
-import io.core.common.util.tools.UriUtils
+import io.core.common.util.tools.FileTools
+import io.core.common.util.tools.UriTools
 import io.core.common.util.tools.toastOnUI
 import io.core.constant.CRASH_FOLDER_NAME
 import io.core.databinding.DialogRecyclerViewBinding
@@ -55,7 +55,7 @@ class CrashLogsDialog : BaseDialogFragment(R.layout.dialog_recycler_view),
                 override fun onItemLongClick(item: FileDoc, position: Int): Boolean {
                     viewModel.readFile(item) {
                         if (lifecycleScope.isActive) {
-                            UriUtils.uri2File(item.uri)?.let {
+                            UriTools.uri2File(item.uri)?.let {
                                 FileSharer.Builder()
                                     .setChooserTitle("分享崩溃日志")
                                     .setFileList(listOf(it))
@@ -182,7 +182,7 @@ class CrashLogsDialog : BaseDialogFragment(R.layout.dialog_recycler_view),
                 appCtx.externalCacheDir
                     ?.getFile(CRASH_FOLDER_NAME)
                     ?.let {
-                        FileUtils.delete(it, false)
+                        FileTools.delete(it, false)
                     }
             }.onError {
                 appCtx.toastOnUI(it.localizedMessage)

@@ -8,6 +8,8 @@ import io.core.common.util.log.LogCat
 import io.core.common.util.tools.Preferences
 import io.core.engine.livebus.LiveEventBus
 import io.core.engine.livebus.logger.DefaultLogger
+import io.core.engine.storage.StorageFactory
+import io.core.engine.storage.storage
 import io.core.other.CrashHandler
 
 inline val appCtx get() = Android.context
@@ -67,6 +69,7 @@ object Android {
     fun clearData() {
         // 清除sp数据
         Preferences.clear()
+        storage.clear()
     }
 
 }

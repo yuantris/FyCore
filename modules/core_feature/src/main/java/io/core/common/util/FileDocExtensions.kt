@@ -12,7 +12,7 @@ import androidx.documentfile.provider.DocumentFile
 import io.core.appCtx
 import io.core.common.util.extensions.cool.checkWrite
 import io.core.common.util.extensions.cool.inputStream
-import io.core.common.util.extensions.cool.isContentScheme
+import io.core.common.util.extensions.cool.isContentUri
 import io.core.common.util.extensions.cool.listFileDocs
 import io.core.common.util.extensions.cool.outputStream
 import io.core.common.util.extensions.cool.readBytes
@@ -24,7 +24,7 @@ import io.core.common.util.extensions.cool.writeText
 import io.core.common.util.extensions.currentTimeMillis
 import io.core.common.util.extensions.downloadManager
 import io.core.common.util.tools.DocumentUtils
-import io.core.common.util.tools.FileUtils
+import io.core.common.util.tools.FileTools
 import java.io.File
 import java.io.InputStream
 import java.io.OutputStream
@@ -39,10 +39,10 @@ data class FileDoc(
 ) {
 
     override fun toString(): String {
-        return if (uri.isContentScheme()) uri.toString() else uri.path!!
+        return if (uri.isContentUri()) uri.toString() else uri.path!!
     }
 
-    val isContentScheme get() = uri.isContentScheme()
+    val isContentUri get() = uri.isContentUri()
 
     fun readBytes(): ByteArray {
         return uri.readBytes(appCtx)
@@ -53,7 +53,7 @@ data class FileDoc(
     }
 
     fun asDocumentFile(): DocumentFile? {
-        if (isContentScheme) {
+        if (isContentUri) {
             return if (isDir) {
                 Class.forName("androidx.documentfile.provider.TreeDocumentFile")
                     .getDeclaredConstructor(
@@ -71,7 +71,7 @@ data class FileDoc(
     }
 
     fun asFile(): File? {
-        if (isContentScheme) {
+        if (isContentUri) {
             return null
         }
         return File(uri.path!!)
@@ -80,7 +80,7 @@ data class FileDoc(
     companion object {
 
         fun fromUri(uri: Uri, isDir: Boolean): FileDoc {
-            if (uri.isContentScheme()) {
+            if (uri.isContentUri()) {
                 val doc = if (isDir) {
                     DocumentFile.fromTreeUri(appCtx, uri)!!
                 } else if (uri.host == "downloads") {
@@ -147,7 +147,7 @@ private val projection by lazy {
  */
 fun FileDoc.list(filter: FileDocFilter? = null): ArrayList<FileDoc>? {
     if (isDir) {
-        if (uri.isContentScheme()) {
+        if (uri.isContentUri()) {
             /**
              * DocumentFile 的 listFiles() 非常的慢,所以这里直接从数据库查询
              */
@@ -227,13 +227,13 @@ fun FileDoc.createFileIfNotExist(
     fileName: String,
     vararg subDirs: String
 ): FileDoc {
-    return if (uri.isContentScheme()) {
+    return if (uri.isContentUri()) {
         val documentFile = asDocumentFile()!!
         val tmp = DocumentUtils.createFileIfNotExist(documentFile, fileName, *subDirs)!!
         FileDoc.fromDocumentFile(tmp)
     } else {
-        val path = FileUtils.getPath(uri.path!!, *subDirs) + File.separator + fileName
-        val tmp = FileUtils.createFileIfNotExist(path)
+        val path = FileTools.getPath(uri.path!!, *subDirs) + File.separator + fileName
+        val tmp = FileTools.createFileIfNotExist(path)
         FileDoc.fromFile(tmp)
     }
 }
@@ -241,13 +241,13 @@ fun FileDoc.createFileIfNotExist(
 fun FileDoc.createFolderIfNotExist(
     vararg subDirs: String
 ): FileDoc {
-    return if (uri.isContentScheme()) {
+    return if (uri.isContentUri()) {
         val documentFile = asDocumentFile()!!
         val tmp = DocumentUtils.createFolderIfNotExist(documentFile, *subDirs)!!
         FileDoc.fromDocumentFile(tmp)
     } else {
-        val path = FileUtils.getPath(uri.path!!, *subDirs)
-        val tmp = FileUtils.createFolderIfNotExist(path)
+        val path = FileTools.getPath(uri.path!!, *subDirs)
+        val tmp = FileTools.createFolderIfNotExist(path)
         FileDoc.fromFile(tmp)
     }
 }
@@ -272,24 +272,24 @@ fun FileDoc.exists(
     fileName: String,
     vararg subDirs: String
 ): Boolean {
-    return if (uri.isContentScheme()) {
+    return if (uri.isContentUri()) {
         DocumentUtils.exists(asDocumentFile()!!, fileName, *subDirs)
     } else {
-        val path = FileUtils.getPath(uri.path!!, *subDirs) + File.separator + fileName
-        FileUtils.exist(path)
+        val path = FileTools.getPath(uri.path!!, *subDirs) + File.separator + fileName
+        FileTools.exist(path)
     }
 }
 
 fun FileDoc.exists(): Boolean {
-    return if (uri.isContentScheme()) {
+    return if (uri.isContentUri()) {
         asDocumentFile()!!.exists()
     } else {
-        FileUtils.exist(uri.path!!)
+        FileTools.exist(uri.path!!)
     }
 }
 
 fun FileDoc.writeText(text: String) {
-    if (uri.isContentScheme()) {
+    if (uri.isContentUri()) {
         uri.writeText(appCtx, text)
     } else {
         File(uri.path!!).writeText(text)
@@ -298,7 +298,7 @@ fun FileDoc.writeText(text: String) {
 
 fun FileDoc.delete() {
     asFile()?.let {
-        FileUtils.delete(it, true)
+        FileTools.delete(it, true)
     }
     asDocumentFile()?.delete()
 }
@@ -359,7 +359,7 @@ fun DocumentFile.readBytes(context: Context): ByteArray {
 fun DocumentFile.checkWrite(): Boolean {
     return try {
         val filename = currentTimeMillis.toString()
-        createFile(FileUtils.getMimeType(filename), filename)?.let {
+        createFile(FileTools.getMimeType(filename), filename)?.let {
             it.openOutputStream()?.let { out ->
                 out.use { }
                 it.delete()

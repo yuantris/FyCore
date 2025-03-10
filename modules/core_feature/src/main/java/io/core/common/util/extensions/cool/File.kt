@@ -10,7 +10,7 @@ import io.core.common.util.FileDoc
 import io.core.common.util.FileDocFilter
 import io.core.common.util.extensions.authority
 import io.core.common.util.extensions.currentTimeMillis
-import io.core.common.util.tools.FileUtils
+import io.core.common.util.tools.FileTools
 import java.io.File
 import java.io.FileOutputStream
 
@@ -23,7 +23,7 @@ fun File.getUri(): Uri {
 }
 
 fun File.getFile(vararg subDirFiles: String): File {
-    val path = FileUtils.getPath(this, *subDirFiles)
+    val path = FileTools.getPath(this, *subDirFiles)
     return File(path)
 }
 
@@ -79,7 +79,7 @@ fun File.createFolderIfNotExist(): File {
 
 fun File.createFolderReplace(): File {
     if (exists()) {
-        FileUtils.delete(this, true)
+        FileTools.delete(this, true)
     }
     mkdirs()
     return this
@@ -88,7 +88,7 @@ fun File.createFolderReplace(): File {
 fun File.checkWrite(): Boolean {
     return try {
         val filename = currentTimeMillis.toString()
-        val file = FileUtils.createFileIfNotExist(this, filename)
+        val file = FileTools.createFileIfNotExist(this, filename)
         file.outputStream().use { }
         file.delete()
         true

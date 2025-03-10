@@ -6,6 +6,8 @@ import android.content.Context
 import android.content.SharedPreferences
 import io.core.appCtx
 import io.core.constant.SP_NAME
+import androidx.core.content.edit
+import io.core.common.util.tools.Preferences.sp
 
 /**
  * SharedPreferences 工具类，提供类型安全的持久化存储操作
@@ -63,15 +65,13 @@ object Preferences {
      * @param key 要删除的键名
      */
     @JvmStatic
-    fun remove(key: String) {
-        sp.edit().remove(key).apply()
-    }
+    fun remove(key: String) = sp.edit() { remove(key) }
+
 
     /**
      * 清空所有存储项（谨慎使用）
      */
     @JvmStatic
-    fun clear() {
-        sp.edit().clear().apply()
-    }
+    fun clear() = sp.edit() { clear() }
+
 }

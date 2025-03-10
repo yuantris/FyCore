@@ -1,14 +1,17 @@
 package com.core.fy.android.main.fragment.code;
 
 import android.graphics.Bitmap;
+import android.net.Uri;
 
 import androidx.annotation.NonNull;
 
 import com.blankj.utilcode.util.GsonUtils;
+import com.blankj.utilcode.util.UriUtils;
 import com.core.fy.android.databinding.FragmentJavaBinding;
 import com.core.fy.android.function.TestPageActivity;
 import com.core.fy.android.util.SafeJson;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -27,7 +30,10 @@ import io.core.common.util.log.LogCat;
 import io.core.common.util.log.LogPure;
 import io.core.common.util.tools.AsyncUtils;
 import io.core.common.util.tools.CollectionTools;
+import io.core.common.util.tools.RealPathUtil;
 import io.core.common.util.tools.ThreadUltra;
+import io.core.common.util.tools.UriTools;
+import io.core.engine.storage.StorageFactory;
 import io.core.other.LiveDataPro;
 
 public class JavaFragment extends ReflectBindingFragment<FragmentJavaBinding, TestPageActivity> {
@@ -88,7 +94,6 @@ public class JavaFragment extends ReflectBindingFragment<FragmentJavaBinding, Te
 
         String formatted = JsonUltra.format("{\"key\": \"{\\\"nested\\\": 123}\"}");
         LogCat.e(formatted);
-
     }
 
     @Override
@@ -119,6 +124,8 @@ public class JavaFragment extends ReflectBindingFragment<FragmentJavaBinding, Te
         AsyncUtils.supplyAsync(() -> MediaScanner.queryFiles(CollectionKt.createSet(MediaScanner.FileType.M4A)))
                 .thenAccept(fileInfos -> {
                     Toaster.show("size:" + fileInfos.size());
+                    String path = fileInfos.get(0).getPath();
+                    Uri uri = UriTools.path2Uri(path);
                 }).exceptionally(throwable -> {
                     LogCat.e(throwable);
                     return null;

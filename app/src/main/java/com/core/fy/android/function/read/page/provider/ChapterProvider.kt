@@ -712,7 +712,7 @@ object ChapterProvider {
                 }
 
                 fontPath.isContentScheme() -> {
-                    Typeface.createFromFile(RealPathUtil.getPath(appCtx, Uri.parse(fontPath)))
+                    Typeface.createFromFile(RealPathUtil.getPath(Uri.parse(fontPath)))
                 }
 
                 fontPath.isNotEmpty() -> Typeface.createFromFile(fontPath)

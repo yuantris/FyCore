@@ -126,6 +126,17 @@ object OsUtils {
      */
     @JvmStatic
     fun higherThan(api: Int): Boolean {
-        return Build.VERSION.SDK_INT > api
+        return Build.VERSION.SDK_INT >= api
     }
+
+    /**
+     * 检查是否低于指定的 API 版本
+     * @param api 目标 API 版本号
+     */
+    @JvmStatic
+    fun lowerThan(api: Int): Boolean {
+        return Build.VERSION.SDK_INT < api
+    }
+
+
 }
