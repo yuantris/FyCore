@@ -9,6 +9,11 @@
             android:process=":crash"
             android:screenOrientation="landscape" />
 
+        <activity
+            android:name="io.core.common.base.component.activity.CrashSameProcessActivity"
+            android:launchMode="singleTop"
+            android:screenOrientation="landscape" />
+
         <!-- 重启应用（必须在独立进程） -->
         <activity
             android:name="io.core.common.base.component.activity.RestartActivity"

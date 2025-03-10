@@ -3,6 +3,7 @@ package com.core.fy.android
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.ViewGroup
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import com.core.fy.android.databinding.ActivityMainBinding
 import com.core.fy.android.databinding.HomeNavigationItemBinding
@@ -23,6 +24,7 @@ import io.core.common.util.extensions.ui.getCompatDrawable
 import io.core.common.util.extensions.ui.notifyAllDataChanged
 import io.core.common.util.extensions.ui.onClick
 import io.core.common.util.processNavigationBar
+import io.core.other.CrashHandler
 
 class MainActivity : ReflectBindingActivity<ActivityMainBinding>() {
 
@@ -62,6 +64,7 @@ class MainActivity : ReflectBindingActivity<ActivityMainBinding>() {
         }
 
 
+        CrashHandler.checkLatestCrash(lifecycleScope)
     }
 
     private fun switchFragment(fragmentIndex: Int) {

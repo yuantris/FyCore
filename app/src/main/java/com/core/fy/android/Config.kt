@@ -27,6 +27,7 @@ object Config {
     var isDisplayHomeSkeletonAnim = storage.getWithAnnotation<Boolean>(PreferKey.HOME_SKELETON_ANIM)
 
     init {
+        CoreConfig.CRASH_MULTI_PROCESS = true
         CoreConfig.CRASH_AFTER_JUMP = MainActivity::class.java
         CoreConfig.alert_positive_color = appCtx.getColor(R.color.md_indigo_500)
         CoreConfig.alert_negative_color = appCtx.getColor(R.color.md_red_300)

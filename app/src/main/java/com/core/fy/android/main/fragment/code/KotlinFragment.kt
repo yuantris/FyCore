@@ -31,16 +31,15 @@ import io.core.common.util.log.LogPure
 import io.core.common.util.log.bury.AppLog
 import io.core.common.util.tools.AsyncUtils
 import io.core.common.util.tools.FileTools
-import io.core.common.util.tools.Preferences
-import io.core.engine.storage.MMKVEngine
-import io.core.engine.storage.StorageFactory
-import io.core.engine.storage.StorageKey
-import io.core.engine.storage.get
-import io.core.engine.storage.put
 import io.core.engine.storage.storage
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
+import kotlin.collections.List
+import kotlin.collections.forEach
+import kotlin.collections.listOf
+import kotlin.collections.mapOf
+import kotlin.collections.set
 
 
 class KotlinFragment : ReflectBindingFragment<FragmentKotlinBinding, TestPageActivity>() {

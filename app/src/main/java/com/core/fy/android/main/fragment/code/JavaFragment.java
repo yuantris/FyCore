@@ -6,12 +6,10 @@ import android.net.Uri;
 import androidx.annotation.NonNull;
 
 import com.blankj.utilcode.util.GsonUtils;
-import com.blankj.utilcode.util.UriUtils;
 import com.core.fy.android.databinding.FragmentJavaBinding;
 import com.core.fy.android.function.TestPageActivity;
 import com.core.fy.android.util.SafeJson;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -30,10 +28,8 @@ import io.core.common.util.log.LogCat;
 import io.core.common.util.log.LogPure;
 import io.core.common.util.tools.AsyncUtils;
 import io.core.common.util.tools.CollectionTools;
-import io.core.common.util.tools.RealPathUtil;
 import io.core.common.util.tools.ThreadUltra;
 import io.core.common.util.tools.UriTools;
-import io.core.engine.storage.StorageFactory;
 import io.core.other.LiveDataPro;
 
 public class JavaFragment extends ReflectBindingFragment<FragmentJavaBinding, TestPageActivity> {
@@ -41,6 +37,8 @@ public class JavaFragment extends ReflectBindingFragment<FragmentJavaBinding, Te
 
     public JavaFragment() {
         // Required empty public constructor
+//        LifecycleCoroutineScope scope = LifecycleKt.getCoroutineScope(getLifecycle());
+//        CrashHandler.Companion.checkLastedCrash(scope);
     }
 
     @Override

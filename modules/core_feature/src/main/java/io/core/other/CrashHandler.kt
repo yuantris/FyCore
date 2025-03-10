@@ -7,25 +7,33 @@ import android.os.Build
 import android.os.Debug
 import android.os.Process
 import android.webkit.WebSettings
+import androidx.lifecycle.LifecycleCoroutineScope
 import io.core.Android
 import io.core.appCtx
 import io.core.common.CoreConfig
 import io.core.common.base.component.activity.CrashActivity
+import io.core.common.base.component.activity.CrashSameProcessActivity
 import io.core.common.base.component.activity.RestartActivity
 import io.core.common.helper.AppLifecycleTracker
 import io.core.common.util.extensions.cool.PathType
 import io.core.common.util.extensions.cool.createFolderReplace
 import io.core.common.util.extensions.cool.documentsDir
 import io.core.common.util.extensions.cool.getBasePath
+import io.core.common.util.extensions.cool.getBoolean
 import io.core.common.util.extensions.cool.getFile
+import io.core.common.util.extensions.cool.getLong
 import io.core.common.util.extensions.cool.hasWriteStoragePermission
 import io.core.common.util.extensions.cool.ifNext
+import io.core.common.util.extensions.cool.runDelayedMain
 import io.core.common.util.extensions.cool.timeFormat
 import io.core.common.util.extensions.currentTimeMillis
 import io.core.common.util.log.LogCat
 import io.core.common.util.tools.FileTools
 import io.core.constant.CRASH_FOLDER_NAME
 import io.core.constant.TimeFormat
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.PrintWriter
 import java.io.StringWriter
 import java.util.concurrent.TimeUnit
@@ -35,18 +43,51 @@ class CrashHandler private constructor(private val application: Application) :
     Thread.UncaughtExceptionHandler {
 
     companion object {
+        const val DIVIDER: String = "--------------------------"
 
         /** Crash 文件名 */
-        private const val CRASH_FILE_NAME: String = "crash_file"
+        const val CRASH_FILE_NAME: String = "crash_file"
 
         /** Crash 时间记录 */
-        private const val KEY_CRASH_TIME: String = "key_crash_time"
+        const val KEY_CRASH_TIME: String = "key_crash_time"
 
         /**
          * 注册 Crash 监听
          */
         fun register(application: Application) {
             Thread.setDefaultUncaughtExceptionHandler(CrashHandler(application))
+        }
+
+        fun checkLatestCrash(scope: LifecycleCoroutineScope) {
+            // 如果配置允许多进程崩溃上报，则不执行后续检查
+            if (!CoreConfig.CRASH_MULTI_PROCESS) {
+                // 获取当前时间戳
+                val millis = System.currentTimeMillis()
+                // 获取存储崩溃信息的SharedPreferences实例
+                val preferences =
+                    appCtx.getSharedPreferences(CRASH_FILE_NAME, Context.MODE_PRIVATE)
+                // 从SharedPreferences中读取上次崩溃的时间戳，如果没有则使用当前时间戳
+                val crash_millis = preferences.getLong(KEY_CRASH_TIME, millis)
+
+
+                // 在IO线程中执行文件系统操作，以查找最近的崩溃文件
+                scope.launch(Dispatchers.IO) {
+                    // 获取最近修改的崩溃日志文件
+                    val file = appCtx.externalCacheDir?.getFile(
+                        CRASH_FOLDER_NAME
+                    )?.listFiles()?.maxByOrNull { it.lastModified() }
+                    // 切换到主线程以读取SharedPreferences中的页面打开状态
+                    withContext(Dispatchers.Main) {
+                        // 检查当前崩溃页面是否已经打开过
+                        val open_page_current = preferences.getBoolean(file?.name, false)
+
+                        // 如果上次崩溃时间距今不超过30秒且当前崩溃页面未打开过，则启动崩溃报告活动
+                        if (crash_millis > millis - TimeUnit.MILLISECONDS.toMillis(30_000) && !open_page_current) {
+                            CrashSameProcessActivity.start(appCtx)
+                        }
+                    }
+                }
+            }
         }
 
         /**
@@ -92,7 +133,7 @@ class CrashHandler private constructor(private val application: Application) :
             }
             printWriter.close()
             val result = writer.toString()
-            sb.append("\n").append(result)
+            sb.append("\n").append(DIVIDER).append("\n").append(result)
             val crashLog = sb.toString()
             val fileName = "crash-${timestamp.timeFormat(TimeFormat.LOG_TIMESTAMP)}.log"
             val fileNameExternal =
@@ -176,7 +217,7 @@ class CrashHandler private constructor(private val application: Application) :
         val deadlyCrash: Boolean = currentCrashTime - lastCrashTime < 1000 * 60 * 5
         if (Android.debug) {
             runCatching {
-                CoreConfig.enableCrashPage.ifNext {
+                CoreConfig.CRASH_MULTI_PROCESS.ifNext {
                     ifTrue = {
                         CrashActivity.start(application, fileName, throwable)
                     }

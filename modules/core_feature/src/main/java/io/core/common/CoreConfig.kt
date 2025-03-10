@@ -30,6 +30,7 @@ object CoreConfig {
     /*运行环境*/
     @JvmStatic
     var DEBUG = BuildConfig.DEBUG && appCtx.isDebuggable
+
     @JvmStatic
     var RELEASE = !DEBUG
 
@@ -39,5 +40,5 @@ object CoreConfig {
         set
 
     @JvmStatic
-    var enableCrashPage = true
+    var CRASH_MULTI_PROCESS = false // 设置是否允许多进程闪退
 }

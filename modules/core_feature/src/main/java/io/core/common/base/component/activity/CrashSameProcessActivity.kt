@@ -1,8 +1,7 @@
 package io.core.common.base.component.activity
 
 import android.Manifest
-import android.annotation.SuppressLint
-import android.app.Application
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
@@ -11,9 +10,7 @@ import android.os.Build
 import android.os.Bundle
 import android.text.SpannableStringBuilder
 import android.text.Spanned
-import android.text.TextUtils
 import android.text.style.ForegroundColorSpan
-import android.text.style.UnderlineSpan
 import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
@@ -34,23 +31,26 @@ import io.core.common.util.ShareAir
 import io.core.common.util.extensions.cool.dp
 import io.core.common.util.extensions.cool.getFile
 import io.core.common.util.extensions.cool.hasReadWriteStoragePermission
+import io.core.common.util.extensions.cool.putBoolean
+import io.core.common.util.extensions.cool.putLong
+import io.core.common.util.extensions.currentTimeMillis
 import io.core.common.util.extensions.ui.appVersionCode
 import io.core.common.util.extensions.ui.appVersionName
 import io.core.common.util.extensions.ui.onClick
 import io.core.common.util.extensions.ui.onDebouncedClick
+import io.core.common.util.tools.UriTools
 import io.core.constant.CRASH_FOLDER_NAME
 import io.core.constant.TimeFormat
 import io.core.engine.effect.ViewClickEffect
+import io.core.other.CrashHandler
 import io.core.widget.view.SettingBar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
-import java.io.PrintWriter
-import java.io.StringWriter
 import java.net.InetAddress
 import java.net.UnknownHostException
 import java.util.Date
-import java.util.regex.Matcher
 import java.util.regex.Pattern
 import kotlin.math.min
 
@@ -63,37 +63,32 @@ import kotlin.math.min
 # ██████████
 # ██ ██
 # 注释的艺术，正在加载……
- * 2025/1/11 8:39
+ * 2025/3/10 16:45
  * @description
  * @author Yuan
  */
-class CrashActivity : BaseActivity() {
+class CrashSameProcessActivity : BaseActivity() {
+
+    private val logFile: File? by lazy {
+        intent.getStringExtra(INTENT_KEY_LOG_PATH)?.let(::File) ?: appCtx.externalCacheDir?.getFile(
+            CRASH_FOLDER_NAME
+        )?.listFiles()?.maxByOrNull { it.lastModified() }
+    }
+
+    private val sp = appCtx.getSharedPreferences(CrashHandler.CRASH_FILE_NAME, Context.MODE_PRIVATE)
 
     companion object {
-
-        private const val INTENT_KEY_IN_THROWABLE: String = "throwable"
-        private const val INTENT_KEY_IN_LOG_FILE_NAME: String = "log_file"
-
-        /** 系统包前缀列表 */
-        private val SYSTEM_PACKAGE_PREFIX_LIST: Array<String> = arrayOf(
-            "android", "com.android",
-            "androidx", "com.google.android", "java", "javax", "dalvik", "kotlin"
-        )
+        private const val INTENT_KEY_LOG_PATH = "log_path"
+        const val OPEN_PAGE = "open_this_crash_same_process_page"
 
         /** 报错代码行数正则表达式 */
         private val CODE_REGEX: Pattern = Pattern.compile("\\(\\w+\\.\\w+:\\d+\\)")
 
-        fun start(application: Application, log: String, throwable: Throwable?) {
-            if (throwable == null) {
-                return
-            }
-            Intent(application, CrashActivity::class.java).apply {
-                putExtra(INTENT_KEY_IN_THROWABLE, throwable)
-                putExtra(INTENT_KEY_IN_LOG_FILE_NAME, log)
+        fun start(context: Context, logPath: String? = null) {
+            Intent(context, CrashSameProcessActivity::class.java).apply {
+                logPath?.let { putExtra(INTENT_KEY_LOG_PATH, it) }
                 addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            }.also {
-                application.startActivity(it)
-            }
+            }.also(context::startActivity)
         }
     }
 
@@ -102,9 +97,7 @@ class CrashActivity : BaseActivity() {
     private val infoView: TextView? by lazy { findViewById(R.id.tv_crash_info) }
     private val messageView: TextView? by lazy { findViewById(R.id.tv_crash_message) }
     private var stackTrace: String? = null
-    private var logFiles: List<File>? = null
 
-    @SuppressLint("InflateParams")
     override fun contentViewBind(): View? {
         return LayoutInflater.from(this).inflate(R.layout.activity_core_crash, null)
     }
@@ -115,67 +108,23 @@ class CrashActivity : BaseActivity() {
         // 设置状态栏沉浸
         ImmersionBar.setTitleBar(this, findViewById(R.id.ll_crash_bar))
         ImmersionBar.setTitleBar(this, findViewById(R.id.ll_crash_info))
-
+        ImmersionBar.with(this).statusBarDarkFont(true).init()
         initData()
     }
 
     private fun initData() {
-        val throwable: Throwable = getSerializable(INTENT_KEY_IN_THROWABLE) ?: return
-        val logFileName = getString(INTENT_KEY_IN_LOG_FILE_NAME)
-        logFiles = listOf(
-            File(
-                appCtx.externalCacheDir?.getFile(CRASH_FOLDER_NAME),
-                logFileName ?: "crash.log"
-            )
-        )
-        titleView?.text = throwable.javaClass.simpleName
-        val stringWriter = StringWriter()
-        val printWriter = PrintWriter(stringWriter)
-        throwable.printStackTrace(printWriter)
-        throwable.cause?.printStackTrace(printWriter)
-        stackTrace = stringWriter.toString()
-        val matcher: Matcher = CODE_REGEX.matcher(stackTrace!!)
-        val spannable = SpannableStringBuilder(stackTrace)
-        if (spannable.isNotEmpty()) {
-            while (matcher.find()) {
-                // 不包含左括号（
-                val start: Int = matcher.start() + "(".length
-                // 不包含右括号 ）
-                val end: Int = matcher.end() - ")".length
-
-                // 代码信息颜色
-                var codeColor: Int = Color.parseColor("#999999")
-                val lineIndex: Int = stackTrace!!.lastIndexOf("at ", start)
-                if (lineIndex != -1) {
-                    val lineData: String = spannable.subSequence(lineIndex, start).toString()
-                    if (TextUtils.isEmpty(lineData)) {
-                        continue
-                    }
-                    // 是否高亮代码行数
-                    var highlight = true
-                    for (packagePrefix: String? in SYSTEM_PACKAGE_PREFIX_LIST) {
-                        if (lineData.startsWith("at $packagePrefix")) {
-                            highlight = false
-                            break
-                        }
-                    }
-                    if (highlight) {
-                        codeColor = Color.parseColor("#287BDE")
-                    }
-                }
-
-                // 设置前景
-                spannable.setSpan(
-                    ForegroundColorSpan(codeColor),
-                    start,
-                    end,
-                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-                )
-                // 设置下划线
-                spannable.setSpan(UnderlineSpan(), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        lifecycleScope.launch(Dispatchers.IO) {
+            val content = logFile?.readText() ?: return@launch
+            val substringAfter = content.substringAfter(CrashHandler.DIVIDER).substringAfter("\n")
+            val spannable = buildSpannableContent(substringAfter)
+            withContext(Dispatchers.Main) {
+                titleView?.text = logFile?.name ?: "未知"
+                messageView?.text = spannable
+                stackTrace = spannable.toString()
+                sp.putBoolean(logFile?.name ?: OPEN_PAGE, true)
             }
-            messageView?.text = spannable
         }
+
         val displayMetrics: DisplayMetrics = resources.displayMetrics
         val screenWidth: Int = displayMetrics.widthPixels
         val screenHeight: Int = displayMetrics.heightPixels
@@ -326,6 +275,39 @@ class CrashActivity : BaseActivity() {
         }
     }
 
+    private fun buildSpannableContent(content: String): SpannableStringBuilder {
+        val spannable = SpannableStringBuilder(content)
+
+        // 高亮错误类型 (示例：java.lang.NullPointerException)
+        val errorRegex = Pattern.compile("[A-Za-z]+\\.?[A-Za-z]+Exception")
+        applySpanForMatches(errorRegex, spannable, "#FF3B30")
+
+        // 高亮代码行号 (示例：at com.example.TestActivity.onCreate(TestActivity.kt:12))
+        applySpanForMatches(CODE_REGEX, spannable, "#287BDE")
+
+        // 高亮关键参数 (示例：MODEL = Pixel 3)
+        val paramRegex = Pattern.compile("^[A-Z_]+\\s=")
+        applySpanForMatches(paramRegex, spannable, "#34C759")
+
+        return spannable
+    }
+
+    private fun applySpanForMatches(
+        pattern: Pattern,
+        spannable: SpannableStringBuilder,
+        color: String
+    ) {
+        val matcher = pattern.matcher(spannable)
+        while (matcher.find()) {
+            spannable.setSpan(
+                ForegroundColorSpan(Color.parseColor(color)),
+                matcher.start(),
+                matcher.end(),
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+        }
+    }
+
     override fun setListener() {
         val info = findViewById<ImageView>(R.id.iv_crash_info)
         val share = findViewById<ImageView>(R.id.iv_crash_share)
@@ -350,12 +332,11 @@ class CrashActivity : BaseActivity() {
                     }
 
                     tvLog.onClick {
-                        logFiles?.let {
+                        logFile?.let {
                             lifecycleScope.launch(Dispatchers.IO) {
-                                FileSharer.Builder()
-                                    .setChooserTitle("分享崩溃日志")
-                                    .setFileList(it)
-                                    .share(this@CrashActivity)
+                                ShareAir.share {
+                                    file(UriTools.file2Uri(it))
+                                }
                             }
                         }
                     }
@@ -377,6 +358,4 @@ class CrashActivity : BaseActivity() {
         return super.createStatusBarConfig() // 指定导航栏背景颜色
             .navigationBarColor(R.color.white)
     }
-
-
 }
