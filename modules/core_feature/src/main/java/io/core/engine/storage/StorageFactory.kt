@@ -11,6 +11,7 @@ object StorageFactory {
     private var currentType: StorageType = StorageType.SHARED_PREFS
     val keyDefaultMap = mutableMapOf<String, Pair<String, KClass<*>>>()
 
+    @JvmStatic
     fun initialize(config: StorageConfig) {
         currentType = config.type
         engine = when (config.type) {

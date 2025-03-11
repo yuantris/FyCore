@@ -1,18 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<io.core.widget.layout.ShapeFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/loading"
     android:layout_width="wrap_content"
-    android:layout_height="140dp"
-    android:minWidth="140dp"
+    android:layout_height="@dimen/dp_130"
+    android:minWidth="@dimen/dp_120"
     android:orientation="vertical"
-    app:shape_radius="@dimen/dp_8"
-    app:shape_shadowColor="#20000000"
-    app:shape_shadowSize="@dimen/dp_16"
-    app:shape_shadowOffsetY="@dimen/dp_2"
-    app:shape_type="rectangle"
-    app:shape_solidColor="#F6F6F6">
+    app:cardBackgroundColor="#F6F6F6"
+    app:cardCornerRadius="@dimen/dp_10"
+    app:cardElevation="@dimen/dp_8"
+    app:cardUseCompatPadding="true">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -30,7 +28,7 @@
             android:id="@+id/tv_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="8dp"
+            android:layout_marginHorizontal="@dimen/dp_8"
             android:layout_marginTop="@dimen/dp_20"
             android:textColor="@color/md_black_1000"
             android:textSize="@dimen/sp_13"
@@ -38,4 +36,4 @@
     </LinearLayout>
 
 
-</io.core.widget.layout.ShapeFrameLayout>
+</androidx.cardview.widget.CardView>

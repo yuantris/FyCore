@@ -38,6 +38,7 @@ class RestartActivity : AppCompatActivity() {
                 if (context !is Activity) {
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 }
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                 context.startActivity(intent)
             } ?: run {
                 context.restart()

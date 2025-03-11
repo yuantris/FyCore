@@ -17,7 +17,7 @@ object MultimediaUtil {
 
     /**
      * 获取音频/视频文件的时长，并按指定格式化输出
-     *
+     * 使用阻塞方式运行挂起函数
      * @param filePath  媒体文件路径
      * @param formatStr 格式化字符串（例如 "HH:mm:ss", "mm:ss", "m:ss.SS"）
      * @return 格式化后的时长（获取失败返回 null）

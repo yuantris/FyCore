@@ -43,7 +43,7 @@ fun Context.showXpInputConfirm(block: XPopupConfig.() -> Unit) {
             config.content,
             config.inputContent,
             config.hint,
-            { text -> config.onInputConfirm?.invoke(text ?: "") },
+            { text -> config.onInputConfirm?.invoke(text.orEmpty()) },
             { config.onCancel?.invoke() },
             config.bindLayoutId
         ).show()

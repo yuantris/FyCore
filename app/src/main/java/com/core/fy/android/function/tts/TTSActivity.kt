@@ -7,11 +7,10 @@ import android.speech.tts.UtteranceProgressListener
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
-import android.util.Log
 import com.core.fy.android.databinding.ActivityTtsBinding
 import io.core.common.base.component.activity.ReflectBindingActivity
-import io.core.common.util.log.logD
-import io.core.common.util.log.logE
+import io.core.common.util.extensions.logD
+import io.core.common.util.extensions.logE
 import java.util.Locale
 
 /**

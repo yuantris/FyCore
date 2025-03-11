@@ -3,9 +3,8 @@ package com.core.fy.android.viewmodel
 import androidx.lifecycle.MutableLiveData
 import com.core.fy.android.room.entity.Function
 import com.core.fy.android.room.repository.FunctionRepository
-import io.core.common.util.log.logD
 import io.core.common.base.vm.BaseViewModel
-import io.core.common.util.log.logI
+import io.core.common.util.extensions.logD
 
 /**
 # ██████████

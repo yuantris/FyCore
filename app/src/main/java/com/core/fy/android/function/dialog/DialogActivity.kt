@@ -11,6 +11,7 @@ import android.widget.TextView
 import androidx.lifecycle.lifecycleScope
 import com.core.fy.android.R
 import com.core.fy.android.databinding.ActivityDialogBinding
+import com.core.fy.android.help.HighLightHelper
 import com.core.fy.android.ui.BottomSheetNextDialog
 import com.core.fy.android.ui.WaitDialog
 import com.core.fy.android.util.showDxMessage
@@ -155,6 +156,12 @@ class DialogActivity : ReflectBindingActivity<ActivityDialogBinding>() {
 
     override fun setListener() {
         super.setListener()
+
+        binding.show2.post {
+            HighLightHelper.showQuickFolderGuide(this, binding.show, binding.show2)
+        }
+
+
         with(binding) {
             show.onClick {
                 lifecycleScope.launch {

@@ -11,6 +11,7 @@ import io.core.common.util.extensions.cool.runDelayedMain
 import io.core.common.util.extensions.cool.timeFormat
 import io.core.common.util.extensions.ui.appPackageName
 import io.core.common.util.log.LogCat
+import io.core.common.util.log.TAG
 import io.core.constant.TimeFormat
 import kotlin.system.exitProcess
 
@@ -78,27 +79,27 @@ fun registerLifecycleObserver(observer: LifecycleObserver) {
     ProcessLifecycleOwner.get().lifecycle.addObserver(observer)
 }
 
-fun Any?.logE() {
-    LogCat.e(this)
+fun Any?.logE(tag: String = TAG) {
+    LogCat.e(this, tag = tag)
 }
 
-fun Any?.logV() {
-    LogCat.v(this)
+fun Any?.logV(tag: String = TAG) {
+    LogCat.v(this, tag = tag)
 }
 
-fun Any?.logD() {
-    LogCat.d(this)
+fun Any?.logD(tag: String = TAG) {
+    LogCat.d(this, tag = tag)
 }
 
-fun Any?.logI() {
-    LogCat.i(this)
+fun Any?.logI(tag: String = TAG) {
+    LogCat.i(this, tag = tag)
 }
 
-fun Any?.logW() {
-    LogCat.w(this)
+fun Any?.logW(tag: String = TAG) {
+    LogCat.w(this, tag = tag)
 }
 
-fun Any?.logJson() {
-    LogCat.json(this)
+fun Any?.logJson(tag: String = TAG) {
+    LogCat.json(this, tag = tag)
 }
 

@@ -27,10 +27,10 @@ import com.core.fy.android.widget.rv.ItemViewHolder
 import com.core.fy.android.widget.rv.RecyclerAdapter
 import io.core.common.util.extensions.cool.isAbsUrl
 import io.core.common.util.extensions.cool.printOnDebug
+import io.core.common.util.extensions.cool.toastOnUI
 import io.core.common.util.extensions.ui.getPrefBoolean
 import io.core.common.util.extensions.ui.gone
 import io.core.common.util.extensions.ui.visible
-import io.core.common.util.tools.toastOnUI
 
 @SuppressLint("RestrictedApi")
 class TextActionMenu(private val context: Context, private val callBack: CallBack) :

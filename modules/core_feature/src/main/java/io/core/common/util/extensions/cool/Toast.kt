@@ -1,11 +1,8 @@
-package io.core.common.util.tools
+package io.core.common.util.extensions.cool
 
 import android.content.Context
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import io.core.BuildConfig
-import io.core.appCtx
-import io.core.common.util.extensions.cool.runMain
 import io.core.common.util.extensions.ui.ctx
 
 fun Context.toastOnUI(message: Int, duration: Int = Toast.LENGTH_SHORT) {

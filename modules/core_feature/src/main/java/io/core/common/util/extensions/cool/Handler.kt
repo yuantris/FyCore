@@ -82,7 +82,3 @@ object MainThreadHandler {
 fun isMainThread(): Boolean {
     return Looper.getMainLooper().thread == Thread.currentThread()
 }
-
-fun interface Action {
-    fun invoke()
-}

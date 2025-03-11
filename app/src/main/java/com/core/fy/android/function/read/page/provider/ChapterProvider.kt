@@ -26,8 +26,8 @@ import io.core.appCtx
 import io.core.common.util.extensions.cool.dpToPx
 import io.core.common.util.extensions.cool.fastSum
 import io.core.common.util.extensions.cool.isContentScheme
-import io.core.common.util.log.logD
 import io.core.common.util.extensions.cool.spToPx
+import io.core.common.util.extensions.logD
 import io.core.common.util.extensions.ui.isPad
 import io.core.common.util.tools.RealPathUtil
 import kotlinx.coroutines.CoroutineScope

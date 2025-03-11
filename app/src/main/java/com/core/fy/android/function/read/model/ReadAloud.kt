@@ -8,9 +8,9 @@ import com.core.fy.android.function.read.services.BaseReadAloudService
 import com.core.fy.android.function.read.services.TTSReadAloudService
 import com.core.fy.android.help.config.AppConfig
 import io.core.appCtx
+import io.core.common.util.extensions.cool.toastOnUI
 import io.core.common.util.extensions.ui.startForegroundServiceCompat
 import io.core.common.util.log.LogPure
-import io.core.common.util.tools.toastOnUI
 
 object ReadAloud {
     private var aloudClass: Class<*> = getReadAloudClass()

@@ -5,8 +5,8 @@ import androidx.lifecycle.MutableLiveData
 import com.core.fy.android.room.entity.User
 import com.core.fy.android.room.repository.UserRepository
 import io.core.common.base.vm.BaseViewModel
-import io.core.common.util.log.logD
-import io.core.common.util.log.logE
+import io.core.common.util.extensions.logD
+import io.core.common.util.extensions.logE
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 

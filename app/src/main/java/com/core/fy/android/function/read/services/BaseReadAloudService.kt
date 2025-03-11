@@ -37,13 +37,13 @@ import io.core.common.helper.coroutine.Coroutine
 import io.core.common.helper.glide.ImageLoader
 import io.core.appCtx
 import io.core.common.util.extensions.audioManager
+import io.core.common.util.extensions.cool.toastOnUI
 import io.core.common.util.extensions.powerManager
 import io.core.common.util.extensions.telephonyManager
 import io.core.common.util.extensions.ui.broadcastPendingIntent
 import io.core.common.util.extensions.ui.getPrefBoolean
 import io.core.common.util.extensions.wifiManager
 import io.core.common.util.log.LogCat
-import io.core.common.util.tools.toastOnUI
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.Job

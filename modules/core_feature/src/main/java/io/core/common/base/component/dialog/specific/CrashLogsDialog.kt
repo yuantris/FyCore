@@ -19,6 +19,7 @@ import io.core.common.base.vm.BaseViewModel
 import io.core.common.util.FileDoc
 import io.core.common.util.FileSharer
 import io.core.common.util.extensions.cool.getFile
+import io.core.common.util.extensions.cool.toastOnUI
 import io.core.common.util.extensions.ui.ctx
 import io.core.common.util.extensions.ui.getCompatColor
 import io.core.common.util.extensions.ui.setLayout
@@ -29,7 +30,6 @@ import io.core.common.util.extensions.ui.viewBinding
 import io.core.common.util.log.bury.AppLog
 import io.core.common.util.tools.FileTools
 import io.core.common.util.tools.UriTools
-import io.core.common.util.tools.toastOnUI
 import io.core.constant.CRASH_FOLDER_NAME
 import io.core.databinding.DialogRecyclerViewBinding
 import io.core.other.DoubleClickProcessor

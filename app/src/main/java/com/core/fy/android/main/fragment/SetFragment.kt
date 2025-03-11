@@ -21,9 +21,12 @@ import io.core.common.util.tools.buildMultiLine
 import io.core.constant.TimeFormat
 import androidx.core.net.toUri
 import com.core.fy.android.constants.PreferKey
+import com.core.fy.android.help.HighLightHelper
 import io.core.common.util.extensions.logD
 import io.core.common.util.extensions.storageManager
+import io.core.common.util.extensions.ui.postDelayed
 import io.core.engine.storage.getWithAnnotation
+import io.core.engine.storage.put
 import io.core.engine.storage.storage
 
 /**
@@ -83,6 +86,17 @@ class SetFragment : ReflectBindingFragment<FragmentSetBinding, MainActivity>() {
     override fun initData() {
         super.initData()
 
+        val annotation = storage.getWithAnnotation<Boolean>(PreferKey.SET_HIGHLIGHT)
+        if (annotation){
+            binding.crash.postDelayed(1000) {
+                storage.put(PreferKey.SET_HIGHLIGHT, false)
+                HighLightHelper.showQuickFolderGuide(
+                    requireActivity(),
+                    binding.version,
+                    binding.crash
+                )
+            }
+        }
 
     }
 

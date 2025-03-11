@@ -1,7 +1,7 @@
 package io.core.common.base.room
 
 import androidx.sqlite.db.SimpleSQLiteQuery
-import io.core.common.util.log.logD
+import io.core.common.util.extensions.logD
 
 abstract class RoomRepository<T : Any, D : BaseDao<T>>(val dao: D) : BaseRepository() {
     suspend fun queryAll(): List<T> {

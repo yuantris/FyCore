@@ -13,9 +13,9 @@ import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import io.core.R
 import io.core.common.util.extensions.cool.dpToPx
+import io.core.common.util.extensions.logD
 import io.core.common.util.extensions.ui.ctx
 import io.core.common.util.extensions.ui.statusBarHeight
-import io.core.common.util.log.logD
 
 class CollapsingHeaderLayout @JvmOverloads constructor(
     context: Context,

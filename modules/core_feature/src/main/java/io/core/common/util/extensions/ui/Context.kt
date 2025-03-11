@@ -450,7 +450,7 @@ val Context.channel: String
         try {
             val pm = packageManager
             val appInfo = pm.getApplicationInfo(packageName, PackageManager.GET_META_DATA)
-            return appInfo.metaData.getString("channel") ?: ""
+            return appInfo.metaData.getString("channel").orEmpty()
         } catch (e: Exception) {
             e.printOnDebug()
         }
@@ -483,7 +483,7 @@ val Context.appVersionName: String
     get() {
         try {
             val pInfo = packageManager.getPackageInfo(packageName, 0)
-            return pInfo.versionName ?: ""
+            return pInfo.versionName.orEmpty()
         } catch (e: Exception) {
             e.logPrint()
         }

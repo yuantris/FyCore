@@ -26,7 +26,8 @@ import com.core.fy.android.room.entity.Book
 import io.core.common.base.component.activity.ReflectBindingActivity
 import io.core.common.util.DiveGestureLine
 import io.core.common.util.extensions.cool.MainThreadHandler.handler
-import io.core.common.util.log.logD
+import io.core.common.util.extensions.cool.toastOnUI
+import io.core.common.util.extensions.logD
 import io.core.common.util.extensions.ui.getCompatColor
 import io.core.common.util.extensions.ui.getPrefString
 import io.core.common.util.extensions.ui.invisible
@@ -35,7 +36,6 @@ import io.core.common.util.extensions.ui.navigationBarGravity
 import io.core.common.util.extensions.ui.sysScreenOffTime
 import io.core.common.util.extensions.ui.toast
 import io.core.common.util.extensions.ui.visible
-import io.core.common.util.tools.toastOnUI
 import kotlinx.coroutines.launch
 
 /**

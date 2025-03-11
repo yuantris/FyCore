@@ -11,12 +11,12 @@ import io.core.common.helper.media.PlayerState
 import io.core.common.util.MediaScanner
 import io.core.common.util.extensions.cool.requestPermission
 import io.core.common.util.extensions.cool.runMain
+import io.core.common.util.extensions.cool.toastOnUI
 import io.core.common.util.extensions.ui.onClick
 import io.core.common.util.extensions.ui.onTrackingTouch
 import io.core.common.util.log.LogCat
 import io.core.common.util.tools.UriTools
 import io.core.common.util.tools.formatDuration
-import io.core.common.util.tools.toastOnUI
 import kotlinx.coroutines.launch
 import java.io.File
 import java.util.concurrent.atomic.AtomicBoolean

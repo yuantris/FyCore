@@ -4,7 +4,7 @@ import android.content.Context
 import com.tencent.mmkv.MMKV
 
 // 配置类
-data class StorageConfig(
+data class StorageConfig @JvmOverloads constructor(
     val type: StorageType = StorageType.SHARED_PREFS,
     val name: String = "fycore_storage",
     val mode: Int = Context.MODE_PRIVATE,

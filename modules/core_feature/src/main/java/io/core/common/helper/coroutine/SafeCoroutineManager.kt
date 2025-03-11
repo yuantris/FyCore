@@ -20,7 +20,7 @@ import java.util.concurrent.CancellationException
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.coroutines.coroutineContext
 
-val SafeCoroutine = SafeCoroutineManager.getInstance()
+val safeCoroutine = SafeCoroutineManager.getInstance()
 
 /**
  * 安全协程管理器
@@ -177,7 +177,7 @@ fun LifecycleOwner.launchSafely(
     dispatcher: CoroutineDispatcher = Dispatchers.IO,
     block: suspend CoroutineScope.() -> Unit
 ): Job {
-    return SafeCoroutine.launch(
+    return safeCoroutine.launch(
         dispatcher = dispatcher,
         strategy = SafeCoroutineManager.LifecycleStrategy.BindTo(this.lifecycle),
         block = block
@@ -187,7 +187,7 @@ fun LifecycleOwner.launchSafely(
 fun WeakReference<Lifecycle>.launchSafely(
     block: suspend CoroutineScope.() -> Unit
 ): Job {
-    return SafeCoroutine.launch(
+    return safeCoroutine.launch(
         strategy = SafeCoroutineManager.LifecycleStrategy.BindToWeak(this),
         block = block
     )

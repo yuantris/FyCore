@@ -563,3 +563,10 @@ fun View.isClicked(event: MotionEvent): Boolean {
     return rect.contains(event.rawX.toInt(), event.rawY.toInt())
 }
 
+// 延迟执行代码
+fun View.postDelayed(delayMillis: Long, action: () -> Unit) {
+    postDelayed({
+        action()
+    }, delayMillis)
+}
+

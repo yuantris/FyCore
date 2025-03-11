@@ -8,10 +8,10 @@ import io.core.common.base.component.activity.ReflectBindingActivity
 import io.core.common.util.extensions.cool.observeEvent
 import io.core.common.util.extensions.cool.postEvent
 import io.core.common.util.extensions.currentTimeMillis
+import io.core.common.util.extensions.logD
 import io.core.common.util.extensions.ui.getCompatColor
 import io.core.common.util.extensions.ui.onClick
 import io.core.common.util.extensions.ui.toast
-import io.core.common.util.log.logD
 import io.core.common.util.tools.DrawableBuilder
 import io.core.other.LiveDataPro
 

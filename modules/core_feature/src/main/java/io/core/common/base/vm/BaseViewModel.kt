@@ -9,7 +9,7 @@ import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
 import com.google.gson.JsonParseException
 import io.core.common.helper.coroutine.Coroutine
-import io.core.common.util.log.logE
+import io.core.common.util.extensions.logE
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope

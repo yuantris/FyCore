@@ -22,6 +22,8 @@ object PreferKey {
     const val GUIDE_PAGE = "isDisplayGuide"
     @StorageKey(description = "展示首页骨架过渡动画", defaultValue = "false")
     const val HOME_SKELETON_ANIM = "isDisplayHomeSkeletonAnim"
+    @StorageKey(description = "设置Fragment高亮展示", defaultValue = "true")
+    const val SET_HIGHLIGHT = "SetFragment_Highlight"
     @StorageKey(description = "测试默认值", defaultValue = "1110")
     const val SP_TEST = "isTest_1110"
 

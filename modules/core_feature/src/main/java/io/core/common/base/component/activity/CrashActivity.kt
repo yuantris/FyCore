@@ -345,7 +345,7 @@ class CrashActivity : BaseActivity() {
 
                     tvShare.onClick {
                         ShareAir.share {
-                            text(stackTrace ?: "")
+                            text(stackTrace.orEmpty())
                         }
                     }
 

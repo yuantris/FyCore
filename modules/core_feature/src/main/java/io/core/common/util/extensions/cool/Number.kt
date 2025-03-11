@@ -1,11 +1,11 @@
 package io.core.common.util.extensions.cool
 
 import android.graphics.Color
-import io.core.common.util.tools.TimeUtils.getDateFormat
+import io.core.common.util.tools.TimeTools
 import io.core.constant.TimeFormat
 
 fun Long.timeFormat(pattern: String = TimeFormat.TIME_FULL): String {
-    return getDateFormat(pattern).format(this)
+    return TimeTools.getDateFormat(pattern).format(this)
 }
 
 // 扩展函数：判断颜色是否为深色
