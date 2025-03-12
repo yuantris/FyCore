@@ -4,6 +4,7 @@ package io.core.common.util.tools
 
 import com.google.gson.reflect.TypeToken
 import io.core.common.util.extensions.cool.GSON
+import io.core.common.util.extensions.cool.jsonToMap
 
 
 /**
@@ -103,8 +104,7 @@ object CollectionTools {
         if (jsonStr.isNullOrBlank()) return emptyMap()
 
         return try {
-            val type = object : TypeToken<Map<String, Any>>() {}.type
-            GSON.fromJson(jsonStr, type) ?: emptyMap()
+            jsonStr.jsonToMap<Map<String,Any>>()
         } catch (e: Exception) {
             emptyMap()
         }

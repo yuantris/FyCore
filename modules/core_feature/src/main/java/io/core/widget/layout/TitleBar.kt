@@ -54,10 +54,10 @@ class TitleBar @JvmOverloads constructor(
         Circle
     }
 
-    interface OnTitleClickListener {
-        fun onBackClick() {}
-        fun onRightXmlImgClick() {}
-        fun onRightXmlTextClick() {}
+    fun interface OnTitleClickListener {
+        fun onBackClick()
+        fun onRightXmlImgClick() = Unit
+        fun onRightXmlTextClick() = Unit
     }
 
 

@@ -22,8 +22,4 @@ fun Boolean.ifNext(config: BooleanConfig.() -> Unit) {
     }
 }
 
-fun Boolean.ifTrue(block: () -> Unit) {
-    this.ifNext {
-        ifTrue = block
-    }
-}
+inline fun Boolean.ifTrue(block: () -> Unit) = if (this) block() else Unit

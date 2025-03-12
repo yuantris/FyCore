@@ -1,6 +1,7 @@
 package com.core.fy.android.main.fragment
 
 import androidx.viewpager.widget.ViewPager.OnPageChangeListener
+import com.blankj.utilcode.util.VibrateUtils
 import com.core.fy.android.MainActivity
 import com.core.fy.android.R
 import com.core.fy.android.databinding.FragmentHomeBinding
@@ -104,6 +105,8 @@ class HomeFragment : ReflectBindingFragment<FragmentHomeBinding, MainActivity>()
             })
 
             ClickSequenceHandler(binding.toolbar) {
+                // 立即开始 → 震动50ms → 暂停50ms → 震动50ms
+                VibrateUtils.vibrate(longArrayOf(0, 50, 50, 50), -1)
                 showDialogFragment<ConfigDialog>()
             }
 

@@ -22,12 +22,16 @@ import io.core.constant.TimeFormat
 import androidx.core.net.toUri
 import com.core.fy.android.constants.PreferKey
 import com.core.fy.android.help.HighLightHelper
+import com.core.fy.android.util.showDxNotification
+import io.core.Android
 import io.core.common.util.extensions.logD
 import io.core.common.util.extensions.storageManager
+import io.core.common.util.extensions.ui.ctx
 import io.core.common.util.extensions.ui.postDelayed
 import io.core.engine.storage.getWithAnnotation
 import io.core.engine.storage.put
 import io.core.engine.storage.storage
+import kotlinx.serialization.json.JsonNull.content
 
 /**
 # ██████████
@@ -57,12 +61,8 @@ class SetFragment : ReflectBindingFragment<FragmentSetBinding, MainActivity>() {
 //                ctx.showXpLoading {
 //                    content = ctx.appVersionName
 //                }
-//                showDxNotification {
-//                    content = ctx.appVersionName
-//                }
-
-                ShareAir.share {
-                    text("分享到")
+                showDxNotification {
+                    content = ctx.appVersionName
                 }
             }
 

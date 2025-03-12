@@ -39,6 +39,7 @@ afterEvaluate {
                     password = 'nXJxEWiiObre'
                 }
             }
+            mavenLocal()
         }
     }
 }
@@ -55,6 +56,13 @@ tasks.register('publishRelease') {
     dependsOn 'publish'
     doFirst {
         println "正在发布RELEASE版本: ${version_number}"
+    }
+}
+
+tasks.register('publishLocal') {
+    dependsOn 'publishToMavenLocal'
+    doFirst {
+        println "正在发布到MavenLocal: ${version_number_snapshot}"
     }
 }
 

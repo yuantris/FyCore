@@ -32,6 +32,10 @@ object StorageFactory {
 
     fun getEngine() = engine ?: throw IllegalStateException("Storage not initialized")
 
+    fun isInit(): Boolean {
+        return engine != null
+    }
+
     private fun validateKeys(clazz: Class<*>) {
         clazz.declaredFields.forEach { field ->
             field.getAnnotation(StorageKey::class.java)?.let { annotation ->
