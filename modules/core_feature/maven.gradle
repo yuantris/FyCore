@@ -11,6 +11,11 @@ def version_number_snapshot = isRelease ? version_number : "${version_number}-SN
  * # Mac给 gradlew 添加执行权限（在项目根目录执行）
  chmod +x gradlew
  *
+ * # 清除缓存并刷新依赖
+ ./gradlew clean build --refresh-dependencies
+ * # 清除指定模块的缓存（示例路径）
+ rm -rf ~/.gradle/caches/modules-2/files-2.1/io.core/fylibs/
+
  * # 发布快照版本（默认）
  ./gradlew publishSnapshot
 
