@@ -20,6 +20,7 @@ import io.core.common.util.extensions.ui.addViewToZYLayout
 import io.core.common.util.extensions.ui.getCompatColor
 import io.core.common.util.extensions.ui.onClick
 import io.core.common.util.tools.ColorUtils
+import io.core.other.IntentData
 import io.core.widget.view.LoadingView
 import io.core.widget.view.RotateLoading
 import kotlinx.coroutines.CoroutineScope
@@ -49,6 +50,8 @@ class BlankFragment : ReflectBindingFragment<FragmentBlankBinding, MainActivity>
     @SuppressLint("UnspecifiedRegisterReceiverFlag")
     override fun initView() {
         super.initView()
+
+        val get = IntentData.get<Int>("23")
         appCtx.registerReceiver(timeBatteryReceiver, timeBatteryReceiver.filter)
         binding.time.onClick {
             showDialog("对话框标题", "这是一个对话框消息。") {

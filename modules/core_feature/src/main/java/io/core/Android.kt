@@ -12,6 +12,7 @@ import io.core.engine.livebus.logger.DefaultLogger
 import io.core.engine.storage.StorageFactory
 import io.core.engine.storage.storage
 import io.core.other.CrashHandler
+import io.core.other.IntentData
 
 inline val appCtx get() = Android.context
 
@@ -69,6 +70,7 @@ object Android {
     @JvmStatic
     fun clearData() = runCatching {
         // 清除sp数据
+        IntentData.clear()
         Preferences.clear()
         StorageFactory.isInit().ifTrue { storage.clear() }
     }
