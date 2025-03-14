@@ -7,9 +7,11 @@ import com.core.fy.android.function.TestPageActivity
 import com.core.fy.android.help.HighLightHelper
 import com.core.fy.android.util.showDxNotification
 import io.core.common.base.component.fragment.ReflectBindingFragment
+import io.core.common.helper.JsonUltra
 import io.core.common.util.extensions.cool.coolThread
 import io.core.common.util.extensions.cool.timeFormat
 import io.core.common.util.extensions.currentTimeMillis
+import io.core.common.util.extensions.logD
 import io.core.common.util.extensions.ui.adaptStatusBarToView
 import io.core.common.util.extensions.ui.appVersionName
 import io.core.common.util.extensions.ui.ctx
@@ -47,6 +49,9 @@ class SetFragment : ReflectBindingFragment<FragmentSetBinding, MainActivity>() {
 
         val withAnnotation = storage.getWithAnnotation<Int>(PreferKey.SP_TEST)
         LogCat.d("测试一下工厂默认值 结果为：$withAnnotation")
+        JsonUltra.parse("{\"a\":1}").use {
+            it["a"]?.asString().logD()
+        }
 
         with(binding) {
             version.setLeftText("版本")

@@ -1,23 +1,20 @@
 package io.core.common.helper
 
-import com.google.gson.JsonParser
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.*
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 import java.lang.ref.SoftReference
+import java.util.WeakHashMap
 
 /**
- * ██╗  ██╗███████╗██╗   ██╗    ┌──────────┐
- * ╚██╗██╔╝██╔════╝╚██╗ ██╔╝    │ 加载进度 │▰▰▰▰▰▰▰▰◯ 87%
- *  ╚███╔╝ █████╗   ╚████╔╝     └──────────┘
- *  ██╔██╗ ██╔══╝    ╚██╔╝      ╱╲▲△△△△△△△△
- * ██╔╝ ██╗██╗        ██║       ▉ ▏正在渲染配置矩阵...
- * ╚═╝  ╚═╝╚═╝        ╚═╝       ╲╱▼▽▽▽▽▽▽▽▽
- * 注释的艺术，正在生成......
- * 模块加载阶段 ████████████ 100%
- * 最后编译阶段 ████████░░░░ 65% (按 F12 解锁彩蛋)
+ * ██╗  ██╗███████╗██╗   ██╗    ╔═════════════════╗
+ * ╚██╗██╔╝██╔════╝╚██╗ ██╔╝  ♥ → X F Y  ♡  Z J Q ← ♥
+ *  ╚███╔╝ █████╗   ╚████╔╝     ╚═╦═══════════════╝
+ *  ██╔██╗ ██╔══╝    ╚██╔╝         ▀█▄
+ * ██╔╝ ██╗██╗        ██║         ▄█▀
+ * ╚═╝  ╚═╝╚═╝        ╚═╝       █▌ 丘比特协议 v11.10
  * --------------------------------------------
  * Json解析工具类，用于解析和操作JSON数据。
  * @param jsonElement JSON数据。
@@ -28,7 +25,7 @@ import java.lang.ref.SoftReference
 class JsonUltra private constructor(
     private val jsonElement: JsonElement,
     private val autoParse: Boolean = true
-) {
+):AutoCloseable{
     // region 核心解析功能
     operator fun get(path: String): JsonUltra? {
         // 新增路径缓存优化
@@ -235,38 +232,58 @@ class JsonUltra private constructor(
     }
 
     /**
-     * 获取所有路径
+     * 获取所有路径（迭代实现）
      */
-    fun getAllPaths(): List<String> = buildList {
-        fun traverse(path: String, element: JsonElement) {
+    fun getAllPaths(): List<String> {
+        val paths = mutableSetOf<String>()
+        val stack = ArrayDeque<Pair<String, JsonElement>>().apply {
+            add("" to jsonElement.autoParseStringContent())
+        }
+
+        while (stack.isNotEmpty()) {
+            val (currentPath, element) = stack.removeLast()
+
             when (element) {
-                is JsonObject -> element.forEach { (k, v) ->
-                    val newPath = if (path.isEmpty()) k else "$path.$k"
-                    add(newPath)
-                    traverse(newPath, v)
+                is JsonObject -> {
+                    element.forEach { (k, v) ->
+                        val newPath = if (currentPath.isEmpty()) k else "$currentPath.$k"
+                        paths.add(newPath)
+                        stack.add(newPath to v)
+                    }
                 }
 
-                is JsonArray -> element.forEachIndexed { i, e ->
-                    val newPath = "$path[$i]"
-                    add(newPath)
-                    traverse(newPath, e)
+                is JsonArray -> {
+                    element.forEachIndexed { i, e ->
+                        val newPath = "$currentPath[$i]"
+                        paths.add(newPath)
+                        stack.add(newPath to e)
+                    }
                 }
 
-                else -> if (path.isNotEmpty()) add(path)
+                else -> {
+                    if (currentPath.isNotEmpty()) {
+                        paths.add(currentPath)
+                    }
+                }
             }
         }
-        traverse("", jsonElement.autoParseStringContent())
-    }.distinct()
+
+        return paths.toList()
+    }
 
     /**
      * 转换为JSON字符串
      */
     fun convertJsonString() = Json.encodeToString(jsonElement)
+
+    override fun close() {
+        pathCache.clear()
+        keysCache.clear()
+    }
     // endregion
 
     // region 构建功能
     companion object Builder {
-
 
         private val jsonFormatter by lazy {
             Json {
@@ -486,8 +503,8 @@ class JsonUltra private constructor(
     // TODO: 2025/3/14 16:59 新增如下默认解析方法
     /** 将所有没有被单引号包裹的key，增加单引号包裹，降低输入Path错误率*/
     private fun calibrationPath(path: String): String {
-        val element = JsonParser.parseString(Json.encodeToString(jsonElement))
-        val allKeys: Set<String> = getAllKeysCached(element)
+        val element = Json.parseToJsonElement(Json.encodeToString(jsonElement))
+        val allKeys = getAllKeysCached(element)
 
         var modifiedPath = path
         allKeys.sortedByDescending { it.length }.forEach { key ->
@@ -499,35 +516,38 @@ class JsonUltra private constructor(
         return modifiedPath
     }
 
-    private fun getAllKeysCached(element: com.google.gson.JsonElement): Set<String> {
-        val currentJson = Json.encodeToString(jsonElement)
-        val currentHash = currentJson.hashCode()
+    private fun getAllKeysCached(element: JsonElement): Set<String> {
+        val currentHash = jsonElement.hashCode().toString()
 
-        return keysCache?.get()?.takeIf { it.jsonHash == currentHash }?.keys
-            ?: run {
-                val newKeys = getAllKeys(element)
-                keysCache = SoftReference(KeyCache(currentHash, newKeys))
-                newKeys
-            }
+        return keysCache.getOrPut(currentHash) {
+            SoftReference(KeyCache(currentHash.toInt(), getAllKeys(element)))
+        }?.get()?.takeIf { it.jsonHash == currentHash.toInt() }?.keys ?: run {
+            val newKeys = getAllKeys(element)
+            keysCache[currentHash] = SoftReference(KeyCache(currentHash.toInt(), newKeys))
+            newKeys
+        }
     }
 
-    /** 嵌套获取Json（Gson方式）所有的key */
-    private fun getAllKeys(jsonElement: com.google.gson.JsonElement): Set<String> {
+    /** 迭代获取Json（Gson方式）所有的key */
+    private fun getAllKeys(jsonElement: JsonElement): Set<String> {
         val keys = mutableSetOf<String>()
-        when (jsonElement) {
-            is com.google.gson.JsonObject -> {
-                jsonElement.keySet().forEach { key ->
-                    keys.add(key)
-                    keys.addAll(getAllKeys(jsonElement.get(key)))
-                }
-            }
+        val stack = ArrayDeque<JsonElement>().apply { add(jsonElement) }
 
-            is com.google.gson.JsonArray -> {
-                jsonElement.forEach { element ->
-                    keys.addAll(getAllKeys(element))
+        while (stack.isNotEmpty()) {
+            when (val current = stack.removeLast()) {
+                is JsonObject -> {
+                    current.keys.forEach { key ->
+                        keys.add(key)
+                        current[key]?.let { stack.add(it) }
+                    }
+                }
+                is JsonArray -> {
+                    current.forEach { stack.add(it) }
+                }
+                else -> {
+                    // 基础类型不处理
                 }
             }
-            // JsonPrimitive 和 JsonNull 不处理
         }
         return keys
     }
@@ -537,11 +557,22 @@ class JsonUltra private constructor(
         val keys: Set<String>
     )
 
-    // 使用软引用缓存，防止内存泄漏
-    private var keysCache: SoftReference<KeyCache>? = null
-    // 新增路径缓存（使用软引用避免内存泄漏）
-    private val pathCache = mutableMapOf<String, List<String>>()
-        .withDefault { parseCalibratedPath(it) }
+    private val keysCache = WeakHashMap<String, SoftReference<KeyCache>>()
+    // 结合软引用，避免内存泄漏
+    private val pathCache = object : LinkedHashMap<String, List<String>>(
+        100, 0.75f, true) {
+        private val weakMap = WeakHashMap<String, SoftReference<List<String>>>()
+
+        override fun get(key: String): List<String> {
+            return weakMap[key]?.get() ?: parseCalibratedPath(key).also {
+                weakMap[key] = SoftReference(it)
+            }
+        }
+
+        override fun removeEldestEntry(eldest: MutableMap.MutableEntry<String, List<String>>): Boolean {
+            return size > 100
+        }
+    }
 
     /**
      * 合并路径校准与解析步骤
@@ -572,7 +603,11 @@ class JsonUltra private constructor(
                 while (current.isNotEmpty()) {
                     when {
                         current.startsWith('[') -> handleArrayNotation(current, processed)
-                        current.startsWith('\'') || current.startsWith('"') -> handleQuotedSegment(current, processed)
+                        current.startsWith('\'') || current.startsWith('"') -> handleQuotedSegment(
+                            current,
+                            processed
+                        )
+
                         else -> handlePlainSegment(current, processed)
                     }.let { current = it }
                 }
