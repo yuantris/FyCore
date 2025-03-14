@@ -7,8 +7,13 @@ Android核心工具库 | [![](https://img.shields.io/badge/Version-0.1.6-brightg
 Android.initialize(this, debug = true)
 
 // ---------- 可选配置 ----------
-// 崩溃后跳转Activity（建议配置主Activity）
-CoreConfig.CRASH_AFTER_JUMP = MainActivity::class.java
+CoreConfig.configure {
+  crashMultiProcess = true
+  // 崩溃后跳转Activity（建议配置主Activity）
+  crashAfterJump = MainActivity::class.java
+  positiveColor = appCtx.getColor(R.color.md_indigo_500)
+  negativeColor = appCtx.getColor(R.color.md_red_300)
+}
 
 // 页面追踪配置（Release模式自动开启）
 TurboTracker.initialize(this) {
@@ -16,13 +21,11 @@ TurboTracker.initialize(this) {
     setLogger(ReleaseLogger()) // 生产环境日志
 }
 // 存储工厂初始化
-StorageFactory.initialize(
-  StorageConfig(
-    type = StorageType.MMKV,
-    mmkvMode = MMKV.MULTI_PROCESS_MODE,
-    validateClass = PreferKey::class.java
-  )
-)
+StorageFactory.initialize {
+  type = StorageType.MMKV
+  mmkvMode = MMKV.MULTI_PROCESS_MODE
+  validateClass = PreferKey::class.java
+}
 ```
 
 **模块概览**
@@ -56,8 +59,8 @@ StorageFactory.initialize(
   - adjustAlpha
   - withAlpha
 - DocumentUtils
-- FileUtils
-- TimeUtils
+- FileTools
+- TimeTools
 
 - 常用拓展函数速览
   - 
@@ -233,13 +236,11 @@ StorageFactory.initialize(
 - StorageFactory 存储工厂
   ```kotlin
   // 存储工厂初始化配置
-  StorageFactory.initialize(
-    StorageConfig(
-      type = StorageType.MMKV,
-      mmkvMode = MMKV.MULTI_PROCESS_MODE,
+  StorageFactory.initialize {
+      type = StorageType.MMKV
+      mmkvMode = MMKV.MULTI_PROCESS_MODE
       validateClass = SPKey::class.java
-    )
-  )
+  }
   
   // 统一定义存储Key [使用const val约束]
   object SPKey {

@@ -1,22 +1,43 @@
 package io.core.common.helper
 
+import androidx.constraintlayout.motion.widget.KeyCache
+import com.google.gson.JsonParser
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.*
 import kotlinx.serialization.json.JsonObject
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
+import java.lang.ref.SoftReference
 
+/**
+ * ██╗  ██╗███████╗██╗   ██╗    ┌──────────┐
+ * ╚██╗██╔╝██╔════╝╚██╗ ██╔╝    │ 加载进度 │▰▰▰▰▰▰▰▰◯ 87%
+ *  ╚███╔╝ █████╗   ╚████╔╝     └──────────┘
+ *  ██╔██╗ ██╔══╝    ╚██╔╝      ╱╲▲△△△△△△△△
+ * ██╔╝ ██╗██╗        ██║       ▉ ▏正在渲染配置矩阵...
+ * ╚═╝  ╚═╝╚═╝        ╚═╝       ╲╱▼▽▽▽▽▽▽▽▽
+ * 注释的艺术，正在生成......
+ * 模块加载阶段 ████████████ 100%
+ * 最后编译阶段 ████████░░░░ 65% (按 F12 解锁彩蛋)
+ * --------------------------------------------
+ * Json解析工具类，用于解析和操作JSON数据。
+ * @param jsonElement JSON数据。
+ * @param autoParse 是否自动解析字符串内容，默认为true。
+ * @author [Yuantris]
+ * 2025/2/13 13:49
+ */
 class JsonUltra private constructor(
     private val jsonElement: JsonElement,
     private val autoParse: Boolean = true
 ) {
     // region 核心解析功能
     operator fun get(path: String): JsonUltra? {
-        val segments = parsePath(path)
+        // 新增路径缓存优化
+        val cachedPath = pathCache.getOrPut(path) { parseCalibratedPath(path) }
         var current: JsonElement = jsonElement
 
-        for (segment in segments) {
+        for (segment in cachedPath) {
             current = current.autoParseStringContent()
             val parsedSegment = parseSegment(segment)
             current = when {
@@ -32,11 +53,11 @@ class JsonUltra private constructor(
      * 用于Java环境调用者已知存在此节点的情况下使用，如{code,message,data}结构直接取code
      */
     fun getNotNull(path: String): JsonUltra {
-        val segments = parsePath(path)
+        val cachedPath = pathCache.getOrPut(path) { parseCalibratedPath(path) }
         var current: JsonElement = jsonElement
         val processedPath = mutableListOf<String>()
 
-        for (segment in segments) {
+        for (segment in cachedPath) {
             current = current.autoParseStringContent()
             val parsedSegment = parseSegment(segment)
             current = when {
@@ -464,46 +485,128 @@ class JsonUltra private constructor(
         )
     }
 
+    // TODO: 2025/3/14 16:59 新增如下默认解析方法
+    /** 将所有没有被单引号包裹的key，增加单引号包裹，降低输入Path错误率*/
+    private fun calibrationPath(path: String): String {
+        val element = JsonParser.parseString(Json.encodeToString(jsonElement))
+        val allKeys: Set<String> = getAllKeysCached(element)
+
+        var modifiedPath = path
+        allKeys.sortedByDescending { it.length }.forEach { key ->
+            modifiedPath = modifiedPath.replace(
+                Regex("(?<!')${Regex.escape(key)}(?!')"),
+                "'$key'"
+            )
+        }
+        return modifiedPath
+    }
+
+    private fun getAllKeysCached(element: com.google.gson.JsonElement): Set<String> {
+        val currentJson = Json.encodeToString(jsonElement)
+        val currentHash = currentJson.hashCode()
+
+        return keysCache?.get()?.takeIf { it.jsonHash == currentHash }?.keys
+            ?: run {
+                val newKeys = getAllKeys(element)
+                keysCache = SoftReference(KeyCache(currentHash, newKeys))
+                newKeys
+            }
+    }
+
+    /** 嵌套获取Json（Gson方式）所有的key */
+    private fun getAllKeys(jsonElement: com.google.gson.JsonElement): Set<String> {
+        val keys = mutableSetOf<String>()
+        when (jsonElement) {
+            is com.google.gson.JsonObject -> {
+                jsonElement.keySet().forEach { key ->
+                    keys.add(key)
+                    keys.addAll(getAllKeys(jsonElement.get(key)))
+                }
+            }
+
+            is com.google.gson.JsonArray -> {
+                jsonElement.forEach { element ->
+                    keys.addAll(getAllKeys(element))
+                }
+            }
+            // JsonPrimitive 和 JsonNull 不处理
+        }
+        return keys
+    }
+
+    private data class KeyCache(
+        val jsonHash: Int,
+        val keys: Set<String>
+    )
+
+    // 使用软引用缓存，防止内存泄漏
+    private var keysCache: SoftReference<KeyCache>? = null
+    // 新增路径缓存（使用软引用避免内存泄漏）
+    private val pathCache = mutableMapOf<String, List<String>>()
+        .withDefault { parseCalibratedPath(it) }
+
+    /**
+     * 合并路径校准与解析步骤
+     * @return 预解析的路径段列表
+     */
+    private fun parseCalibratedPath(rawPath: String): List<String> {
+        val calibrated = calibrationPath(rawPath)
+        return parsePath(calibrated).also {
+            validatePathSegments(it)  // 新增路径校验
+        }
+    }
+
+    /**
+     * 新增路径段校验逻辑
+     */
+    private fun validatePathSegments(segments: List<String>) {
+        if (segments.any { it.contains("''") || it.contains("\"\"") }) {
+            throw IllegalArgumentException("路径包含无效的空引号：${segments.joinToString(".")}")
+        }
+    }
+
     private fun parsePath(path: String): List<String> {
-        return path.split(Regex("""\.(?=(?:[^"']*["'][^"']*["'])*[^"']*$)"""))
+        return path.split(Regex("""(?<!\\)\.(?=(?:[^"']*["'][^"']*["'])*[^"']*$)""")) // 新增转义点号支持
             .flatMap { segment ->
-                val parts = mutableListOf<String>()
-                var current = segment
+                val processed = mutableListOf<String>()
+                var current = segment.replace("\\\\.", ".") // 处理转义点号
+
                 while (current.isNotEmpty()) {
                     when {
-                        current.startsWith('[') -> {
-                            val endIndex = current.indexOf(']').takeIf { it != -1 } ?: break
-                            parts.add(current.substring(0, endIndex + 1))
-                            current = current.substring(endIndex + 1)
-                        }
-
-                        current[0] == '"' || current[0] == '\'' -> {
-                            val quote = current[0]
-                            val endIndex = current.indexOf(quote, 1)
-                            if (endIndex == -1) {
-                                parts.add(current)
-                                break
-                            }
-                            parts.add(current.substring(0, endIndex + 1))
-                            current = current.substring(endIndex + 1)
-                        }
-
-                        else -> {
-                            val nextArray = current.indexOf('[')
-                            if (nextArray == -1) {
-                                parts.add(current)
-                                break
-                            }
-                            parts.add(current.substring(0, nextArray))
-                            current = current.substring(nextArray)
-                        }
-                    }
+                        current.startsWith('[') -> handleArrayNotation(current, processed)
+                        current.startsWith('\'') || current.startsWith('"') -> handleQuotedSegment(current, processed)
+                        else -> handlePlainSegment(current, processed)
+                    }.let { current = it }
                 }
-                parts
+                processed
             }
             .filter { it.isNotEmpty() }
     }
 
+    // 新增三种路径段处理策略
+    private fun handleArrayNotation(current: String, processed: MutableList<String>): String {
+        val endIndex = current.indexOfFirst { it == ']' }.takeIf { it != -1 } ?: return ""
+        processed.add(current.substring(0, endIndex + 1))
+        return current.substring(endIndex + 1)
+    }
+
+    private fun handleQuotedSegment(current: String, processed: MutableList<String>): String {
+        val quote = current[0]
+        val endIndex = current.indexOf(quote, 1).takeIf { it != -1 } ?: return ""
+        processed.add(current.substring(0, endIndex + 1))
+        return current.substring(endIndex + 1)
+    }
+
+    private fun handlePlainSegment(current: String, processed: MutableList<String>): String {
+        val nextArray = current.indexOf('[')
+        return if (nextArray == -1) {
+            processed.add(current)
+            ""
+        } else {
+            processed.add(current.substring(0, nextArray))
+            current.substring(nextArray)
+        }
+    }
 
     private fun parseSegment(segment: String): ParsedSegment {
         return when {

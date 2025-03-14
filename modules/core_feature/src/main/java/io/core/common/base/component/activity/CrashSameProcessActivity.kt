@@ -26,14 +26,11 @@ import com.hjq.permissions.XXPermissions
 import io.core.R
 import io.core.appCtx
 import io.core.common.base.component.dialog.showPopupWindow
-import io.core.common.util.FileSharer
 import io.core.common.util.ShareAir
 import io.core.common.util.extensions.cool.dp
 import io.core.common.util.extensions.cool.getFile
 import io.core.common.util.extensions.cool.hasReadWriteStoragePermission
 import io.core.common.util.extensions.cool.putBoolean
-import io.core.common.util.extensions.cool.putLong
-import io.core.common.util.extensions.currentTimeMillis
 import io.core.common.util.extensions.ui.appVersionCode
 import io.core.common.util.extensions.ui.appVersionName
 import io.core.common.util.extensions.ui.onClick

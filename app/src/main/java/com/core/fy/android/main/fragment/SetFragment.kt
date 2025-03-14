@@ -1,17 +1,21 @@
 package com.core.fy.android.main.fragment
 
 import com.core.fy.android.MainActivity
+import com.core.fy.android.constants.PreferKey
 import com.core.fy.android.databinding.FragmentSetBinding
 import com.core.fy.android.function.TestPageActivity
+import com.core.fy.android.help.HighLightHelper
+import com.core.fy.android.util.showDxNotification
 import io.core.common.base.component.fragment.ReflectBindingFragment
-import io.core.common.util.ShareAir
 import io.core.common.util.extensions.cool.coolThread
 import io.core.common.util.extensions.cool.timeFormat
 import io.core.common.util.extensions.currentTimeMillis
 import io.core.common.util.extensions.ui.adaptStatusBarToView
 import io.core.common.util.extensions.ui.appVersionName
+import io.core.common.util.extensions.ui.ctx
 import io.core.common.util.extensions.ui.onClick
 import io.core.common.util.extensions.ui.onDebouncedClick
+import io.core.common.util.extensions.ui.postDelayed
 import io.core.common.util.extensions.ui.startActivity
 import io.core.common.util.log.LogCat
 import io.core.common.util.tools.ThreadUltra
@@ -19,19 +23,9 @@ import io.core.common.util.tools.androidApiVersion
 import io.core.common.util.tools.androidVersion
 import io.core.common.util.tools.buildMultiLine
 import io.core.constant.TimeFormat
-import androidx.core.net.toUri
-import com.core.fy.android.constants.PreferKey
-import com.core.fy.android.help.HighLightHelper
-import com.core.fy.android.util.showDxNotification
-import io.core.Android
-import io.core.common.util.extensions.logD
-import io.core.common.util.extensions.storageManager
-import io.core.common.util.extensions.ui.ctx
-import io.core.common.util.extensions.ui.postDelayed
 import io.core.engine.storage.getWithAnnotation
 import io.core.engine.storage.put
 import io.core.engine.storage.storage
-import kotlinx.serialization.json.JsonNull.content
 
 /**
 # ██████████

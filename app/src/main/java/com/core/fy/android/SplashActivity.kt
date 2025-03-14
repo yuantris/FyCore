@@ -5,12 +5,14 @@ import android.animation.AnimatorListenerAdapter
 import android.content.Intent
 import android.os.Bundle
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.lifecycle.lifecycleScope
 import com.core.fy.android.databinding.ActivitySplashBinding
 import com.core.fy.android.function.GuideActivity
 import io.core.common.base.component.activity.ReflectBindingActivity
 import io.core.common.util.extensions.ui.startNoTransition
 import com.gyf.immersionbar.BarHide
 import com.gyf.immersionbar.ImmersionBar
+import io.core.other.CrashHandler
 
 /**
 # ██████████
@@ -61,18 +63,22 @@ class SplashActivity : ReflectBindingActivity<ActivitySplashBinding>() {
                 override fun onAnimationEnd(animation: Animator) {
                     binding.lavSplashLottie.removeAnimatorListener(this)
                     if (Config.isDisplayGuide) {
-                        startNoTransition(GuideActivity::class.java, finish = true)
+                        startNoTransition<GuideActivity>(finish = true)
                     } else {
-                        startNoTransition(MainActivity::class.java, finish = true)
+                        CrashHandler.checkLatestCrash(lifecycleScope) {
+                            startNoTransition<MainActivity>(finish = true)
+                        }
                     }
 
                 }
             })
         } else {
             if (Config.isDisplayGuide) {
-                startNoTransition(GuideActivity::class.java, finish = true)
+                startNoTransition<GuideActivity>(finish = true)
             } else {
-                startNoTransition(MainActivity::class.java, finish = true)
+                CrashHandler.checkLatestCrash(lifecycleScope) {
+                    startNoTransition<MainActivity>(finish = true)
+                }
             }
         }
     }

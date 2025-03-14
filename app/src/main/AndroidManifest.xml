@@ -49,6 +49,9 @@
         android:theme="@style/Theme.FyCore">
 
         <activity
+            android:name=".function.json.JsonActivity"
+            android:exported="false" />
+        <activity
             android:name=".function.media.MediaPlayerActivity"
             android:exported="false" />
         <activity

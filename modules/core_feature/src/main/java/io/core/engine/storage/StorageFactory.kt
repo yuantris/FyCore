@@ -2,6 +2,7 @@ package io.core.engine.storage
 
 import com.tencent.mmkv.MMKV
 import io.core.appCtx
+import io.core.common.helper.TurboTracker.TrackConfig
 import kotlin.reflect.KClass
 import kotlin.reflect.full.memberProperties
 
@@ -12,22 +13,24 @@ object StorageFactory {
     val keyDefaultMap = mutableMapOf<String, Pair<String, KClass<*>>>()
 
     @JvmStatic
-    fun initialize(config: StorageConfig) {
-        currentType = config.type
-        engine = when (config.type) {
+    fun initialize(config: StorageConfig.() -> Unit) {
+        val builder = StorageConfig().apply(config)
+
+        currentType = builder.type
+        engine = when (builder.type) {
             StorageType.SHARED_PREFS -> SharedPreferencesEngine(
                 appCtx.getSharedPreferences(
-                    config.name,
-                    config.mode
+                    builder.name,
+                    builder.mode
                 )
             )
 
             StorageType.MMKV -> {
                 MMKV.initialize(appCtx)
-                MMKVEngine(MMKV.mmkvWithID(config.name, config.mmkvMode))
+                MMKVEngine(MMKV.mmkvWithID(builder.name, builder.mmkvMode))
             }
         }
-        config.validateClass?.let { validateKeys(it) }
+        builder.validateClass?.let { validateKeys(it) }
     }
 
     fun getEngine() = engine ?: throw IllegalStateException("Storage not initialized")

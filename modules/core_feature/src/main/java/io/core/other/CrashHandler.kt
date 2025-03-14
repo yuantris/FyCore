@@ -20,6 +20,7 @@ import io.core.common.util.extensions.cool.PathType
 import io.core.common.util.extensions.cool.createFolderReplace
 import io.core.common.util.extensions.cool.documentsDir
 import io.core.common.util.extensions.cool.getBasePath
+import io.core.common.util.extensions.cool.getBoolean
 import io.core.common.util.extensions.cool.getFile
 import io.core.common.util.extensions.cool.hasWriteStoragePermission
 import io.core.common.util.extensions.cool.ifNext
@@ -35,6 +36,7 @@ import kotlinx.coroutines.withContext
 import java.io.PrintWriter
 import java.io.StringWriter
 import java.util.concurrent.TimeUnit
+import kotlin.math.abs
 import kotlin.system.exitProcess
 
 class CrashHandler private constructor(private val application: Application) :
@@ -59,29 +61,40 @@ class CrashHandler private constructor(private val application: Application) :
         @JvmStatic
         @JvmOverloads
         fun checkLatestCrash(scope: LifecycleCoroutineScope, action: OnNextStep? = null) {
-            // 如果配置允许多进程崩溃上报，则不执行后续检查
             if (!CoreConfig.CRASH_MULTI_PROCESS && Android.debug) {
-                // 获取当前时间戳
                 val millis = System.currentTimeMillis()
-                // 获取存储崩溃信息的SharedPreferences实例
-                val preferences =
-                    appCtx.getSharedPreferences(CRASH_FILE_NAME, Context.MODE_PRIVATE)
-                // 从SharedPreferences中读取上次崩溃的时间戳，如果没有则使用当前时间戳
-                val crash_millis = preferences.getLong(KEY_CRASH_TIME, millis)
+                val preferences = appCtx.getSharedPreferences(CRASH_FILE_NAME, Context.MODE_PRIVATE)
+                val lastCrashTimeMillis = preferences.getLong(KEY_CRASH_TIME, millis)
 
-                // 在IO线程中执行文件系统操作，以查找最近的崩溃文件
                 scope.launch(Dispatchers.IO) {
-                    // 获取最近修改的崩溃日志文件
-                    val file = appCtx.externalCacheDir?.getFile(
-                        CRASH_FOLDER_NAME
-                    )?.listFiles()?.maxByOrNull { it.lastModified() }
-                    // 切换到主线程以读取SharedPreferences中的页面打开状态
-                    withContext(Dispatchers.Main) {
-                        // 检查当前崩溃页面是否已经打开过
-                        val open_page_current = preferences.getBoolean(file?.name, false)
+                    // 增加缓存有效期判断（10秒内）
+                    val validTimeWindow = TimeUnit.MILLISECONDS.toMillis(10_000)
 
-                        // 如果上次崩溃时间距今不超过30秒且当前崩溃页面未打开过，则启动崩溃报告活动
-                        if (crash_millis > millis - TimeUnit.MILLISECONDS.toMillis(30_000) && !open_page_current) {
+                    val file = appCtx.externalCacheDir?.getFile(CRASH_FOLDER_NAME)
+                        ?.listFiles()
+                        ?.filter {
+                            it.isFile &&
+                                    it.name.startsWith("crash-") &&
+                                    it.length() > 0 // 确保非空文件
+                        }
+                        ?.maxByOrNull { it.lastModified() }
+
+                    // 新增条件：文件必须存在且符合命名规范
+                    if (file == null || !file.exists()) {
+                        withContext(Dispatchers.Main) { action?.invoke() }
+                        return@launch
+                    }
+
+                    if (file.lastModified() < millis - validTimeWindow ||
+                        abs(lastCrashTimeMillis - file.lastModified()) > validTimeWindow) {
+                        withContext(Dispatchers.Main) { action?.invoke() }
+                        return@launch
+                    }
+
+                    withContext(Dispatchers.Main) {
+                        val openPageCurrent = preferences.getBoolean(file.name, false)
+                        // 如果上次崩溃时间距今不超过10秒且当前崩溃页面未打开过，则启动崩溃报告活动
+                        if (lastCrashTimeMillis > millis - validTimeWindow && !openPageCurrent) {
                             CrashSameProcessActivity.start(appCtx)
                         } else {
                             action?.invoke()

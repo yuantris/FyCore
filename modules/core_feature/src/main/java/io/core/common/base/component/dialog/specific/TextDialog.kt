@@ -31,7 +31,7 @@ class TextDialog() : BaseDialogFragment(R.layout.dialog_text_view) {
     ) : this() {
         arguments = Bundle().apply {
             putString("title", title)
-            putString("content", IntentData.put(content))
+            putString("content", IntentData.put(content.orEmpty()))
             putString("mode", mode.name)
             putLong("time", time)
         }

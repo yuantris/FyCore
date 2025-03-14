@@ -81,10 +81,12 @@ object ShareAir {
             this.content = ShareContent.Text(content, this)
         }
 
+        @JvmOverloads
         fun file(uri: Uri, mimeType: String = MimeType.UNKNOWN) {
             this.content = ShareContent.File(uri, mimeType, this)
         }
 
+        @JvmOverloads
         fun files(vararg uris: Uri, mimeType: String = MimeType.UNKNOWN) {
             this.content = ShareContent.MultiFiles(uris.toList(), mimeType, this)
         }
@@ -102,6 +104,7 @@ object ShareAir {
         }
     }
 
+    @JvmStatic
     fun share(config: ShareConfig.() -> Unit) {
         try {
             when (val content = ShareConfig(config)) {

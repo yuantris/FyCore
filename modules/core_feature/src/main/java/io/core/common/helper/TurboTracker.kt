@@ -14,6 +14,11 @@ import java.util.Date
 import java.util.Locale
 import java.util.concurrent.atomic.AtomicReference
 
+/**
+ * Created by Yuan
+ *
+ * 埋点追踪器
+ */
 object TurboTracker {
 
     private const val DEFAULT_TAG = "TurboTracker"

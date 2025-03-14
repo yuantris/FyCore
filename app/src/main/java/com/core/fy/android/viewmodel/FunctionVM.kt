@@ -39,6 +39,7 @@ class FunctionVM(var repository: FunctionRepository) : BaseViewModel() {
         Brv("brv"),
         录音("录音"),
         Media("Media"),
+        Json("Json"),
         COLL_BAR("collBar");
 
         companion object {
@@ -67,6 +68,7 @@ class FunctionVM(var repository: FunctionRepository) : BaseViewModel() {
             Function(Design.Brv),
             Function(Design.录音),
             Function(Design.Media),
+            Function(Design.Json),
             Function(Design.COLL_BAR),
         )
     }

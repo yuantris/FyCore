@@ -12,6 +12,8 @@ import android.text.Spanned
 import android.text.style.ForegroundColorSpan
 import androidx.annotation.ColorInt
 import io.core.common.util.Toaster
+import io.core.common.util.tools.OsUtils
+import io.core.common.util.tools.isAndroid7Plus
 import java.io.File
 import java.lang.Character.codePointCount
 import java.lang.Character.offsetByCodePoints
@@ -90,35 +92,41 @@ fun String.splitNotBlank(regex: Regex, limit: Int = 0): Array<String> = run {
     this.split(regex, limit).map { it.trim() }.filterNot { it.isBlank() }.toTypedArray()
 }
 
-@SuppressLint("ObsoleteSdkInt")
+/**
+ * 比较两个中文字符串的排序顺序（支持多版本兼容）
+ *
+ * 实现说明：
+ * - Android 7+ 使用ICU4J的Collator实现更准确的区域敏感排序
+ * - 旧版本使用标准Java的Collator实现向后兼容
+ *
+ * @param other 要比较的目标字符串
+ * @return 比较结果：
+ *         - 正数 表示当前字符串在排序中位于参数之后
+ *         - 负数 表示当前字符串在排序中位于参数之前
+ *         - 0    表示两个字符串排序位置相同
+ */
 fun String.cnCompare(other: String): Int {
-    return if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+    return if (isAndroid7Plus) {
         Collator.getInstance(ULocale.SIMPLIFIED_CHINESE).compare(this, other)
     } else {
         java.text.Collator.getInstance(Locale.CHINA).compare(this, other)
     }
 }
 
-/**
- * 字符串所占内存大小
- */
+/** 字符串所占内存大小 */
 fun String?.memorySize(): Int {
     this ?: return 0
     return 40 + 2 * length
 }
 
-/**
- * 是否中文
- */
+/** 是否中文 */
 fun String.isChinese(): Boolean {
     val p = Pattern.compile("[\u4e00-\u9fa5]")
     val m = p.matcher(this)
     return m.find()
 }
 
-/**
- * 将字符串拆分为单个字符,包含emoji
- */
+/** 将字符串拆分为单个字符,包含emoji */
 fun CharSequence.toStringArray(): Array<String> {
     var codePointIndex = 0
     return try {

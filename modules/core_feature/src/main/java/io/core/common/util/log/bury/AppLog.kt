@@ -5,6 +5,9 @@ import android.os.StatFs
 import android.util.Log
 import io.core.BuildConfig
 import io.core.appCtx
+import io.core.common.util.tools.OsUtils
+import io.core.constant.ANDROID_4_3
+import io.core.constant.ANDROID_9
 import kotlinx.coroutines.*
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -97,14 +100,19 @@ object AppLog {
     }
 
     // region Public API
+    @JvmStatic
     fun debug(tag: String, message: String) = log(LogLevel.DEBUG, tag, message)
+    @JvmStatic
     fun info(tag: String, message: String) = log(LogLevel.INFO, tag, message)
+    @JvmStatic
     fun warning(tag: String, message: String, e: Throwable? = null) =
         log(LogLevel.WARN, tag, message, e)
 
+    @JvmStatic
     fun error(tag: String, message: String, e: Throwable? = null) =
         log(LogLevel.ERROR, tag, message, e)
 
+    @JvmStatic
     fun getLogFiles(): List<File> {
         val logDir = getLogDirectory() ?: return emptyList()
         return logDir.listFiles { file ->
@@ -126,6 +134,7 @@ object AppLog {
         }
     }
 
+    @JvmStatic
     fun release() {
         logJob?.cancel()
         CoroutineScope(Dispatchers.IO).launch {
@@ -328,7 +337,7 @@ object AppLog {
     private fun ensureDiskSpace(logDir: File): Boolean {
         return try {
             val stat = StatFs(logDir.absolutePath)
-            val availableBytes = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            val availableBytes = if (OsUtils.higherThan(ANDROID_4_3)) {
                 stat.availableBytes
             } else {
                 @Suppress("DEPRECATION")

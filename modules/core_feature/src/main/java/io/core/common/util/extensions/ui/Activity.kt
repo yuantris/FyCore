@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package io.core.common.util.extensions.ui
 
 import android.annotation.SuppressLint
@@ -21,7 +23,6 @@ import io.core.common.util.extensions.cool.isDarkColor
 inline fun <reified T : DialogFragment> AppCompatActivity.showDialogFragment(
     arguments: Bundle.() -> Unit = {}
 ) {
-    @Suppress("DEPRECATION")
     val dialog = T::class.java.newInstance()
     val bundle = Bundle()
     bundle.apply(arguments)
@@ -33,7 +34,6 @@ fun AppCompatActivity.showDialogFragment(dialogFragment: DialogFragment) {
     dialogFragment.show(supportFragmentManager, dialogFragment::class.simpleName)
 }
 
-@Suppress("DEPRECATION")
 fun Activity.fullScreen() {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
         window.setDecorFitsSystemWindows(true)
@@ -65,7 +65,6 @@ fun Activity.setLightStatusBar(isLightBar: Boolean) {
             }
         }
     }
-    @Suppress("DEPRECATION")
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
         val decorView = window.decorView
         val systemUiVisibility = decorView.systemUiVisibility
@@ -140,7 +139,12 @@ val Activity.navigationBarGravity: Int
 
 /////------------------------------------------------------------------------------------------------------/////
 
-@Suppress("DEPRECATION")
+inline fun <reified T : Activity> Activity.startNoTransition(finish: Boolean = true) {
+    startActivity(Intent(this, T::class.java))
+    overridePendingTransition(0, 0)
+    if (finish) finish()
+}
+
 fun Activity.startNoTransition(clazz: Class<*>, finish: Boolean = true) {
     startActivity(Intent(this, clazz))
     overridePendingTransition(0, 0)
@@ -161,7 +165,7 @@ fun Activity.moveTaskToFront(context: Context) {
     context.startActivity(intent)
 }
 
-@SuppressLint("InternalInsetResource")
+@SuppressLint("DiscouragedApi", "InternalInsetResource")
 fun Activity.adaptStatusBarToView(rootView: View, targetView: View? = null) {
 //    // 设置透明状态栏
 //    WindowCompat.setDecorFitsSystemWindows(window, false)

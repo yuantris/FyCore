@@ -3,9 +3,7 @@ package com.core.fy.android
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.ViewGroup
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
-import com.blankj.utilcode.util.TimeUtils
 import com.core.fy.android.databinding.ActivityMainBinding
 import com.core.fy.android.databinding.HomeNavigationItemBinding
 import com.core.fy.android.interfaces.FragmentPagerAdapter
@@ -28,8 +26,6 @@ import io.core.common.util.extensions.ui.notifyAllDataChanged
 import io.core.common.util.extensions.ui.onClick
 import io.core.common.util.processNavigationBar
 import io.core.common.util.tools.TimeTools
-import io.core.common.util.tools.toTimeAgo
-import io.core.other.CrashHandler
 
 class MainActivity : ReflectBindingActivity<ActivityMainBinding>() {
 
@@ -67,10 +63,6 @@ class MainActivity : ReflectBindingActivity<ActivityMainBinding>() {
                 }
             }
         }
-
-
-        // 检查最新崩溃日志
-        CrashHandler.checkLatestCrash(lifecycleScope)
 
         val string2Millis = TimeTools.string2Millis("2025-02-15", "yyyy-MM-dd")
         TimeTools.daysBetween(string2Millis, currentTimeMillis).logD()

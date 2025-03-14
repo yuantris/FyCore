@@ -1,4 +1,4 @@
-package io.core.common.helper
+package io.core.common.util
 
 import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.properties.ReadOnlyProperty

@@ -49,13 +49,11 @@ class App : Application() {
             enable(CoreConfig.DEBUG)
             brief(true)
         }
-        StorageFactory.initialize(
-            StorageConfig(
-                type = StorageType.MMKV,
-                mmkvMode = MMKV.MULTI_PROCESS_MODE,
-                validateClass = PreferKey::class.java
-            )
-        )
+        StorageFactory.initialize {
+            type = StorageType.MMKV
+            mmkvMode = MMKV.MULTI_PROCESS_MODE
+            validateClass = PreferKey::class.java
+        }
 
         initDialogX()
 

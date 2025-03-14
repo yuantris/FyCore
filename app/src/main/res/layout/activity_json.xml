@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <io.core.widget.layout.TitleBar
+        android:id="@+id/tool_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <io.core.widget.layout.ShapeLinearLayout
+                android:id="@+id/json_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/dp_16"
+                android:orientation="vertical"
+                android:paddingHorizontal="@dimen/dp_5"
+                android:paddingTop="@dimen/dp_5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:shape_radius="@dimen/dp_8"
+                app:shape_solidColor="@color/white">
+
+                <io.core.widget.view.AccentTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="在此处填入json"
+                    android:textSize="@dimen/sp_8" />
+
+                <EditText
+                    android:id="@+id/edit_json"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </io.core.widget.layout.ShapeLinearLayout>
+
+            <Button
+                android:id="@+id/process"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_16"
+                android:text="处理"
+                app:layout_constraintStart_toStartOf="@id/json_container"
+                app:layout_constraintTop_toBottomOf="@+id/json_container" />
+
+            <Button
+                android:id="@+id/get_all_path"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_16"
+                android:text="获取所有Path"
+                app:layout_constraintStart_toEndOf="@id/process"
+                app:layout_constraintTop_toBottomOf="@+id/json_container" />
+
+            <io.core.widget.layout.ShapeLinearLayout
+                android:id="@+id/input_get"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/dp_16"
+                android:orientation="horizontal"
+                app:layout_constraintStart_toStartOf="@id/json_container"
+                app:layout_constraintTop_toBottomOf="@+id/process"
+                app:shape_radius="@dimen/dp_8"
+                app:shape_solidColor="@color/white">
+
+                <EditText
+                    android:id="@+id/input_path"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:layout_marginStart="@dimen/dp_8"
+                    android:layout_marginBottom="@dimen/dp_2"
+                    android:layout_weight="1"
+                    android:hint="input path" />
+
+                <Button
+                    android:id="@+id/json_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/dp_8"
+                    android:text="get" />
+            </io.core.widget.layout.ShapeLinearLayout>
+
+            <io.core.widget.layout.RatioFrameLayout
+                android:id="@+id/result"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_32"
+                android:visibility="invisible"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/input_get"
+                app:sizeRatio="2:1"
+                tools:visibility="visible">
+
+                <com.core.fy.android.widget.AccentBgTextView
+                    android:id="@+id/show_result"
+                    android:layout_width="match_parent"
+                    android:gravity="center_horizontal"
+                    android:textSize="@dimen/sp_16"
+                    android:layout_height="match_parent" />
+            </io.core.widget.layout.RatioFrameLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
+
+</LinearLayout>

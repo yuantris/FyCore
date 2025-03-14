@@ -34,4 +34,6 @@ class SharedPreferencesEngine(private val prefs: SharedPreferences) : StorageEng
     override fun clear() = prefs.edit() { clear() }
     override fun contains(key: String) = prefs.contains(key)
     override fun getAllKeys(): Set<String> = prefs.all.keys
+
+    fun getSP(): SharedPreferences = prefs
 }

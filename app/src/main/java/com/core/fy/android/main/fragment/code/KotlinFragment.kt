@@ -95,7 +95,7 @@ class KotlinFragment : ReflectBindingFragment<FragmentKotlinBinding, TestPageAct
         val parse = JsonUltra.parse("{\"key\": \"{\\\"nested\\\": 1234}\"}")
         parse["key.nested"]?.asInt().logD()
 
-        JsonUltra.parse("{\"name\":\"yuantris@qq.com\",\"@aliyun.com\":18}")["'@aliyun.com'"]?.asString()?.logD()
+        JsonUltra.parse("{\"name\":\"yuantris@qq.com\",\"@aliyun.com\":18}")["@aliyun.com"]?.asString()?.logD()
 
         val ultra =
             JsonUltra.parse("{\"code\":1,\"message\":\"success\",\"data\":{\"邮政平邮\":\"youzhengbk\",\"申通快递\":\"shentong\",\"圆通快递\":\"yuantong\",\"中通快递\":\"zhongtong\",\"极兔速递\":\"jtexpress\",\"韵达快递\":\"yunda\",\"德邦快递\":\"debangkuaidi\",\"顺丰快递\":\"shunfeng\"}}")

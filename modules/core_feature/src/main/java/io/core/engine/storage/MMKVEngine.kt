@@ -1,5 +1,6 @@
 package io.core.engine.storage
 
+import android.content.SharedPreferences
 import com.tencent.mmkv.MMKV
 import kotlin.reflect.KClass
 
@@ -31,4 +32,12 @@ class MMKVEngine(private val mmkv: MMKV) : StorageEngine {
     override fun clear() = mmkv.clearAll()
     override fun contains(key: String) = mmkv.containsKey(key)
     override fun getAllKeys() = mmkv.allKeys()?.toSet() ?: emptySet()
+
+    fun getMMKV(): MMKV {
+        return mmkv
+    }
+
+    fun importFromSharedPreferences(preferences: SharedPreferences) {
+        mmkv.importFromSharedPreferences(preferences)
+    }
 }
