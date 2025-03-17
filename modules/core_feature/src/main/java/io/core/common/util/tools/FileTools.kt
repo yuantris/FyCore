@@ -37,16 +37,19 @@ object FileTools {
      *
      * @throws IOException 当文件创建失败或路径中的某个元素是已存在的非目录文件时抛出
      */
+    @JvmStatic
     fun createFileIfNotExist(root: File, vararg subDirFiles: String): File {
         val filePath = getPath(root, *subDirFiles)
         return createFileIfNotExist(filePath)
     }
 
+    @JvmStatic
     fun createFolderIfNotExist(root: File, vararg subDirs: String): File {
         val filePath = getPath(root, *subDirs)
         return createFolderIfNotExist(filePath)
     }
 
+    @JvmStatic
     fun createFolderIfNotExist(filePath: String): File {
         val file = File(filePath)
         //如果文件夹不存在，就创建它
@@ -56,6 +59,7 @@ object FileTools {
         return file
     }
 
+    @JvmStatic
     @Synchronized
     fun createFileIfNotExist(filePath: String): File {
         val file = File(filePath)
@@ -80,6 +84,7 @@ object FileTools {
      * @param filePath 文件路径
      * @return 返回创建的文件对象
      */
+    @JvmStatic
     fun createFileWithReplace(filePath: String): File {
         val file = File(filePath)
         if (!file.exists()) {
@@ -106,6 +111,7 @@ object FileTools {
      * @param subDirFiles 可变数量的子目录文件名，用于构建最终路径
      * @return 返回构建完成的完整文件路径
      */
+    @JvmStatic
     fun getPath(rootPath: String, vararg subDirFiles: String): String {
         val path = StringBuilder(rootPath)
         subDirFiles.forEach {
@@ -130,6 +136,7 @@ object FileTools {
      * @param subDirFiles 可变长度的子目录文件名数组，表示路径中的子目录或文件名
      * @return 返回构建的完整路径字符串
      */
+    @JvmStatic
     fun getPath(root: File, vararg subDirFiles: String): String {
         val path = StringBuilder(root.absolutePath)
         subDirFiles.forEach {
@@ -140,6 +147,7 @@ object FileTools {
         return path.toString()
     }
 
+    @JvmStatic
     fun getSdCardPath(): String {
         var sdCardDirectory = Environment.getExternalStorageDirectory().absolutePath
         try {
@@ -166,6 +174,7 @@ object FileTools {
     /**
      * 将目录分隔符统一为平台默认的分隔符，并为目录结尾添加分隔符
      */
+    @JvmStatic
     fun separator(path: String): String {
         var path1 = path
         val separator = File.separator
@@ -182,6 +191,7 @@ object FileTools {
      *
      * @param c 可关闭的资源，如文件流或网络连接。如果为null，则方法直接返回。
      */
+    @JvmStatic
     fun closeSilently(c: Closeable?) {
         if (c == null) {
             return
@@ -196,6 +206,7 @@ object FileTools {
     /**
      * 列出指定目录下的所有子目录
      */
+    @JvmStatic
     @JvmOverloads
     fun listDirs(
         startDirPath: String,
@@ -253,6 +264,7 @@ object FileTools {
     /**
      * 列出指定目录下的所有子目录及所有文件
      */
+    @JvmStatic
     @JvmOverloads
     fun listDirsAndFiles(
         startDirPath: String,
@@ -274,6 +286,7 @@ object FileTools {
     /**
      * 列出指定目录下的所有文件
      */
+    @JvmStatic
     @JvmOverloads
     fun listFiles(
         startDirPath: String,
@@ -329,6 +342,7 @@ object FileTools {
     /**
      * 列出指定目录下的所有文件
      */
+    @JvmStatic
     fun listFiles(startDirPath: String, allowExtensions: Array<String>?): Array<File>? {
         val file = File(startDirPath)
         return file.listFiles { _, name ->
@@ -342,6 +356,7 @@ object FileTools {
     /**
      * 列出指定目录下的所有文件
      */
+    @JvmStatic
     fun listFiles(startDirPath: String, allowExtension: String?): Array<File>? {
         return if (allowExtension == null)
             listFiles(startDirPath, allowExtension = null)
@@ -352,6 +367,7 @@ object FileTools {
     /**
      * 判断文件或目录是否存在
      */
+    @JvmStatic
     fun exist(path: String): Boolean {
         val file = File(path)
         return file.exists()
@@ -360,6 +376,7 @@ object FileTools {
     /**
      * 删除文件或目录
      */
+    @JvmStatic
     @JvmOverloads
     fun delete(file: File, deleteRootDir: Boolean = false): Boolean {
         var result = false
@@ -399,6 +416,7 @@ object FileTools {
     /**
      * 删除文件或目录
      */
+    @JvmStatic
     @JvmOverloads
     fun delete(path: String, deleteRootDir: Boolean = true): Boolean {
         val file = File(path)
@@ -411,6 +429,7 @@ object FileTools {
     /**
      * 复制文件为另一个文件，或复制某目录下的所有文件及目录到另一个目录下
      */
+    @JvmStatic
     fun copy(src: String, tar: String): Boolean {
         val srcFile = File(src)
         return srcFile.exists() && copy(srcFile, File(tar))
@@ -419,6 +438,7 @@ object FileTools {
     /**
      * 复制文件或目录
      */
+    @JvmStatic
     fun copy(src: File, tar: File): Boolean {
         try {
             if (src.isFile) {
@@ -446,6 +466,7 @@ object FileTools {
     /**
      * 移动文件或目录
      */
+    @JvmStatic
     fun move(src: String, tar: String): Boolean {
         return move(File(src), File(tar))
     }
@@ -453,6 +474,7 @@ object FileTools {
     /**
      * 移动文件或目录
      */
+    @JvmStatic
     fun move(src: File, tar: File): Boolean {
         return rename(src, tar)
     }
@@ -460,6 +482,7 @@ object FileTools {
     /**
      * 文件重命名
      */
+    @JvmStatic
     fun rename(oldPath: String, newPath: String): Boolean {
         return rename(File(oldPath), File(newPath))
     }
@@ -467,6 +490,7 @@ object FileTools {
     /**
      * 文件重命名
      */
+    @JvmStatic
     fun rename(src: File, tar: File): Boolean {
         return src.renameTo(tar)
     }
@@ -477,6 +501,7 @@ object FileTools {
      * @return 文件内容字符串
      * @throws IOException 文件不存在或读取失败时抛出
      */
+    @JvmStatic
     @Throws(IOException::class)
     fun readFromAssets(fileName: String): String {
         return appCtx.assets.open(fileName).bufferedReader().use { it.readText() }
@@ -485,6 +510,7 @@ object FileTools {
     /**
      * 读取文本文件, 失败将返回空串
      */
+    @JvmStatic
     @JvmOverloads
     fun readText(filepath: String, charset: String = "utf-8"): String {
         try {
@@ -501,6 +527,7 @@ object FileTools {
     /**
      * 读取文件内容, 失败将返回空串
      */
+    @JvmStatic
     fun readBytes(filepath: String): ByteArray? {
         var fis: FileInputStream? = null
         try {
@@ -528,6 +555,7 @@ object FileTools {
     /**
      * 保存文本内容
      */
+    @JvmStatic
     @JvmOverloads
     fun writeText(filepath: String, content: String, charset: String = "utf-8"): Boolean {
         return try {
@@ -541,6 +569,7 @@ object FileTools {
     /**
      * 保存文件内容
      */
+    @JvmStatic
     fun writeBytes(filepath: String, data: ByteArray): Boolean {
         val file = File(filepath)
         var fos: FileOutputStream? = null
@@ -562,6 +591,7 @@ object FileTools {
     /**
      * 保存文件内容
      */
+    @JvmStatic
     fun writeInputStream(filepath: String, data: InputStream): Boolean {
         val file = File(filepath)
         return writeInputStream(file, data)
@@ -570,6 +600,7 @@ object FileTools {
     /**
      * 保存文件内容
      */
+    @JvmStatic
     fun writeInputStream(file: File, data: InputStream): Boolean {
         return try {
             if (!file.exists()) {
@@ -591,6 +622,7 @@ object FileTools {
     /**
      * 追加文本内容
      */
+    @JvmStatic
     fun appendText(path: String, content: String): Boolean {
         val file = File(path)
         var writer: FileWriter? = null
@@ -611,6 +643,7 @@ object FileTools {
     /**
      * 获取文件大小
      */
+    @JvmStatic
     fun getLength(path: String): Long {
         val file = File(path)
         return if (!file.isFile || !file.exists()) {
@@ -621,6 +654,7 @@ object FileTools {
     /**
      * 获取文件或网址的名称（包括后缀）
      */
+    @JvmStatic
     fun getName(path: String?): String {
         if (path == null) {
             return ""
@@ -636,6 +670,7 @@ object FileTools {
     /**
      * 获取文件名（不包括扩展名）
      */
+    @JvmStatic
     fun getNameExcludeExtension(path: String): String {
         return try {
             var fileName = File(path).name
@@ -653,6 +688,7 @@ object FileTools {
     /**
      * 获取格式化后的文件大小
      */
+    @JvmStatic
     fun getSize(path: String): String {
         val fileSize = getLength(path)
         return ConvertUtils.formatFileSize(fileSize)
@@ -661,6 +697,7 @@ object FileTools {
     /**
      * 获取文件后缀,不包括“.”
      */
+    @JvmStatic
     fun getExtension(pathOrUrl: String): String {
         val dotPos = pathOrUrl.lastIndexOf('.')
         return if (0 <= dotPos) {
@@ -673,6 +710,7 @@ object FileTools {
     /**
      * 获取文件的MIME类型
      */
+    @JvmStatic
     fun getMimeType(pathOrUrl: String): String {
         val ext = getExtension(pathOrUrl)
         val map = MimeTypeMap.getSingleton()
@@ -682,6 +720,7 @@ object FileTools {
     /**
      * 获取格式化后的文件/目录创建或最后修改时间
      */
+    @JvmStatic
     @JvmOverloads
     fun getDateTime(path: String, format: String = "yyyy年MM月dd日HH:mm"): String {
         val file = File(path)
@@ -691,6 +730,7 @@ object FileTools {
     /**
      * 获取格式化后的文件/目录创建或最后修改时间
      */
+    @JvmStatic
     fun getDateTime(file: File, format: String): String {
         val cal = Calendar.getInstance()
         cal.timeInMillis = file.lastModified()
@@ -700,6 +740,7 @@ object FileTools {
     /**
      * 比较两个文件的最后修改时间
      */
+    @JvmStatic
     fun compareLastModified(path1: String, path2: String): Int {
         val stamp1 = File(path1).lastModified()
         val stamp2 = File(path2).lastModified()
@@ -713,6 +754,7 @@ object FileTools {
     /**
      * 创建多级别的目录
      */
+    @JvmStatic
     fun makeDirs(path: String): Boolean {
         return makeDirs(File(path))
     }
@@ -720,6 +762,7 @@ object FileTools {
     /**
      * 创建多级别的目录
      */
+    @JvmStatic
     fun makeDirs(file: File): Boolean {
         return file.mkdirs()
     }

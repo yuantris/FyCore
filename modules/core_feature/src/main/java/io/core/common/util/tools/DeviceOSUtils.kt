@@ -1,5 +1,6 @@
 package io.core.common.util.tools
 
+import android.annotation.SuppressLint
 import android.os.Build
 
 object DeviceOSUtils {
@@ -15,7 +16,9 @@ object DeviceOSUtils {
     }
 
     // 通过 lazy 实现缓存，避免重复检测
+    @JvmStatic
     val deviceBrand: DeviceBrand by lazy { detectDeviceBrand() }
+    @JvmStatic
     val systemUIType: SystemUIType by lazy { detectSystemUIType() }
 
     // 设备品牌检测核心逻辑
@@ -61,6 +64,7 @@ object DeviceOSUtils {
     }
 
     // 通过反射获取系统属性
+    @SuppressLint("PrivateApi")
     private fun getSystemProperty(key: String): String {
         return try {
             val clazz = Class.forName("android.os.SystemProperties")
@@ -72,8 +76,19 @@ object DeviceOSUtils {
     }
 
     // 扩展属性快捷访问
+    @JvmStatic
     val isHuawei get() = deviceBrand == DeviceBrand.HUAWEI
+    @JvmStatic
+    val isXiaomi get() = deviceBrand == DeviceBrand.XIAOMI
+    @JvmStatic
+    val isOPPO get() = deviceBrand == DeviceBrand.OPPO
+    @JvmStatic
+    val isVivo get() = deviceBrand == DeviceBrand.VIVO
+    @JvmStatic
     val isMIUI get() = systemUIType == SystemUIType.MIUI
+    @JvmStatic
     val isEMUI get() = systemUIType == SystemUIType.EMUI
+    @JvmStatic
+    val isColorOS get() = systemUIType == SystemUIType.COLOR_OS
     // 其他厂商快捷属性可按需添加...
 }

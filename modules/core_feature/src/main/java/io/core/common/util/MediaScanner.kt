@@ -94,7 +94,7 @@ class MediaScanner {
                 }
 
                 // 注册所有相关URI的监听
-                val uris = FileType.values().map { it.contentUri }.toSet()
+                val uris = FileType.values().distinctBy { it.contentUri }.map { it.contentUri }
                 uris.forEach { uri ->
                     appCtx.contentResolver.registerContentObserver(
                         uri,
@@ -157,17 +157,19 @@ class MediaScanner {
                 val dateIndex = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATE_ADDED)
                 val mimeIndex = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.MIME_TYPE)
 
-                generateSequence { if (cursor.moveToNext()) cursor else null }
-                    .map {
+                val results = mutableListOf<FileInfo>()
+                while (cursor.moveToNext()) {
+                    val path = cursor.getString(pathIndex) ?: continue
+                    results.add(
                         FileInfo(
-                            path = it.getString(pathIndex) ?: return@map null,
-                            size = it.getLong(sizeIndex),
-                            dateAdded = it.getLong(dateIndex),
-                            mimeType = it.getString(mimeIndex)
+                            path = path,
+                            size = cursor.getLong(sizeIndex),
+                            dateAdded = cursor.getLong(dateIndex),
+                            mimeType = cursor.getString(mimeIndex)
                         )
-                    }
-                    .filterNotNull()
-                    .toList()
+                    )
+                }
+                results
             }
         }
 

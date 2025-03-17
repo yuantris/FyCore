@@ -18,11 +18,24 @@
         android:layout_gravity="center"
         android:orientation="vertical">
 
-        <io.core.widget.view.LoadingView
-            android:id="@+id/iv_loading"
+        <FrameLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center" />
+            android:layout_gravity="center"
+            android:layout_height="wrap_content">
+
+            <io.core.widget.view.LoadingView
+                android:id="@+id/iv_loading"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center" />
+
+            <io.core.widget.view.StatusView
+                android:id="@+id/iv_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                app:core_status_type="success" />
+        </FrameLayout>
 
         <io.core.widget.view.MarqueeTextView
             android:id="@+id/tv_title"

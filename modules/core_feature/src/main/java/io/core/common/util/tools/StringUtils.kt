@@ -54,6 +54,7 @@ object StringUtils {
     /**
      * 将日期转换成昨天、今天、明天
      */
+    @JvmStatic
     fun dateConvert(source: String, pattern: String): String {
         val format = SimpleDateFormat(pattern, Locale.getDefault())
         val calendar = Calendar.getInstance()
@@ -101,6 +102,7 @@ object StringUtils {
     /**
      * 首字母大写
      */
+    @JvmStatic
     @SuppressLint("DefaultLocale")
     fun toFirstCapital(str: String): String {
         return str.substring(0, 1).uppercase(Locale.getDefault()) + str.substring(1)
@@ -109,6 +111,7 @@ object StringUtils {
     /**
      * 将文本中的半角字符，转换成全角字符
      */
+    @JvmStatic
     fun halfToFull(input: String): String {
         val c = input.toCharArray()
         for (i in c.indices) {
@@ -132,6 +135,7 @@ object StringUtils {
     /**
      * 字符串全角转换为半角
      */
+    @JvmStatic
     fun fullToHalf(input: String): String {
         val c = input.toCharArray()
         for (i in c.indices) {
@@ -151,6 +155,7 @@ object StringUtils {
     /**
      * 中文大写数字转数字
      */
+    @JvmStatic
     fun chineseNumToInt(chNum: String): Int {
         var result = 0
         var tmp = 0
@@ -207,6 +212,7 @@ object StringUtils {
     /**
      * 字符串转数字
      */
+    @JvmStatic
     fun stringToInt(str: String?): Int {
         if (str != null) {
             val num = fullToHalf(str).replace("\\s+".toRegex(), "")
@@ -222,6 +228,7 @@ object StringUtils {
     /**
      * 是否包含数字
      */
+    @JvmStatic
     fun isContainNumber(company: String): Boolean {
         val p = Pattern.compile("[0-9]+")
         val m = p.matcher(company)
@@ -231,12 +238,14 @@ object StringUtils {
     /**
      * 是否数字
      */
+    @JvmStatic
     fun isNumeric(str: String): Boolean {
         val pattern = Pattern.compile("-?[0-9]+")
         val isNum = pattern.matcher(str)
         return isNum.matches()
     }
 
+    @JvmStatic
     fun wordCountFormat(words: Int): String {
         var wordsS = ""
         if (words > 0) {
@@ -250,6 +259,7 @@ object StringUtils {
         return wordsS
     }
 
+    @JvmStatic
     fun wordCountFormat(wc: String?): String {
         if (wc == null) return ""
         var wordsS = ""
@@ -272,6 +282,7 @@ object StringUtils {
     /**
      * 移除字符串首尾空字符的高效方法(利用ASCII值判断,包括全角空格)
      */
+    @JvmStatic
     fun trim(s: String): String {
         if (isEmpty(s)) return ""
         var start = 0
@@ -290,6 +301,7 @@ object StringUtils {
     /**
      * 重复字符串
      */
+    @JvmStatic
     fun repeat(str: String, n: Int): String {
         val stringBuilder = StringBuilder()
         for (i in 0 until n) {
@@ -301,6 +313,7 @@ object StringUtils {
     /**
      * 移除UTF头
      */
+    @JvmStatic
     fun removeUTFCharacters(data: String?): String? {
         if (data == null) return null
         val p = Pattern.compile("\\\\u(\\p{XDigit}{4})")
@@ -317,6 +330,7 @@ object StringUtils {
     /**
      * 压缩字符串
      */
+    @JvmStatic
     fun compress(str: String): Result<String> {
         return kotlin.runCatching {
             if (str.isEmpty()) {
@@ -342,6 +356,7 @@ object StringUtils {
     /**
      * 解压字符串
      */
+    @JvmStatic
     @Throws(IOException::class)
     fun unCompress(str: String): Result<String> {
         return kotlin.runCatching {

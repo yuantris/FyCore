@@ -15,6 +15,7 @@ import io.core.constant.ANDROID_6
 
 object SystemUtils {
 
+    @JvmStatic
     @SuppressLint("BatteryLife")
     fun ignoreBatteryOptimization(activity: Activity) {
         if (OsUtils.lowerThan(ANDROID_6)) return
@@ -41,6 +42,7 @@ object SystemUtils {
     /**
      * 屏幕像素宽度
      */
+    @JvmStatic
     val screenWidthPx by lazy {
         appCtx.resources.displayMetrics.widthPixels
     }
@@ -48,6 +50,7 @@ object SystemUtils {
     /**
      * 屏幕像素高度
      */
+    @JvmStatic
     val screenHeightPx by lazy {
         appCtx.resources.displayMetrics.heightPixels
     }

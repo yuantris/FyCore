@@ -123,6 +123,16 @@
         <attr name="core_view_color" format="color" />
     </declare-styleable>
 
+    <declare-styleable name="StatusView">
+        <attr name="core_status_size" format="dimension"/>
+        <attr name="core_status_color" format="color"/>
+        <attr name="core_status_type" format="enum">
+            <enum name="success" value="0"/>
+            <enum name="failure" value="1"/>
+            <enum name="warning" value="2"/>
+        </attr>
+    </declare-styleable>
+
     <declare-styleable name="PressEffectImageView">
         <attr name="defaultPadding" format="dimension" />
     </declare-styleable>
