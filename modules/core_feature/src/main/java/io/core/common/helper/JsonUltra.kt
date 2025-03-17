@@ -25,7 +25,7 @@ import java.util.WeakHashMap
 class JsonUltra private constructor(
     private val jsonElement: JsonElement,
     private val autoParse: Boolean = true
-):AutoCloseable{
+) : AutoCloseable {
     // region 核心解析功能
     operator fun get(path: String): JsonUltra? {
         // 新增路径缓存优化
@@ -541,9 +541,11 @@ class JsonUltra private constructor(
                         current[key]?.let { stack.add(it) }
                     }
                 }
+
                 is JsonArray -> {
                     current.forEach { stack.add(it) }
                 }
+
                 else -> {
                     // 基础类型不处理
                 }
@@ -558,9 +560,11 @@ class JsonUltra private constructor(
     )
 
     private val keysCache = WeakHashMap<String, SoftReference<KeyCache>>()
+
     // 结合软引用，避免内存泄漏
     private val pathCache = object : LinkedHashMap<String, List<String>>(
-        100, 0.75f, true) {
+        100, 0.75f, true
+    ) {
         private val weakMap = WeakHashMap<String, SoftReference<List<String>>>()
 
         override fun get(key: String): List<String> {

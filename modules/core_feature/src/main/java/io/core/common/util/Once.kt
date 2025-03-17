@@ -14,6 +14,16 @@ import kotlin.reflect.KProperty
 # ██ ██
 # 注释的艺术，正在加载……
  *
+ * 只执行一次的委托，解决
+ * private var isInit = false
+ * if (!isInit) {
+ *     isInit = true
+ *     // do something
+ * }
+ * 优化成
+ * val value by Once {
+ *     // do something
+ * }
  * @author Yuan
  * 2025/3/12 17:05
  */
