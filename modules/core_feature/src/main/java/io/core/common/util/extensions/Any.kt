@@ -31,6 +31,10 @@ inline fun <T> T?.verify(
  */
 fun Any.simpleName(): String = this::class.simpleName ?: "Unknown"
 
+/**
+ * 替换：【?: run { ... }】
+ */
+inline fun <T> T?.orElseRun(block: () -> T): T = this ?: block()
 
 fun Any?.exitApp() {
     AppLifecycleTracker.finishAllActivities()

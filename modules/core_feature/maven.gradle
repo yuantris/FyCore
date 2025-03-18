@@ -15,6 +15,8 @@ def version_number_snapshot = isRelease ? version_number : "${version_number}-SN
  ./gradlew clean build --refresh-dependencies
  * # 清除指定模块的缓存（示例路径）
  rm -rf ~/.gradle/caches/modules-2/files-2.1/io.core/fylibs/
+ * # 查看指定依赖
+ ./gradlew :app:dependencyInsight --dependency androidx.viewpager2:viewpager2 --configuration zytestDebugRuntimeClasspath
 
  * # 发布快照版本（默认）
  ./gradlew publishSnapshot

@@ -105,17 +105,15 @@ object ShareAir {
     }
 
     @JvmStatic
-    fun share(config: ShareConfig.() -> Unit) {
-        try {
-            when (val content = ShareConfig(config)) {
-                is ShareContent.Text -> handleText(content)
-                is ShareContent.File -> handleFile(content)
-                is ShareContent.MultiFiles -> handleMultipleFiles(content)
-                is ShareContent.Resource -> handleResource(content)
-            }
-        } catch (e: Exception) {
-            showDetailedError(appCtx, e)
+    fun share(config: ShareConfig.() -> Unit) = try {
+        when (val content = ShareConfig(config)) {
+            is ShareContent.Text -> handleText(content)
+            is ShareContent.File -> handleFile(content)
+            is ShareContent.MultiFiles -> handleMultipleFiles(content)
+            is ShareContent.Resource -> handleResource(content)
         }
+    } catch (e: Exception) {
+        showDetailedError(appCtx, e)
     }
 
     private fun handleText(content: ShareContent.Text) {
