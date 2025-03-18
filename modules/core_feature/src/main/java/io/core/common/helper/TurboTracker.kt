@@ -169,7 +169,7 @@ object TurboTracker {
         ) = TrackConfig(enabled, brief, tag, dateFormat, logger, extraProviders)
 
         class Builder {
-            private var enabled = CoreConfig.RELEASE
+            private var enabled = CoreConfig.Environment.isRelease
             private var brief = false
             private var tag = DEFAULT_TAG
             private var dateFormat = DEFAULT_DATE_FORMAT

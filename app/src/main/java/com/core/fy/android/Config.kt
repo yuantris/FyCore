@@ -3,6 +3,8 @@ package com.core.fy.android
 import com.core.fy.android.constants.PreferKey
 import io.core.appCtx
 import io.core.common.CoreConfig
+import io.core.common.CoreConfig.Alert.negativeColor
+import io.core.common.CoreConfig.Alert.positiveColor
 import io.core.engine.storage.getWithAnnotation
 import io.core.engine.storage.storage
 
@@ -28,10 +30,14 @@ object Config {
 
     init {
         CoreConfig.configure {
-            crashMultiProcess = true
-            crashAfterJump = MainActivity::class.java
-            positiveColor = appCtx.getColor(R.color.md_indigo_500)
-            negativeColor = appCtx.getColor(R.color.md_red_300)
+            crash {
+                allowMultiProcess = true
+                afterJumpActivity = MainActivity::class.java
+            }
+            alert {
+                positiveColor = appCtx.getColor(R.color.md_indigo_500)
+                negativeColor = appCtx.getColor(R.color.md_red_300)
+            }
         }
     }
 }

@@ -46,7 +46,7 @@ class App : Application() {
         super.onCreate()
         Android.initialize(this, debug = true)
         TurboTracker.initialize(this) {
-            enable(CoreConfig.DEBUG)
+            enable(CoreConfig.Environment.isDebug)
             brief(true)
         }
         StorageFactory.initialize {

@@ -21,46 +21,96 @@ import io.core.common.util.extensions.ui.isDebuggable
  * @author Yuan
  */
 object CoreConfig {
-    private val accentColor = appCtx.getCompatColor(R.color.common_accent_color)
 
-    /*AndroidAlertBuilder的按钮色值*/
-    var POSITIVE_COLOR = accentColor
-        private set  // 限制直接修改
-    var NEGATIVE_COLOR = accentColor
-        private set
+    // region 颜色配置 -------------------------------------------------------------------------------
+    object Alert {
+        private val defaultAccentColor = appCtx.getCompatColor(R.color.common_accent_color)
 
-    /*运行环境*/
-    @JvmStatic
-    var DEBUG = BuildConfig.DEBUG && appCtx.isDebuggable
+        var positiveColor = defaultAccentColor
+            private set
+        var negativeColor = defaultAccentColor
+            private set
 
-    @JvmStatic
-    var RELEASE = !DEBUG
+        internal fun applyFrom(builder: ConfigBuilder.AlertBuilder) {
+            builder.positiveColor?.let { positiveColor = it }
+            builder.negativeColor?.let { negativeColor = it }
+        }
+    }
+    // endregion
 
-    @JvmStatic
-    var CRASH_AFTER_JUMP: Class<*>? = null // 设置闪退后要跳转的Activity
-        private set  // 限制直接设置
+    // region 环境配置 ----------------------------------------------------------------------------
+    object Environment {
+        @JvmStatic
+        var isDebug = BuildConfig.DEBUG && appCtx.isDebuggable
+            private set
 
-    @JvmStatic
-    var CRASH_MULTI_PROCESS = false // 设置是否允许多进程闪退
-        private set  // 限制直接设置
+        @JvmStatic
+        val isRelease get() = !isDebug
 
-    // 新增 DSL 配置方法
+        internal fun applyFrom(builder: ConfigBuilder.EnvironmentBuilder) {
+            builder.isDebug?.let { isDebug = it }
+        }
+    }
+    // endregion
+
+    // region 崩溃配置 -------------------------------------------------------------------------------
+    object Crash {
+        @JvmStatic
+        var afterJumpActivity: Class<*>? = null
+            private set
+        @JvmStatic
+        var allowMultiProcess = false
+            private set
+
+        internal fun applyFrom(builder: ConfigBuilder.CrashBuilder) {
+            builder.afterJumpActivity?.let { afterJumpActivity = it }
+            builder.allowMultiProcess?.let { allowMultiProcess = it }
+        }
+    }
+    // endregion
+
+    // region DSL配置构建器 --------------------------------------------------------------------------
     @JvmStatic
     fun configure(block: ConfigBuilder.() -> Unit) {
         ConfigBuilder().apply(block).applyToConfig()
     }
 
     class ConfigBuilder {
-        var crashMultiProcess: Boolean = CRASH_MULTI_PROCESS
-        var crashAfterJump: Class<*>? = CRASH_AFTER_JUMP
-        var positiveColor: Int = POSITIVE_COLOR
-        var negativeColor: Int = NEGATIVE_COLOR
+        private val alertBuilder = AlertBuilder()
+        private val debugBuilder = EnvironmentBuilder()
+        private val crashBuilder = CrashBuilder()
 
-        fun applyToConfig() {
-            CRASH_MULTI_PROCESS = crashMultiProcess
-            CRASH_AFTER_JUMP = crashAfterJump
-            POSITIVE_COLOR = positiveColor
-            NEGATIVE_COLOR = negativeColor
+        fun alert(block: AlertBuilder.() -> Unit) {
+            alertBuilder.apply(block)
+        }
+
+        fun environment(block: EnvironmentBuilder.() -> Unit) {
+            debugBuilder.apply(block)
+        }
+
+        fun crash(block: CrashBuilder.() -> Unit) {
+            crashBuilder.apply(block)
+        }
+
+        internal fun applyToConfig() {
+            Alert.applyFrom(alertBuilder)
+            Environment.applyFrom(debugBuilder)
+            Crash.applyFrom(crashBuilder)
+        }
+
+        inner class AlertBuilder {
+            var positiveColor: Int? = null
+            var negativeColor: Int? = null
+        }
+
+        inner class EnvironmentBuilder {
+            var isDebug: Boolean? = null
+        }
+
+        inner class CrashBuilder {
+            var afterJumpActivity: Class<*>? = null
+            var allowMultiProcess: Boolean? = null
         }
     }
+    // endregion
 }

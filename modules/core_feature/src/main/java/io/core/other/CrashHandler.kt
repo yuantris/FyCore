@@ -61,7 +61,7 @@ class CrashHandler private constructor(private val application: Application) :
         @JvmStatic
         @JvmOverloads
         fun checkLatestCrash(scope: LifecycleCoroutineScope, action: OnNextStep? = null) {
-            if (!CoreConfig.CRASH_MULTI_PROCESS && Android.debug) {
+            if (!CoreConfig.Crash.allowMultiProcess && Android.debug) {
                 val millis = System.currentTimeMillis()
                 val preferences = appCtx.getSharedPreferences(CRASH_FILE_NAME, Context.MODE_PRIVATE)
                 val lastCrashTimeMillis = preferences.getLong(KEY_CRASH_TIME, millis)
@@ -233,7 +233,7 @@ class CrashHandler private constructor(private val application: Application) :
         val deadlyCrash: Boolean = currentCrashTime - lastCrashTime < 1000 * 60 * 5
         if (Android.debug) {
             runCatching {
-                CoreConfig.CRASH_MULTI_PROCESS.ifNext {
+                CoreConfig.Crash.allowMultiProcess.ifNext {
                     ifTrue = {
                         CrashActivity.start(application, fileName, throwable)
                     }
