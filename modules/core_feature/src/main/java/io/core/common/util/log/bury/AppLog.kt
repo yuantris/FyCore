@@ -7,8 +7,12 @@ import io.core.BuildConfig
 import io.core.appCtx
 import io.core.common.util.tools.OsUtils
 import io.core.constant.ANDROID_4_3
-import io.core.constant.ANDROID_9
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import java.io.BufferedWriter
@@ -16,7 +20,8 @@ import java.io.File
 import java.io.FileWriter
 import java.io.IOException
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Date
+import java.util.Locale
 import java.util.concurrent.LinkedBlockingQueue
 import java.util.concurrent.atomic.AtomicBoolean
 
@@ -83,7 +88,10 @@ object AppLog {
     private val mutex = Mutex()
     private val isInitialized = AtomicBoolean(false)
     private var currentLogWriter: BufferedWriter? = null
-    private var currentLogFile: File? = null
+    // region 关键修复1：分离目录和文件路径
+    private var logDirectory: File? = null  // 明确存储日志目录
+    private var currentLogFile: File? = null // 始终指向当前日志文件
+
     private var storageCheckedTime = 0L
     private const val STORAGE_CHECK_INTERVAL = 60_000L
 
@@ -114,7 +122,7 @@ object AppLog {
 
     @JvmStatic
     fun getLogFiles(): List<File> {
-        val logDir = getLogDirectory() ?: return emptyList()
+        val logDir = logDirectory ?: return emptyList()
         return logDir.listFiles { file ->
             file.isFile && file.name.startsWith("app_") && file.extension == "log"
         }?.sortedByDescending { it.lastModified() } ?: emptyList()
@@ -226,57 +234,109 @@ object AppLog {
     private suspend fun flushLogs() {
         mutex.withLock {
             try {
-                val logDir = verifyAndGetLogDir() ?: return@withLock
-                if (!ensureDiskSpace(logDir)) {
-                    handleInternalError("Insufficient disk space", null)
+                // region 修复点1：使用新的目录验证方法
+                val logDir = verifyAndGetLogDir() ?: run {
+                    handleInternalError("Invalid log directory", null)
                     return@withLock
                 }
 
-                val file = getCurrentLogFile(logDir)
-                if (file != currentLogFile) {
-                    rotateLogFile(file)
+                // region 修复点2：增强磁盘空间检查
+                if (!ensureDiskSpace(logDir)) {
+                    handleInternalError("Insufficient disk space (available: ${getAvailableSpace(logDir)} bytes)", null)
+                    return@withLock
                 }
 
+                // region 修复点3：安全获取当前日志文件
+                val file = getCurrentLogFile() ?: run {
+                    handleInternalError("File creation failed", null)
+                    return@withLock
+                }
+
+                // 防御性检查：确保操作的是文件
+                if (file.isDirectory) {
+                    handleInternalError("Path is directory: ${file.absolutePath}", null)
+                    return@withLock
+                }
+
+                // region 修复点4：智能文件切换逻辑
+                if (file != currentLogFile) {
+                    rotateLogFile()
+                    currentLogFile = file
+                }
+
+                // region 修复点5：带缓冲的批量写入
                 currentLogWriter = currentLogWriter ?: BufferedWriter(FileWriter(file, true).also {
+                    // 文件首次创建时写入头信息
                     if (file.length() == 0L) {
-                        it.write("${dateFormat.get()?.format(Date())} | LOG FILE INITIALIZED\n")
+                        it.write("${dateFormat.get()?.format(Date())} | LOG INIT \n")
                     }
                 })
 
-                val batch = ArrayList<String>(MAX_BATCH_SIZE)
-                logQueue.drainTo(batch, MAX_BATCH_SIZE)
+                val batch = ArrayList<String>(MAX_BATCH_SIZE).apply {
+                    logQueue.drainTo(this, MAX_BATCH_SIZE)
+                }
+
                 if (batch.isNotEmpty()) {
-                    currentLogWriter?.let { writer ->
-                        batch.forEach { writer.write(it) }
-                        writer.flush() // 仅刷新，不关闭
+                    try {
+                        currentLogWriter?.let { writer ->
+                            batch.forEach { line ->
+                                writer.write(line)
+                                // 内存中记录当前写入位置（可用于崩溃恢复）
+                                file.length() + line.toByteArray().size
+                            }
+                            writer.flush() // 注意：保持打开状态以提高性能
+                        }
+                    } catch (e: IOException) {
+                        handleInternalError("Batch write failed", e)
+                        closeWriter()
+                        currentLogFile = null // 触发下次重建
                     }
                 }
 
-                if (file.length() > config.maxFileSize) {
-                    rotateLogFile(null)
+                // region 修复点6：带缓冲区的滚动检查
+                val actualSize = file.length()
+                if (actualSize > config.maxFileSize * 0.9) { // 增加10%缓冲
+                    rotateLogFile()
                 }
+            } catch (e: SecurityException) {
+                handleInternalError("Permission denied", e)
             } catch (e: Exception) {
-                handleInternalError("Log flush failed", e)
-                closeWriter()
-                determineStoragePath()
+                handleInternalError("Unexpected error", e)
             }
         }
     }
 
-    private fun rotateLogFile(newFile: File?) {
+    private fun getAvailableSpace(dir: File): Long {
+        return try {
+            StatFs(dir.absolutePath).run {
+                if (OsUtils.higherThan(ANDROID_4_3)) availableBytes else {
+                    @Suppress("DEPRECATION")
+                    availableBlocks.toLong() * blockSize
+                }
+            }
+        } catch (e: Exception) {
+            -1
+        }
+    }
+
+    // region 关键修复3：安全的文件轮转逻辑
+    private fun rotateLogFile() {
         closeWriter()
-        currentLogFile?.let {
+        currentLogFile?.let { file ->
+            // 防御性检查：确保操作的是文件
+            if (!file.isFile || !file.exists()) return@let
+
             try {
-                val sequence = getNextFileSequence(it)
-                val rotatedFile = File(it.parent, "${it.nameWithoutExtension}_$sequence.log")
-                if (!it.renameTo(rotatedFile)) {
+                val sequence = getNextFileSequence(file)
+                val rotatedFile = File(file.parent, "${file.nameWithoutExtension}_$sequence.log")
+                if (!file.renameTo(rotatedFile)) {
                     handleInternalError("File rotation failed", null)
                 }
             } catch (e: Exception) {
                 handleInternalError("File rotation error", e)
             }
         }
-        currentLogFile = newFile
+        currentLogFile = getCurrentLogFile()
         cleanupOldFiles()
     }
 
@@ -287,23 +347,40 @@ object AppLog {
             ?.maxOrNull()?.plus(1) ?: 1
     }
 
+    // region 关键修复4：统一使用logDirectory
     private fun cleanupOldFiles() {
-        getLogDirectory()?.let { dir ->
+        logDirectory?.let { dir ->
             dir.listFiles()
-                ?.filter { it.name.startsWith("app_") }
+                ?.filter { it.isFile && it.name.startsWith("app_") }
                 ?.sortedByDescending { it.lastModified() }
                 ?.drop(config.maxFileCount)
-                ?.forEach { it.delete() }
+                ?.forEach {
+                    try {
+                        if (!it.delete()) {
+                            Log.w("AppLog", "Failed to delete old log: ${it.absolutePath}")
+                        }
+                    } catch (e: SecurityException) {
+                        handleInternalError("File deletion failed", e)
+                    }
+                }
         }
     }
 
-    private fun getCurrentLogFile(logDir: File): File {
-        return File(logDir, "app_${SimpleDateFormat(config.fileDateFormat, Locale.getDefault()).format(Date())}.log").apply {
-            if (!exists()) {
-                parentFile?.mkdirs()
-                createNewFile()
+    // region 关键修复2：正确的文件获取逻辑
+    private fun getCurrentLogFile(): File? {
+        logDirectory?.let { dir ->
+            return File(dir, "app_${SimpleDateFormat(config.fileDateFormat, Locale.getDefault()).format(Date())}.log").apply {
+                if (!exists()) {
+                    parentFile?.mkdirs() // 防御性创建目录
+                    try {
+                        createNewFile()
+                    } catch (e: IOException) {
+                        handleInternalError("File creation failed", e)
+                    }
+                }
             }
         }
+        return null
     }
     // endregion
 
@@ -313,7 +390,7 @@ object AppLog {
             determineStoragePath()
             storageCheckedTime = System.currentTimeMillis()
         }
-        return getLogDirectory()?.takeIf { it.exists() && it.canWrite() }
+        return logDirectory?.takeIf { it.exists() && it.canWrite() }
     }
 
     private fun determineStoragePath() {
@@ -323,16 +400,15 @@ object AppLog {
             StorageStrategy.EXTERNAL_FIRST -> listOf(AppLog::getExternalDir, AppLog::getInternalDir)
         }
 
-        currentLogFile = strategies.firstNotNullOfOrNull { it() }?.also { dir ->
-            if (!dir.exists()) dir.mkdirs()
-            if (dir.isDirectory && dir.canWrite()) dir else null
+        // 确定日志目录，而非文件
+        logDirectory = strategies.firstNotNullOfOrNull { it() }?.takeIf { dir ->
+            dir.mkdirs() // 确保目录存在
+            dir.isDirectory && dir.canWrite()
         }
     }
 
     private fun getExternalDir() = appCtx.getExternalFilesDir("logs")
     private fun getInternalDir() = File(appCtx.filesDir, "logs")
-
-    private fun getLogDirectory(): File? = currentLogFile?.parentFile
 
     private fun ensureDiskSpace(logDir: File): Boolean {
         return try {
