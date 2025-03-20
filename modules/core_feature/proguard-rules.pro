@@ -20,12 +20,21 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
-# 禁用代码优化
--dontoptimize
--printmapping mapping.txt
+## 禁用代码优化
+#-dontoptimize
+#-printmapping mapping.txt
 
 # 保留类的原始结构，避免被移除或混淆
 -keep class io.core.** { *; }
+# 或更细粒度控制（例如保留所有 public 方法名）
+-keepclassmembernames class io.core.** {
+    public *;
+}
+-keep class  io.core.databinding.* {*;}
+# 允许方法体被混淆（例如移除无用代码、优化指令）
+-optimizationpasses 5
+-allowaccessmodification
+
 # 保留所有协程相关类和 Lambda 类，防止混淆
 -keep class kotlinx.coroutines.** { *; }
 -keep class kotlin.coroutines.** { *; }

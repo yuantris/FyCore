@@ -133,10 +133,16 @@ fun View.invisible() {
 // 扩展函数：安全获取像素颜色
 fun View.getPixelColor(x: Int, y: Int): Int {
     val bitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)
-    val canvas = Canvas(bitmap)
-    canvas.translate(-x.toFloat(), -y.toFloat())
-    this.draw(canvas)
-    return bitmap.getPixel(0, 0)
+    try {
+        val canvas = Canvas(bitmap)
+        canvas.translate(-x.toFloat(), -y.toFloat())
+        this.draw(canvas)
+        return bitmap.getPixel(0, 0)
+    } finally {
+        if (!bitmap.isRecycled) {
+            bitmap.recycle()
+        }
+    }
 }
 
 // 扩展函数：获取背景颜色

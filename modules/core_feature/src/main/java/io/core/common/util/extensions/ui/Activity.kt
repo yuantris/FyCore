@@ -6,6 +6,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.graphics.BitmapFactory
 import android.os.Build
 import android.os.Bundle
 import android.view.Gravity
@@ -14,11 +15,17 @@ import android.view.ViewGroup
 import android.view.WindowInsetsController
 import android.view.WindowManager
 import android.widget.FrameLayout
+import androidx.annotation.DrawableRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.DialogFragment
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.lifecycleScope
 import io.core.common.util.extensions.cool.isDarkColor
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 inline fun <reified T : DialogFragment> AppCompatActivity.showDialogFragment(
     arguments: Bundle.() -> Unit = {}
@@ -191,6 +198,45 @@ fun Activity.adaptStatusBarToView(rootView: View, targetView: View? = null) {
         val isDark = color.isDarkColor()
         WindowCompat.getInsetsController(window, window.decorView).apply {
             isAppearanceLightStatusBars = !isDark
+        }
+    }
+}
+
+fun Activity.adaptStatusBarToView(targetView: View? = null) {
+    val rootView = this.window.decorView
+    adaptStatusBarToView(rootView, targetView)
+}
+
+@SuppressLint("DiscouragedApi", "InternalInsetResource")
+fun AppCompatActivity.adaptStatusBarToImage(@DrawableRes imageRes: Int) {
+    lifecycleScope.launch(Dispatchers.IO) {
+        val bitmap = try {
+            BitmapFactory.decodeResource(resources, imageRes)?.also {
+                if (it.isRecycled) return@launch  // 防止重复回收
+            }
+        } catch (e: Exception) {
+            return@launch
+        } ?: return@launch
+
+        withContext(Dispatchers.Main) {
+            window.decorView.doOnPreDraw {
+                try {
+                    val statusBarHeight = resources.getDimensionPixelSize(
+                        resources.getIdentifier("status_bar_height", "dimen", "android")
+                    ).coerceAtLeast(0)
+
+                    val samplingY = (statusBarHeight * 0.5f).toInt().coerceAtMost(bitmap.height - 1)
+                    val color = bitmap.getPixel(bitmap.width / 2, samplingY)
+
+                    WindowCompat.getInsetsController(window, window.decorView).apply {
+                        isAppearanceLightStatusBars = !color.isDarkColor()
+                    }
+                } finally {
+                    if (!bitmap.isRecycled) {
+                        bitmap.recycle()  // 确保回收位图
+                    }
+                }
+            }
         }
     }
 }
