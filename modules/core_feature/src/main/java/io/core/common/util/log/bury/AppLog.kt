@@ -66,7 +66,7 @@ object AppLog {
     private const val MAX_BATCH_SIZE = 500
 
     data class LogConfig(
-        var maxFileSize: Long = 2 * 1024 * 1024,
+        var maxFileSize: Long = 30 * 1024 * 1024, // 30MB
         var maxFileCount: Int = 5,
         var dateFormat: String = "yyyy-MM-dd HH:mm:ss.SSS",
         var fileDateFormat: String = "yyyy-MM-dd",
@@ -153,8 +153,6 @@ object AppLog {
 
     // region Core Implementation
     private fun log(level: Int, tag: String, message: String, e: Throwable? = null) {
-        if (!shouldPrint(level)) return
-
         val threadInfo = if (config.enableThreadInfo) {
             "${Thread.currentThread().name}_${Thread.currentThread().id}"
         } else ""
@@ -167,7 +165,10 @@ object AppLog {
             logQueue.offer(fullMessage)
         }
 
-        printToConsole(level, tag, message, e)
+        if (shouldPrint(level)){
+            printToConsole(level, tag, message, e)
+        }
+
     }
 
     private fun printToConsole(level: Int, tag: String, message: String, e: Throwable?) {

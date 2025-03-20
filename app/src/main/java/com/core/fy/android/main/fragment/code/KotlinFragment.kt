@@ -131,7 +131,7 @@ class KotlinFragment : ReflectBindingFragment<FragmentKotlinBinding, TestPageAct
 
         launchAsync {
             val listFiles =
-                FileTools.listFiles(ctx.getSettingsPathV2(PathType.CACHE, "mmkv_fy"))
+                FileTools.listFiles(ctx.getSettingsPathV2(PathType.EXTERNAL_CACHE, "mmkv_fy"))
             listFiles.forEach {
                 LogPure.i {
                     "file:${it.absolutePath}"
