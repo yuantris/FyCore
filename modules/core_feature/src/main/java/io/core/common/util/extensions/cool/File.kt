@@ -11,6 +11,7 @@ import io.core.common.util.FileDocFilter
 import io.core.common.util.extensions.authority
 import io.core.common.util.extensions.currentTimeMillis
 import io.core.common.util.tools.FileTools
+import io.core.common.util.tools.UriTools
 import java.io.File
 import java.io.FileOutputStream
 
@@ -19,7 +20,11 @@ fun File.refreshMediaLibrary() {
 }
 
 fun File.getUri(): Uri {
-    return FileProvider.getUriForFile(appCtx, authority,this)
+    return toUri()
+}
+
+fun File.toUri(): Uri {
+    return UriTools.file2Uri(this)
 }
 
 fun File.getFile(vararg subDirFiles: String): File {

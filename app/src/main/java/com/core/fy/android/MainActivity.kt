@@ -9,6 +9,8 @@ import com.core.fy.android.databinding.HomeNavigationItemBinding
 import com.core.fy.android.interfaces.FragmentPagerAdapter
 import com.core.fy.android.main.fragment.HomeFragment
 import com.core.fy.android.main.fragment.SetFragment
+import com.core.fy.android.util.DoubleBackExitHandler
+import com.core.fy.android.util.showDxNotification
 import io.core.common.base.component.activity.ReflectBindingActivity
 import io.core.common.base.component.adapter.BaseRecyclerAdapter
 import io.core.common.base.component.adapter.BaseViewHolder
@@ -17,13 +19,16 @@ import io.core.common.base.component.fragment.BaseFragment
 import io.core.common.helper.dialogs.showDialog
 import io.core.common.helper.rv.ItemViewHolder
 import io.core.common.helper.rv.RecyclerAdapter
+import io.core.common.util.Toaster
 import io.core.common.util.extensions.currentTimeMillis
 import io.core.common.util.extensions.exitApp
 import io.core.common.util.extensions.logD
 import io.core.common.util.extensions.ui.disableEdgeEffect
 import io.core.common.util.extensions.ui.getCompatDrawable
+import io.core.common.util.extensions.ui.handleDoubleBackPressExit
 import io.core.common.util.extensions.ui.notifyAllDataChanged
 import io.core.common.util.extensions.ui.onClick
+import io.core.common.util.extensions.ui.toast
 import io.core.common.util.processNavigationBar
 import io.core.common.util.tools.TimeTools
 
@@ -35,6 +40,20 @@ class MainActivity : ReflectBindingActivity<ActivityMainBinding>() {
     override fun initial(savedInstanceState: Bundle?) {
         setTakeOverBackPressed(true)
         super.initial(savedInstanceState)
+
+//        handleDoubleBackPressExit(
+//            onShowPrompt = {
+//                toast(it)
+//            },
+//            onExit = {
+//                showDialog("温馨提示", "是否退出应用？") {
+//                    cancelButton {}
+//                    okButton {
+//                        exitApp()
+//                    }
+//                }
+//            }
+//        )
 
         navigationAdapter = NavigationV2Adapter().apply {
             listOf(
@@ -81,13 +100,24 @@ class MainActivity : ReflectBindingActivity<ActivityMainBinding>() {
         }
     }
 
+    private val exitHandler by lazy { DoubleBackExitHandler() }
+
     override fun onBackPressedCall() {
-        showDialog("温馨提示", "是否退出应用？") {
-            cancelButton {}
-            okButton {
-                exitApp()
+        exitHandler.handleBackPress(
+            onShowWarning = {
+                showDxNotification {
+                    content = it
+                }
+            },
+            onTriggerExit = {
+                showDialog("温馨提示", "是否退出应用？") {
+                    cancelButton {}
+                    okButton {
+                        exitApp()
+                    }
+                }
             }
-        }
+        )
     }
 
     inner class NavigationV2Adapter : BaseRecyclerAdapter<MenuItem>() {

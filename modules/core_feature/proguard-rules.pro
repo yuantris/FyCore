@@ -35,13 +35,6 @@
 -optimizationpasses 5
 -allowaccessmodification
 
-# 保留所有协程相关类和 Lambda 类，防止混淆
--keep class kotlinx.coroutines.** { *; }
--keep class kotlin.coroutines.** { *; }
--keep class kotlin.jvm.functions.Function1 { *; }
--keep class kotlin.coroutines.jvm.internal.** { *; }
--keep class kotlin.coroutines.Continuation { *; }
-
 # 保留 Kotlin Lambda 生成的类
 -keep class io.core.**$$Lambda$* { *; }
 
@@ -108,34 +101,6 @@
 # 这个过滤器是谷歌推荐的算法，一般不做更改
 -optimizations !code/simplification/cast,!field/*,!class/merging/*
 
-
-#############################################
-#
-# Android开发中一些需要保留的公共部分
-#
-#############################################
-# 屏蔽错误Unresolved class name
-#noinspection ShrinkerUnresolvedReference
-
-# 保留我们使用的四大组件，自定义的Application等等这些类不被混淆
-# 因为这些子类都有可能被外部调用
--keep public class * extends android.app.Activity
--keep public class * extends android.app.Application
--keep public class * extends android.app.Service
--keep public class * extends android.content.BroadcastReceiver
--keep public class * extends android.content.ContentProvider
--keep public class * extends android.app.backup.BackupAgentHelper
--keep public class * extends android.preference.Preference
--keep public class * extends android.view.View
--keep public class * extends android.app.Dialog
--keep public class * extends androidx.fragment.app.Fragment
-
-# 保留androidx下的所有类及其内部类
--keep class androidx.** {*;}
-
-# 保留继承的
--keep public class * extends androidx.**
-
 # 保留R下面的资源
 -keep class **.R$* {*;}
 
@@ -183,80 +148,8 @@
     java.lang.Object readResolve();
 }
 
-# 对于带有回调函数的onXXEvent、**On*Listener的，不能被混淆
--keepclassmembers class * {
-    void *(**On*Event);
-    void *(**On*Listener);
-}
-
-# webView处理，项目中没有使用到webView忽略即可
--keepclassmembers class * extends android.webkit.WebViewClient {
-    public void *(android.webkit.WebView, java.lang.String);
-    public void *(android.webkit.WebView, java.lang.String, android.graphics.Bitmap);
-    public boolean *(android.webkit.WebView, java.lang.String);
-}
-
-# 移除Log类打印各个等级日志的代码，打正式包的时候可以做为禁log使用，这里可以作为禁止log打印的功能使用
-# 记得proguard-android.txt中一定不要加-dontoptimize才起作用
-# 另外的一种实现方案是通过BuildConfig.DEBUG的变量来控制
--assumenosideeffects class android.util.Log {
-    public static int v(...);
-    public static int i(...);
-    public static int w(...);
-    public static int d(...);
-    public static int e(...);
-}
-
-# 保持js引擎调用的java类
--keep class **.analyzeRule.**{*;}
-# 保持web类
--keep class **.web.**{*;}
-# 数据类
--keep class **.data.**{*;}
-
--dontwarn rx.**
--dontwarn javax.annotation.**
-
--keep,allowobfuscation,allowshrinking class com.google.gson.** { *; }
--keep,allowobfuscation,allowshrinking class com.ke.gson.** { *; }
--keep,allowobfuscation,allowshrinking class * extends com.google.gson.reflect.TypeToken
--keep class android.support.**{*;}
-
-## Rhino
--keep class javax.script.** { *; }
--keep class java.lang.** { *; }
--keep class java.util.function.** { *; }
--dontwarn org.mozilla.javascript.engine.RhinoScriptEngineFactory
-### 以下内容是更新rhino1.7.14.jar后IDE提示添加的
--dontwarn java.beans.**
--dontwarn javax.script.**
-### 以下内容是更新rhino1.8.0.jar后IDE提示添加的
--dontwarn jdk.dynalink.CallSiteDescriptor
--dontwarn jdk.dynalink.DynamicLinker
--dontwarn jdk.dynalink.DynamicLinkerFactory
--dontwarn jdk.dynalink.NamedOperation
--dontwarn jdk.dynalink.Namespace
--dontwarn jdk.dynalink.NamespaceOperation
--dontwarn jdk.dynalink.Operation
--dontwarn jdk.dynalink.RelinkableCallSite
--dontwarn jdk.dynalink.StandardNamespace
--dontwarn jdk.dynalink.StandardOperation
--dontwarn jdk.dynalink.linker.GuardedInvocation
--dontwarn jdk.dynalink.linker.GuardingDynamicLinker
--dontwarn jdk.dynalink.linker.LinkRequest
--dontwarn jdk.dynalink.linker.LinkerServices
--dontwarn jdk.dynalink.linker.TypeBasedGuardingDynamicLinker
--dontwarn jdk.dynalink.linker.support.CompositeTypeBasedGuardingDynamicLinker
--dontwarn jdk.dynalink.linker.support.Guards
--dontwarn jdk.dynalink.support.ChainedCallSite
-
--keepclassmembers class * {
-    public <init> (org.json.JSONObject);
-}
--keepclassmembers enum * {
-    public static **[] values();
-    public static ** valueOf(java.lang.String);
-}
+-keep class android.support.v8.renderscript.** { *; }
+-keep class androidx.renderscript.** { *; }
 
 ## ExoPlayer 反射设置ua 保证该私有变量不被混淆
 -keepclassmembers class androidx.media3.datasource.cache.CacheDataSource$Factory {
@@ -264,11 +157,6 @@
 }
 ## ExoPlayer 如果还不能播放就取消注释这个
 # -keep class com.google.android.exoplayer2.** {*;}
-
-# Error Exception
--keep class * extends java.lang.Exception
--keep class * extends java.lang.Error
--keep class **Exception
 
 # ShapeView：https://github.com/getActivity/ShapeView
 -keep class io.core.engine.shape.** {*;}

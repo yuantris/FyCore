@@ -229,10 +229,10 @@ object AppLog {
                     }
 
                     // 强制写入初始化头
-                    FileWriter(file, true).use { writer ->
-                        writer.write(
+                    FileWriter(file, true).use {
+                        it.write(
                             "${dateFormat.get()?.format(Date())} | " +
-                                    "APP LOG INITIALIZED | " +
+                                    "✅ APP START | " +
                                     "Version ${appCtx.appVersionCode} | "+
                                     "DebugMode: $isDebugMode\n"
                         )

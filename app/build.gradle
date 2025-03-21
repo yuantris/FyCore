@@ -115,6 +115,9 @@ dependencies {
     // https://github.com/Tencent/MMKV
     implementation libs.mmkv
 
+    // https://github.com/mmin18/RealtimeBlurView
+    implementation libs.realtimeblurview
+
     def camerax_version = "1.2.0"
     implementation "androidx.camera:camera-core:${camerax_version}"
     implementation "androidx.camera:camera-camera2:${camerax_version}"

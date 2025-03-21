@@ -9,12 +9,14 @@ import android.content.Intent
 import android.graphics.BitmapFactory
 import android.os.Build
 import android.os.Bundle
+import android.os.Looper
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowInsetsController
 import android.view.WindowManager
 import android.widget.FrameLayout
+import androidx.activity.OnBackPressedCallback
 import androidx.annotation.DrawableRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
@@ -23,9 +25,46 @@ import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import io.core.common.util.extensions.cool.isDarkColor
+import io.core.common.util.tools.buildMainHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+
+// 处理双击返回键退出应用的逻辑
+fun AppCompatActivity.handleDoubleBackPressExit(
+    interval: Long = 2000,
+    promptMessage: String = "再按一次退出APP",
+    onShowPrompt: (String) -> Unit,
+    onExit: () -> Unit
+) {
+    var backPressedTime = 0L
+    val handler = buildMainHandler()
+    val resetTask = Runnable { backPressedTime = 0 }
+
+    val callback = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            val currentTime = System.currentTimeMillis()
+
+            when {
+                // 首次点击或超过间隔时间
+                backPressedTime == 0L || currentTime - backPressedTime > interval -> {
+                    onShowPrompt(promptMessage)
+                    backPressedTime = currentTime
+                    handler.postDelayed(resetTask, interval)
+                }
+                // 在间隔时间内第二次点击
+                else -> {
+                    handler.removeCallbacks(resetTask)
+                    onExit()
+                    backPressedTime = 0
+                }
+            }
+        }
+    }
+
+    // 绑定Activity生命周期
+    onBackPressedDispatcher.addCallback(this, callback)
+}
 
 inline fun <reified T : DialogFragment> AppCompatActivity.showDialogFragment(
     arguments: Bundle.() -> Unit = {}

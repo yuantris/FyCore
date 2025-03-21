@@ -39,6 +39,7 @@ xxpermissions = "18.5"
 lens-version = "1.2.4"
 utilcodex = "1.31.1"
 lottie = "6.4.0"
+realtimeblurview = "1.2.1"
 shapeview = "9.3"
 shapedrawable = "3.3"
 refresh-layout = "2.0.5"
@@ -94,6 +95,7 @@ kongzue-dialogx = { module = "com.kongzue.dialogx:DialogX", version.ref = "dialo
 dialogxkongzuestyle = { module = "com.kongzue.dialogx.style:DialogXKongzueStyle", version.ref = "dialogx-version" }
 utilcodex = { module = "com.blankj:utilcodex", version.ref = "utilcodex" }
 lottie = { module = "com.airbnb.android:lottie", version.ref = "lottie" }
+realtimeblurview = { module = "com.github.mmin18:realtimeblurview", version.ref = "realtimeblurview" }
 shapeView = { module = "com.github.getActivity:ShapeView", version.ref = "shapeview" }
 shapedrawable = { module = "com.github.getActivity:ShapeDrawable", version.ref = "shapedrawable" }
 refresh-footer-classics = { module = "io.github.scwang90:refresh-footer-classics", version.ref = "refresh-layout" }

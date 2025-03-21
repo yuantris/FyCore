@@ -10,6 +10,7 @@ import android.widget.Toast
 import io.core.BuildConfig
 import io.core.appCtx
 import io.core.common.util.extensions.cool.getUri
+import io.core.common.util.extensions.cool.toUri
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -53,7 +54,8 @@ object ShareAir {
             "xls" to "application/vnd.ms-excel",
             "xlsx" to "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
             "zip" to "application/zip",
-            "txt" to "text/plain"
+            "txt" to "text/plain",
+            "apk" to "application/vnd.android.package-archive"
         )
 
         fun fromUri(uri: Uri): String {
