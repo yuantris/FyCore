@@ -13,6 +13,7 @@ import com.core.fy.android.function.camerax.CameraXActivity
 import com.core.fy.android.function.database.RoomActivity
 import com.core.fy.android.function.dialog.DialogActivity
 import com.core.fy.android.function.event.EventActivity
+import com.core.fy.android.function.ffmpeg.FFmpegActivity
 import com.core.fy.android.function.json.JsonActivity
 import com.core.fy.android.function.keyboard.KeyboardActivity
 import com.core.fy.android.function.media.MediaPlayerActivity
@@ -121,6 +122,7 @@ class StatusFragment : ReflectBindingFragment<FragmentStatusBinding, MainActivit
                                 FunctionVM.Design.录音 -> startActivity<AudioRecordActivity>()
                                 FunctionVM.Design.Media -> startActivity<MediaPlayerActivity>()
                                 FunctionVM.Design.Json -> startActivity<JsonActivity>()
+                                FunctionVM.Design.FFmpeg -> startActivity<FFmpegActivity>()
                                 else -> {
                                     // do nothing
                                     CustomToast.Builder(requireContext())

@@ -116,7 +116,10 @@ dependencies {
     implementation libs.mmkv
 
     // https://github.com/mmin18/RealtimeBlurView
-    implementation libs.realtimeblurview
+    //implementation libs.realtimeblurview
+
+    // https://github.com/arthenica/ffmpeg-kit/tree/main/android
+    implementation libs.ffmpeg.kit.full
 
     def camerax_version = "1.2.0"
     implementation "androidx.camera:camera-core:${camerax_version}"

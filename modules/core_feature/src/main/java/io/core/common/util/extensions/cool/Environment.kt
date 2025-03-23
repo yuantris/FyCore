@@ -72,6 +72,7 @@ fun Context.getSettingsPath(
 fun Context.getSettingsPathV2(
     type: PathType,
     subDir: String? = null,
+    fileName: String? = null, // 新增文件名参数
     autoCreate: Boolean = true
 ): String {
     // 获取基础目录（同上）
@@ -84,12 +85,14 @@ fun Context.getSettingsPathV2(
     // 构建目标目录
     val targetDir = normalizedSubDir?.let {
         File(baseDir, it).apply {
-            if (autoCreate && !exists()) mkdirs()
+            if (autoCreate && !exists()) mkdirs() // 仅创建目录部分
         }
     } ?: baseDir
 
-    return targetDir.absolutePath
+    // 拼接文件名（如果存在）
+    return fileName?.let { File(targetDir, it).absolutePath } ?: targetDir.absolutePath
 }
+
 
 /**
  * 路径构建辅助函数（可选）

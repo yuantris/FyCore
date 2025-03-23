@@ -67,11 +67,7 @@ private fun <T> T.isSafeToRun(): Boolean where T : Any? {
     return when (this) {
         is Fragment -> isAdded && activity?.isFinishing == false
         is Activity -> !isFinishing && !isDestroyed
-        else -> {
-            // 可选：添加日志警告
-            LogPure.w(message = "Unknown type for isSafeToRun: $this")
-            true
-        }
+        else -> true
     }
 }
 

@@ -48,6 +48,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.FyCore">
 
+        <service android:name=".ui.service.FFmpegService"/>
+        <activity
+            android:name=".function.ffmpeg.FFmpegActivity"
+            android:exported="false" />
         <activity
             android:name=".function.json.JsonActivity"
             android:exported="false" />

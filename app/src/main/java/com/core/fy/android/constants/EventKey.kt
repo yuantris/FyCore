@@ -25,4 +25,6 @@ object EventKey {
     const val AUDIO_BUFFER_PROGRESS = "audioBufferProgress"
     const val AUDIO_SIZE = "audioSize"
     const val AUDIO_SPEED = "audioSpeed"
+
+    const val FFmpeg= "ffmpeg"
 }
