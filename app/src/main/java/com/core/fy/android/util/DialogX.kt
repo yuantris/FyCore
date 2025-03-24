@@ -6,7 +6,7 @@ import com.kongzue.dialogx.DialogX
 import com.kongzue.dialogx.dialogs.MessageDialog
 import com.kongzue.dialogx.dialogs.PopNotification
 import com.kongzue.dialogx.style.KongzueStyle
-import io.core.common.helper.coroutine.SafeCoroutineManager
+import io.core.common.helper.coroutine.info.SafeCoroutineManager
 
 // DSL 配置类
 class DialogXConfig {

@@ -20,17 +20,14 @@ import io.core.common.helper.dialogs.showDialog
 import io.core.common.helper.rv.ItemViewHolder
 import io.core.common.helper.rv.RecyclerAdapter
 import io.core.common.util.MediaScanner
-import io.core.common.util.Toaster
 import io.core.common.util.extensions.cool.launchAsync
 import io.core.common.util.extensions.currentTimeMillis
 import io.core.common.util.extensions.exitApp
 import io.core.common.util.extensions.logD
 import io.core.common.util.extensions.ui.disableEdgeEffect
 import io.core.common.util.extensions.ui.getCompatDrawable
-import io.core.common.util.extensions.ui.handleDoubleBackPressExit
 import io.core.common.util.extensions.ui.notifyAllDataChanged
 import io.core.common.util.extensions.ui.onClick
-import io.core.common.util.extensions.ui.toast
 import io.core.common.util.processNavigationBar
 import io.core.common.util.tools.TimeTools
 
