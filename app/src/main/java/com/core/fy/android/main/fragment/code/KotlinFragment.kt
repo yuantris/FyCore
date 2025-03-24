@@ -105,7 +105,7 @@ class KotlinFragment : ReflectBindingFragment<FragmentKotlinBinding, TestPageAct
         }
         ultra.getNotNull("data").asString().logD()
 
-        ctx.requestPermission(Permission.READ_MEDIA_AUDIO) {
+        ctx.requestPermission(Permission.MANAGE_EXTERNAL_STORAGE) {
 //            LogPure.v {
 //                "MANAGE_EXTERNAL_STORAGE permission granted"
 //            }

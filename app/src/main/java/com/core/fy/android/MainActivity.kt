@@ -19,7 +19,9 @@ import io.core.common.base.component.fragment.BaseFragment
 import io.core.common.helper.dialogs.showDialog
 import io.core.common.helper.rv.ItemViewHolder
 import io.core.common.helper.rv.RecyclerAdapter
+import io.core.common.util.MediaScanner
 import io.core.common.util.Toaster
+import io.core.common.util.extensions.cool.launchAsync
 import io.core.common.util.extensions.currentTimeMillis
 import io.core.common.util.extensions.exitApp
 import io.core.common.util.extensions.logD
@@ -40,6 +42,9 @@ class MainActivity : ReflectBindingActivity<ActivityMainBinding>() {
     override fun initial(savedInstanceState: Bundle?) {
         setTakeOverBackPressed(true)
         super.initial(savedInstanceState)
+        launchAsync {
+            MediaScanner.registerContentObserver(listOf(MediaScanner.FileType.MP4))
+        }
 
 //        handleDoubleBackPressExit(
 //            onShowPrompt = {
@@ -83,7 +88,7 @@ class MainActivity : ReflectBindingActivity<ActivityMainBinding>() {
             }
         }
 
-        val string2Millis = TimeTools.string2Millis("2025-02-15", "yyyy-MM-dd")
+        val string2Millis = TimeTools.string2Millis("2021-11-10", "yyyy-MM-dd")
         TimeTools.daysBetween(string2Millis, currentTimeMillis).logD()
 
     }
@@ -104,17 +109,11 @@ class MainActivity : ReflectBindingActivity<ActivityMainBinding>() {
 
     override fun onBackPressedCall() {
         exitHandler.handleBackPress(
-            onShowWarning = {
-                showDxNotification {
-                    content = it
-                }
-            },
+            onShowWarning = { showDxNotification { content = it } },
             onTriggerExit = {
                 showDialog("温馨提示", "是否退出应用？") {
                     cancelButton {}
-                    okButton {
-                        exitApp()
-                    }
+                    okButton { exitApp() }
                 }
             }
         )

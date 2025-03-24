@@ -82,7 +82,8 @@ class MediaScanner {
          * 注册内容观察者自动刷新缓存
          */
         @JvmStatic
-        fun registerContentObserver() {
+        @JvmOverloads
+        fun registerContentObserver(type: List<FileType>? = null) {
             if (contentObserver == null) {
                 contentObserver = object : ContentObserver(null) {
                     override fun onChange(selfChange: Boolean, uri: Uri?) {
@@ -94,7 +95,8 @@ class MediaScanner {
                 }
 
                 // 注册所有相关URI的监听
-                val uris = FileType.values().distinctBy { it.contentUri }.map { it.contentUri }
+                val types = type ?: FileType.values().toList()
+                val uris = types.distinctBy { it.contentUri }.map { it.contentUri }
                 uris.forEach { uri ->
                     appCtx.contentResolver.registerContentObserver(
                         uri,

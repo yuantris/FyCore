@@ -18,7 +18,7 @@ import io.core.engine.storage.StorageKey
 object PreferKey {
     @StorageKey(description = "展示启动动画", defaultValue = "true")
     const val SPLASH_ANIM = "isDisplaySplashAnim"
-    @StorageKey(description = "展示启动引导页面", defaultValue = "true")
+    @StorageKey(description = "展示启动引导页面", defaultValue = "false")
     const val GUIDE_PAGE = "isDisplayGuide"
     @StorageKey(description = "展示首页骨架过渡动画", defaultValue = "false")
     const val HOME_SKELETON_ANIM = "isDisplayHomeSkeletonAnim"

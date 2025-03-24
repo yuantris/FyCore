@@ -33,6 +33,7 @@ object StorageFactory {
         builder.validateClass?.let { validateKeys(it) }
     }
 
+    @JvmStatic
     fun getEngine() = engine ?: throw IllegalStateException("Storage not initialized")
 
     fun isInit(): Boolean {

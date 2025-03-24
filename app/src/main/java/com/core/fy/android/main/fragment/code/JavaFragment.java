@@ -102,10 +102,6 @@ public class JavaFragment extends ReflectBindingFragment<FragmentJavaBinding, Te
                 .with(this, LogPure::d);
         LiveDataPro.postEvent("12", "12");
 
-        if (first) {
-            MediaScanner.registerContentObserver();
-        }
-
         // 使用键值对参数（自动装箱）
         HashMap<String, Object> map1 = CollectionKt.create(
                 "name", "Alice",

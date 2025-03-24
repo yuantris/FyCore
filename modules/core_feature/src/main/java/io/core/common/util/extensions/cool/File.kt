@@ -1,5 +1,3 @@
-@file:Suppress("unused")
-
 package io.core.common.util.extensions.cool
 
 import android.net.Uri
@@ -30,6 +28,29 @@ fun File.toUri(): Uri {
 fun File.getFile(vararg subDirFiles: String): File {
     val path = FileTools.getPath(this, *subDirFiles)
     return File(path)
+}
+
+fun String.getFileName(): String {
+    if (!isFilePath()) throw IllegalArgumentException("$this is not a file path")
+    return FileTools.getName(this)
+}
+
+fun File.getNameNoExtension(): String {
+    return FileTools.getNameExcludeExtension(this.absolutePath)
+}
+
+fun String.getFileNameNoExtension(): String {
+    if (!isFilePath()) throw IllegalArgumentException("$this is not a file path")
+    return FileTools.getNameExcludeExtension(this)
+}
+
+fun String.isFilePath(): Boolean {
+    return try {
+        File(this).canonicalPath // 尝试解析路径（自动处理非法字符和格式）
+        !contains('\u0000')     // 额外排除空字符
+    } catch (e: Exception) {
+        false
+    }
 }
 
 fun File.exists(vararg subDirFiles: String): Boolean {
