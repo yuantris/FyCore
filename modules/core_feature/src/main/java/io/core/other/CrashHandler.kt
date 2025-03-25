@@ -20,13 +20,11 @@ import io.core.common.util.extensions.cool.PathType
 import io.core.common.util.extensions.cool.createFolderReplace
 import io.core.common.util.extensions.cool.documentsDir
 import io.core.common.util.extensions.cool.getBasePath
-import io.core.common.util.extensions.cool.getBoolean
 import io.core.common.util.extensions.cool.getFile
 import io.core.common.util.extensions.cool.hasWriteStoragePermission
 import io.core.common.util.extensions.cool.ifNext
 import io.core.common.util.extensions.cool.timeFormat
 import io.core.common.util.extensions.currentTimeMillis
-import io.core.common.util.log.LogCat
 import io.core.common.util.tools.FileTools
 import io.core.constant.CRASH_FOLDER_NAME
 import io.core.constant.TimeFormat
@@ -242,7 +240,6 @@ class CrashHandler private constructor(private val application: Application) :
                     }
                 }
             }.onFailure {
-                LogCat.e(it)
                 RestartActivity.start(application)
             }
 

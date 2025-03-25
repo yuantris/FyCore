@@ -1,10 +1,9 @@
 package io.core.common.util.tools
 
 import android.media.MediaMetadataRetriever
-import io.core.common.helper.coroutine.launchSuspend
-import io.core.common.helper.coroutine.runSuspend
+import androidx.annotation.WorkerThread
 import io.core.common.util.log.LogCat
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
 import java.util.concurrent.TimeUnit
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
@@ -28,28 +27,28 @@ object MultimediaUtil {
      *
      */
     @JvmStatic
-    fun getDuration(filePath: String, formatStr: String = "mm:ss"): String? = runSuspend {
+    @WorkerThread
+    fun getDuration(filePath: String, formatStr: String? = "mm:ss"): String? = runBlocking {
         obtainDuration(filePath, formatStr)
     }
 
-    suspend fun obtainDuration(filePath: String, formatStr: String = "mm:ss"): String? {
+    suspend fun obtainDuration(filePath: String, formatStr: String? = "mm:ss"): String? {
         return suspendCoroutine { continuation ->
-            launchSuspend(dispatcher = Dispatchers.IO) {
-                // 在IO线程中执行操作
-                val retriever = MediaMetadataRetriever()
-                try {
-                    retriever.setDataSource(filePath)
-                    val durationMs =
-                        retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
-                            ?.toLongOrNull()
-                    val formattedDuration = durationMs?.let { formatDuration(it, formatStr) }
-                    continuation.resume(formattedDuration) // 返回格式化后的时长
-                } catch (e: Exception) {
-                    LogCat.e(e)
-                    continuation.resume("") // 异常时返回 ""
-                } finally {
-                    retriever.release()
-                }
+            val retriever = MediaMetadataRetriever()
+            try {
+                retriever.setDataSource(filePath)
+                val durationMs =
+                    retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
+                        ?.toLongOrNull()
+                val formattedDuration = formatStr?.let {
+                    durationMs?.let { ms -> formatDuration(ms, it) }
+                } ?: kotlin.run { durationMs?.toString() ?: "" }
+                continuation.resume(formattedDuration) // 返回格式化后的时长
+            } catch (e: Exception) {
+                LogCat.e(e)
+                continuation.resume("") // 异常时返回 ""
+            } finally {
+                retriever.release()
             }
         }
     }

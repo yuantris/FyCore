@@ -1,6 +1,7 @@
 package com.core.fy.android.util
 
 import com.arthenica.ffmpegkit.FFmpegKit
+import com.arthenica.ffmpegkit.FFmpegKitConfig
 import com.arthenica.ffmpegkit.FFmpegSession
 import com.arthenica.ffmpegkit.ReturnCode
 import io.core.common.util.log.LogPure
@@ -25,7 +26,7 @@ object FFmpegTool {
         taskId: String = "",
         onResult: (FFmpegResult) -> Unit = {}
     ): FFmpegSession {
-        return FFmpegKit.executeAsync(command.toFFmpegCommand(), { session ->
+        return FFmpegKit.executeWithArgumentsAsync(command, { session ->
             if (ReturnCode.isSuccess(session.returnCode)) {
                 onResult(FFmpegResult.Success(session.sessionId, taskId))
             } else if (ReturnCode.isCancel(session.returnCode)) {

@@ -1,6 +1,6 @@
 package io.core.common.util.tools
 
-import io.core.common.helper.coroutine.launchSuspend
+import io.core.common.helper.coroutine.info.GlobalScopeManager
 import kotlinx.coroutines.runBlocking
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.CountDownLatch
@@ -128,7 +128,7 @@ class AsyncUtils private constructor() {
         @JvmStatic
         fun <T> suspendToCompletable(block: suspend () -> T): CompletableFuture<T> {
             val future = CompletableFuture<T>()
-            launchSuspend {
+            GlobalScopeManager.launch {
                 try {
                     future.complete(block())
                 } catch (e: Exception) {
