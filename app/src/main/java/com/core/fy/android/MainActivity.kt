@@ -43,20 +43,6 @@ class MainActivity : ReflectBindingActivity<ActivityMainBinding>() {
             MediaScanner.registerContentObserver(listOf(MediaScanner.FileType.MP4))
         }
 
-//        handleDoubleBackPressExit(
-//            onShowPrompt = {
-//                toast(it)
-//            },
-//            onExit = {
-//                showDialog("温馨提示", "是否退出应用？") {
-//                    cancelButton {}
-//                    okButton {
-//                        exitApp()
-//                    }
-//                }
-//            }
-//        )
-
         navigationAdapter = NavigationV2Adapter().apply {
             listOf(
                 "首页" to R.drawable.home_home_selector,
