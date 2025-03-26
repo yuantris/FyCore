@@ -2,6 +2,7 @@ package io.core.common.util.log.bury
 
 import android.util.Log
 import androidx.lifecycle.Lifecycle.State.INITIALIZED
+import io.core.Android
 import io.core.BuildConfig
 import io.core.appCtx
 import io.core.common.util.extensions.ui.appVersionCode
@@ -80,7 +81,7 @@ object AppLog {
     }
 
     private val config = LogConfig()
-    private val isDebugMode = BuildConfig.DEBUG
+    private val isDebugMode = Android.debug
     private val logBuffer = LinkedBlockingQueue<String>(DEFAULT_MAX_QUEUE_SIZE)
     private val logSignalChannel = Channel<Unit>(Channel.CONFLATED)
     private var logJob: Job? = null

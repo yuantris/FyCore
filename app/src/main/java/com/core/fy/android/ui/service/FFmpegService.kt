@@ -1,13 +1,10 @@
 package com.core.fy.android.ui.service
 
 import androidx.lifecycle.lifecycleScope
-import androidx.media3.common.C
 import com.arthenica.ffmpegkit.FFmpegKitConfig
 import com.core.fy.android.constants.EventKey
 import com.core.fy.android.util.FFmpegTool
 import io.core.common.base.component.service.BaseService
-import io.core.common.helper.coroutine.info.CoroutineLauncher
-import io.core.common.helper.coroutine.info.GlobalScopeManager
 import io.core.common.util.MediaScanner
 import io.core.common.util.extensions.cool.PathType
 import io.core.common.util.extensions.cool.formatToFixedDecimal

@@ -6,7 +6,6 @@ import com.kongzue.dialogx.DialogX
 import com.kongzue.dialogx.dialogs.MessageDialog
 import com.kongzue.dialogx.dialogs.PopNotification
 import com.kongzue.dialogx.style.KongzueStyle
-import io.core.common.helper.coroutine.info.GlobalScopeManager
 
 // DSL 配置类
 class DialogXConfig {
@@ -30,7 +29,7 @@ class NotificationConfig {
 }
 
 fun Application.initDialogX() {
-    GlobalScopeManager.launch {
+    GlobalCoroutine.launch {
         DialogX.init(this@initDialogX)
         DialogX.globalStyle = KongzueStyle.style()
     }
