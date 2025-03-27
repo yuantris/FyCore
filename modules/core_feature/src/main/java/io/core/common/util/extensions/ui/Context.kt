@@ -12,10 +12,12 @@ import android.app.PendingIntent.getBroadcast
 import android.app.PendingIntent.getService
 import android.app.Service
 import android.content.BroadcastReceiver
+import android.content.ComponentName
 import android.content.Context
 import android.content.ContextWrapper
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.ServiceConnection
 import android.content.SharedPreferences
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
@@ -26,9 +28,11 @@ import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.BatteryManager
 import android.os.Build
+import android.os.IBinder
 import android.os.Process
 import android.provider.Settings
 import android.view.View
+import android.widget.Toast
 import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
@@ -40,6 +44,7 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import io.core.R
 import io.core.common.base.component.dialog.CustomToast
+import io.core.common.delegate.createSmartDelegate
 import io.core.common.util.Toaster
 import io.core.common.util.extensions.cool.logPrint
 import io.core.common.util.extensions.cool.printOnDebug
@@ -99,8 +104,25 @@ inline fun <reified A : Activity> Context.startActivity(configIntent: Intent.() 
     startActivity(intent)
 }
 
-inline fun <reified T : Service> Context.startService(configIntent: Intent.() -> Unit = {}) {
-    startService(Intent(this, T::class.java).apply(configIntent))
+inline fun <reified T : Service> Context.startService(
+    useForegroundService: Boolean = false,
+    configIntent: Intent.() -> Unit = {}
+) {
+    val intent = Intent(this, T::class.java).apply(configIntent)
+    if (useForegroundService && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        ContextCompat.startForegroundService(this, intent)
+    } else {
+        startService(intent)
+    }
+}
+
+inline fun <reified T : Service> Context.bindService(
+    connection: ServiceConnection,
+    flags: Int = Context.BIND_AUTO_CREATE,
+    configIntent: Intent.() -> Unit = {}
+): Boolean {
+    val intent = Intent(this, T::class.java).apply(configIntent)
+    return bindService(intent, connection, flags)
 }
 
 @SuppressLint("ImplicitSamInstance")
@@ -309,7 +331,7 @@ fun Context.toast(message: String) {
  */
 fun Context.toastLong(message: String) {
     takeIf { !it.isActivity }?.let {
-        Toaster.show(message)
+        Toaster.show(message, Toast.LENGTH_LONG)
     } ?: run {
         CustomToast.Builder(this)
             .setMessage(message)

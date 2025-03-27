@@ -14,6 +14,7 @@ import io.core.common.util.log.LogPure
 import io.core.common.util.tools.buildMainHandler
 import java.lang.ref.WeakReference
 import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.ConcurrentLinkedDeque
 import java.util.concurrent.CopyOnWriteArrayList
 
 /**
@@ -29,8 +30,8 @@ object AppLifecycleTracker : Application.ActivityLifecycleCallbacks, DefaultLife
     private const val TAG = "AppLifecycleTracker"
 
     // region 核心数据存储
-    private val activityStack = CopyOnWriteArrayList<WeakReference<Activity>>()
-    private val serviceStack = CopyOnWriteArrayList<WeakReference<Service>>()
+    private val activityStack = ConcurrentLinkedDeque<WeakReference<Activity>>()
+    private val serviceStack = ConcurrentLinkedDeque<WeakReference<Service>>()
     private val foregroundListeners = ConcurrentHashMap<String, (Boolean) -> Unit>()
     // endregion
 
@@ -113,13 +114,20 @@ object AppLifecycleTracker : Application.ActivityLifecycleCallbacks, DefaultLife
     /** 更新Activity栈顺序 */
     private fun updateActivityStack(activity: Activity) {
         cleanUpWeakReferences(activityStack)
-        activityStack.add(WeakReference(activity))
+        activityStack.addFirst(WeakReference(activity))
     }
 
     /** 将Activity移至栈顶 */
     private fun bringToFront(activity: Activity) {
-        activityStack.removeAll { it.get() == activity }
-        activityStack.add(WeakReference(activity))
+        synchronized(activityStack) {
+            // 检查栈顶是否已经是当前Activity
+            val topRef = activityStack.peekFirst()
+            if (topRef?.get() == activity) return@synchronized
+
+            // 非栈顶时执行移除和添加操作
+            activityStack.removeAll { it.get() == activity }
+            activityStack.addFirst(WeakReference(activity))
+        }
     }
 
     /**
@@ -165,7 +173,7 @@ object AppLifecycleTracker : Application.ActivityLifecycleCallbacks, DefaultLife
     }
 
     /** 清理无效弱引用 */
-    private fun <T> cleanUpWeakReferences(list: CopyOnWriteArrayList<WeakReference<T>>) {
+    private fun <T> cleanUpWeakReferences(list: ConcurrentLinkedDeque<WeakReference<T>>) {
         list.removeAll { it.get() == null }
     }
     // endregion
@@ -175,7 +183,7 @@ object AppLifecycleTracker : Application.ActivityLifecycleCallbacks, DefaultLife
     @JvmStatic
     fun getTopActivity(): Activity? {
         cleanUpWeakReferences(activityStack)
-        return activityStack.lastOrNull()?.get()?.takeIf { it.isAlive() }
+        return activityStack.peekFirst()?.get()?.takeIf { it.isAlive() }
     }
 
     /** 安全结束Activity集合 */

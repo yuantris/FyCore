@@ -13,6 +13,7 @@ import io.core.appCtx
 import io.core.common.base.component.fragment.ReflectBindingFragment
 import io.core.common.helper.coroutine.Coroutine
 import io.core.common.helper.dialogs.showDialog
+import io.core.common.util.Toaster
 import io.core.common.util.extensions.cool.observeEvent
 import io.core.common.util.extensions.cool.observeEventSticky
 import io.core.common.util.extensions.cool.runMain
@@ -56,10 +57,10 @@ class BlankFragment : ReflectBindingFragment<FragmentBlankBinding, MainActivity>
         binding.time.onClick {
             showDialog("对话框标题", "这是一个对话框消息。") {
                 okButton {
-                    Toast.makeText(activity, "点击了确定", Toast.LENGTH_SHORT).show()
+                    Toaster.show("点击了确定")
                 }
                 cancelButton {
-                    Toast.makeText(activity, "点击了取消", Toast.LENGTH_SHORT).show()
+                    Toaster.show("点击了取消")
                 }
             }
         }

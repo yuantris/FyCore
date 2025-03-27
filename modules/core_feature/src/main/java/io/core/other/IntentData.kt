@@ -38,13 +38,13 @@ object IntentData {
     /**
      * 添加缓存对象（带手动指定key）
      * @param key 缓存键（需保证唯一性）
-     * @param data 缓存对象（非空类型）
+     * @param data 缓存对象（可空类型）
      * @param ttl 存活时间（毫秒，0表示永久）
      */
     @JvmStatic
     @Synchronized
     @JvmOverloads
-    fun <T : Any> put(key: String, data: T, ttl: Long = 0L): String {
+    fun <T : Any?> put(key: String, data: T, ttl: Long = 0L): String {
         val expireTime = if (ttl > 0) System.currentTimeMillis() + ttl else 0L
         bigData[key] = SoftReference(data)
         expireTimes[key] = expireTime
@@ -59,7 +59,7 @@ object IntentData {
      */
     @JvmStatic
     @Synchronized
-    fun <T : Any> put(data: T): String {
+    fun <T : Any?> put(data: T): String {
         val key = currentTimeMillis.toString()
         put(key, data)
         return key
@@ -99,6 +99,22 @@ object IntentData {
                 }
             }
         }
+    }
+
+    /**
+     * 获取缓存对象（线程安全带默认值）
+     * @param defaultValue 当缓存不存在或失效时返回的默认值
+     * @return 当以下情况返回defaultValue：
+     * - key不存在
+     * - 对象已被回收
+     * - TTL已过期
+     * - 类型转换失败
+     * 否则返回非空缓存对象
+     */
+    @JvmStatic
+    @Synchronized
+    fun <T : Any> get(key: String?, defaultValue: T): T {
+        return get(key) ?: defaultValue
     }
 
     /**
