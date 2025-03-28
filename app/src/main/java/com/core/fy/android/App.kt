@@ -4,7 +4,6 @@ import android.app.Application
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
-import android.os.Build
 import com.core.fy.android.constants.AppConst.channelIdReadAloud
 import com.core.fy.android.constants.PreferKey
 import com.core.fy.android.util.initDialogX
@@ -16,6 +15,8 @@ import io.core.common.helper.AppLifecycleTracker
 import io.core.common.helper.TurboTracker
 import io.core.common.util.extensions.notificationManager
 import io.core.common.util.log.LogPure
+import io.core.common.util.tools.OsUtils
+import io.core.constant.ANDROID_8
 import io.core.engine.brv.utils.BRV
 import io.core.engine.storage.StorageFactory
 import io.core.engine.storage.StorageType
@@ -83,7 +84,7 @@ class App : Application() {
      * 创建通知ID
      */
     private fun createNotificationChannels() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return
+        if (OsUtils.lowerThan(ANDROID_8)) return
 
         val readAloudChannel = NotificationChannel(
             channelIdReadAloud,

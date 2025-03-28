@@ -81,7 +81,7 @@ object AppLog {
     }
 
     private val config = LogConfig()
-    private val isDebugMode = Android.debug
+    private var isDebugMode = Android.debug
     private val logBuffer = LinkedBlockingQueue<String>(DEFAULT_MAX_QUEUE_SIZE)
     private val logSignalChannel = Channel<Unit>(Channel.CONFLATED)
     private var logJob: Job? = null
@@ -104,6 +104,10 @@ object AppLog {
         determineStoragePath()
         startLogConsumer()
         writeLogStart()
+    }
+
+    fun updateMode(debug: Boolean) {
+        isDebugMode = debug
     }
 
     // region Public API

@@ -1,5 +1,5 @@
 # FyCore 🚀
-Android核心工具库 | [![](https://img.shields.io/badge/Version-0.1.6-brightgreen)]() [![](https://img.shields.io/badge/License-Apache%202.0-blue)]() 
+Android核心工具库 | [![](https://img.shields.io/badge/Version-0.1.7-brightgreen)]() [![](https://img.shields.io/badge/License-Apache%202.0-blue)]() 
 
 > 项目初始化
 ```kotlin
@@ -8,16 +8,19 @@ Android.initialize(this, debug = true)
 
 // ---------- 可选配置 ----------
 CoreConfig.configure {
-  crashMultiProcess = true
-  // 崩溃后跳转Activity（建议配置主Activity）
-  crashAfterJump = MainActivity::class.java
-  positiveColor = appCtx.getColor(R.color.md_indigo_500)
-  negativeColor = appCtx.getColor(R.color.md_red_300)
+  crash {
+    allowMultiProcess = true
+    afterJumpActivity = MainActivity::class.java
+  }
+  alert {
+    positiveColor = appCtx.getColor(R.color.md_indigo_500)
+    negativeColor = appCtx.getColor(R.color.md_red_300)
+  }
 }
 
 // 页面追踪配置（Release模式自动开启）
 TurboTracker.initialize(this) {
-    enable(CoreConfig.RELEASE)
+    enable(CoreConfig.Environment.isRelease)
     setLogger(ReleaseLogger()) // 生产环境日志
 }
 // 存储工厂初始化
@@ -292,8 +295,8 @@ StorageFactory.initialize {
 **⚠️ 重要提醒**
 
 - 事件总线
-    - sentEvent与receiveEvent方法绑定使用
     - postEvent与observeEvent方法绑定使用(推荐使用)
+    - sentEvent与receiveEvent方法绑定使用
   
 - 用户首选项
     - Preferences.getValue
@@ -323,6 +326,7 @@ StorageFactory.initialize {
       - 子类重写该方法获取builder可进行进行额外的配置
     - initView()
       - 子类重写该方法进行初始化View
+      
 - ToolBar(Google)与AppTitleBar(自定义)
     - ToolBar(Google)
       - setDisplayHomeAsUpEnabled 系统是否接管返回键

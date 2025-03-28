@@ -1,4 +1,4 @@
-package io.core.common.util
+package io.core.common.util.share
 
 import android.app.Activity
 import android.content.ActivityNotFoundException
@@ -10,7 +10,6 @@ import android.widget.Toast
 import io.core.BuildConfig
 import io.core.appCtx
 import io.core.common.util.extensions.cool.getUri
-import io.core.common.util.extensions.cool.toUri
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException

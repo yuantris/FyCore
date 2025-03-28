@@ -21,5 +21,3 @@ fun Boolean.ifNext(config: BooleanConfig.() -> Unit) {
         setup.ifFalse?.invoke()
     }
 }
-
-inline fun Boolean.ifTrue(block: () -> Unit) = if (this) block() else Unit

@@ -11,6 +11,7 @@ import com.core.fy.android.main.fragment.HomeFragment
 import com.core.fy.android.main.fragment.SetFragment
 import com.core.fy.android.util.DoubleBackExitHandler
 import com.core.fy.android.util.showDxNotification
+import io.core.Android
 import io.core.common.base.component.activity.ReflectBindingActivity
 import io.core.common.base.component.adapter.BaseRecyclerAdapter
 import io.core.common.base.component.adapter.BaseViewHolder

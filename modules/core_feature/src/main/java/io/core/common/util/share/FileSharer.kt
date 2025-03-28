@@ -1,4 +1,4 @@
-package io.core.common.util
+package io.core.common.util.share
 
 import android.content.ActivityNotFoundException
 import android.content.Context
@@ -82,7 +82,7 @@ class FileSharer private constructor(private val builder: Builder) {
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
     }
 
-    class Builder() {
+    class Builder {
         internal var chooserTitle: String? = null
         internal var files: List<File> = emptyList()
 

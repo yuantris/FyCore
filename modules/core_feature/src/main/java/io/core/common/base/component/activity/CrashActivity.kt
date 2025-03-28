@@ -29,8 +29,6 @@ import com.hjq.permissions.XXPermissions
 import io.core.R
 import io.core.appCtx
 import io.core.common.base.component.dialog.showPopupWindow
-import io.core.common.util.FileSharer
-import io.core.common.util.ShareAir
 import io.core.common.util.extensions.cool.dp
 import io.core.common.util.extensions.cool.getFile
 import io.core.common.util.extensions.cool.hasReadWriteStoragePermission
@@ -38,6 +36,8 @@ import io.core.common.util.extensions.ui.appVersionCode
 import io.core.common.util.extensions.ui.appVersionName
 import io.core.common.util.extensions.ui.onClick
 import io.core.common.util.extensions.ui.onDebouncedClick
+import io.core.common.util.share.FileSharer
+import io.core.common.util.share.ShareAir
 import io.core.constant.CRASH_FOLDER_NAME
 import io.core.constant.TimeFormat
 import io.core.engine.effect.ViewClickEffect

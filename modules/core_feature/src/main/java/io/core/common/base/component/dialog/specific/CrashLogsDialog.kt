@@ -17,9 +17,10 @@ import io.core.common.base.component.adapter.SingleTypeAdapter
 import io.core.common.base.component.dialog.BaseDialogFragment
 import io.core.common.base.vm.BaseViewModel
 import io.core.common.util.FileDoc
-import io.core.common.util.FileSharer
+import io.core.common.util.share.FileSharer
 import io.core.common.util.extensions.cool.getFile
 import io.core.common.util.extensions.cool.toastOnUI
+import io.core.common.util.extensions.logE
 import io.core.common.util.extensions.ui.ctx
 import io.core.common.util.extensions.ui.getCompatColor
 import io.core.common.util.extensions.ui.setLayout
@@ -28,6 +29,7 @@ import io.core.common.util.extensions.ui.toast
 import io.core.common.util.extensions.ui.toastLong
 import io.core.common.util.extensions.ui.viewBinding
 import io.core.common.util.log.bury.AppLog
+import io.core.common.util.share.ShareAir
 import io.core.common.util.tools.FileTools
 import io.core.common.util.tools.UriTools
 import io.core.constant.CRASH_FOLDER_NAME
@@ -173,6 +175,7 @@ class CrashLogsDialog : BaseDialogFragment(R.layout.dialog_recycler_view),
             }.onSuccess {
                 success.invoke(it)
             }.onError {
+                it.message.logE()
                 appCtx.toastOnUI(it.localizedMessage)
             }
         }

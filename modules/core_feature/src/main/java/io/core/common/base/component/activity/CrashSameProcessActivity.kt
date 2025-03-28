@@ -26,7 +26,7 @@ import com.hjq.permissions.XXPermissions
 import io.core.R
 import io.core.appCtx
 import io.core.common.base.component.dialog.showPopupWindow
-import io.core.common.util.ShareAir
+import io.core.common.util.share.ShareAir
 import io.core.common.util.extensions.cool.dp
 import io.core.common.util.extensions.cool.getFile
 import io.core.common.util.extensions.cool.hasReadWriteStoragePermission
