@@ -97,7 +97,7 @@ object TimeFormat {
     /** 日志时间戳格式 示例：[2023-10-12 15:30:45.123] */
     const val LOG_TIMESTAMP = "[yyyy-MM-dd HH:mm:ss.SSS]"
 
-    /** 日志时间戳格式 示例：[2023-10-12 15:30:45_123] */
+    /** 日志时间戳格式 示例：[2023-10-12_15:30:45_123] */
     const val LOG_TIMESTAMP_LINE = "[yyyy-MM-dd_HH:mm:ss_SSS]"
 
     // ====================

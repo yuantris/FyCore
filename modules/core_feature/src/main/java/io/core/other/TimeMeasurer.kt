@@ -2,6 +2,9 @@ package io.core.other
 
 import android.util.Log
 
+/**
+ * 代码执行耗时测量工具
+ */
 object TimeMeasurer {
 
     // 支持不同时间单位

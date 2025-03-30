@@ -149,7 +149,7 @@ class CrashHandler private constructor(private val application: Application) :
             val result = writer.toString()
             sb.append("\n").append(DIVIDER).append("\n").append(result)
             val crashLog = sb.toString()
-            val fileName = "crash-${timestamp.timeFormat(TimeFormat.LOG_TIMESTAMP)}.log"
+            val fileName = "crash-${timestamp.timeFormat(TimeFormat.LOG_TIMESTAMP_LINE)}.log"
             val fileNameExternal =
                 "crash-${timestamp.timeFormat(TimeFormat.FILE_SAFE_TIMESTAMP)}.log"
             kotlin.runCatching {

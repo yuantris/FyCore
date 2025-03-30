@@ -19,6 +19,7 @@ import io.core.common.base.vm.BaseViewModel
 import io.core.common.util.FileDoc
 import io.core.common.util.share.FileSharer
 import io.core.common.util.extensions.cool.getFile
+import io.core.common.util.extensions.cool.getUri
 import io.core.common.util.extensions.cool.toastOnUI
 import io.core.common.util.extensions.logE
 import io.core.common.util.extensions.ui.ctx
@@ -58,10 +59,10 @@ class CrashLogsDialog : BaseDialogFragment(R.layout.dialog_recycler_view),
                     viewModel.readFile(item) {
                         if (lifecycleScope.isActive) {
                             UriTools.uri2File(item.uri)?.let {
-                                FileSharer.Builder()
-                                    .setChooserTitle("分享崩溃日志")
-                                    .setFileList(listOf(it))
-                                    .share(requireContext())
+                                ShareAir.share {
+                                    title("分享崩溃日志")
+                                    file(it.getUri())
+                                }
                             }
                         }
                     }

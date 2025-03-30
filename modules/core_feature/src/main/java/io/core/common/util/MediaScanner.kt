@@ -6,7 +6,7 @@ import android.provider.MediaStore
 import io.core.appCtx
 import io.core.common.util.extensions.cool.hasReadStoragePermission
 import io.core.common.util.log.LogPure
-import io.core.constant.SQL
+import io.core.constant.MediaStoreClauses
 
 /**
  * 媒体库扫描工具
@@ -48,7 +48,7 @@ class MediaScanner {
         fun queryFiles(
             types: Set<FileType>,
             addFilter: ((FileInfo) -> Boolean)? = null,
-            sortOrder: String = SQL.timeAddedDESC,
+            sortOrder: String = MediaStoreClauses.timeAddedDESC,
             forceRefresh: Boolean = false
         ): List<FileInfo> {
             if (!appCtx.hasReadStoragePermission()) {

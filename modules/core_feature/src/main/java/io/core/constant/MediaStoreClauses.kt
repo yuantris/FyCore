@@ -3,7 +3,7 @@ package io.core.constant
 import android.provider.MediaStore
 
 
-object SQL {
+object MediaStoreClauses {
 
     // region 排序扩展
     // 按添加时间排序
