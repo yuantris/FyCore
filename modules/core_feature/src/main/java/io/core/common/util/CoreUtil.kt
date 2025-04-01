@@ -138,9 +138,7 @@ class CoreUtil {
 
                 //文件的类型
                 val fileName = file.name
-                val type = FileType.MATCH_ARRAY
-                    .firstOrNull { fileName.endsWith(it[0], ignoreCase = true) }
-                    ?.get(1) ?: ""
+                val type = FileType.getMimeTypeFromFile(fileName)
 
                 runCatching {
                     // 直接跳过权限

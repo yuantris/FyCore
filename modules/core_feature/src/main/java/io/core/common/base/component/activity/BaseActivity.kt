@@ -12,7 +12,6 @@ import io.core.common.base.action.BundleAction
 import io.core.common.base.action.TitleBarAction
 import io.core.common.util.DiveGestureLine
 import io.core.common.util.extensions.addCallback
-import io.core.common.util.extensions.logD
 import io.core.common.util.extensions.ui.BarColor
 import io.core.common.util.extensions.ui.adaptStatusBarToView
 import io.core.common.util.tools.DeviceOSUtils
@@ -64,14 +63,14 @@ abstract class BaseActivity : AppCompatActivity(), TitleBarAction, BundleAction 
     open fun onCompatOptionsItemSelected(item: MenuItem) = super.onOptionsItemSelected(item)
 
 
-    protected open fun setListener() {}
-    protected open fun observers() {}
+    protected open fun setListener() = Unit
+    protected open fun observers() = Unit
 
     /**
      * 设置是否接管返回键，默认不接管，如果要接管，请重写onBackPressedCall方法，
      * 并在initial方法super之前setTakeOverBackPressed(true)
      */
-    protected open fun onBackPressedCall() {}
+    protected open fun onBackPressedCall() = Unit
 
     /**
      * 设置是否接管返回键，默认不接管
@@ -89,8 +88,7 @@ abstract class BaseActivity : AppCompatActivity(), TitleBarAction, BundleAction 
      * 获取状态栏沉浸的配置对象
      */
     open fun getStatusBarConfig(): ImmersionBar {
-        immersionBar = immersionBar ?: createStatusBarConfig()
-        return immersionBar!!
+        return immersionBar ?: createStatusBarConfig().also { immersionBar = it }
     }
 
     /**
@@ -130,14 +128,13 @@ abstract class BaseActivity : AppCompatActivity(), TitleBarAction, BundleAction 
             DeviceOSUtils.DeviceBrand.OPPO -> oppoAdapt(window)
             DeviceOSUtils.DeviceBrand.VIVO -> vivoAdapt(window)
 
-            else -> {}
+            else -> Unit
         }
         adaptStatusBarToView(window.decorView)
     }
 
     override fun getTitleBar(): TitleBar? {
         titleBar = titleBar ?: obtainTitleBar(findViewById(Window.ID_ANDROID_CONTENT))
-        "titleBar= ${titleBar == null}".logD(TAG)
         return titleBar
     }
 

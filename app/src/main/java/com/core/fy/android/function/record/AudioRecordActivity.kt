@@ -1,5 +1,6 @@
 package com.core.fy.android.function.record
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import com.core.fy.android.databinding.ActivityAudioRecordBinding
 import com.hjq.permissions.Permission
@@ -13,7 +14,8 @@ import io.core.common.util.extensions.cool.timeFormat
 import io.core.common.util.extensions.currentTimeMillis
 import io.core.common.util.extensions.ui.onClick
 import io.core.common.util.log.LogPure
-import io.core.common.util.tools.formatDuration
+import io.core.constant.FileSize
+import io.core.constant.FileSize.toFormattedPattern
 import io.core.constant.TimeFormat
 import java.io.File
 
@@ -50,7 +52,8 @@ class AudioRecordActivity : ReflectBindingActivity<ActivityAudioRecordBinding>()
                     when (state) {
                         is RecordingState.Recording -> updateUI(
                             "Recording: ${
-                                state.duration.formatDuration(
+                                FileSize.formatDuration(
+                                    state.duration,
                                     TimeFormat.TIME_MM_SS
                                 )
                             }"
@@ -58,9 +61,7 @@ class AudioRecordActivity : ReflectBindingActivity<ActivityAudioRecordBinding>()
 
                         is RecordingState.Paused -> updateUI(
                             "Paused: ${
-                                state.duration.formatDuration(
-                                    TimeFormat.TIME_MM_SS
-                                )
+                                FileSize.formatDuration(state.duration, TimeFormat.TIME_MM_SS)
                             }"
                         )
 
@@ -70,7 +71,7 @@ class AudioRecordActivity : ReflectBindingActivity<ActivityAudioRecordBinding>()
 
                 override fun onTimeUpdate(durationMillis: Long) {
                     binding.duration.text =
-                        "onTimeUpdate: ${durationMillis.formatDuration(TimeFormat.TIME_MM_SS)}"
+                        "onTimeUpdate: ${durationMillis.toFormattedPattern()}"
                 }
 
                 override fun onError(message: String) {

@@ -38,6 +38,13 @@ StorageFactory.initialize {
     - 崩溃信息
 
 **模块功能**
+- constant包
+  - AndroidVersion
+  - FileSize(📢文件大小和时间格式化工具类)
+  - FileType(文件Mimetype汇总映射)
+  - MediaStoreClauses(一些MediaStore的条件语句)
+  - TimeFormat(日期时间格式模式常量集合)
+  - 
 - 工具类位置
 
   | io.core.common.**helper**                       | io.core.common.**util**        | io.core.**other**                       |

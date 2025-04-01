@@ -12,11 +12,15 @@ import io.core.common.util.MediaScanner
 import io.core.common.util.extensions.cool.requestPermission
 import io.core.common.util.extensions.cool.runMain
 import io.core.common.util.extensions.cool.toastOnUI
+import io.core.common.util.extensions.logD
+import io.core.common.util.extensions.logW
 import io.core.common.util.extensions.ui.onClick
 import io.core.common.util.extensions.ui.onTrackingTouch
 import io.core.common.util.log.LogCat
 import io.core.common.util.tools.UriTools
-import io.core.common.util.tools.formatDuration
+import io.core.constant.FileSize
+import io.core.constant.FileSize.toFormattedFileSize
+import io.core.constant.FileSize.toFormattedPattern
 import kotlinx.coroutines.launch
 import java.io.File
 import java.util.concurrent.atomic.AtomicBoolean
@@ -67,8 +71,13 @@ class MediaPlayerActivity : ReflectBindingActivity<ActivityMediaPlayerBinding>()
                         files
                     }.onSuccess { result ->
                         list = result
+                        result.forEach {
+                            val file = File(it.path)
+                            file.length().toFormattedFileSize().logD()
+                        }
                         val file = File(result[0].path)
                         val uri = UriTools.file2Uri(File(file.path))
+
                         tip.text = "文件路径：${file.path}"
                         player.prepare(uri)
                     }
@@ -111,7 +120,7 @@ class MediaPlayerActivity : ReflectBindingActivity<ActivityMediaPlayerBinding>()
                     when (state) {
                         is PlayerState.Ready -> {
                             binding.playerProgressbar.max = state.duration
-                            val duration = state.duration.toLong().formatDuration("mm:ss")
+                            val duration = FileSize.formatDuration(state.duration.toLong(), "mm:ss")
                             runMain {
                                 binding.playerProgressMax.text = duration
                                 binding.playerProgressCurrent.text = "00:00"
@@ -126,7 +135,7 @@ class MediaPlayerActivity : ReflectBindingActivity<ActivityMediaPlayerBinding>()
                                 }
 
                                 binding.playerProgressCurrent.text =
-                                    progress.toLong().formatDuration("mm:ss")
+                                    progress.toLong().toFormattedPattern()
                             }
                         }
 

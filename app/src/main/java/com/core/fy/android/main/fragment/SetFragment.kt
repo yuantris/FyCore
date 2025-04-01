@@ -1,17 +1,28 @@
 package com.core.fy.android.main.fragment
 
+import android.net.Uri
+import android.os.Bundle
+import android.util.Log
+import androidx.core.net.toUri
 import com.core.fy.android.MainActivity
 import com.core.fy.android.constants.PreferKey
 import com.core.fy.android.databinding.FragmentSetBinding
 import com.core.fy.android.function.TestPageActivity
 import com.core.fy.android.help.HighLightHelper
+import com.core.fy.android.util.AppLauncher
+import com.core.fy.android.util.LaunchResult
 import com.core.fy.android.util.showDxNotification
 import io.core.common.base.component.fragment.ReflectBindingFragment
 import io.core.common.helper.JsonUltra
+import io.core.common.util.CoreUtil
 import io.core.common.util.extensions.cool.coolThread
+import io.core.common.util.extensions.cool.getUri
 import io.core.common.util.extensions.cool.timeFormat
+import io.core.common.util.extensions.cool.toUri
 import io.core.common.util.extensions.currentTimeMillis
 import io.core.common.util.extensions.logD
+import io.core.common.util.extensions.logE
+import io.core.common.util.extensions.logI
 import io.core.common.util.extensions.ui.adaptStatusBarToView
 import io.core.common.util.extensions.ui.appVersionName
 import io.core.common.util.extensions.ui.ctx
@@ -24,10 +35,16 @@ import io.core.common.util.tools.ThreadUltra
 import io.core.common.util.tools.androidApiVersion
 import io.core.common.util.tools.androidVersion
 import io.core.common.util.tools.buildMultiLine
+import io.core.constant.FileSize
+import io.core.constant.FileSize.TimeUnitStyle.English
+import io.core.constant.FileSize.TimeUnitStyle.UnitCase
+import io.core.constant.FileSize.toFormattedDuration
+import io.core.constant.FileSize.toFormattedFileSize
 import io.core.constant.TimeFormat
 import io.core.engine.storage.getWithAnnotation
 import io.core.engine.storage.put
 import io.core.engine.storage.storage
+import java.io.File
 
 /**
 # ██████████
@@ -47,11 +64,17 @@ class SetFragment : ReflectBindingFragment<FragmentSetBinding, MainActivity>() {
     override fun initView() {
         super.initView()
 
-        val withAnnotation = storage.getWithAnnotation<Int>(PreferKey.SP_TEST)
-        LogCat.d("测试一下工厂默认值 结果为：$withAnnotation")
         JsonUltra.parse("{\"a\":1}").use {
             it["a"]?.asString().logD()
         }
+
+        val size = 37230L
+        val duration = 3723000L
+        FileSize.formatDuration(duration,
+            compact = true,
+            unitStyle = English.Long(UnitCase.CAPITAL)
+        ).logE()
+        FileSize.format(size).logI()
 
         with(binding) {
             version.setLeftText("版本")
@@ -62,6 +85,17 @@ class SetFragment : ReflectBindingFragment<FragmentSetBinding, MainActivity>() {
 //                }
                 showDxNotification {
                     content = ctx.appVersionName
+                }
+//                AppLauncher.launchAppByPackage("com.taobao.taobao")
+//                val file = File("/sdcard/Documents/error.txt")
+//                AppLauncher.launchByUri(file.getUri().toString())
+                AppLauncher.launchSpecificActivity(
+                    "com.taobao.taobao",
+                    "com.taobao.browser.BrowserActivity",
+                    "https://item.taobao.com/item.htm?id=820919984621".toUri()
+                ) {
+                    putBoolean("is_refund_order_url", false)
+                    putBoolean("alloweWebViewHistoryBack", true)
                 }
             }
 
@@ -86,7 +120,7 @@ class SetFragment : ReflectBindingFragment<FragmentSetBinding, MainActivity>() {
         super.initData()
 
         val annotation = storage.getWithAnnotation<Boolean>(PreferKey.SET_HIGHLIGHT)
-        if (annotation){
+        if (annotation) {
             binding.crash.postDelayed(1000) {
                 storage.put(PreferKey.SET_HIGHLIGHT, false)
                 HighLightHelper.showQuickFolderGuide(

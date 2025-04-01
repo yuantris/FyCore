@@ -3,14 +3,10 @@ package io.core.common.util.tools
 import android.media.MediaMetadataRetriever
 import androidx.annotation.WorkerThread
 import io.core.common.util.log.LogCat
+import io.core.constant.FileSize.formatDuration
 import kotlinx.coroutines.runBlocking
-import java.util.concurrent.TimeUnit
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
-
-fun Long.formatDuration(formatStr: String): String {
-    return MultimediaUtil.formatDuration(this, formatStr)
-}
 
 object MultimediaUtil {
 
@@ -51,24 +47,5 @@ object MultimediaUtil {
                 retriever.release()
             }
         }
-    }
-
-    /**
-     * 格式化时间
-     * @param durationMs 时长（毫秒）
-     * @param formatStr  格式化字符串（支持 HH, mm, ss, SSS）
-     * @return 格式化后的时间字符串
-     */
-    fun formatDuration(durationMs: Long, formatStr: String): String {
-        val hours = TimeUnit.MILLISECONDS.toHours(durationMs)
-        val minutes = TimeUnit.MILLISECONDS.toMinutes(durationMs) % 60
-        val seconds = TimeUnit.MILLISECONDS.toSeconds(durationMs) % 60
-        val millis = durationMs % 1000
-
-        return formatStr
-            .replace("HH", "%02d".format(hours))
-            .replace("mm", "%02d".format(minutes))
-            .replace("ss", "%02d".format(seconds))
-            .replace("SSS", "%03d".format(millis))
     }
 }

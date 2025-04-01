@@ -1,85 +1,114 @@
 package io.core.constant
 
 /**
-# ██████████
-# █▄█████▄█
-# █▼▼▼▼▼
-# █
-# █▲▲▲▲▲
-# ██████████
-# ██ ██
-# 注释的艺术，正在加载……
- * 2025/1/4 13:45
- * @description
+ * FileType 是一个用于存储文件扩展名与 MIME 类型映射的工具类。
+ * 它提供了常见的文件扩展名及其对应的 MIME 类型，便于在文件操作中使用。
+ *
  * @author Yuan
+ * @since 2025/1/4 13:45
  */
 object FileType {
-    val MATCH_ARRAY = arrayOf(
-        arrayOf(".3gp", "video/3gpp"),
-        arrayOf(".apk", "application/vnd.android.package-archive"),
-        arrayOf(".asf", "video/x-ms-asf"),
-        arrayOf(".avi", "video/x-msvideo"),
-        arrayOf(".bin", "application/octet-stream"),
-        arrayOf(".bmp", "image/bmp"),
-        arrayOf(".c", "text/plain"),
-        arrayOf(".class", "application/octet-stream"),
-        arrayOf(".conf", "text/plain"),
-        arrayOf(".cpp", "text/plain"),
-        arrayOf(".doc", "application/msword"),
-        arrayOf(".docx", "application/msword"),
-        arrayOf(".xls", "application/msword"),
-        arrayOf(".xlsx", "application/msword"),
-        arrayOf(".exe", "application/octet-stream"),
-        arrayOf(".gif", "image/gif"),
-        arrayOf(".gtar", "application/x-gtar"),
-        arrayOf(".gz", "application/x-gzip"),
-        arrayOf(".h", "text/plain"),
-        arrayOf(".htm", "text/html"),
-        arrayOf(".html", "text/html"),
-        arrayOf(".jar", "application/java-archive"),
-        arrayOf(".java", "text/plain"),
-        arrayOf(".jpeg", "image/jpeg"),
-        arrayOf(".jpg", "image/jpeg"),
-        arrayOf(".js", "application/x-javascript"),
-        arrayOf(".log", "text/plain"),
-        arrayOf(".m3u", "audio/x-mpegurl"),
-        arrayOf(".m4a", "audio/mp4a-latm"),
-        arrayOf(".m4b", "audio/mp4a-latm"),
-        arrayOf(".m4p", "audio/mp4a-latm"),
-        arrayOf(".m4u", "video/vnd.mpegurl"),
-        arrayOf(".m4v", "video/x-m4v"),
-        arrayOf(".mov", "video/quicktime"),
-        arrayOf(".mp2", "audio/x-mpeg"),
-        arrayOf(".mp3", "audio/x-mpeg"),
-        arrayOf(".mp4", "video/mp4"),
-        arrayOf(".mpc", "application/vnd.mpohun.certificate"),
-        arrayOf(".mpe", "video/mpeg"),
-        arrayOf(".mpeg", "video/mpeg"),
-        arrayOf(".mpg", "video/mpeg"),
-        arrayOf(".mpg4", "video/mp4"),
-        arrayOf(".mpga", "audio/mpeg"),
-        arrayOf(".msg", "application/vnd.ms-outlook"),
-        arrayOf(".ogg", "audio/ogg"),
-        arrayOf(".pdf", "application/pdf"),
-        arrayOf(".png", "image/png"),
-        arrayOf(".pps", "application/vnd.ms-powerpoint"),
-        arrayOf(".ppt", "application/vnd.ms-powerpoint"),
-        arrayOf(".prop", "text/plain"),
-        arrayOf(".rar", "application/x-rar-compressed"),
-        arrayOf(".rc", "text/plain"),
-        arrayOf(".rmvb", "audio/x-pn-realaudio"),
-        arrayOf(".rtf", "application/rtf"),
-        arrayOf(".sh", "text/plain"),
-        arrayOf(".tar", "application/x-tar"),
-        arrayOf(".tgz", "application/x-compressed"),
-        arrayOf(".txt", "text/plain"),
-        arrayOf(".wav", "audio/x-wav"),
-        arrayOf(".wma", "audio/x-ms-wma"),
-        arrayOf(".wmv", "audio/x-ms-wmv"),
-        arrayOf(".wps", "application/vnd.ms-works"),
-        arrayOf(".xml", "text/plain"),
-        arrayOf(".z", "application/x-compress"),
-        arrayOf(".zip", "application/zip"),
-        arrayOf("", "*/*")
+
+    /**
+     * 文件扩展名与 MIME 类型的映射表。
+     * 键为文件扩展名（如 ".txt"），值为对应的 MIME 类型（如 "text/plain"）。
+     */
+    val MIME_TYPE_MAP = mapOf(
+        ".3gp" to "video/3gpp",
+        ".apk" to "application/vnd.android.package-archive",
+        ".asf" to "video/x-ms-asf",
+        ".avi" to "video/x-msvideo",
+        ".bin" to "application/octet-stream",
+        ".bmp" to "image/bmp",
+        ".c" to "text/plain",
+        ".class" to "application/octet-stream",
+        ".conf" to "text/plain",
+        ".cpp" to "text/plain",
+        ".doc" to "application/msword",
+        ".docx" to "application/msword",
+        ".xls" to "application/msword",
+        ".xlsx" to "application/msword",
+        ".exe" to "application/octet-stream",
+        ".gif" to "image/gif",
+        ".gtar" to "application/x-gtar",
+        ".gz" to "application/x-gzip",
+        ".h" to "text/plain",
+        ".htm" to "text/html",
+        ".html" to "text/html",
+        ".jar" to "application/java-archive",
+        ".java" to "text/plain",
+        ".jpeg" to "image/jpeg",
+        ".jpg" to "image/jpeg",
+        ".js" to "application/x-javascript",
+        ".log" to "text/plain",
+        ".m3u" to "audio/x-mpegurl",
+        ".m4a" to "audio/mp4a-latm",
+        ".m4b" to "audio/mp4a-latm",
+        ".m4p" to "audio/mp4a-latm",
+        ".m4u" to "video/vnd.mpegurl",
+        ".m4v" to "video/x-m4v",
+        ".mov" to "video/quicktime",
+        ".mp2" to "audio/x-mpeg",
+        ".mp3" to "audio/x-mpeg",
+        ".mp4" to "video/mp4",
+        ".mpc" to "application/vnd.mpohun.certificate",
+        ".mpe" to "video/mpeg",
+        ".mpeg" to "video/mpeg",
+        ".mpg" to "video/mpeg",
+        ".mpg4" to "video/mp4",
+        ".mpga" to "audio/mpeg",
+        ".msg" to "application/vnd.ms-outlook",
+        ".ogg" to "audio/ogg",
+        ".pdf" to "application/pdf",
+        ".png" to "image/png",
+        ".pps" to "application/vnd.ms-powerpoint",
+        ".ppt" to "application/vnd.ms-powerpoint",
+        ".prop" to "text/plain",
+        ".rar" to "application/x-rar-compressed",
+        ".rc" to "text/plain",
+        ".rmvb" to "audio/x-pn-realaudio",
+        ".rtf" to "application/rtf",
+        ".sh" to "text/plain",
+        ".tar" to "application/x-tar",
+        ".tgz" to "application/x-compressed",
+        ".txt" to "text/plain",
+        ".wav" to "audio/x-wav",
+        ".wma" to "audio/x-ms-wma",
+        ".wmv" to "audio/x-ms-wmv",
+        ".wps" to "application/vnd.ms-works",
+        ".xml" to "text/plain",
+        ".z" to "application/x-compress",
+        ".zip" to "application/zip",
+        "" to "*/*"
     )
+
+    /**
+     * 根据文件扩展名获取对应的MIME类型
+     * @param extension 文件扩展名（带点号，如".jpg"）
+     * @return 对应的MIME类型
+     */
+    fun getMimeType(extension: String): String {
+        return MIME_TYPE_MAP[extension.lowercase()] ?: "*/*"
+    }
+
+    /**
+     * 根据文件名或文件路径获取对应的MIME类型
+     * @param fileNameOrPath 文件名（如"test.jpg"）或完整路径（如"/path/to/test.jpg"）
+     * @return 对应的MIME类型
+     */
+    fun getMimeTypeFromFile(fileNameOrPath: String): String {
+        val lastDotIndex = fileNameOrPath.lastIndexOf('.')
+        return getMimeType(
+            if (lastDotIndex != -1) {
+                fileNameOrPath.substring(lastDotIndex).lowercase()
+            } else ""
+        )
+    }
+
+    /**
+     * 检查扩展名是否有对应的MIME类型
+     */
+    fun containsExtension(extension: String): Boolean {
+        return MIME_TYPE_MAP.containsKey(extension.lowercase())
+    }
 }
