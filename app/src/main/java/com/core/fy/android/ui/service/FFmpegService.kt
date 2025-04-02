@@ -16,7 +16,7 @@ import io.core.common.util.extensions.logE
 import io.core.common.util.extensions.logI
 import io.core.common.util.log.LogPure
 import io.core.common.util.tools.FileTools
-import io.core.common.util.tools.MultimediaUtil
+import io.core.common.helper.MediaHelper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -46,7 +46,7 @@ class FFmpegService : BaseService() {
             )
 
             execute {
-                val duration = MultimediaUtil.obtainDuration(testPath, null)
+                val duration = MediaHelper.getDurationSuspend(testPath, null)
                 if (duration.isNullOrEmpty()) return@execute
                 FFmpegTool.executeCommand(
                     command,

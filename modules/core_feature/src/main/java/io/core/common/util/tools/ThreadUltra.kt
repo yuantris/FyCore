@@ -1,11 +1,8 @@
-@file:Suppress("UNCHECKED_CAST")
-
 package io.core.common.util.tools
 
 import androidx.annotation.AnyThread
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.*
-import io.core.common.util.tools.buildMainHandler
 import java.util.concurrent.*
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicInteger
@@ -133,6 +130,7 @@ object ThreadUltra {
                 task.onSuccess(result as T)
                 task.onComplete()
             }
+
             else -> mainHandler.post(task::onComplete)
         }
     }
@@ -173,30 +171,39 @@ object ThreadUltra {
                 NamedThreadFactory("IO")
             ).apply { allowCoreThreadTimeOut(true) })
 
-            put(ThreadType.COMPUTATION, ThreadPoolExecutor(
-                cpuCount, cpuCount,
-                0L, TimeUnit.SECONDS,
-                LinkedBlockingQueue(),
-                NamedThreadFactory("Computation")
-            ))
+            put(
+                ThreadType.COMPUTATION, ThreadPoolExecutor(
+                    cpuCount, cpuCount,
+                    0L, TimeUnit.SECONDS,
+                    LinkedBlockingQueue(),
+                    NamedThreadFactory("Computation")
+                )
+            )
 
-            put(ThreadType.SINGLE, Executors.newSingleThreadExecutor(
-                NamedThreadFactory("Single")
-            ))
+            put(
+                ThreadType.SINGLE, Executors.newSingleThreadExecutor(
+                    NamedThreadFactory("Single")
+                )
+            )
 
-            put(ThreadType.CACHED, ThreadPoolExecutor(
-                0, Int.MAX_VALUE,
-                60L, TimeUnit.SECONDS,
-                SynchronousQueue(),
-                NamedThreadFactory("Cached")
-            ))
+            put(
+                ThreadType.CACHED, ThreadPoolExecutor(
+                    0, Int.MAX_VALUE,
+                    60L, TimeUnit.SECONDS,
+                    SynchronousQueue(),
+                    NamedThreadFactory("Cached")
+                )
+            )
         }
     }
 
 
     // 线程池管理方法
-    @JvmStatic fun shutdown() = (threadPoolMap.values + customPools.values).forEach(::shutdownExecutor)
-    @JvmStatic fun shutdown(type: ThreadType) = threadPoolMap[type]?.let(::shutdownExecutor)
+    @JvmStatic
+    fun shutdown() = (threadPoolMap.values + customPools.values).forEach(::shutdownExecutor)
+
+    @JvmStatic
+    fun shutdown(type: ThreadType) = threadPoolMap[type]?.let(::shutdownExecutor)
 
     private fun shutdownExecutor(executor: ExecutorService) {
         runCatching {
@@ -212,16 +219,19 @@ object ThreadUltra {
     private fun getExecutorByType(type: ThreadType) = threadPoolMap[type]
         ?: throw IllegalArgumentException("Invalid thread type")
 
-    @JvmStatic fun registerCustomPool(name: String, executor: ExecutorService) {
+    @JvmStatic
+    fun registerCustomPool(name: String, executor: ExecutorService) {
         customPools[name] = executor
     }
 
-    @JvmStatic fun getCustomPool(name: String) = customPools[name]
+    @JvmStatic
+    fun getCustomPool(name: String) = customPools[name]
 
     @JvmOverloads
-    @JvmStatic fun <T> executeWithLifecycle(
-        task: Task<T>,
+    @JvmStatic
+    fun <T> executeWithLifecycle(
         lifecycleOwner: LifecycleOwner,
+        task: Task<T>,
         threadType: ThreadType = ThreadType.SINGLE
     ) {
         task.bindTo(lifecycleOwner.lifecycle)
@@ -230,9 +240,10 @@ object ThreadUltra {
 
     private class NamedThreadFactory(private val prefix: String) : ThreadFactory {
         private val counter = AtomicInteger(0)
-        override fun newThread(r: Runnable) = Thread(r, "ThreadUltra-$prefix-${counter.incrementAndGet()}").apply {
-            priority = Thread.NORM_PRIORITY
-            isDaemon = false
-        }
+        override fun newThread(r: Runnable) =
+            Thread(r, "ThreadUltra-$prefix-${counter.incrementAndGet()}").apply {
+                priority = Thread.NORM_PRIORITY
+                isDaemon = false
+            }
     }
 }

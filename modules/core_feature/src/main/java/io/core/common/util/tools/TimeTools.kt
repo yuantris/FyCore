@@ -85,6 +85,57 @@ object TimeTools {
     }
 
     /**
+     * 获取指定时间戳所在周的第一天(周一)的起始时间
+     */
+    fun getStartOfWeek(timestamp: Long = currentTimeMillis): Long {
+        return Calendar.getInstance().apply {
+            timeInMillis = timestamp
+            set(Calendar.DAY_OF_WEEK, Calendar.MONDAY)
+            set(Calendar.HOUR_OF_DAY, 0)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
+        }.timeInMillis
+    }
+
+    /**
+     * 获取指定时间戳所在月的第一天的起始时间
+     */
+    fun getStartOfMonth(timestamp: Long = currentTimeMillis): Long {
+        return Calendar.getInstance().apply {
+            timeInMillis = timestamp
+            set(Calendar.DAY_OF_MONTH, 1)
+            set(Calendar.HOUR_OF_DAY, 0)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
+        }.timeInMillis
+    }
+
+    /**
+     * 判断两个时间戳是否在同一天
+     */
+    fun isSameDay(time1: Long, time2: Long): Boolean {
+        val cal1 = Calendar.getInstance().apply { timeInMillis = time1 }
+        val cal2 = Calendar.getInstance().apply { timeInMillis = time2 }
+        return cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&
+                cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR)
+    }
+
+    /**
+     * 获取年龄(根据生日时间戳)
+     */
+    fun getAge(birthday: Long): Int {
+        val now = Calendar.getInstance()
+        val birth = Calendar.getInstance().apply { timeInMillis = birthday }
+        var age = now.get(Calendar.YEAR) - birth.get(Calendar.YEAR)
+        if (now.get(Calendar.DAY_OF_YEAR) < birth.get(Calendar.DAY_OF_YEAR)) {
+            age--
+        }
+        return age
+    }
+
+    /**
      * 计算两个时间戳之间的天数差
      *
      * @param start 起始时间戳（单位：毫秒）
@@ -144,6 +195,13 @@ object TimeTools {
                 calendar.get(Calendar.DAY_OF_YEAR) == target.get(Calendar.DAY_OF_YEAR)
     }
 
+    /**
+     * 将时间字符串解析为时间戳
+     *
+     * @param time 时间字符串
+     * @param pattern 时间字符串格式(默认 yyyy-MM-dd)
+     * @return 解析后的时间戳，解析失败返回-1
+     */
     fun string2Millis(time: String, pattern: String = TimeFormat.DATE_DASHES): Long {
         try {
             return getDateFormat(pattern).parse(time)?.time ?: -1
@@ -153,5 +211,15 @@ object TimeTools {
         return -1
     }
 
+    /**
+     * 获取友好时间显示(今天/昨天显示具体时间，其他显示日期)
+     */
+    fun getFriendlyTime(timestamp: Long): String {
+        return when {
+            isToday(timestamp) -> "今天 ${getDateFormat("HH:mm").format(timestamp)}"
+            isYesterday(timestamp) -> "昨天 ${getDateFormat("HH:mm").format(timestamp)}"
+            else -> getDateFormat(TimeFormat.DATE_DASHES).format(timestamp)
+        }
+    }
 
 }

@@ -1,6 +1,7 @@
 package io.core
 
 import android.app.Application
+import androidx.core.app.AppLaunchChecker
 import androidx.core.content.FileProvider
 import io.core.common.helper.AppLifecycleTracker
 import io.core.common.util.extensions.currentTime
@@ -12,6 +13,7 @@ import io.core.engine.livebus.LiveEventBus
 import io.core.engine.livebus.logger.DefaultLogger
 import io.core.engine.storage.StorageFactory
 import io.core.engine.storage.storage
+import io.core.other.AppLauncher
 import io.core.other.CrashHandler
 import io.core.other.IntentData
 
@@ -79,6 +81,7 @@ object Android {
         IntentData.clear()
         // 清除sp数据
         Preferences.clear()
+        AppLauncher.clearCache()
         storage.takeIf { StorageFactory.isInit() }?.clear()
     }
 

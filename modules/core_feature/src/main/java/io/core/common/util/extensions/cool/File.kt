@@ -18,10 +18,6 @@ fun File.refreshMediaLibrary() {
 }
 
 fun File.getUri(): Uri {
-    return toUri()
-}
-
-fun File.toUri(): Uri {
     return UriTools.file2Uri(this)
 }
 

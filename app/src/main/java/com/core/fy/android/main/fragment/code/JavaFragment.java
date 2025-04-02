@@ -54,7 +54,7 @@ public class JavaFragment extends ReflectBindingFragment<FragmentJavaBinding, Te
         Map<String, String> map = CollectionTools.jsonToMap(data);
         LogCat.e(map);
 
-        ThreadUltra.executeWithLifecycle(new ThreadUltra.Task<List<Bitmap>>() {
+        ThreadUltra.executeWithLifecycle(this, new ThreadUltra.Task<List<Bitmap>>() {
             @Override
             public List<Bitmap> doInBackground() throws Throwable {
                 for (int i = 0; i < 20; i++) {
@@ -78,7 +78,7 @@ public class JavaFragment extends ReflectBindingFragment<FragmentJavaBinding, Te
             public void onFail(@NonNull ThreadUltra.ErrorType errorType, @NonNull Throwable ex) {
                 LogCat.e(ex);
             }
-        }, this);
+        });
     }
 
     @Override

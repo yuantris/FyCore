@@ -2,9 +2,12 @@ package com.core.fy.android.util
 
 import android.app.Application
 import android.view.View
+import com.core.fy.android.R
 import com.kongzue.dialogx.DialogX
+import com.kongzue.dialogx.dialogs.CustomDialog
 import com.kongzue.dialogx.dialogs.MessageDialog
 import com.kongzue.dialogx.dialogs.PopNotification
+import com.kongzue.dialogx.interfaces.OnBindView
 import com.kongzue.dialogx.style.KongzueStyle
 
 // DSL 配置类
@@ -28,6 +31,12 @@ class NotificationConfig {
     var icon: Int = 0
 }
 
+class CustomDialogConfig {
+    var layoutResId: Int = 0 // 默认布局
+    var onBindView: (CustomDialog, View) -> Unit = { _, _ -> } // 绑定视图的回调
+}
+
+
 fun Application.initDialogX() {
     GlobalCoroutine.launch {
         DialogX.init(this@initDialogX)
@@ -37,7 +46,7 @@ fun Application.initDialogX() {
 
 fun showDxNotification(block: NotificationConfig.() -> Unit): PopNotification {
     val config = NotificationConfig().apply(block)
-    return PopNotification.show(config.icon,config.title, config.content)
+    return PopNotification.show(config.icon, config.title, config.content)
 }
 
 fun showDxMessage(block: DialogXConfig.() -> Unit): MessageDialog {
@@ -51,4 +60,13 @@ fun showDxMessage(block: DialogXConfig.() -> Unit): MessageDialog {
             config.onMessageCancel?.invoke(dialog, v)
             false
         }
+}
+
+fun showDxCustom(block: CustomDialogConfig.() -> Unit): CustomDialog {
+    val config = CustomDialogConfig().apply(block)
+    return CustomDialog.show(object : OnBindView<CustomDialog>(config.layoutResId) {
+        override fun onBind(dialog: CustomDialog, v: View) {
+            config.onBindView.invoke(dialog, v)
+        }
+    })
 }
