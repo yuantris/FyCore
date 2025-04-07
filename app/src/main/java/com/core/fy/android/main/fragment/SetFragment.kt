@@ -140,7 +140,6 @@ class SetFragment : ReflectBindingFragment<FragmentSetBinding, MainActivity>() {
             background {
                 "1"
             }
-
             success {
                 LogCat.d(this)
             }

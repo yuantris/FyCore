@@ -1,6 +1,8 @@
-package io.core.common.util.tools
+package io.core.common.util.concurrent
 
 import io.core.common.helper.coroutine.info.GlobalCoroutine
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.CountDownLatch
@@ -10,6 +12,7 @@ import java.util.concurrent.Executors
 import java.util.concurrent.ForkJoinPool
 import java.util.concurrent.ScheduledExecutorService
 import java.util.concurrent.ScheduledFuture
+import java.util.concurrent.ThreadFactory
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeoutException
 import java.util.concurrent.atomic.AtomicInteger
@@ -17,19 +20,77 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
-
-@Suppress("UNUSED", "MemberVisibilityCanBePrivate")
-class AsyncUtils private constructor() {
+/**
+ * 并发编程工具类，提供线程池管理、异步任务执行、超时控制、协程与Java Future互操作等功能。
+ *
+ * 主要功能包括：
+ * 1. 线程池管理：内置固定大小的线程池和调度线程池，自动根据CPU核心数调整大小
+ * 2. CompletableFuture增强：提供带超时、异常处理等增强功能
+ * 3. CountDownLatch工具：简化CountDownLatch的使用
+ * 4. 定时任务调度：支持延迟执行和周期性任务
+ * 5. Kotlin协程桥接：实现协程与CompletableFuture之间的互操作
+ *
+ * 使用示例：
+ * ```
+ * // 线程池使用
+ * val executor = Concurrency.executors
+ *
+ * // CompletableFuture增强
+ * val future = Concurrency.supplyAsync { computeResult() }
+ * val futureWithTimeout = Concurrency.withTimeout(future, 5, TimeUnit.SECONDS)
+ * val combinedFuture = Concurrency.allOf(future1, future2, future3)
+ *
+ * // CountDownLatch工具
+ * val latch = CountDownLatch(3)
+ * Concurrency.awaitLatch(latch, 1, TimeUnit.SECONDS)
+ * Concurrency.wrapWithLatch(latch, future).thenAccept { result -> ... }
+ * Concurrency.countDown(latch)
+ *
+ * // 定时任务调度
+ * val scheduled = Concurrency.schedule({ println("Delayed task") }, 1, TimeUnit.SECONDS)
+ * val periodic = Concurrency.scheduleAtFixedRate({ println("Periodic task") }, 0, 1, TimeUnit.SECONDS)
+ * Concurrency.cancelFuture(scheduled)
+ *
+ * // 协程桥接
+ * val result = Concurrency.awaitCompletable(future)
+ * val suspendResult = Concurrency.completableToSuspend(future)
+ * val futureFromCoroutine = Concurrency.suspendToCompletable { fetchData() }
+ *
+ * // 关闭线程池
+ * Concurrency.shutdown()
+ * ```
+ *
+ * 线程池配置：
+ * - 工作线程池：固定大小，最小4个线程，使用"async-worker"前缀命名
+ * - 调度线程池：固定大小，最小2个线程，使用"async-scheduler"前缀命名，守护线程
+ *
+ * 注意：
+ * - 所有线程池会在JVM关闭时自动关闭
+ * - 也可以手动调用[shutdown]方法关闭所有线程池
+ * - 默认使用IO调度器执行协程任务
+ */
+class Concurrency private constructor() {
     companion object {
         @JvmStatic
-        val executors: ExecutorService = ForkJoinPool.commonPool()
+        val executors: ExecutorService by lazy {
+            Executors.newFixedThreadPool(
+                Runtime.getRuntime().availableProcessors().coerceAtLeast(4),
+                NamedThreadFactory("async-worker")
+            ).also { pool ->
+                Runtime.getRuntime().addShutdownHook(Thread {
+                    pool.shutdownNow()
+                })
+            }
+        }
 
-        private val scheduler: ScheduledExecutorService = Executors.newScheduledThreadPool(
-            Runtime.getRuntime().availableProcessors() * 2
-        ) { r ->
-            Thread(r).apply {
-                name = "async-scheduler-${AtomicInteger(0).incrementAndGet()}"
-                isDaemon = true
+        private val scheduler: ScheduledExecutorService by lazy {
+            Executors.newScheduledThreadPool(
+                Runtime.getRuntime().availableProcessors().coerceAtLeast(2)
+            ) { r ->
+                Thread(r).apply {
+                    name = "async-scheduler-${AtomicInteger(0).incrementAndGet()}"
+                    isDaemon = true
+                }
             }
         }
 
@@ -38,7 +99,7 @@ class AsyncUtils private constructor() {
         @JvmOverloads
         fun <T> supplyAsync(
             supplier: () -> T,
-            executor: Executor = ForkJoinPool.commonPool()
+            executor: Executor = executors
         ): CompletableFuture<T> {
             return CompletableFuture.supplyAsync(supplier, executor)
         }
@@ -48,7 +109,7 @@ class AsyncUtils private constructor() {
             future: CompletableFuture<T>,
             timeout: Long,
             unit: TimeUnit,
-            exception: TimeoutException = TimeoutException("Operation timed out")
+            exception: TimeoutException = TimeoutException("Operation timed out after ${unit.toMillis(timeout)}ms")
         ): CompletableFuture<T> {
             return future.apply {
                 scheduler.schedule({
@@ -126,9 +187,12 @@ class AsyncUtils private constructor() {
         }
 
         @JvmStatic
-        fun <T> suspendToCompletable(block: suspend () -> T): CompletableFuture<T> {
+        fun <T> suspendToCompletable(
+            block: suspend () -> T,
+            dispatcher: CoroutineDispatcher = Dispatchers.IO
+        ): CompletableFuture<T> {
             val future = CompletableFuture<T>()
-            GlobalCoroutine.launch {
+            GlobalCoroutine.launch(dispatcher) {
                 try {
                     future.complete(block())
                 } catch (e: Exception) {
@@ -153,6 +217,20 @@ class AsyncUtils private constructor() {
         fun shutdown() {
             scheduler.shutdownNow()
             ForkJoinPool.commonPool().shutdown()
+        }
+    }
+
+    private class NamedThreadFactory(
+        private val prefix: String,
+        private val daemon: Boolean = false
+    ) : ThreadFactory {
+        private val counter = AtomicInteger(0)
+
+        override fun newThread(r: Runnable): Thread {
+            return Thread(r, "$prefix-${counter.incrementAndGet()}").apply {
+                isDaemon = daemon
+                priority = Thread.NORM_PRIORITY
+            }
         }
     }
 }

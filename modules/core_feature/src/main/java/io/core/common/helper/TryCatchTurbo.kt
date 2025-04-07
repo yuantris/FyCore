@@ -1,8 +1,7 @@
 package io.core.common.helper
 
-import java.util.function.Consumer
-
 import java.util.*
+import java.util.function.Consumer
 import java.util.function.Function
 
 /**
@@ -14,7 +13,7 @@ import java.util.function.Function
  * 3. 兼容 Java 1.8+ 的 Lambda 语法
  * 4. 支持 checked/unchecked 异常统一处理
  */
-object TryCatchTurbo {
+object TryV2 {
 
     /* ========================== 带返回值的操作 ========================== */
 
@@ -24,7 +23,7 @@ object TryCatchTurbo {
      * @return Optional 包装的结果，异常时返回 Optional.empty()
      */
     @JvmStatic
-    fun <T> safeGet(supplier: SupplierWithException<T>) =
+    fun <T> get(supplier: ThrowingSupplier<T>) =
         try {
             Optional.ofNullable(supplier.get())
         } catch (e: Exception) {
@@ -37,7 +36,7 @@ object TryCatchTurbo {
      * @param defaultValue 异常时返回的默认值
      */
     @JvmStatic
-    fun <T> safeGet(supplier: SupplierWithException<T>, defaultValue: T) =
+    fun <T> getOrElse(supplier: ThrowingSupplier<T>, defaultValue: T) =
         try {
             supplier.get()
         } catch (e: Exception) {
@@ -50,8 +49,8 @@ object TryCatchTurbo {
      * @param exceptionWrapper 异常转换函数
      */
     @JvmStatic
-    fun <T> safeGetOrThrow(
-        supplier: SupplierWithException<T>,
+    fun <T> getOrThrow(
+        supplier: ThrowingSupplier<T>,
         exceptionWrapper: Function<Exception, RuntimeException>
     ) = try {
         supplier.get()
@@ -64,29 +63,17 @@ object TryCatchTurbo {
     /**
      * 执行不带返回值的操作
      * @param runnable 可能抛出异常的操作
+     * @param onError 异常处理回调
      */
     @JvmStatic
-    fun safeRun(runnable: RunnableWithException) {
+    @JvmOverloads
+    fun runSafely(runnable: ThrowingRunnable, onError: Consumer<Exception>? = null) {
         try {
             runnable.run()
         } catch (e: Exception) {
             // 默认忽略异常
+            onError?.accept(e)
         }
-    }
-
-    /**
-     * 执行不带返回值的操作，带异常回调
-     * @param runnable 可能抛出异常的操作
-     * @param onError 异常处理回调
-     */
-    @JvmStatic
-    fun safeRun(
-        runnable: RunnableWithException,
-        onError: Consumer<Exception>
-    ) = try {
-        runnable.run()
-    } catch (e: Exception) {
-        onError.accept(e)
     }
 
     /**
@@ -114,7 +101,7 @@ object TryCatchTurbo {
 /**
  * 带异常的 Runnable
  */
-fun interface RunnableWithException {
+fun interface ThrowingRunnable {
     @Throws(Exception::class)
     fun run()
 }
@@ -122,7 +109,7 @@ fun interface RunnableWithException {
 /**
  * 带异常的 Supplier
  */
-fun interface SupplierWithException<T> {
+fun interface ThrowingSupplier<T> {
     @Throws(Exception::class)
     fun get(): T
 }

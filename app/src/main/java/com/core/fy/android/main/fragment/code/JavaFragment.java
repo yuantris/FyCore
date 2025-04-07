@@ -20,14 +20,15 @@ import java.util.SortedMap;
 import io.core.common.base.component.fragment.ReflectBindingFragment;
 import io.core.common.helper.AppLifecycleTracker;
 import io.core.common.helper.JsonUltra;
-import io.core.common.helper.TaskExecutor;
+import io.core.common.util.concurrent.TaskExecutor;
+import io.core.common.helper.TryV2;
 import io.core.common.util.MediaScanner;
 import io.core.common.util.Toaster;
 import io.core.common.util.extensions.cool.CollectionKt;
 import io.core.common.util.log.LogCat;
 import io.core.common.util.log.LogPure;
-import io.core.common.util.tools.AsyncUtils;
 import io.core.common.util.tools.CollectionTools;
+import io.core.common.util.concurrent.Concurrency;
 import io.core.common.util.tools.ThreadUltra;
 import io.core.common.util.tools.UriTools;
 import io.core.other.LiveDataPro;
@@ -87,11 +88,14 @@ public class JavaFragment extends ReflectBindingFragment<FragmentJavaBinding, Te
 
         String name = SafeJson.parse("{\"name\":\"张三\",\"age\":18}").getString("name");
         LogCat.e(name);
-        SafeJson object = SafeJson.parse("{\"key\": \"{\\\"nested\\\": 123}\"}").getObject("key");
-        LogCat.e(object.getString("nested"));
+        TryV2.runSafely(() -> {
+            SafeJson object = SafeJson.parse("{\"key\": \"{\\\"nested\\\": 123}\"}").getObject("key");
+            LogCat.e(object.getString("nested"));
+        }, LogCat::e);
 
         String formatted = JsonUltra.format("{\"key\": \"{\\\"nested\\\": 123}\"}");
         LogCat.e(formatted);
+
     }
 
     @Override
@@ -115,7 +119,7 @@ public class JavaFragment extends ReflectBindingFragment<FragmentJavaBinding, Te
                 .put("height", 1920)
                 .build();
 
-        AsyncUtils.supplyAsync(() -> MediaScanner.queryFiles(CollectionKt.createSet(MediaScanner.FileType.M4A)))
+        Concurrency.supplyAsync(() -> MediaScanner.queryFiles(CollectionKt.createSet(MediaScanner.FileType.M4A)))
                 .thenAccept(fileInfos -> {
                     Toaster.show("size:" + fileInfos.size());
                     String path = fileInfos.get(0).getPath();
