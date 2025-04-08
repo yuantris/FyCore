@@ -1,14 +1,13 @@
 package io.core
 
 import android.app.Application
-import androidx.core.app.AppLaunchChecker
 import androidx.core.content.FileProvider
-import io.core.common.helper.AppLifecycleTracker
+import io.core.common.helper.track.AppLifecycleTracker
 import io.core.common.util.extensions.currentTime
 import io.core.common.util.extensions.logD
 import io.core.common.util.log.LogCat
 import io.core.common.util.log.bury.AppLog
-import io.core.common.util.tools.Preferences
+import io.core.common.util.Preferences
 import io.core.engine.livebus.LiveEventBus
 import io.core.engine.livebus.logger.DefaultLogger
 import io.core.engine.storage.StorageFactory

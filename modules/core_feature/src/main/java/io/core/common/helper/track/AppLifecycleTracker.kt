@@ -1,4 +1,4 @@
-package io.core.common.helper
+package io.core.common.helper.track
 
 import android.app.Activity
 import android.app.Application
@@ -8,6 +8,7 @@ import android.util.Log
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ProcessLifecycleOwner
+import io.core.common.helper.ReflectHelper
 import io.core.common.util.extensions.cool.isMainThread
 import io.core.common.util.extensions.ui.isAlive
 import io.core.common.util.log.LogPure
@@ -15,7 +16,6 @@ import io.core.common.util.tools.buildMainHandler
 import java.lang.ref.WeakReference
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ConcurrentLinkedDeque
-import java.util.concurrent.CopyOnWriteArrayList
 
 /**
  * 应用生命周期跟踪器，用于监控Activity/Service生命周期及应用前后台状态
@@ -33,6 +33,9 @@ object AppLifecycleTracker : Application.ActivityLifecycleCallbacks, DefaultLife
     private val activityStack = ConcurrentLinkedDeque<WeakReference<Activity>>()
     private val serviceStack = ConcurrentLinkedDeque<WeakReference<Service>>()
     private val foregroundListeners = ConcurrentHashMap<String, (Boolean) -> Unit>()
+
+    // 新增暂停监听器相关成员
+    private val pausedListeners = ConcurrentHashMap<String, (Activity) -> Unit>()
     // endregion
 
     // region 公共API
@@ -55,6 +58,31 @@ object AppLifecycleTracker : Application.ActivityLifecycleCallbacks, DefaultLife
     fun unregisterAppStatusListener(tag: String = TAG) {
         foregroundListeners.remove(tag)
     }
+
+    /**
+     * 添加Activity暂停监听器
+     * @param activity 要监听的Activity
+     * @param listener 暂停回调
+     */
+    @JvmStatic
+    fun addOnActivityPausedListener(activity: Activity, listener: () -> Unit) {
+        val key = activity::class.java.name
+        pausedListeners[key] = { _ -> listener() }
+    }
+
+    /**
+     * 跟踪Activity生命周期，统计时长
+     * @param activity 要跟踪的Activity
+     */
+    @JvmStatic
+    fun trackActivityTime(activity: Activity) {
+        val startTime = System.currentTimeMillis()
+
+        addOnActivityPausedListener(activity) {
+            val duration = System.currentTimeMillis() - startTime
+            TimeTracker.updateStats(activity, duration)
+        }
+    }
     // endregion
 
     // region 生命周期跟踪
@@ -66,6 +94,11 @@ object AppLifecycleTracker : Application.ActivityLifecycleCallbacks, DefaultLife
     override fun onActivityResumed(activity: Activity) {
         logLifecycle(activity, "onResume")
         bringToFront(activity)
+    }
+
+    override fun onActivityPaused(activity: Activity) {
+        val key = activity::class.java.name
+        pausedListeners[key]?.invoke(activity)
     }
 
     override fun onActivityDestroyed(activity: Activity) {
@@ -235,7 +268,6 @@ object AppLifecycleTracker : Application.ActivityLifecycleCallbacks, DefaultLife
     // endregion
 
     // region 默认实现（简化）
-    override fun onActivityPaused(activity: Activity) = Unit
     override fun onActivityStarted(activity: Activity) = Unit
     override fun onActivityStopped(activity: Activity) = Unit
     override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) = Unit

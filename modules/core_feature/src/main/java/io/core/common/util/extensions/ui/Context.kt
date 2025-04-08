@@ -12,7 +12,6 @@ import android.app.PendingIntent.getBroadcast
 import android.app.PendingIntent.getService
 import android.app.Service
 import android.content.BroadcastReceiver
-import android.content.ComponentName
 import android.content.Context
 import android.content.ContextWrapper
 import android.content.Intent
@@ -28,7 +27,6 @@ import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.BatteryManager
 import android.os.Build
-import android.os.IBinder
 import android.os.Process
 import android.provider.Settings
 import android.view.View
@@ -44,14 +42,13 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import io.core.R
 import io.core.common.base.component.dialog.CustomToast
-import io.core.common.delegate.createSmartDelegate
 import io.core.common.util.Toaster
 import io.core.common.util.extensions.cool.logPrint
 import io.core.common.util.extensions.cool.printOnDebug
 import io.core.common.util.extensions.cool.pxToDp
 import io.core.common.util.extensions.layoutInflater
 import io.core.common.util.extensions.windowManager
-import io.core.common.util.tools.Preferences
+import io.core.common.util.Preferences
 import kotlin.system.exitProcess
 
 val Context.ctx

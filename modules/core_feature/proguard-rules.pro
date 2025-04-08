@@ -168,11 +168,11 @@
 -keep class androidx.lifecycle.** { *; }
 -keep class androidx.arch.core.** { *; }
 
--keep class io.core.common.helper.AppLifecycleTracker { *; }
--keep class io.core.common.helper.TurboTracker { *; }
--keep class io.core.common.helper.TurboTracker$DefaultLogger { *; }
--keep interface io.core.common.helper.TurboTracker$Logger { *; }
--keep interface io.core.common.helper.TurboTracker$ExtraInfoProvider { *; }
+-keep class io.core.common.helper.track.AppLifecycleTracker { *; }
+-keep class io.core.common.helper.track.TurboTracker { *; }
+-keep class io.core.common.helper.track.TurboTracker$DefaultLogger { *; }
+-keep interface io.core.common.helper.track.TurboTracker$Logger { *; }
+-keep interface io.core.common.helper.track.TurboTracker$ExtraInfoProvider { *; }
 
 # 保持继承了MultiState的类不被混淆
 -keep public class * extends io.core.engine.multi_state.MultiState { *; }

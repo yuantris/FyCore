@@ -3,7 +3,6 @@ package io.core.common
 import io.core.BuildConfig
 import io.core.R
 import io.core.appCtx
-import io.core.common.helper.AppLifecycleTracker
 import io.core.common.util.extensions.ui.getCompatColor
 import io.core.common.util.extensions.ui.isDebuggable
 

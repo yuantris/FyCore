@@ -15,7 +15,7 @@ import io.core.common.base.component.activity.CrashActivity
 import io.core.common.base.component.activity.CrashSameProcessActivity
 import io.core.common.base.component.activity.RestartActivity
 import io.core.common.base.interfaces.OnNextStep
-import io.core.common.helper.AppLifecycleTracker
+import io.core.common.helper.track.AppLifecycleTracker
 import io.core.common.util.extensions.cool.PathType
 import io.core.common.util.extensions.cool.createFolderReplace
 import io.core.common.util.extensions.cool.documentsDir

@@ -1,4 +1,4 @@
-package io.core.common.helper
+package io.core.common.helper.track
 
 import android.annotation.SuppressLint
 import android.app.Activity

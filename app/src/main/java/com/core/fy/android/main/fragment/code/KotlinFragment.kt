@@ -12,6 +12,7 @@ import io.core.common.util.concurrent.TaskExecutor
 import io.core.common.helper.TimeoutCallback
 import io.core.common.helper.TimeoutHandler
 import io.core.common.helper.jetpack.SingleLiveData
+import io.core.common.util.concurrent.Concurrency
 import io.core.common.util.extensions.cool.GSON
 import io.core.common.util.extensions.cool.PathType
 import io.core.common.util.extensions.cool.createMap
@@ -29,7 +30,6 @@ import io.core.common.util.extensions.ui.onClick
 import io.core.common.util.log.LogCat
 import io.core.common.util.log.LogPure
 import io.core.common.util.log.bury.AppLog
-import io.core.common.util.tools.AsyncUtils
 import io.core.common.util.tools.FileTools
 import io.core.engine.storage.storage
 import kotlinx.coroutines.delay
@@ -40,7 +40,6 @@ import kotlin.collections.forEach
 import kotlin.collections.listOf
 import kotlin.collections.mapOf
 import kotlin.collections.set
-
 
 class KotlinFragment : ReflectBindingFragment<FragmentKotlinBinding, TestPageActivity>() {
 
@@ -118,7 +117,7 @@ class KotlinFragment : ReflectBindingFragment<FragmentKotlinBinding, TestPageAct
 //                }
             }
         })
-        val fixedRate = AsyncUtils.scheduleAtFixedRate({
+        val fixedRate = Concurrency.scheduleAtFixedRate({
 //            LogPure.w {
 //                "scheduleAtFixedRate"
 //            }

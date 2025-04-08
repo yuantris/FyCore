@@ -1,13 +1,12 @@
 @file:Suppress("UNCHECKED_CAST")
 
-package io.core.common.util.tools
+package io.core.common.util
 
 import android.content.Context
 import android.content.SharedPreferences
 import io.core.appCtx
 import io.core.constant.SP_NAME
 import androidx.core.content.edit
-import io.core.common.util.tools.Preferences.sp
 
 /**
  * SharedPreferences 工具类，提供类型安全的持久化存储操作

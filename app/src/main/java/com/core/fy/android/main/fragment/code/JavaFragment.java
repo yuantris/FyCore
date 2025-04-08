@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.SortedMap;
 
 import io.core.common.base.component.fragment.ReflectBindingFragment;
-import io.core.common.helper.AppLifecycleTracker;
+import io.core.common.helper.track.AppLifecycleTracker;
 import io.core.common.helper.JsonUltra;
 import io.core.common.util.concurrent.TaskExecutor;
 import io.core.common.helper.TryV2;

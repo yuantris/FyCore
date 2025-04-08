@@ -11,8 +11,8 @@ import com.tencent.mmkv.MMKV
 import io.core.Android
 import io.core.BR
 import io.core.common.CoreConfig
-import io.core.common.helper.AppLifecycleTracker
-import io.core.common.helper.TurboTracker
+import io.core.common.helper.track.AppLifecycleTracker
+import io.core.common.helper.track.TurboTracker
 import io.core.common.util.extensions.notificationManager
 import io.core.common.util.log.LogPure
 import io.core.common.util.tools.OsUtils

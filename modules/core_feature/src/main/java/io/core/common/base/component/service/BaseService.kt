@@ -7,9 +7,8 @@ import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.lifecycleScope
 import com.hjq.permissions.Permission
 import com.hjq.permissions.XXPermissions
-import io.core.common.helper.AppLifecycleTracker
+import io.core.common.helper.track.AppLifecycleTracker
 import io.core.common.helper.coroutine.Coroutine
-import io.core.common.util.extensions.logD
 import io.core.common.util.log.LogPure
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart

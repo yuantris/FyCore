@@ -5,9 +5,11 @@ import com.core.fy.android.MainActivity
 import com.core.fy.android.constants.PreferKey
 import com.core.fy.android.databinding.FragmentSetBinding
 import com.core.fy.android.function.TestPageActivity
+import com.core.fy.android.function.read.ReadBookActivity
 import com.core.fy.android.help.HighLightHelper
 import io.core.common.base.component.fragment.ReflectBindingFragment
 import io.core.common.helper.JsonUltra
+import io.core.common.helper.track.TimeTracker
 import io.core.common.util.extensions.cool.coolThread
 import io.core.common.util.extensions.cool.timeFormat
 import io.core.common.util.extensions.currentTimeMillis
@@ -21,6 +23,7 @@ import io.core.common.util.extensions.ui.onDebouncedClick
 import io.core.common.util.extensions.ui.postDelayed
 import io.core.common.util.extensions.ui.startActivity
 import io.core.common.util.log.LogCat
+import io.core.common.util.log.LogPure
 import io.core.common.util.tools.ThreadUltra
 import io.core.common.util.tools.androidApiVersion
 import io.core.common.util.tools.androidVersion
@@ -33,6 +36,9 @@ import io.core.engine.storage.getWithAnnotation
 import io.core.engine.storage.put
 import io.core.engine.storage.storage
 import io.core.other.AppLauncher
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 /**
 # ██████████
@@ -85,14 +91,17 @@ class SetFragment : ReflectBindingFragment<FragmentSetBinding, MainActivity>() {
 //                AppLauncher.launchAppByPackage("com.taobao.taobao")
 //                val file = File("/sdcard/Documents/error.txt")
 //                AppLauncher.launchByUri(file.getUri().toString())
-                AppLauncher.launchSpecificActivity(
-                    "com.taobao.taobao",
-                    "com.taobao.browser.BrowserActivity",
-                    "https://item.taobao.com/item.htm?id=820919984621".toUri()
-                ) {
-                    putBoolean("is_refund_order_url", false)
-                    putBoolean("alloweWebViewHistoryBack", true)
-                }
+//                AppLauncher.launchSpecificActivity(
+//                    "com.taobao.taobao",
+//                    "com.taobao.browser.BrowserActivity",
+//                    "https://item.taobao.com/item.htm?id=820919984621".toUri()
+//                ) {
+//                    putBoolean("is_refund_order_url", false)
+//                    putBoolean("alloweWebViewHistoryBack", true)
+//                }
+
+                printTimeStats()
+
             }
 
             systemInfo.text = buildMultiLine {
@@ -109,6 +118,25 @@ class SetFragment : ReflectBindingFragment<FragmentSetBinding, MainActivity>() {
                     "Crash ${currentTimeMillis.timeFormat(TimeFormat.LOG_TIMESTAMP)}"
                 }
             }
+        }
+    }
+
+    // 获取统计数据
+    private fun printTimeStats() {
+        val stats = TimeTracker.getStats(ReadBookActivity::class.java)
+        val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
+
+        LogPure.d {
+            """
+            |页面停留统计:
+            |总时长: ${stats.totalDuration / 1000}秒
+            |今日: ${stats.todayDuration / 1000}秒
+            |本周: ${stats.weekDuration / 1000}秒
+            |本月: ${stats.monthDuration / 1000}秒
+            |首次访问: ${formatter.format(Date(stats.firstVisitTime))}
+            |最后访问: ${formatter.format(Date(stats.lastVisitTime))}
+            |访问次数: ${stats.visitCount}
+        """.trimMargin()
         }
     }
 

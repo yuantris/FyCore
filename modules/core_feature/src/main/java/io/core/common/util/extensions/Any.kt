@@ -6,7 +6,7 @@ import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ProcessLifecycleOwner
 import io.core.appCtx
-import io.core.common.helper.AppLifecycleTracker
+import io.core.common.helper.track.AppLifecycleTracker
 import io.core.common.util.extensions.cool.runDelayedMain
 import io.core.common.util.extensions.cool.timeFormat
 import io.core.common.util.extensions.ui.appPackageName
