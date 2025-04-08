@@ -70,6 +70,10 @@ open class FragmentPagerAdapter<F : Fragment>(manager: FragmentManager) :
         viewPager?.offscreenPageLimit = if (lazyMode) count else 1
     }
 
+    open fun getFragmentList(): MutableList<F> {
+        return fragmentSet
+    }
+
     /**
      * 获取当前的Fragment
      */

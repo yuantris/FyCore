@@ -11,12 +11,12 @@ import com.core.fy.android.main.fragment.HomeFragment
 import com.core.fy.android.main.fragment.SetFragment
 import com.core.fy.android.util.DoubleBackExitHandler
 import com.core.fy.android.util.showDxNotification
-import io.core.Android
 import io.core.common.base.component.activity.ReflectBindingActivity
 import io.core.common.base.component.adapter.BaseRecyclerAdapter
 import io.core.common.base.component.adapter.BaseViewHolder
 import io.core.common.base.component.adapter.createBindingViewHolder
 import io.core.common.base.component.fragment.BaseFragment
+import io.core.common.helper.StatusBarManager
 import io.core.common.helper.dialogs.showDialog
 import io.core.common.helper.rv.ItemViewHolder
 import io.core.common.helper.rv.RecyclerAdapter
@@ -69,6 +69,9 @@ class MainActivity : ReflectBindingActivity<ActivityMainBinding>() {
                 addOnPageSelectedListener {
                     navigationAdapter?.setSelectedPosition(it)
                 }
+
+                StatusBarManager.with(this@MainActivity)
+                    .setupWithViewPager(this, getFragmentList())
             }
         }
 

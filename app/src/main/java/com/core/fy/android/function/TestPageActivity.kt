@@ -11,12 +11,12 @@ import com.core.fy.android.main.fragment.code.JavaFragment
 import com.core.fy.android.main.fragment.code.KotlinFragment
 import com.google.android.material.tabs.TabLayoutMediator
 import io.core.common.base.component.activity.ReflectBindingActivity
-import io.core.common.helper.track.AppLifecycleTracker
 import io.core.common.helper.pool.ObjectPoolBuilder
+import io.core.common.helper.track.AppLifecycleTracker
+import io.core.common.util.Preferences
 import io.core.common.util.Toaster
 import io.core.common.util.extensions.logD
 import io.core.common.util.extensions.logW
-import io.core.common.util.Preferences
 import io.core.other.IntentData
 import kotlinx.coroutines.launch
 

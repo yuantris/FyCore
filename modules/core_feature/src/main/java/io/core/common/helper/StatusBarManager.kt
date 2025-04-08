@@ -1,0 +1,364 @@
+package io.core.common.helper
+
+import android.app.Activity
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Color
+import android.os.Build
+import android.view.View
+import android.view.ViewTreeObserver
+import android.view.WindowInsetsController
+import androidx.core.view.WindowCompat
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.OnLifecycleEvent
+import androidx.viewpager.widget.ViewPager
+import androidx.viewpager2.widget.ViewPager2
+import java.util.Collections
+import java.util.WeakHashMap
+import java.util.concurrent.atomic.AtomicBoolean
+
+/**
+ * 状态栏颜色管理
+ */
+class StatusBarManager private constructor(private val activity: Activity) : LifecycleObserver {
+
+    // 颜色缓存
+    private val colorCache = mutableMapOf<Int, Int>()
+    // 防止重复更新
+    private val isUpdating = AtomicBoolean(false)
+    // 当前状态栏样式
+    @Volatile
+    private var currentLightStatusBar: Boolean? = null
+
+    // 节流时间
+    private var throttleTimeMs: Long = 100
+    private var lastUpdateTime: Long = 0
+
+    /**
+     * 初始化透明状态栏
+     */
+    init {
+        makeStatusBarTransparent()
+        if (activity is LifecycleOwner) {
+            activity.lifecycle.addObserver(this)
+        }
+    }
+
+    /**
+     * 设置节流时间（毫秒）
+     */
+    fun setThrottleTime(timeMs: Long): StatusBarManager {
+        this.throttleTimeMs = timeMs
+        return this
+    }
+
+    /**
+     * 配置ViewPager2的状态栏颜色自动切换
+     */
+    fun setupWithViewPager(viewPager: ViewPager2, fragments: List<Fragment>) {
+        val callback = object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                updateForFragment(fragments.getOrNull(position))
+            }
+
+            override fun onPageScrolled(
+                position: Int,
+                positionOffset: Float,
+                positionOffsetPixels: Int
+            ) {
+                handlePageScrolled(fragments, position, positionOffset)
+            }
+        }
+        viewPager.registerOnPageChangeCallback(callback)
+        pageChangeCallbacks[viewPager] = callback
+    }
+
+    /**
+     * 配置ViewPager的状态栏颜色自动切换
+     */
+    fun setupWithViewPager(viewPager: ViewPager, fragments: List<Fragment>) {
+        val listener = object : ViewPager.OnPageChangeListener {
+            override fun onPageScrolled(
+                position: Int,
+                positionOffset: Float,
+                positionOffsetPixels: Int
+            ) {
+                handlePageScrolled(fragments, position, positionOffset)
+            }
+
+            override fun onPageSelected(position: Int) {
+                updateForFragment(fragments.getOrNull(position))
+            }
+
+            override fun onPageScrollStateChanged(state: Int) {}
+        }
+        viewPager.addOnPageChangeListener(listener)
+        pageChangeListeners[viewPager] = listener
+    }
+
+    /**
+     * 配置滚动视图的状态栏颜色自动切换
+     */
+    fun setupWithScrollView(scrollView: View, threshold: Int = 100) {
+        val listener = ViewTreeObserver.OnScrollChangedListener {
+            if (shouldThrottle()) return@OnScrollChangedListener
+            val color = getStatusBarColorFromView(scrollView, threshold)
+            updateStatusBarAppearance(color)
+        }
+        scrollView.viewTreeObserver.addOnScrollChangedListener(listener)
+        scrollListeners[scrollView] = listener
+    }
+
+    /**
+     * 配置单个View的状态栏颜色自动切换
+     */
+    fun setupWithView(view: View, threshold: Int = 100) {
+        val listener = ViewTreeObserver.OnGlobalLayoutListener {
+            if (shouldThrottle()) return@OnGlobalLayoutListener
+            val color = getStatusBarColorFromView(view, threshold)
+            updateStatusBarAppearance(color)
+        }
+        view.viewTreeObserver.addOnGlobalLayoutListener(listener)
+        layoutListeners[view] = listener
+    }
+
+    /**
+     * 配置当前Activity的状态栏颜色自动切换
+     */
+    fun setupWithActivity(threshold: Int = 100) {
+        val decorView = activity.window.decorView
+        val listener = ViewTreeObserver.OnGlobalLayoutListener {
+            if (shouldThrottle()) return@OnGlobalLayoutListener
+
+            val color = getStatusBarColorFromView(activity.window.decorView, threshold)
+            updateStatusBarAppearance(color)
+        }
+        decorView.viewTreeObserver.addOnGlobalLayoutListener(listener)
+        decorViewListeners[decorView] = listener
+    }
+
+    /**
+     * 手动更新状态栏颜色
+     */
+    fun updateStatusBarManually(isLight: Boolean) {
+        currentLightStatusBar = isLight
+        updateStatusBarAppearance(if (isLight) Color.WHITE else Color.BLACK)
+    }
+
+    /**
+     * 清除颜色缓存
+     */
+    fun clearCache() {
+        colorCache.clear()
+    }
+
+    /**
+     * 移除所有监听器
+     * 只要Activity实现了 LifecycleOwner 接口(如AppCompatActivity)，就会在销毁时自动调用 cleanup()，无需外部手动调用。
+     * 注意：如果Activity没有实现 LifecycleOwner ，仍然需要手动调用 cleanup()。
+     */
+    fun cleanup() {
+
+        // 单独处理DecorView监听器
+        decorViewListeners.forEach { (view, listener) ->
+            if (view.isAttachedToWindow) {
+                view.viewTreeObserver.removeOnGlobalLayoutListener(listener)
+            }
+        }
+        decorViewListeners.clear()
+
+        // 移除全局布局监听器
+        synchronized(layoutListeners) {
+            layoutListeners.forEach { (view, listener) ->
+                if (view.isAttachedToWindow) {
+                    view.viewTreeObserver.removeOnGlobalLayoutListener(listener)
+                }
+            }
+            layoutListeners.clear()
+        }
+
+        // 移除滚动监听器
+        synchronized(scrollListeners) {
+            scrollListeners.forEach { (view, listener) ->
+                if (view.isAttachedToWindow) {
+                    view.viewTreeObserver.removeOnScrollChangedListener(listener)
+                }
+            }
+            scrollListeners.clear()
+        }
+
+        // 移除ViewPager2回调
+        synchronized(pageChangeCallbacks) {
+            pageChangeCallbacks.forEach { (viewPager, callback) ->
+                viewPager.unregisterOnPageChangeCallback(callback)
+            }
+            pageChangeCallbacks.clear()
+        }
+
+        // 移除ViewPager监听器
+        synchronized(pageChangeListeners) {
+            pageChangeListeners.forEach { (viewPager, listener) ->
+                viewPager.removeOnPageChangeListener(listener)
+            }
+            pageChangeListeners.clear()
+        }
+
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+    private fun onDestroy() {
+        cleanup()
+    }
+
+
+    private fun makeStatusBarTransparent() {
+        WindowCompat.setDecorFitsSystemWindows(activity.window, false)
+        activity.window.statusBarColor = Color.TRANSPARENT
+    }
+
+    private fun handlePageScrolled(
+        fragments: List<Fragment>,
+        position: Int,
+        positionOffset: Float
+    ) {
+        if (shouldThrottle()) return
+
+        val currentFragment = fragments.getOrNull(position)
+        val nextFragment = if (positionOffset > 0.5f) {
+            fragments.getOrNull(position + 1)
+        } else {
+            fragments.getOrNull(position - 1)
+        }
+
+        val currentColor = getFragmentColor(currentFragment)
+        val nextColor = getFragmentColor(nextFragment)
+
+        if (currentColor != null && nextColor != null) {
+            val blendedColor = blendColors(currentColor, nextColor, positionOffset)
+            updateStatusBarAppearance(blendedColor)
+        } else if (currentColor != null) {
+            updateStatusBarAppearance(currentColor)
+        }
+    }
+
+    private fun updateForFragment(fragment: Fragment?) {
+        val color = getFragmentColor(fragment)
+        color?.let { updateStatusBarAppearance(it) }
+    }
+
+    private fun getFragmentColor(fragment: Fragment?): Int? {
+        return fragment?.view?.let { view ->
+            val hash = view.hashCode()
+            colorCache[hash] ?: run {
+                val color = getStatusBarColorFromView(view)
+                colorCache[hash] = color
+                color
+            }
+        }
+    }
+
+    private fun getStatusBarColorFromView(view: View, yOffset: Int = 0): Int {
+        if (!view.isAttachedToWindow || view.visibility != View.VISIBLE) {
+            return Color.WHITE
+        }
+
+        val location = IntArray(2)
+        view.getLocationOnScreen(location)
+        val y = location[1] + yOffset
+
+        if (y < 0 || y >= view.resources.displayMetrics.heightPixels) {
+            return Color.WHITE
+        }
+
+        return view.createBitmapFromView(1, 1, 0, y.coerceAtLeast(0))?.getPixel(0, 0) ?: Color.WHITE
+    }
+
+    private fun updateStatusBarAppearance(color: Int) {
+        if (isUpdating.getAndSet(true)) return
+
+        try {
+            val isLight = isColorLight(color)
+
+            // 避免不必要的更新
+            if (currentLightStatusBar == isLight) return
+            currentLightStatusBar = isLight
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                WindowCompat.getInsetsController(
+                    activity.window,
+                    activity.window.decorView
+                )?.isAppearanceLightStatusBars = isLight
+            }
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                activity.window.decorView.windowInsetsController?.setSystemBarsAppearance(
+                    if (isLight) WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS else 0,
+                    WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
+                )
+            }
+        } finally {
+            isUpdating.set(false)
+        }
+    }
+
+    private fun isColorLight(color: Int): Boolean {
+        val darkness = 1 - (0.299 * Color.red(color) +
+                0.587 * Color.green(color) +
+                0.114 * Color.blue(color)) / 255
+        return darkness < 0.5
+    }
+
+    private fun blendColors(color1: Int, color2: Int, ratio: Float): Int {
+        val inverseRatio = 1f - ratio
+        val r = (Color.red(color1) * inverseRatio + Color.red(color2) * ratio).toInt()
+        val g = (Color.green(color1) * inverseRatio + Color.green(color2) * ratio).toInt()
+        val b = (Color.blue(color1) * inverseRatio + Color.blue(color2) * ratio).toInt()
+        return Color.rgb(r, g, b)
+    }
+
+    private fun View.createBitmapFromView(width: Int, height: Int, x: Int, y: Int): Bitmap? {
+        if (width <= 0 || height <= 0) return null
+
+        val bitmap = try {
+            Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888).also {
+                val canvas = Canvas(it)
+                canvas.translate(-x.toFloat(), -y.toFloat())
+                this.draw(canvas)
+            }
+        } catch (e: Exception) {
+            null
+        }
+        return bitmap
+    }
+
+    private fun shouldThrottle(): Boolean {
+        val currentTime = System.currentTimeMillis()
+        return if (currentTime - lastUpdateTime < throttleTimeMs) {
+            true
+        } else {
+            lastUpdateTime = currentTime
+            false
+        }
+    }
+
+    companion object {
+
+        private val decorViewListeners =
+            mutableMapOf<View, ViewTreeObserver.OnGlobalLayoutListener>()
+        private val layoutListeners =
+            Collections.synchronizedMap(WeakHashMap<View, ViewTreeObserver.OnGlobalLayoutListener>())
+        private val scrollListeners =
+            Collections.synchronizedMap(WeakHashMap<View, ViewTreeObserver.OnScrollChangedListener>())
+        private val pageChangeCallbacks =
+            Collections.synchronizedMap(WeakHashMap<ViewPager2, ViewPager2.OnPageChangeCallback>())
+        private val pageChangeListeners =
+            Collections.synchronizedMap(WeakHashMap<ViewPager, ViewPager.OnPageChangeListener>())
+
+        fun with(activity: Activity): StatusBarManager {
+            return StatusBarManager(activity)
+        }
+    }
+}

@@ -1,6 +1,5 @@
 package com.core.fy.android.main.fragment
 
-import androidx.core.net.toUri
 import com.core.fy.android.MainActivity
 import com.core.fy.android.constants.PreferKey
 import com.core.fy.android.databinding.FragmentSetBinding
@@ -35,7 +34,6 @@ import io.core.constant.TimeFormat
 import io.core.engine.storage.getWithAnnotation
 import io.core.engine.storage.put
 import io.core.engine.storage.storage
-import io.core.other.AppLauncher
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -159,10 +157,10 @@ class SetFragment : ReflectBindingFragment<FragmentSetBinding, MainActivity>() {
 
     override fun onFragmentResume(first: Boolean) {
         super.onFragmentResume(first)
-        getAttachActivity()?.adaptStatusBarToView(
-            rootView = requireActivity().window.decorView,
-            targetView = binding.setRoot
-        )
+//        getAttachActivity()?.adaptStatusBarToView(
+//            rootView = requireActivity().window.decorView,
+//            targetView = binding.setRoot
+//        )
 
         coolThread<Any> {
             background {

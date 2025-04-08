@@ -116,10 +116,10 @@ class HomeFragment : ReflectBindingFragment<FragmentHomeBinding, MainActivity>()
 
     override fun onFragmentResume(first: Boolean) {
         super.onFragmentResume(first)
-        getAttachActivity()?.adaptStatusBarToView(
-            rootView = requireActivity().window.decorView,
-            targetView = binding.collTool
-        )
+//        getAttachActivity()?.adaptStatusBarToView(
+//            rootView = requireActivity().window.decorView,
+//            targetView = binding.collTool
+//        )
     }
 
 }
