@@ -37,11 +37,16 @@ class StatusBarManager private constructor(private val activity: Activity) : Lif
     private var throttleTimeMs: Long = 100
     private var lastUpdateTime: Long = 0
 
+    // 接管启用透明状态栏
+    private var enableTransparentStatusBar: Boolean = false
+
     /**
      * 初始化透明状态栏
      */
     init {
-        makeStatusBarTransparent()
+        if (enableTransparentStatusBar) {
+            makeStatusBarTransparent()
+        }
         if (activity is LifecycleOwner) {
             activity.lifecycle.addObserver(this)
         }
@@ -52,6 +57,17 @@ class StatusBarManager private constructor(private val activity: Activity) : Lif
      */
     fun setThrottleTime(timeMs: Long): StatusBarManager {
         this.throttleTimeMs = timeMs
+        return this
+    }
+
+    /**
+     * 设置是否接管启用透明状态栏
+     */
+    fun setEnableTransparentStatusBar(enable: Boolean): StatusBarManager {
+        this.enableTransparentStatusBar = enable
+        if (enable) {
+            makeStatusBarTransparent()
+        }
         return this
     }
 
