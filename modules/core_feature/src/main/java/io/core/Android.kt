@@ -57,7 +57,6 @@ object Android {
         _debug = debug
         _context = application
 
-        currentTime.logD()
         application.run {
             // 注册Activity生命周期回调
             AppLifecycleTracker.init(this)

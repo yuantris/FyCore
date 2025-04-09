@@ -18,7 +18,7 @@ object TimeMeasurer {
      * @return 代码块的执行结果
      */
     inline fun <T> measureTime(
-        tag: String = "TimeMeasurer",
+        tag: String = this.javaClass.simpleName,
         message: String = "Execution time: %dms",
         block: () -> T
     ): T {
@@ -46,7 +46,7 @@ object TimeMeasurer {
      * 高级版本：支持时间单位和自定义回调
      */
     inline fun <T> measureAdvanced(
-        tag: String = "TimeMeasurer",
+        tag: String = this.javaClass.simpleName,
         precision: Precision = Precision.MILLISECONDS,
         onTimeMeasured: (Long) -> Unit = { duration ->
             val unit = if (precision == Precision.MILLISECONDS) "ms" else "ns"
