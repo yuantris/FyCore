@@ -4,11 +4,13 @@ import android.app.Activity
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
+import android.graphics.Rect
 import android.os.Build
 import android.view.View
 import android.view.ViewTreeObserver
 import android.view.WindowInsetsController
 import androidx.core.view.WindowCompat
+import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
@@ -16,6 +18,8 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.OnLifecycleEvent
 import androidx.viewpager.widget.ViewPager
 import androidx.viewpager2.widget.ViewPager2
+import io.core.appCtx
+import io.core.common.util.extensions.ui.statusBarHeight
 import java.util.Collections
 import java.util.WeakHashMap
 import java.util.concurrent.atomic.AtomicBoolean
@@ -27,8 +31,10 @@ class StatusBarManager private constructor(private val activity: Activity) : Lif
 
     // 颜色缓存
     private val colorCache = mutableMapOf<Int, Int>()
+
     // 防止重复更新
     private val isUpdating = AtomicBoolean(false)
+
     // 当前状态栏样式
     @Volatile
     private var currentLightStatusBar: Boolean? = null
@@ -117,20 +123,52 @@ class StatusBarManager private constructor(private val activity: Activity) : Lif
 
     /**
      * 配置滚动视图的状态栏颜色自动切换
+     * @param scrollView 滚动视图
      */
-    fun setupWithScrollView(scrollView: View, threshold: Int = 100) {
-        val listener = ViewTreeObserver.OnScrollChangedListener {
-            if (shouldThrottle()) return@OnScrollChangedListener
-            val color = getStatusBarColorFromView(scrollView, threshold)
-            updateStatusBarAppearance(color)
+    @JvmOverloads
+    fun setupWithScrollView(
+        scrollView: NestedScrollView,
+        scrollStopDelay: Long = 300
+    ) {
+        var scrollRunnable: Runnable? = null
+        val listener = NestedScrollView.OnScrollChangeListener { v, _, scrollY, _, _ ->
+            // 移除旧任务
+            scrollRunnable?.let { v.removeCallbacks(it) }
+
+            // 实时采样（节流控制）
+            if (!shouldThrottle()) {
+                updateStatusBarColorFromScroll(scrollView, scrollY)
+            }
+
+            // 滚动停止后最终采样
+            scrollRunnable = Runnable {
+                updateStatusBarColorFromScroll(scrollView, scrollY)
+            }.also {
+                scrollView.postDelayed(it, scrollStopDelay)
+            }
         }
-        scrollView.viewTreeObserver.addOnScrollChangedListener(listener)
-        scrollListeners[scrollView] = listener
+
+        scrollView.setOnScrollChangeListener(listener)
+    }
+
+
+    private fun updateStatusBarColorFromScroll(scrollView: NestedScrollView, scrollY: Int) {
+        statusBarRect.set(0, 0, scrollView.width, statusBarHeight)
+        scrollView.getGlobalVisibleRect(viewVisibleRect)
+
+        if (statusBarRect.intersect(viewVisibleRect)) {
+            val centerY = statusBarRect.centerY() - scrollY
+            val color = getStatusBarColorFromView(scrollView, centerY.coerceAtLeast(0))
+            updateStatusBarAppearance(color)
+        } else {
+            updateStatusBarAppearance(Color.WHITE) // 默认回退
+        }
     }
 
     /**
      * 配置单个View的状态栏颜色自动切换
      */
+    @JvmOverloads
     fun setupWithView(view: View, threshold: Int = 100) {
         val listener = ViewTreeObserver.OnGlobalLayoutListener {
             if (shouldThrottle()) return@OnGlobalLayoutListener
@@ -144,6 +182,7 @@ class StatusBarManager private constructor(private val activity: Activity) : Lif
     /**
      * 配置当前Activity的状态栏颜色自动切换
      */
+    @JvmOverloads
     fun setupWithActivity(threshold: Int = 100) {
         val decorView = activity.window.decorView
         val listener = ViewTreeObserver.OnGlobalLayoutListener {
@@ -289,6 +328,18 @@ class StatusBarManager private constructor(private val activity: Activity) : Lif
             return Color.WHITE
         }
 
+        // 对于滚动视图，获取整个可见区域的截图
+        if (view is NestedScrollView || view is ViewPager || view is ViewPager2) {
+            val visibleRect = Rect()
+            view.getGlobalVisibleRect(visibleRect)
+            return view.createBitmapFromView(
+                visibleRect.width(),
+                1, // 高度为1像素，足够获取颜色
+                0,
+                y.coerceAtLeast(0)
+            )?.getPixel(0, 0) ?: Color.WHITE
+        }
+
         return view.createBitmapFromView(1, 1, 0, y.coerceAtLeast(0))?.getPixel(0, 0) ?: Color.WHITE
     }
 
@@ -362,6 +413,8 @@ class StatusBarManager private constructor(private val activity: Activity) : Lif
 
     companion object {
 
+        private val instances =
+            Collections.synchronizedMap(WeakHashMap<Activity, StatusBarManager>())
         private val decorViewListeners =
             mutableMapOf<View, ViewTreeObserver.OnGlobalLayoutListener>()
         private val layoutListeners =
@@ -373,8 +426,17 @@ class StatusBarManager private constructor(private val activity: Activity) : Lif
         private val pageChangeListeners =
             Collections.synchronizedMap(WeakHashMap<ViewPager, ViewPager.OnPageChangeListener>())
 
+        // Rect缓存
+        private val statusBarRect by lazy { Rect() }
+        private val viewVisibleRect by lazy { Rect() }
+        private val statusBarHeight by lazy { appCtx.statusBarHeight }
+
+        /**
+         * 获取StatusBarManager实例
+         */
+        @JvmStatic
         fun with(activity: Activity): StatusBarManager {
-            return StatusBarManager(activity)
+            return instances.getOrPut(activity) { StatusBarManager(activity) }
         }
     }
 }
