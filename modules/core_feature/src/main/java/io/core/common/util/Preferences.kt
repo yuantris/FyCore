@@ -64,13 +64,13 @@ object Preferences {
      * @param key 要删除的键名
      */
     @JvmStatic
-    fun remove(key: String) = sp.edit() { remove(key) }
+    fun remove(key: String) = sp.edit { remove(key) }
 
 
     /**
      * 清空所有存储项（谨慎使用）
      */
     @JvmStatic
-    fun clear() = sp.edit() { clear() }
+    fun clear() = sp.edit { clear() }
 
 }

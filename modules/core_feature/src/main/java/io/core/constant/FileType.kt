@@ -1,5 +1,7 @@
 package io.core.constant
 
+import android.webkit.MimeTypeMap
+
 /**
  * FileType 是一个用于存储文件扩展名与 MIME 类型映射的工具类。
  * 它提供了常见的文件扩展名及其对应的 MIME 类型，便于在文件操作中使用。
@@ -134,7 +136,13 @@ object FileType {
      * @return 对应的MIME类型
      */
     fun getMimeType(extension: String): String {
-        return MIME_TYPE_MAP[normalizeExtension(extension)] ?: "*/*"
+        // 先尝试自定义映射
+        return MIME_TYPE_MAP[normalizeExtension(extension)]
+        // 自定义没有则使用系统API
+            ?: MimeTypeMap.getSingleton()
+                .getMimeTypeFromExtension(normalizeExtension(extension).removePrefix("."))
+            // 最后回退到默认值
+            ?: "*/*"
     }
 
     /**
