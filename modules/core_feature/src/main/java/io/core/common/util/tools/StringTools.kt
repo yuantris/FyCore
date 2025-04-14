@@ -18,8 +18,7 @@ import java.util.zip.GZIPOutputStream
 import kotlin.math.abs
 
 
-@Suppress("unused", "MemberVisibilityCanBePrivate")
-object StringUtils {
+object StringTools {
     private const val HOUR_OF_DAY = 24
     private const val DAY_OF_YESTERDAY = 2
     private const val TIME_UNIT = 60
@@ -223,6 +222,14 @@ object StringUtils {
             }
         }
         return -1
+    }
+
+    @JvmStatic
+    @JvmOverloads
+    fun stringToIntV2(input: String?, defaultValue: Int = 0): Int {
+        if (input.isNullOrEmpty()) return defaultValue
+        val numericString = input.replace(Regex("[^0-9]"), "")
+        return numericString.takeIf { it.isNotEmpty() }?.toLongOrNull()?.toInt() ?: defaultValue
     }
 
     /**

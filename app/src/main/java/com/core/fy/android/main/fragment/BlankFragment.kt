@@ -1,7 +1,6 @@
 package com.core.fy.android.main.fragment
 
 import android.annotation.SuppressLint
-import android.widget.Toast
 import com.core.fy.android.MainActivity
 import com.core.fy.android.R
 import com.core.fy.android.constants.AppConst.timeFormat
@@ -20,7 +19,7 @@ import io.core.common.util.extensions.cool.runMain
 import io.core.common.util.extensions.ui.addViewToZYLayout
 import io.core.common.util.extensions.ui.getCompatColor
 import io.core.common.util.extensions.ui.onClick
-import io.core.common.util.tools.ColorUtils
+import io.core.common.util.tools.ColorTools
 import io.core.other.IntentData
 import io.core.widget.view.LoadingView
 import io.core.widget.view.RotateLoading
@@ -85,8 +84,8 @@ class BlankFragment : ReflectBindingFragment<FragmentBlankBinding, MainActivity>
         ) {
             while (isActive) { // 循环条件
                 runMain {
-                    loadingView.setColor(ColorUtils.getRandomColor())
-                    loading.loadingColor = ColorUtils.getRandomColor()
+                    loadingView.setColor(ColorTools.getRandomColor())
+                    loading.loadingColor = ColorTools.getRandomColor()
                 }
                 delay(3000)    // 非阻塞式延迟
             }

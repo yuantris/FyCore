@@ -2,8 +2,11 @@ package io.core.common.util.tools
 
 import android.graphics.Color
 import androidx.annotation.ColorInt
+import androidx.annotation.ColorRes
 import androidx.annotation.FloatRange
 import androidx.core.graphics.ColorUtils
+import io.core.appCtx
+import io.core.common.util.extensions.ui.getCompatColor
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.pow
@@ -11,13 +14,19 @@ import kotlin.math.roundToInt
 import kotlin.math.sqrt
 import kotlin.random.Random
 
-@Suppress("unused", "MemberVisibilityCanBePrivate")
-object ColorUtils {
+object ColorTools {
 
+    @JvmStatic
+    fun getColor(@ColorRes color: Int): Int {
+        return appCtx.getCompatColor(color)
+    }
+
+    @JvmStatic
     fun isColorLight(@ColorInt color: Int): Boolean {
         return ColorUtils.calculateLuminance(color) >= 0.5
     }
 
+    @JvmStatic
     fun intToString(intColor: Int): String {
         return String.format("#%06X", 0xFFFFFF and intColor)
     }
@@ -32,6 +41,7 @@ object ColorUtils {
      * @param color 一个包含Alpha通道的整数颜色值
      * @return 移除Alpha通道后的颜色值，Alpha通道被设置为不透明
      */
+    @JvmStatic
     fun stripAlpha(@ColorInt color: Int): Int {
         return -0x1000000 or color
     }
@@ -47,6 +57,7 @@ object ColorUtils {
      * @return 调整亮度后的颜色值，返回一个ColorInt值
      */
     @ColorInt
+    @JvmStatic
     fun shiftColor(@ColorInt color: Int, @FloatRange(from = 0.0, to = 2.0) by: Float): Int {
         if (by == 1f) return color
         val alpha = Color.alpha(color)
@@ -66,6 +77,7 @@ object ColorUtils {
      * @return 暗化后的颜色值
      */
     @ColorInt
+    @JvmStatic
     fun darkenColor(@ColorInt color: Int): Int {
         return shiftColor(color, 0.9f)
     }
@@ -79,6 +91,7 @@ object ColorUtils {
      * @return 一个代表变亮后颜色的整数。
      */
     @ColorInt
+    @JvmStatic
     fun lightenColor(@ColorInt color: Int): Int {
         return shiftColor(color, 1.1f)
     }
@@ -94,6 +107,7 @@ object ColorUtils {
      * @return Int 返回反转后的颜色值，同样使用@ColorInt注解标记
      */
     @ColorInt
+    @JvmStatic
     fun invertColor(@ColorInt color: Int): Int {
         val r = 255 - Color.red(color)
         val g = 255 - Color.green(color)
@@ -112,6 +126,7 @@ object ColorUtils {
      * @return Int 返回调整透明度后的颜色值
      */
     @ColorInt
+    @JvmStatic
     fun adjustAlpha(@ColorInt color: Int, @FloatRange(from = 0.0, to = 1.0) factor: Float): Int {
         val alpha = (Color.alpha(color) * factor).roundToInt()
         val red = Color.red(color)
@@ -131,6 +146,7 @@ object ColorUtils {
      * @return 返回一个新的颜色整数，其中alpha通道根据指定的透明度值设置
      */
     @ColorInt
+    @JvmStatic
     fun withAlpha(@ColorInt baseColor: Int, @FloatRange(from = 0.0, to = 1.0) alpha: Float): Int {
         val a = min(255, max(0, (alpha * 255).toInt())) shl 24
         val rgb = 0x00ffffff and baseColor
@@ -138,6 +154,7 @@ object ColorUtils {
     }
 
     @ColorInt
+    @JvmStatic
     fun getRandomColor(): Int {
         val red = Random.nextInt(256)
         val green = Random.nextInt(256)
@@ -146,6 +163,7 @@ object ColorUtils {
     }
 
     @ColorInt
+    @JvmStatic
     fun getRandomColorWithAlpha(): Int {
         val alpha = Random.nextInt(256)
         val red = Random.nextInt(256)
@@ -157,6 +175,7 @@ object ColorUtils {
     /**
      * Taken from CollapsingToolbarLayout's CollapsingTextHelper class.
      */
+    @JvmStatic
     fun blendColors(color1: Int, color2: Int, @FloatRange(from = 0.0, to = 1.0) ratio: Float): Int {
         val inverseRatio = 1f - ratio
         val a = Color.alpha(color1) * inverseRatio + Color.alpha(color2) * ratio
@@ -166,20 +185,24 @@ object ColorUtils {
         return Color.argb(a.toInt(), r.toInt(), g.toInt(), b.toInt())
     }
 
+    @JvmStatic
     fun argb(r: Int, g: Int, b: Int): Int {
         return argb(Byte.MAX_VALUE.toInt(), r, g, b)
     }
 
+    @JvmStatic
     fun argb(alpha: Int, r: Int, g: Int, b: Int): Int {
         val colorByteArr =
             byteArrayOf(alpha.toByte(), r.toByte(), g.toByte(), b.toByte())
         return byteArrToInt(colorByteArr)
     }
 
+    @JvmStatic
     fun rgb(argb: Int): IntArray {
         return intArrayOf(argb shr 16 and 0xFF, argb shr 8 and 0xFF, argb and 0xFF)
     }
 
+    @JvmStatic
     fun byteArrToInt(colorByteArr: ByteArray): Int {
         return ((colorByteArr[0].toInt() shl 24) + (colorByteArr[1].toInt() and 0xFF shl 16)
                 + (colorByteArr[2].toInt() and 0xFF shl 8) + (colorByteArr[3].toInt() and 0xFF))
@@ -189,6 +212,7 @@ object ColorUtils {
      * Computes the difference between two RGB colors by converting them to the L*a*b scale and
      * comparing them using the CIE76 algorithm { http://en.wikipedia.org/wiki/Color_difference#CIE76}
      */
+    @JvmStatic
     fun getColorDifference(a: Int, b: Int): Double {
         val lab1 = DoubleArray(3)
         val lab2 = DoubleArray(3)

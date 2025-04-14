@@ -8,7 +8,7 @@ import com.core.fy.android.R
 import com.core.fy.android.help.Selector
 import io.core.common.util.extensions.cool.dpToPx
 import io.core.common.util.extensions.ui.getCompatColor
-import io.core.common.util.tools.ColorUtils
+import io.core.common.util.tools.ColorTools
 
 class AccentBgTextView @JvmOverloads constructor(
     context: Context,
@@ -38,10 +38,10 @@ class AccentBgTextView @JvmOverloads constructor(
         background = Selector.shapeBuild()
             .setCornerRadius(radius)
             .setDefaultBgColor(accentColor)
-            .setPressedBgColor(ColorUtils.darkenColor(accentColor))
+            .setPressedBgColor(ColorTools.darkenColor(accentColor))
             .create()
         setTextColor(
-            if (ColorUtils.isColorLight(accentColor)) {
+            if (ColorTools.isColorLight(accentColor)) {
                 Color.BLACK
             } else {
                 Color.WHITE

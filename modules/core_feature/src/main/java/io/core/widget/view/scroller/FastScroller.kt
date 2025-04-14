@@ -27,7 +27,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import io.core.R
 import io.core.common.util.extensions.ui.getCompatColor
-import io.core.common.util.tools.ColorUtils
+import io.core.common.util.tools.ColorTools
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
@@ -510,11 +510,11 @@ class FastScroller : LinearLayout {
         mTrackView = findViewById(R.id.fastscroll_track)
         mScrollbar = findViewById(R.id.fastscroll_scrollbar)
         @ColorInt var bubbleColor =
-            ColorUtils.adjustAlpha(context.getCompatColor(R.color.common_accent_color), 0.8f)
+            ColorTools.adjustAlpha(context.getCompatColor(R.color.common_accent_color), 0.8f)
         @ColorInt var handleColor = context.getCompatColor(R.color.common_accent_color)
         @ColorInt var trackColor = context.getCompatColor(R.color.transparent30)
         @ColorInt var textColor =
-            if (ColorUtils.isColorLight(bubbleColor)) Color.BLACK else Color.WHITE
+            if (ColorTools.isColorLight(bubbleColor)) Color.BLACK else Color.WHITE
         var fadeScrollbar = true
         var showBubble = false
         var showTrack = true

@@ -15,7 +15,6 @@ import io.core.common.util.extensions.currentTimeMillis
 import io.core.common.util.extensions.logD
 import io.core.common.util.extensions.logE
 import io.core.common.util.extensions.logI
-import io.core.common.util.extensions.ui.adaptStatusBarToView
 import io.core.common.util.extensions.ui.appVersionName
 import io.core.common.util.extensions.ui.onClick
 import io.core.common.util.extensions.ui.onDebouncedClick

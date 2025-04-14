@@ -37,7 +37,7 @@ import io.core.common.util.extensions.ui.onClick
 import io.core.common.util.extensions.ui.onLongClick
 import io.core.common.util.extensions.ui.putPrefBoolean
 import io.core.common.util.extensions.ui.visible
-import io.core.common.util.tools.ColorUtils
+import io.core.common.util.tools.ColorTools
 import io.core.common.util.layout.ConstraintModify
 import io.core.common.util.layout.modifyBegin
 
@@ -77,12 +77,12 @@ class ReadMenu @JvmOverloads constructor(
     private var textColor: Int = if (immersiveMenu) {
         ReadBookConfig.durConfig.curTextColor()
     } else {
-        context.getPrimaryTextColor(ColorUtils.isColorLight(bgColor))
+        context.getPrimaryTextColor(ColorTools.isColorLight(bgColor))
     }
 
     private var bottomBackgroundList: ColorStateList = Selector.colorBuild()
         .setDefaultColor(bgColor)
-        .setPressedColor(ColorUtils.darkenColor(bgColor))
+        .setPressedColor(ColorTools.darkenColor(bgColor))
         .create()
     private var onMenuOutEnd: (() -> Unit)? = null
     private val showBrightnessView
@@ -158,7 +158,7 @@ class ReadMenu @JvmOverloads constructor(
         }
         initAnimation()
         if (immersiveMenu) {
-            val lightTextColor = ColorUtils.withAlpha(ColorUtils.lightenColor(textColor), 0.75f)
+            val lightTextColor = ColorTools.withAlpha(ColorTools.lightenColor(textColor), 0.75f)
             titleBar.setTextColor(textColor)
             titleBar.setBackgroundColor(bgColor)
             titleBar.setColorFilter(textColor)
@@ -175,7 +175,7 @@ class ReadMenu @JvmOverloads constructor(
         }
         val brightnessBackground = GradientDrawable()
         brightnessBackground.cornerRadius = 5F.dpToPx()
-        brightnessBackground.setColor(ColorUtils.adjustAlpha(bgColor, 0.5f))
+        brightnessBackground.setColor(ColorTools.adjustAlpha(bgColor, 0.5f))
         llBrightness.background = brightnessBackground
         if (false) {
             //titleBar.setBackgroundResource(R.drawable.bg_eink_border_bottom)
@@ -241,11 +241,11 @@ class ReadMenu @JvmOverloads constructor(
         textColor = if (immersiveMenu) {
             ReadBookConfig.durConfig.curTextColor()
         } else {
-            context.getPrimaryTextColor(ColorUtils.isColorLight(bgColor))
+            context.getPrimaryTextColor(ColorTools.isColorLight(bgColor))
         }
         bottomBackgroundList = Selector.colorBuild()
             .setDefaultColor(bgColor)
-            .setPressedColor(ColorUtils.darkenColor(bgColor))
+            .setPressedColor(ColorTools.darkenColor(bgColor))
             .create()
     }
 

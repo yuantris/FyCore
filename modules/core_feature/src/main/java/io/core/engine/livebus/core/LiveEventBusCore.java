@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Handler;
-import android.os.Looper;
 
 import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
@@ -19,9 +18,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 
 import io.core.Android;
-import io.core.common.util.CoreUtil;
 import io.core.common.util.extensions.cool.HandlerKt;
-import io.core.common.util.tools.HandlerUtilsKt;
 import io.core.common.util.tools.OsUtils;
 import io.core.common.util.tools.OsUtilsKt;
 import io.core.engine.livebus.ipc.consts.IpcConst;
@@ -151,7 +148,7 @@ public final class LiveEventBusCore {
         private final String key;
         private final LifecycleLiveData<T> liveData;
         private final Map<Observer, ObserverWrapper<T>> observerMap = new HashMap<>();
-        private final Handler mainHandler = HandlerUtilsKt.buildMainHandler();
+        private final Handler mainHandler = HandlerKt.buildMainHandler();
 
         LiveEvent(@NonNull String key) {
             this.key = key;

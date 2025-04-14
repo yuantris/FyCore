@@ -17,7 +17,7 @@ import io.core.R
 import io.core.common.util.extensions.ui.getCompatColor
 import io.core.common.util.extensions.ui.invisible
 import io.core.common.util.extensions.ui.visible
-import io.core.common.util.tools.ColorUtils
+import io.core.common.util.tools.ColorTools
 
 
 @Suppress("MemberVisibilityCanBePrivate", "unused")
@@ -122,7 +122,7 @@ class BadgeView @JvmOverloads constructor(
         bgDrawable.paint.color = badgeColor
         background = bgDrawable
         setTextColor(
-            if (ColorUtils.isColorLight(badgeColor)) {
+            if (ColorTools.isColorLight(badgeColor)) {
                 Color.BLACK
             } else {
                 Color.WHITE

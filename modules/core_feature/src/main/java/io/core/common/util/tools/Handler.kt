@@ -1,5 +1,3 @@
-@file:Suppress("unused")
-
 package io.core.common.util.tools
 
 import android.os.Handler
