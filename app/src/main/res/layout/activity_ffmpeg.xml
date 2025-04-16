@@ -11,7 +11,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ScrollView
+    <com.core.fy.android.widget.temporary.FastScrollNestedScrollView
+        android:id="@+id/fast"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@id/line"
@@ -22,7 +23,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="FFmpeg" />
-    </ScrollView>
+    </com.core.fy.android.widget.temporary.FastScrollNestedScrollView>
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/line"
@@ -35,15 +36,15 @@
         android:id="@+id/compress_all"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="批量压缩"
         app:layout_constraintStart_toStartOf="@id/title_bar"
-        app:layout_constraintTop_toBottomOf="@id/line"
-        android:text="批量压缩"/>
+        app:layout_constraintTop_toBottomOf="@id/line" />
 
     <io.core.widget.view.AccentTextView
         android:id="@+id/info"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/compress_all"/>
+        app:layout_constraintTop_toBottomOf="@id/compress_all" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

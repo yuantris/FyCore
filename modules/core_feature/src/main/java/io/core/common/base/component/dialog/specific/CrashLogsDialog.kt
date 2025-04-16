@@ -126,13 +126,9 @@ class CrashLogsDialog : BaseDialogFragment(R.layout.dialog_recycler_view),
     private val clearProcessor by lazy {
         DoubleClickProcessor(
             doubleClickAction = { viewModel.clearCrashLog() },
-            singleClickHint = { randomProcessor.generate() }
+            singleClickHint = { randomProcessor.generate() },
+            lifecycle = lifecycle
         )
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        clearProcessor.destroy()
     }
 
     override fun onMenuItemClick(item: MenuItem): Boolean {

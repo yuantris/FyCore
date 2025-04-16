@@ -159,3 +159,12 @@ fun String.toast(){
     Toaster.show(this)
 }
 
+/**
+ * 移除字符串中的所有空白字符。
+ * 该函数通过正则表达式匹配并移除字符串中的所有空白字符（包括空格、制表符、换行符等）。
+ * @return 返回一个不包含任何空白字符的新字符串。
+ */
+fun String.removeWhitespace(): String {
+    return this.replace("\\s+".toRegex(), "")
+}
+

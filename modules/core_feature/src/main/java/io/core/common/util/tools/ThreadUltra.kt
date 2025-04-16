@@ -1,3 +1,5 @@
+@file:Suppress("UNCHECKED_CAST", "DEPRECATION")
+
 package io.core.common.util.tools
 
 import androidx.annotation.AnyThread

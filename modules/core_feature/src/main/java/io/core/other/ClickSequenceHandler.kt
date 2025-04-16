@@ -5,8 +5,6 @@ import android.os.Handler
 import android.os.Looper
 import android.view.MotionEvent
 import android.view.View
-import io.core.common.util.log.LogCat
-import io.core.common.util.tools.TimeTools
 
 /**
  * ClickSequenceHandler 用于处理视图的点击序列和长按事件。
@@ -47,12 +45,10 @@ class ClickSequenceHandler(private val view: View, private val hideAction: OnHid
             } else {
                 1
             }
-            LogCat.v("点击次数: $clickCount")
             lastClickTime = currentTime
 
             if (clickCount == 3) {
                 isWaitingForLongPress = true
-                LogCat.v("准备长按")
                 setupLongPressListener()
                 handler.postDelayed(::resetState, WAIT_TIMEOUT)
             }
@@ -64,7 +60,6 @@ class ClickSequenceHandler(private val view: View, private val hideAction: OnHid
         view.setOnTouchListener { _, event ->
             when (event.action) {
                 MotionEvent.ACTION_DOWN -> {
-                    LogCat.v("按下时间：${TimeTools.getNowString()}")
                     handler.postDelayed(::triggerHideAction, LONG_PRESS_DURATION)
                     true
                 }
@@ -81,7 +76,6 @@ class ClickSequenceHandler(private val view: View, private val hideAction: OnHid
     }
 
     private fun triggerHideAction() {
-        LogCat.i("响应时间：${TimeTools.getNowString()}")
         hideAction.callback()
         resetState()
     }

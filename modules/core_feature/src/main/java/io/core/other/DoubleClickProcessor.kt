@@ -1,12 +1,16 @@
 package io.core.other
 
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
 import io.core.common.util.tools.buildMainHandler
 
 class DoubleClickProcessor(
     private val doubleClickAction: () -> Unit,
     private val singleClickHint: () -> Unit = {},
+    lifecycle: Lifecycle? = null,
     private val delayMillis: Long = 300
-) {
+) : DefaultLifecycleObserver {
     // 线程安全的时间记录
     @Volatile
     private var lastClickTime = 0L
@@ -15,9 +19,13 @@ class DoubleClickProcessor(
     private val handler = buildMainHandler()
     private val pendingSingleClick = mutableListOf<Runnable>()
 
+    init {
+        lifecycle?.addObserver(this)
+    }
+
     fun handleClick() {
         val currentTime = System.currentTimeMillis()
-        
+
         if (currentTime - lastClickTime < delayMillis) {
             // 符合双击条件
             handler.removeCallbacksAndMessages(null)
@@ -32,11 +40,11 @@ class DoubleClickProcessor(
             pendingSingleClick.add(runnable)
             handler.postDelayed(runnable, delayMillis)
         }
-        
+
         lastClickTime = currentTime
     }
 
-    fun destroy() {
+    override fun onDestroy(owner: LifecycleOwner) {
         handler.removeCallbacksAndMessages(null)
         pendingSingleClick.clear()
     }

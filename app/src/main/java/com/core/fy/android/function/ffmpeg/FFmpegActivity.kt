@@ -1,6 +1,7 @@
 package com.core.fy.android.function.ffmpeg
 
 import android.os.Bundle
+import android.widget.ScrollView
 import androidx.lifecycle.lifecycleScope
 import com.core.fy.android.constants.EventKey
 import com.core.fy.android.databinding.ActivityFfmpegBinding

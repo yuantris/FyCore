@@ -13,7 +13,6 @@ import io.core.constant.ANDROID_15
 import io.core.constant.ANDROID_7
 import io.core.constant.ANDROID_8
 import io.core.constant.ANDROID_9
-import io.core.constant.AndroidVer
 
 val isAndroid15Plus
     get() = OsUtils.atLeastV()
@@ -142,20 +141,30 @@ object OsUtils {
 
     @JvmStatic
     @JvmOverloads
-    fun atLeast(version: AndroidVer, lower: () -> Unit = { }, higher: () -> Unit) {
+    fun atLeast(
+        version: Int, lower: OnLowerListener = OnLowerListener { }, higher: OnHigherListener
+    ) {
         val isHigher = when (version) {
-            AndroidVer.A15 -> isAndroid15Plus
-            AndroidVer.A14 -> isAndroid14Plus
-            AndroidVer.A13 -> isAndroid13Plus
-            AndroidVer.A12 -> isAndroid12Plus
-            AndroidVer.A11 -> isAndroid11Plus
-            AndroidVer.A10 -> isAndroid10Plus
-            AndroidVer.A9 -> isAndroid9Plus
-            AndroidVer.A8 -> isAndroid8Plus
-            AndroidVer.A7 -> isAndroid7Plus
+            ANDROID_15 -> isAndroid15Plus
+            ANDROID_14 -> isAndroid14Plus
+            ANDROID_13 -> isAndroid13Plus
+            ANDROID_12 -> isAndroid12Plus
+            ANDROID_11 -> isAndroid11Plus
+            ANDROID_10 -> isAndroid10Plus
+            ANDROID_9 -> isAndroid9Plus
+            ANDROID_8 -> isAndroid8Plus
+            ANDROID_7 -> isAndroid7Plus
             else -> return
         }
 
-        if (isHigher) higher() else lower()
+        if (isHigher) higher.onHigher() else lower.onLower()
+    }
+
+    fun interface OnHigherListener {
+        fun onHigher()
+    }
+
+    fun interface OnLowerListener {
+        fun onLower()
     }
 }

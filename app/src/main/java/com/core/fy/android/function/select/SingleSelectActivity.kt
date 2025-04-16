@@ -8,19 +8,20 @@ import android.widget.CheckBox
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.blankj.utilcode.util.GsonUtils
 import com.core.fy.android.R
 import com.core.fy.android.databinding.ActivitySingleSelectBinding
 import io.core.common.base.component.activity.ReflectBindingActivity
-import io.core.common.util.Toaster
-import io.core.common.util.extensions.ui.notifyAllDataChanged
-import io.core.common.util.extensions.ui.onClick
-import io.core.common.util.extensions.ui.toast
-import io.core.common.util.tools.findFirstByProperty
 import io.core.common.base.component.adapter.SelectableAdapter
 import io.core.common.base.component.adapter.SelectableItem
 import io.core.common.base.component.adapter.SelectionController
 import io.core.common.base.component.adapter.SingleTypeAdapter
+import io.core.common.util.Toaster
+import io.core.common.util.extensions.cool.removeWhitespace
+import io.core.common.util.extensions.ui.notifyAllDataChanged
+import io.core.common.util.extensions.ui.onClick
+import io.core.common.util.extensions.ui.toast
+import io.core.common.util.tools.GsonTools
+import io.core.common.util.tools.findFirstByProperty
 
 class SingleSelectActivity : ReflectBindingActivity<ActivitySingleSelectBinding>(),
     SelectionController.SelectionStateListener {
@@ -34,7 +35,9 @@ class SingleSelectActivity : ReflectBindingActivity<ActivitySingleSelectBinding>
 
     private lateinit var controller: SelectionController<SelectItem>
     private lateinit var adapter: SelectAdapter
-    private val demoData = List(100) { SelectItem(it.toLong(), "Title $it", "Content $it") }
+    private val demoData = List(100) {
+        SelectItem(it.toLong(), "Title $it", "Content $it")
+    }
 
 
     override fun initial(savedInstanceState: Bundle?) {
@@ -86,14 +89,11 @@ class SingleSelectActivity : ReflectBindingActivity<ActivitySingleSelectBinding>
         }
     }
 
-    fun String.removeWhitespace(): String {
-        return this.replace("\\s+".toRegex(), "")
-    }
-
     override fun onSelectionChanged(selectedCount: Int) {
-        val toJson = GsonUtils.toJson(controller.getSelectedIds())
+        val toJson = GsonTools.toJson(controller.getSelectedIds())
         toJson.removeWhitespace()
-        binding.tip.text = "已选择 $selectedCount 项，\n：$toJson"
+        val text = "已选择 $selectedCount 项，\n：$toJson"
+        binding.tip.text = text
         controller.getSelectedIds().apply {
             if (this.isEmpty()) {
                 Toaster.show("没有选择")

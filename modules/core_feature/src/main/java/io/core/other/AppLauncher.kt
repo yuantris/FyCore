@@ -15,6 +15,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.core.net.toUri
 import io.core.appCtx
+import io.core.common.util.tools.ApkTools
 import java.io.File
 import java.util.concurrent.ConcurrentHashMap
 
@@ -50,7 +51,7 @@ object AppLauncher {
      * @return 是否成功找到并尝试启动应用
      */
     fun launchAppByPackage(packageName: String): Boolean {
-        if (!isAppInstalled(packageName)) return false
+        if (!ApkTools.isAppInstalled(packageName)) return false
 
         return try {
             packageManager.getLaunchIntentForPackage(packageName)
@@ -227,7 +228,7 @@ object AppLauncher {
     }
 
     /* ========================== 工具方法 ========================== */
-
+    @JvmStatic
     fun isAppInstalled(packageName: String): Boolean {
         return try {
             packageManager.getPackageInfo(packageName, 0)
@@ -237,6 +238,7 @@ object AppLauncher {
         }
     }
 
+    @SuppressLint("QueryPermissionsNeeded")
     fun Context.getInstalledApps(filter: (ResolveInfo) -> Boolean = { true }): List<ResolveInfo> {
         return packageManager.queryIntentActivities(
             Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_LAUNCHER),
