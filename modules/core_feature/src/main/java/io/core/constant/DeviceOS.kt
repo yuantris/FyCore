@@ -177,24 +177,34 @@ object DeviceOS {
 
     /** 华为UI检测（支持鸿蒙和EMUI） */
     private class HuaweiUIDetector : UIDetectionStrategy {
+
+        // 华为专属系统属性常量
+        private object HuaweiProps {
+            const val EMUI_VERSION = "ro.build.version.emui"
+            const val EMUI_VERSION_CODE = "ro.build.version.emui.code"
+            const val HARMONY_DISPLAY_ID = "ro.huawei.build.display.id"
+            const val HARMONY_PLATFORM_VER = "hw_sc.build.platform.version"
+            const val OEM_NAME = "ro.hw.oemName"
+        }
+
         override fun detect(): SystemUIInfo {
             return when {
                 isHarmonyOS() -> {
                     val versionName =
-                        getSystemProperty("ro.huawei.build.display.id", "HarmonyOS")
-                            .replace(getSystemProperty("ro.hw.oemName"), "")
+                        getSystemProperty(HuaweiProps.HARMONY_DISPLAY_ID, "HarmonyOS")
+                            .replace(getSystemProperty(HuaweiProps.OEM_NAME), "")
                             .removeWhitespace()
                     SystemUIInfo(
                         SystemUIType.HarmonyOS,
                         versionName,
-                        getSystemProperty("hw_sc.build.platform.version", Build.VERSION.INCREMENTAL)
+                        getSystemProperty(HuaweiProps.HARMONY_PLATFORM_VER, Build.VERSION.INCREMENTAL)
                     )
                 }
 
-                hasSystemProperty("ro.build.version.emui") -> SystemUIInfo(
+                hasSystemProperty(HuaweiProps.EMUI_VERSION) -> SystemUIInfo(
                     SystemUIType.EMUI,
-                    getSystemProperty("ro.build.version.emui"),
-                    getSystemProperty("ro.build.version.emui.code", Build.VERSION.INCREMENTAL)
+                    getSystemProperty(HuaweiProps.EMUI_VERSION),
+                    getSystemProperty(HuaweiProps.EMUI_VERSION_CODE, Build.VERSION.INCREMENTAL)
                 )
                 // 默认回退
                 else -> defaultAndroidInfo()
@@ -218,22 +228,31 @@ object DeviceOS {
 
     /** 小米UI检测（支持HyperOS和MIUI） */
     private class XiaomiUIDetector : UIDetectionStrategy {
+
+        // 小米专属系统属性常量
+        private object XiaomiProps {
+            const val MIUI_VERSION_NAME = "ro.miui.ui.version.name"
+            const val MIUI_VERSION_CODE = "ro.miui.ui.version.code"
+            const val HYPER_VERSION_NAME = "ro.mi.os.version.name"
+            const val HYPER_VERSION_CODE = "ro.mi.os.version.code"
+        }
+
         override fun detect(): SystemUIInfo {
-            val versionName = getSystemProperty("ro.miui.ui.version.name", "")
+            val versionName = getSystemProperty(XiaomiProps.MIUI_VERSION_NAME, "")
             return when {
                 // 检测澎湃OS（V8+版本）
-                versionName.startsWith("V8") || hasSystemProperty("ro.mi.os.version.name") ->
+                versionName.startsWith("V8") || hasSystemProperty(XiaomiProps.HYPER_VERSION_NAME) ->
                     SystemUIInfo(
                         SystemUIType.HyperOS,
-                        getSystemProperty("ro.mi.os.version.name", versionName),
-                        getSystemProperty("ro.mi.os.version.code", Build.VERSION.INCREMENTAL)
+                        getSystemProperty(XiaomiProps.HYPER_VERSION_NAME, versionName),
+                        getSystemProperty(XiaomiProps.HYPER_VERSION_CODE, Build.VERSION.INCREMENTAL)
                     )
 
-                hasSystemProperty("ro.miui.ui.version.name") ->
+                hasSystemProperty(XiaomiProps.MIUI_VERSION_NAME) ->
                     SystemUIInfo(
                         SystemUIType.MIUI,
                         versionName,
-                        getSystemProperty("ro.miui.ui.version.code", Build.VERSION.INCREMENTAL)
+                        getSystemProperty(XiaomiProps.MIUI_VERSION_CODE, Build.VERSION.INCREMENTAL)
                     )
 
                 else -> defaultAndroidInfo()
