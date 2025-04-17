@@ -22,6 +22,7 @@ import io.core.common.util.extensions.ui.postDelayed
 import io.core.common.util.extensions.ui.startActivity
 import io.core.common.util.log.LogCat
 import io.core.common.util.log.LogPure
+import io.core.constant.DeviceOS
 import io.core.common.util.tools.ThreadUltra
 import io.core.common.util.tools.androidApiVersion
 import io.core.common.util.tools.androidVersion
@@ -103,8 +104,11 @@ class SetFragment : ReflectBindingFragment<FragmentSetBinding, MainActivity>() {
 
             systemInfo.text = buildMultiLine {
                 append("Android $androidVersion")
-                appendDivider(16, '~')
                 append("Api $androidApiVersion")
+                appendDivider(12, "🉐")
+                append("${DeviceOS.brand}")
+                append("${DeviceOS.osName}")
+                append("${DeviceOS.systemUIInfo.versionName} ${DeviceOS.systemUIInfo.versionCode}")
             }
 
             testCode.onDebouncedClick {

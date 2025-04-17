@@ -14,7 +14,7 @@ import io.core.common.util.DiveGestureLine
 import io.core.common.util.extensions.addCallback
 import io.core.common.util.extensions.ui.BarColor
 import io.core.common.util.extensions.ui.adaptStatusBarToView
-import io.core.common.util.tools.DeviceOSUtils
+import io.core.constant.DeviceOS
 import io.core.widget.layout.TitleBar
 
 abstract class BaseActivity : AppCompatActivity(), TitleBarAction, BundleAction {
@@ -122,11 +122,11 @@ abstract class BaseActivity : AppCompatActivity(), TitleBarAction, BundleAction 
     }
 
     protected open fun adaptOS() {
-        when (DeviceOSUtils.deviceBrand) {
-            DeviceOSUtils.DeviceBrand.XIAOMI -> xiaomiAdapt(window)
-            DeviceOSUtils.DeviceBrand.HUAWEI -> huaweiAdapt(window)
-            DeviceOSUtils.DeviceBrand.OPPO -> oppoAdapt(window)
-            DeviceOSUtils.DeviceBrand.VIVO -> vivoAdapt(window)
+        when (DeviceOS.brand) {
+            DeviceOS.Brand.Xiaomi -> xiaomiAdapt(window)
+            DeviceOS.Brand.HUAWEI -> huaweiAdapt(window)
+            DeviceOS.Brand.OPPO -> oppoAdapt(window)
+            DeviceOS.Brand.vivo -> vivoAdapt(window)
 
             else -> Unit
         }

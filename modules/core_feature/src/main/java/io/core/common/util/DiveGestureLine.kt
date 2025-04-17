@@ -6,7 +6,7 @@ import android.view.WindowManager
 import com.gyf.immersionbar.ktx.navigationBarHeight
 import io.core.appCtx
 import io.core.common.util.extensions.ui.setPaddingBottom
-import io.core.common.util.tools.DeviceOSUtils
+import io.core.constant.DeviceOS
 
 /**
 # ██████████
@@ -23,8 +23,8 @@ import io.core.common.util.tools.DeviceOSUtils
  */
 
 fun View.processNavigationBar() {
-    when(DeviceOSUtils.deviceBrand){
-        DeviceOSUtils.DeviceBrand.XIAOMI -> {
+    when(DeviceOS.brand){
+        DeviceOS.Brand.Xiaomi -> {
             this.setPaddingBottom(appCtx.navigationBarHeight)
         }
 

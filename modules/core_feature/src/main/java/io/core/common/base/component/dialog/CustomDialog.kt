@@ -56,6 +56,10 @@ class CustomDialog private constructor(
         dialog = null
     }
 
+    fun isShowing(): Boolean {
+        return dialog?.isShowing ?: false
+    }
+
     class Builder(private var context: Context) : BasePopup.Builder<Builder>() {
         private var layoutId = 0
         private var width = ViewGroup.LayoutParams.WRAP_CONTENT

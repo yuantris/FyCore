@@ -38,8 +38,8 @@ class MultiLineBuilder {
     /**
      * 添加分隔线
      */
-    fun appendDivider(length: Int, char: Char = '-') {
-        lines.add(char.toString().repeat(length))
+    fun appendDivider(length: Int, char: String = "-") {
+        lines.add(char.repeat(length))
     }
 
     internal fun build(): String {
