@@ -58,7 +58,8 @@ object DeviceOS {
     data class SystemRomInfo(
         val type: Rom,
         val versionName: String,
-        val versionCode: String
+        val versionCode: String,
+        val versionDesc: String = "" // HyperOS 2.0
     )
 
     // ========== 公共API ==========
@@ -85,16 +86,13 @@ object DeviceOS {
     val isMIUI: Boolean get() = romName == Rom.MIUI
 
     @JvmStatic
-    val isHarmonyOS: Boolean get() = romName == Rom.HarmonyOS
-
-    @JvmStatic
     val isHyperOS: Boolean get() = romName == Rom.HyperOS
 
     @JvmStatic
-    val isColorOS: Boolean get() = romName == Rom.ColorOS
+    val isHarmonyOS: Boolean get() = romName == Rom.HarmonyOS
 
     @JvmStatic
-    val isFlyme: Boolean get() = romName == Rom.FLYME
+    val isColorOS: Boolean get() = romName == Rom.ColorOS
 
     // ========== 品牌检测核心 ==========
 
@@ -253,10 +251,10 @@ object DeviceOS {
             Brand.REDMI to XiaomiRomDetector(),
             Brand.POCO to XiaomiRomDetector(),
             Brand.OPPO to OppoRomDetector(),
+            Brand.realme to RealmeRomDetector(),
+            Brand.OnePlus to OnePlusRomDetector(),
             Brand.vivo to VivoRomDetector(),
             Brand.IQOO to VivoRomDetector(),
-            Brand.OnePlus to OnePlusRomDetector(),
-            Brand.realme to RealmeRomDetector(),
             Brand.SAMSUNG to SamsungRomDetector(),
             Brand.MEIZU to MeizuRomDetector(),
             Brand.HONOR to HonorRomDetector()
@@ -289,13 +287,15 @@ object DeviceOS {
                         getSystemProperty(HuaweiProps.HARMONY_DISPLAY_ID, "HarmonyOS")
                             .replace(getSystemProperty(HuaweiProps.OEM_NAME), "")
                             .removeWhitespace()
+                    val versionCode = getSystemProperty(
+                        HuaweiProps.HARMONY_PLATFORM_VER,
+                        Build.VERSION.INCREMENTAL
+                    )
                     SystemRomInfo(
                         Rom.HarmonyOS,
                         versionName,
-                        getSystemProperty(
-                            HuaweiProps.HARMONY_PLATFORM_VER,
-                            Build.VERSION.INCREMENTAL
-                        )
+                        versionCode,
+                        "${Rom.HarmonyOS.name} $versionCode"
                     )
                 }
 
@@ -332,6 +332,7 @@ object DeviceOS {
             const val MIUI_VERSION_NAME = "ro.miui.ui.version.name"
             const val MIUI_VERSION_CODE = "ro.miui.ui.version.code"
             const val HYPER_VERSION_NAME = "ro.mi.os.version.name"
+            const val HYPER_VERSION_INC = "ro.mi.os.version.incremental"
             const val HYPER_VERSION_CODE = "ro.mi.os.version.code"
         }
 
@@ -339,12 +340,22 @@ object DeviceOS {
             val versionName = getSystemProperty(XiaomiProps.MIUI_VERSION_NAME, "")
             return when {
                 // 检测澎湃OS（V8+版本）
-                versionName.startsWith("V8") || hasSystemProperty(XiaomiProps.HYPER_VERSION_NAME) ->
+                versionName.startsWith("V8") || hasSystemProperty(XiaomiProps.HYPER_VERSION_NAME) -> {
+                    val property =
+                        getSystemProperty(XiaomiProps.HYPER_VERSION_NAME, versionName)
                     SystemRomInfo(
                         Rom.HyperOS,
-                        getSystemProperty(XiaomiProps.HYPER_VERSION_NAME, versionName),
-                        getSystemProperty(XiaomiProps.HYPER_VERSION_CODE, Build.VERSION.INCREMENTAL)
+                        getSystemProperty(
+                            XiaomiProps.HYPER_VERSION_INC,
+                            property
+                        ),
+                        getSystemProperty(
+                            XiaomiProps.HYPER_VERSION_CODE,
+                            Build.VERSION.INCREMENTAL
+                        ),
+                        "Hyper${property}"
                     )
+                }
 
                 hasSystemProperty(XiaomiProps.MIUI_VERSION_NAME) ->
                     SystemRomInfo(
@@ -427,12 +438,21 @@ object DeviceOS {
 
     /** 三星Rom检测 */
     private class SamsungRomDetector : RomDetectionStrategy {
+
+        private object SamsungProps {
+            const val ONEUI_VERSION = "ro.build.version.oneui"
+            const val ONEUI_GSM_NAME = "gsm.version.baseband"
+        }
+
         override fun detect(): SystemRomInfo {
-            return if (hasSystemProperty("ro.build.scafe.version")) {
+            return if (hasSystemProperty(SamsungProps.ONEUI_VERSION)) {
+                val version =
+                    getSystemProperty(SamsungProps.ONEUI_VERSION, Build.VERSION.INCREMENTAL)
                 SystemRomInfo(
                     Rom.ONE_UI,
-                    getSystemProperty("ro.build.scafe.version"),
-                    getSystemProperty("ro.build.scafe.version.code", Build.VERSION.INCREMENTAL)
+                    getSystemProperty(SamsungProps.ONEUI_GSM_NAME),
+                    version,
+                    "One UI $version"
                 )
             } else {
                 defaultAndroidInfo()
