@@ -6,40 +6,9 @@
     android:background="@color/white"
     android:layout_height="match_parent">
 
-    <com.core.fy.android.widget.ZYLayout
-        android:id="@+id/zy_layout"
-        android:layout_width="@dimen/dp_200"
-        android:layout_height="@dimen/dp_200" />
+    <io.core.widget.view.ScrollTextView
+        android:id="@+id/text"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 
-    <com.core.fy.android.widget.ZYLayout
-        android:id="@+id/zy_layout_1"
-        android:layout_width="@dimen/dp_200"
-        android:layout_height="@dimen/dp_200"
-        android:layout_gravity="bottom|end" />
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:orientation="vertical">
-
-        <com.core.fy.android.widget.AccentBgTextView
-            android:id="@+id/time"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:padding="@dimen/dp_10"
-            app:radius="@dimen/dp_16" />
-
-        <View
-            android:layout_width="0dp"
-            android:layout_height="@dimen/dp_20" />
-
-        <com.core.fy.android.widget.AccentBgTextView
-            android:id="@+id/battery"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center" />
-
-    </LinearLayout>
 </FrameLayout>

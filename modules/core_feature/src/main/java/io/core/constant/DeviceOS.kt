@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.os.Build
 import io.core.common.util.extensions.cool.removeWhitespace
 import io.core.common.util.log.LogPure
+import io.core.common.util.tools.StringTools
 
 /**
  * 设备信息检测工具类
@@ -202,7 +203,8 @@ object DeviceOS {
             model: String,
             product: String
         ): Boolean {
-            return "iqoo" in manufacturer ||
+            return getSystemProperty(VivoRomDetector.VivoProps.VIVO_SERIES).lowercase() == "iqoo" ||
+                    "iqoo" in manufacturer ||
                     "iqoo" in brand ||
                     model.startsWith("iq") || // iQOO models like IQOO 9
                     product.startsWith("iq") ||
@@ -396,11 +398,11 @@ object DeviceOS {
     /** vivo Rom检测 */
     private class VivoRomDetector : RomDetectionStrategy {
 
-        private object VivoProps {
+        object VivoProps {
             const val VIVO_SERIES = "ro.vivo.product.series"
             const val VIVO_VERSION = "ro.vivo.os.version"
             const val VIVO_ORIGIN_OS = "ro.vivo.os.build.display.id"
-            const val IQOO_VERSION_CODE = "ro.vivo.product.version"
+            const val IQOO_VERSION_CODE_INC = "ro.vivo.product.version.incremental"
             const val VIVO_VERSION_CODE = "ro.vendor.vivo.product.version"
         }
 
@@ -410,9 +412,11 @@ object DeviceOS {
             val isFuntouchOS = hasSystemProperty(VivoProps.VIVO_VERSION)
 
             return when {
-                series.contains("iqoo") && isOriginOS -> createSystemRomInfo(
+                series.contains("iqoo") && isOriginOS -> SystemRomInfo(
                     Rom.OriginOS,
-                    VivoProps.IQOO_VERSION_CODE
+                    getSystemProperty(VivoProps.IQOO_VERSION_CODE_INC),
+                    getSystemProperty(VivoProps.VIVO_VERSION, Build.VERSION.INCREMENTAL),
+                    getSystemProperty(VivoProps.VIVO_ORIGIN_OS)
                 )
 
                 series.contains("vivo") && isOriginOS -> createSystemRomInfo(
@@ -526,12 +530,20 @@ object DeviceOS {
 
     /** 真我 Rom检测 */
     private class RealmeRomDetector : RomDetectionStrategy {
+
+        object RealmeProps {
+            const val REALME_VERSION = "ro.build.version.realmeui"
+            const val REALME_VERSION_NAME = "ro.build.display.id"
+        }
+
         override fun detect(): SystemRomInfo {
-            return if (hasSystemProperty("ro.realme.version")) {
+            return if (hasSystemProperty(RealmeProps.REALME_VERSION)) {
+                val property = getSystemProperty(RealmeProps.REALME_VERSION)
                 SystemRomInfo(
                     Rom.REALME_UI,
-                    getSystemProperty("ro.realme.version"),
-                    getSystemProperty("ro.realme.software.version", Build.VERSION.INCREMENTAL)
+                    getSystemProperty(RealmeProps.REALME_VERSION_NAME),
+                    getSystemProperty(RealmeProps.REALME_VERSION, Build.VERSION.INCREMENTAL),
+                    "realme UI ${property.replace("V", "")}"
                 )
             } else {
                 defaultAndroidInfo()
