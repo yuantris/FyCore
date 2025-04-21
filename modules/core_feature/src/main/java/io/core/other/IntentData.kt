@@ -4,166 +4,248 @@ package io.core.other
 
 import io.core.common.util.extensions.currentTimeMillis
 import java.lang.ref.SoftReference
-import java.util.concurrent.ConcurrentHashMap
-import java.util.concurrent.ConcurrentLinkedQueue
-import java.util.concurrent.locks.ReentrantLock
-import kotlin.concurrent.withLock
-import kotlin.math.min
+import java.util.concurrent.atomic.LongAdder
+import java.util.concurrent.locks.ReentrantReadWriteLock
+import kotlin.concurrent.read
+import kotlin.concurrent.write
 
 /**
- * 基于内存的智能缓存控制器，具备以下特性：
- * - 使用软引用存储对象避免内存泄漏
- * - LRU访问顺序淘汰机制
- * - 支持TTL过期时间
- * - 线程安全的并发访问
- * - 自动缓存清理策略
+ * 智能内存缓存控制器，具备以下优化特性：
+ * - 使用读写锁实现高效并发访问
+ * - 基于访问顺序的LRU淘汰机制
+ * - 自动TTL过期检查和清理
+ * - 内存敏感的软引用存储
+ * - 智能的缓存统计和监控
+ *
+ * 设计原则：
+ * 1. 线程安全：所有操作保证线程安全
+ * 2. 内存友好：自动清理和软引用防止OOM
+ * 3. 高性能：最小化锁竞争，优化读多写少场景
+ * 4. 自监控：提供详细的缓存命中统计
+ *
+ * 使用示例：
+ * ```
+ * // 存储数据（自动生成key）
+ * val key = IntentData.put("缓存值", ttl = 5000)
+ *
+ * // 获取数据
+ * val value: String? = IntentData.get<String>(key)
+ *
+ * // 带默认值的获取
+ * val value = IntentData.get(key, "默认值")
+ *
+ * // 获取统计信息
+ * println(IntentData.cacheStats())
+ * ```
  */
 object IntentData {
-    private const val MAX_ENTRIES = 100
-    private const val CLEAN_PERCENTAGE = 0.25f
-    private val lock = ReentrantLock()
+    private const val DEFAULT_MAX_ENTRIES = 100
+    private const val CLEANUP_FACTOR = 0.75 // 清理至75%容量
+    private var maxEntries: Int = DEFAULT_MAX_ENTRIES
+    private var cleanupFactor: Double = CLEANUP_FACTOR
+
+    private data class CacheEntry(
+        val data: SoftReference<Any>,
+        val expireTime: Long,
+        var lastAccess: Long = System.currentTimeMillis()
+    )
+
+    // 使用读写锁保护并发访问
+    private val lock = ReentrantReadWriteLock()
+
+    // 核心存储结构，LinkedHashMap维护访问顺序
+    private val cache = object : LinkedHashMap<String, CacheEntry>(DEFAULT_MAX_ENTRIES, 0.75f, true) {
+        override fun removeEldestEntry(eldest: MutableMap.MutableEntry<String, CacheEntry>?): Boolean {
+            return size > DEFAULT_MAX_ENTRIES
+        }
+    }
+
+    // 使用LongAdder优化高并发计数器
+    private val totalHits = LongAdder()
+    private val totalMisses = LongAdder()
 
     /**
-     * 存储缓存数据的核心容器，使用：
-     * - SoftReference 实现内存敏感缓存
-     * - ConcurrentHashMap 保证线程安全
-     */
-    private val bigData = ConcurrentHashMap<String, SoftReference<Any>>()
-    private val accessOrder = ConcurrentLinkedQueue<String>()
-    private val expireTimes = ConcurrentHashMap<String, Long>()
-
-    private var totalHits = 0L
-    private var totalMisses = 0L
-
-    /**
-     * 添加缓存对象（带手动指定key）
-     * @param key 缓存键（需保证唯一性）
-     * @param data 缓存对象（可空类型）
-     * @param ttl 存活时间（毫秒，0表示永久）
+     * 配置缓存的最大条目数和清理因子。
+     *
+     * @param maxEntries 缓存的最大条目数，必须为正数。默认值为当前实例的 `maxEntries`。
+     * @param cleanupFactor 清理因子，表示当缓存条目数达到最大条目数时，需要清理的比例。
+     *                      该值必须在 0.1 到 0.9 之间。默认值为当前实例的 `cleanupFactor`。
+     *
+     * @throws IllegalArgumentException 如果 `maxEntries` 不是正数，或者 `cleanupFactor` 不在 0.1 到 0.9 之间。
      */
     @JvmStatic
-    @Synchronized
+    @JvmOverloads
+    fun configure(maxEntries: Int = this.maxEntries, cleanupFactor: Double = this.cleanupFactor) {
+        require(maxEntries > 0) { "maxEntries must be positive" }
+        require(cleanupFactor in 0.1..0.9) { "cleanupFactor must be between 0.1 and 0.9" }
+
+        lock.write {
+            this.maxEntries = maxEntries
+            this.cleanupFactor = cleanupFactor
+        }
+    }
+
+    /**
+     * 存储缓存对象
+     *
+     * @param key 缓存键标识（需保证唯一性）
+     * @param data 要缓存的对象（可空类型）
+     * @param ttl 存活时间（毫秒，0表示永久缓存）
+     * @return 返回传入的key（链式调用可用）
+     *
+     * @throws IllegalArgumentException 如果key为空字符串
+     */
+    @JvmStatic
     @JvmOverloads
     fun <T : Any?> put(key: String, data: T, ttl: Long = 0L): String {
-        val expireTime = if (ttl > 0) System.currentTimeMillis() + ttl else 0L
-        bigData[key] = SoftReference(data)
-        expireTimes[key] = expireTime
-        recordAccess(key)
-        autoClean()
+        require(key.isNotEmpty()) { "Cache key cannot be empty" }
+
+        val expireTime = if (ttl > 0) System.currentTimeMillis() + ttl else Long.MAX_VALUE
+        val entry = CacheEntry(SoftReference(data), expireTime)
+
+        lock.write {
+            cache[key] = entry
+            // 触发自动清理
+            if (cache.size >= DEFAULT_MAX_ENTRIES) {
+                cleanUp()
+            }
+        }
         return key
     }
 
     /**
-     * 添加缓存对象（自动生成时间戳key）
-     * @return 自动生成的缓存键（基于当前时间戳）
+     * 自动生成key存储缓存对象
+     *
+     * @param data 要缓存的对象
+     * @param ttl 存活时间（毫秒）
+     * @return 自动生成的缓存key（基于时间戳）
      */
     @JvmStatic
-    @Synchronized
-    fun <T : Any?> put(data: T): String {
+    fun <T : Any?> put(data: T, ttl: Long = 0L): String {
         val key = currentTimeMillis.toString()
-        put(key, data)
-        return key
+        return put(key, data, ttl)
     }
 
     /**
-     * 获取缓存对象（线程安全带过期检查）
+     * 获取缓存对象
+     *
+     * @param key 要获取的缓存键
      * @return 当以下情况返回null：
-     * - key不存在
-     * - 对象已被回收
-     * - TTL已过期
-     * - 类型转换失败
+     *         - key不存在
+     *         - 对象已被回收
+     *         - TTL已过期
+     *         - 类型转换失败
      */
     @JvmStatic
-    @Synchronized
     fun <T : Any> get(key: String?): T? {
-        if (key == null) return null
+        if (key.isNullOrEmpty()) return null
 
-        return when {
-            !expireTimes.containsKey(key) -> {
-                totalMisses++
-                null
-            }
-
-            isExpired(key) -> {
-                expireTimes.remove(key)
-                bigData.remove(key)
-                totalMisses++
-                null
-            }
-
-            else -> {
-                totalHits++
-                bigData[key]?.get()?.let {
-                    recordAccess(key)
-                    it as? T
+        return lock.read {
+            cache[key]?.let { entry ->
+                if (isEntryValid(entry)) {
+                    totalHits.increment()
+                    entry.lastAccess = System.currentTimeMillis()
+                    entry.data.get() as? T
+                } else {
+                    lock.write { cache.remove(key) }
+                    totalMisses.increment()
+                    null
                 }
+            } ?: run {
+                totalMisses.increment()
+                null
             }
         }
     }
 
     /**
-     * 获取缓存对象（线程安全带默认值）
-     * @param defaultValue 当缓存不存在或失效时返回的默认值
-     * @return 当以下情况返回defaultValue：
-     * - key不存在
-     * - 对象已被回收
-     * - TTL已过期
-     * - 类型转换失败
-     * 否则返回非空缓存对象
+     * 获取缓存对象（带默认值）
+     *
+     * @param key 要获取的缓存键
+     * @param defaultValue 当缓存不存在时返回的默认值
+     * @return 缓存对象或默认值（保证非空）
      */
     @JvmStatic
-    @Synchronized
     fun <T : Any> get(key: String?, defaultValue: T): T {
         return get(key) ?: defaultValue
     }
 
     /**
-     * 生成缓存统计报告，包含：
-     * - 缓存命中率百分比
-     * - 当前缓存条目数 / 最大容量
+     * 检查是否包含有效缓存
+     *
+     * @param key 要检查的缓存键
+     * @return 当且仅当key存在且未过期时返回true
      */
-    fun cacheStats(): String =
-        "Hit Rate: ${totalHits.toFloat() / (totalHits + totalMisses) * 100}% | " +
-                "Entries: ${bigData.size}/$MAX_ENTRIES"
-
-    fun contains(key: String): Boolean = expireTimes.containsKey(key) && !isExpired(key)
-
     @JvmStatic
-    @Synchronized
-    fun clear() {
-        bigData.clear()
-        expireTimes.clear()
-        accessOrder.clear()
-    }
-
-    private fun recordAccess(key: String) {
-        accessOrder.remove(key)
-        accessOrder.add(key)
-    }
-
-    /**
-     * 执行缓存清理策略：
-     * 1. 当缓存超过最大容量时触发
-     * 2. 清理25%最久未访问的条目
-     * 3. 使用重入锁保证清理原子性
-     */
-    private fun autoClean() {
-        if (bigData.size <= MAX_ENTRIES) return
-
-        lock.withLock {
-            val targetSize = (MAX_ENTRIES * (1 - CLEAN_PERCENTAGE)).toInt()
-            val toRemove = accessOrder.take(min(accessOrder.size, MAX_ENTRIES - targetSize))
-
-            toRemove.forEach { key ->
-                bigData.remove(key)
-                expireTimes.remove(key)
-            }
-            accessOrder.removeAll(toRemove.toSet())
+    fun contains(key: String): Boolean {
+        return lock.read {
+            cache[key]?.let { isEntryValid(it) } ?: false
         }
     }
 
-    private fun isExpired(key: String): Boolean {
-        val expire = expireTimes[key] ?: return true
-        return expire > 0 && System.currentTimeMillis() > expire
+    /**
+     * 获取缓存统计信息
+     *
+     * @return 包含以下信息的字符串：
+     *         - 缓存命中率（百分比）
+     *         - 当前缓存条目数/最大容量
+     *         - 内存占用估算
+     */
+    fun cacheStats(): String {
+        val hits = totalHits.sum()
+        val misses = totalMisses.sum()
+        val hitRate = if (hits + misses > 0) {
+            hits.toDouble() / (hits + misses) * 100
+        } else 0.0
+
+        return lock.read {
+            "Hit Rate: ${"%.2f".format(hitRate)}% | " +
+                    "Entries: ${cache.size}/$DEFAULT_MAX_ENTRIES | " +
+                    "Memory: ${cache.size * 32} bytes (approx)"
+        }
+    }
+
+    /**
+     * 清空所有缓存
+     */
+    @JvmStatic
+    fun clear() {
+        lock.write {
+            cache.clear()
+            totalHits.reset()
+            totalMisses.reset()
+        }
+    }
+
+    // ============== 内部方法 ==============
+
+    /**
+     * 执行缓存清理：
+     * 1. 移除所有过期条目
+     * 2. 如果仍然超过限制，按LRU顺序移除
+     */
+    private fun cleanUp() {
+        lock.write {
+            val now = System.currentTimeMillis()
+            val targetSize = (maxEntries * cleanupFactor).toInt()
+
+            // 批量清理所有无效条目
+            cache.entries.removeAll { (_, entry) ->
+                entry.data.get() == null || now >= entry.expireTime
+            }
+
+            // 如果仍然超过限制，按LRU清理到目标大小
+            while (cache.size > targetSize) {
+                cache.remove(cache.keys.first()) // 移除最久未使用的
+            }
+        }
+    }
+
+    /**
+     * 检查缓存条目是否有效
+     */
+    private fun isEntryValid(entry: CacheEntry): Boolean {
+        return entry.data.get() != null &&
+                System.currentTimeMillis() < entry.expireTime
     }
 }

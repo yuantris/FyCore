@@ -3,6 +3,7 @@ package io.core.constant
 import android.annotation.SuppressLint
 import android.os.Build
 import io.core.common.util.extensions.cool.removeWhitespace
+import io.core.common.util.log.LogPure
 
 /**
  * 设备信息检测工具类
@@ -31,17 +32,17 @@ object DeviceOS {
     /** 系统Rom类型枚举 */
     /** 带<$>表示已完成验证 */
     enum class Rom {
-        EMUI,         // 华为EMUI (Deprecation)
-        HarmonyOS,   // 华为鸿蒙OS <$>
         MIUI,         // 小米MIUI (Deprecation)
         HyperOS,     // 小米澎湃OS <$>
+        EMUI,         // 华为EMUI (Deprecation)
+        HarmonyOS,   // 华为鸿蒙OS <$>
         ColorOS,     // OPPO ColorOS <$>
         FuntouchOS,  // vivo FuntouchOS (Deprecation)
         OriginOS,   // vivo原OS <$>
-        FLYME,        // 魅族Flyme
+        Flyme,        // 魅族Flyme
         H2OS,         // 一加H2OS (Deprecation)
         REALME_UI,    // realme UI
-        ONE_UI,       // 三星One UI
+        ONE_UI,       // 三星One UI <$>
         XPERIA_UI,    // 索尼Xperia UI
         ZUI,          // 联想ZUI
         MYOS,         // 中兴MyOS
@@ -49,9 +50,7 @@ object DeviceOS {
         MAGIC_UI,     // 荣耀Magic UI (Deprecation)
         MagicOS,   // 荣耀MagicOS <$>
         ROG_UI,       // 华硕ROG UI
-        PIXEL_UI,     // 谷歌Pixel UI
-        STOCK_ANDROID,// 原生Android
-        ANDROID      // 其他安卓
+        ANDROID      // 安卓原生（Google Pixel UI）
     }
 
     /** 系统UI信息数据类（包含类型和版本信息） */
@@ -107,8 +106,8 @@ object DeviceOS {
             Brand.realme to RealmeStrategy(),
 
             // Main brands
-            Brand.HUAWEI to SimpleBrandStrategy(setOf("huawei", "honor")),
-            Brand.Xiaomi to SimpleBrandStrategy(setOf("xiaomi")),
+            Brand.HUAWEI to SimpleBrandStrategy(setOf("huawei")),
+            Brand.Xiaomi to SimpleBrandStrategy(setOf("xiaomi", "redmi")),
             Brand.OPPO to SimpleBrandStrategy(setOf("oppo")),
             Brand.vivo to SimpleBrandStrategy(setOf("vivo")),
             Brand.SAMSUNG to SimpleBrandStrategy(setOf("samsung")),
@@ -127,6 +126,9 @@ object DeviceOS {
             val model = Build.MODEL.orEmpty().lowercase()
             val product = Build.PRODUCT.orEmpty().lowercase()
 
+            LogPure.d("DeviceOS") {
+                "detect: manufacturer=$manufacturer, brand=$brandName, model=$model, product=$product"
+            }
             return strategies.firstOrNull { (_, strategy) ->
                 strategy.matches(manufacturer, brandName, model, product)
             }?.first ?: Brand.UNKNOWN
@@ -497,7 +499,7 @@ object DeviceOS {
         override fun detect(): SystemRomInfo {
             return if (hasSystemProperty("ro.build.flyme.version")) {
                 SystemRomInfo(
-                    Rom.FLYME,
+                    Rom.Flyme,
                     getSystemProperty("ro.build.flyme.version"),
                     getSystemProperty("ro.build.display.id", Build.DISPLAY)
                 )
@@ -548,7 +550,8 @@ object DeviceOS {
     private fun defaultAndroidInfo() = SystemRomInfo(
         Rom.ANDROID,
         Build.VERSION.RELEASE,      // 系统版本（如13）
-        Build.VERSION.INCREMENTAL   // 内部版本号
+        Build.VERSION.INCREMENTAL,   // 内部版本号
+        "Android ${Build.VERSION.RELEASE} (${Build.ID})" // 默认以Google Pixel UI版本号
     )
 
     /** 检查系统属性是否存在 */
