@@ -24,6 +24,8 @@ object MediaHelper {
      * val duration3 = MediaHelper.getDuration(filePath, "m:ss.SSS")  // 3:45.230
      *
      */
+    @JvmStatic
+    @JvmOverloads
     @WorkerThread
     fun getDuration(filePath: String, formatStr: String? = "mm:ss"): String? {
         return try {
@@ -45,6 +47,7 @@ object MediaHelper {
     /**
      * 获取视频分辨率（同步版本）
      */
+    @JvmStatic
     @WorkerThread
     fun getVideoResolution(filePath: String): Pair<Int, Int>? {
         return try {
@@ -67,6 +70,7 @@ object MediaHelper {
     /**
      * 获取视频旋转角度（同步版本）
      */
+    @JvmStatic
     @WorkerThread
     fun getVideoRotation(filePath: String): Int {
         return try {
@@ -87,6 +91,7 @@ object MediaHelper {
      * 获取视频缩略图（第一帧）
      * @return Bitmap 失败返回null
      */
+    @JvmStatic
     @WorkerThread
     fun getVideoThumbnail(filePath: String): Bitmap? {
         return try {
@@ -104,6 +109,7 @@ object MediaHelper {
      * 获取音频专辑封面
      * @return Bitmap 失败返回null
      */
+    @JvmStatic
     @WorkerThread
     fun getAudioAlbumArt(filePath: String): Bitmap? {
         return try {
@@ -123,12 +129,14 @@ object MediaHelper {
      * 获取视频帧率
      * @return 帧率(单位：fps)，获取失败返回null
      */
+    @JvmStatic
     @WorkerThread
     fun getVideoFrameRate(filePath: String): Int? {
         return try {
             MediaMetadataRetriever().use {
                 it.setDataSource(filePath)
-                it.extractMetadata(MediaMetadataRetriever.METADATA_KEY_CAPTURE_FRAMERATE)?.toIntOrNull()
+                it.extractMetadata(MediaMetadataRetriever.METADATA_KEY_CAPTURE_FRAMERATE)
+                    ?.toIntOrNull()
             }
         } catch (e: Exception) {
             LogCat.e("获取视频帧率失败", tag = TAG, e)
@@ -140,12 +148,14 @@ object MediaHelper {
      * 获取音频比特率
      * @return 比特率(单位：kbps)，获取失败返回null
      */
+    @JvmStatic
     @WorkerThread
     fun getAudioBitrate(filePath: String): Int? {
         return try {
             MediaMetadataRetriever().use {
                 it.setDataSource(filePath)
-                it.extractMetadata(MediaMetadataRetriever.METADATA_KEY_BITRATE)?.toIntOrNull()?.div(1000)
+                it.extractMetadata(MediaMetadataRetriever.METADATA_KEY_BITRATE)?.toIntOrNull()
+                    ?.div(1000)
             }
         } catch (e: Exception) {
             LogCat.e("获取音频比特率失败", tag = TAG, e)
@@ -158,6 +168,8 @@ object MediaHelper {
      * @param timeUs 指定时间(微秒)，默认获取第一个关键帧
      * @return Bitmap 失败返回null
      */
+    @JvmStatic
+    @JvmOverloads
     @WorkerThread
     fun getVideoKeyFrame(filePath: String, timeUs: Long = 0): Bitmap? {
         return try {
@@ -174,6 +186,7 @@ object MediaHelper {
     /**
      * 检查文件是否为有效媒体文件(注意性能问题)
      */
+    @JvmStatic
     @WorkerThread
     fun isMediaFileValid(filePath: String): Boolean {
         return try {
@@ -190,6 +203,7 @@ object MediaHelper {
      * 获取媒体文件类型
      * @return 媒体类型字符串 (如 "video/mp4", "audio/mpeg")
      */
+    @JvmStatic
     @WorkerThread
     fun getMimeType(filePath: String): String? {
         return try {
@@ -208,7 +222,8 @@ object MediaHelper {
      * @param filePaths 媒体文件路径列表
      * @return Map<String, Boolean> 文件路径与验证结果映射
      */
-    fun validateMediaFiles(filePaths: List<String>): Map<String, Boolean> {
+    @JvmStatic
+    fun areVideosValid(filePaths: List<String>): Map<String, Boolean> {
         return MediaMetadataRetriever().use { retriever ->
             filePaths.associateWith { path ->
                 try {
@@ -219,6 +234,40 @@ object MediaHelper {
                 }
             }
         }
+    }
+
+    /**
+     * 批量验证媒体文件有效性（增强版本）
+     * @param filePaths 媒体文件路径列表
+     * @return Pair 包含两个元素：
+     *          first: 有效文件路径列表
+     *          second: 无效文件路径与对应异常的映射表
+     *
+     * 使用示例：
+     * val (validFiles, invalidFiles) = MediaHelper.areVideosValidV2(pathList)
+     * // validFiles: ["/sdcard/video.mp4", "/sdcard/music.mp3"]
+     * // invalidFiles: {"/sdcard/corrupt.mp4" => IOException(...)}
+     *
+     * 注意事项：
+     * 1. 该方法会记录每个无效文件的详细异常信息
+     * 2. 性能考虑：建议在后台线程调用，避免主线程阻塞
+     * 3. 返回的异常对象包含具体失败原因，可用于错误分析
+     */
+    @JvmStatic
+    fun areVideosValidV2(filePaths: List<String>): Pair<List<String>, Map<String, Exception>> {
+        val valid = mutableListOf<String>()
+        val invalid = mutableMapOf<String, Exception>()
+        MediaMetadataRetriever().use { retriever ->
+            filePaths.forEach { path ->
+                try {
+                    retriever.setDataSource(path)
+                    valid.add(path)
+                } catch (e: Exception) {
+                    invalid[path] = e
+                }
+            }
+        }
+        return Pair(valid, invalid)
     }
 
 
@@ -262,9 +311,10 @@ object MediaHelper {
         getAudioBitrate(filePath)
     }
 
-    suspend fun getVideoKeyFrameSuspend(filePath: String, timeUs: Long = 0) = withContext(Dispatchers.IO) {
-        getVideoKeyFrame(filePath, timeUs)
-    }
+    suspend fun getVideoKeyFrameSuspend(filePath: String, timeUs: Long = 0) =
+        withContext(Dispatchers.IO) {
+            getVideoKeyFrame(filePath, timeUs)
+        }
 
     suspend fun isMediaFileValidSuspend(filePath: String) = withContext(Dispatchers.IO) {
         isMediaFileValid(filePath)

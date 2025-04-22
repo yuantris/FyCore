@@ -42,7 +42,7 @@ object DeviceOS {
         OriginOS,   // vivo原OS <$>
         Flyme,        // 魅族Flyme
         H2OS,         // 一加H2OS (Deprecation)
-        REALME_UI,    // realme UI
+        realme_UI,    // realme UI <$>
         ONE_UI,       // 三星One UI <$>
         XPERIA_UI,    // 索尼Xperia UI
         ZUI,          // 联想ZUI
@@ -57,9 +57,9 @@ object DeviceOS {
     /** 系统UI信息数据类（包含类型和版本信息） */
     data class SystemRomInfo(
         val type: Rom,
-        val versionName: String,
-        val versionCode: String,
-        val versionDesc: String = "" // HyperOS 2.0
+        val verName: String,
+        val verCode: String,
+        val verDesc: String = "" // HyperOS 2.0
     )
 
     // ========== 公共API ==========
@@ -258,7 +258,7 @@ object DeviceOS {
             Brand.realme to RealmeRomDetector(),
             Brand.OnePlus to OnePlusRomDetector(),
             Brand.vivo to VivoRomDetector(),
-            Brand.IQOO to VivoRomDetector(),
+            Brand.IQOO to IQOORomDetector(),
             Brand.SAMSUNG to SamsungRomDetector(),
             Brand.MEIZU to MeizuRomDetector(),
             Brand.HONOR to HonorRomDetector()
@@ -276,7 +276,7 @@ object DeviceOS {
     private class HuaweiRomDetector : RomDetectionStrategy {
 
         // 华为专属系统属性常量
-        private object HuaweiProps {
+        object HuaweiProps {
             const val EMUI_VERSION = "ro.build.version.emui"
             const val EMUI_VERSION_CODE = "ro.build.version.emui.code"
             const val HARMONY_DISPLAY_ID = "ro.huawei.build.display.id"
@@ -332,7 +332,7 @@ object DeviceOS {
     private class XiaomiRomDetector : RomDetectionStrategy {
 
         // 小米专属系统属性常量
-        private object XiaomiProps {
+        object XiaomiProps {
             const val MIUI_VERSION_NAME = "ro.miui.ui.version.name"
             const val MIUI_VERSION_CODE = "ro.miui.ui.version.code"
             const val HYPER_VERSION_NAME = "ro.mi.os.version.name"
@@ -347,17 +347,15 @@ object DeviceOS {
                 versionName.startsWith("V8") || hasSystemProperty(XiaomiProps.HYPER_VERSION_NAME) -> {
                     val property =
                         getSystemProperty(XiaomiProps.HYPER_VERSION_NAME, versionName)
+                    val verCode = StringTools.extractNumber(property)
                     SystemRomInfo(
                         Rom.HyperOS,
                         getSystemProperty(
                             XiaomiProps.HYPER_VERSION_INC,
                             property
                         ),
-                        getSystemProperty(
-                            XiaomiProps.HYPER_VERSION_CODE,
-                            Build.VERSION.INCREMENTAL
-                        ),
-                        "Hyper${property}"
+                        verCode,
+                        "HyperOS $verCode"
                     )
                 }
 
@@ -376,18 +374,21 @@ object DeviceOS {
     /** OPPO ColorOS检测 */
     private class OppoRomDetector : RomDetectionStrategy {
 
-        private object OppoProps {
-            const val OPPO_VERSION_NAME = "ro.build.version.oplusrom"
-            const val OPPO_VERSION_CODE = "ro.build.display.id"
+        object OppoProps {
+            const val OPPO_VERSION_CODE = "ro.build.version.oplusrom"
+            const val OPPO_VERSION_NAME = "ro.build.display.id"
             const val OPPO_BRAND = "ro.oplus.image.system_ext.brand"
         }
 
         override fun detect(): SystemRomInfo {
             return if (hasSystemProperty(OppoProps.OPPO_BRAND)) {
+                val property =
+                    getSystemProperty(OppoProps.OPPO_VERSION_CODE)
                 SystemRomInfo(
                     Rom.ColorOS,
                     getSystemProperty(OppoProps.OPPO_VERSION_NAME),
-                    getSystemProperty(OppoProps.OPPO_VERSION_CODE, Build.VERSION.INCREMENTAL)
+                    property,
+                    "ColorOS ${StringTools.extractNumber(property)}"
                 )
             } else {
                 defaultAndroidInfo()
@@ -402,50 +403,38 @@ object DeviceOS {
             const val VIVO_SERIES = "ro.vivo.product.series"
             const val VIVO_VERSION = "ro.vivo.os.version"
             const val VIVO_ORIGIN_OS = "ro.vivo.os.build.display.id"
-            const val IQOO_VERSION_CODE_INC = "ro.vivo.product.version.incremental"
+            const val VIVO_VERSION_CODE_INC = "ro.vivo.product.version.incremental"
             const val VIVO_VERSION_CODE = "ro.vendor.vivo.product.version"
         }
 
         override fun detect(): SystemRomInfo {
-            val series = getSystemProperty(VivoProps.VIVO_SERIES).lowercase()
             val isOriginOS = hasSystemProperty(VivoProps.VIVO_ORIGIN_OS)
             val isFuntouchOS = hasSystemProperty(VivoProps.VIVO_VERSION)
 
             return when {
-                series.contains("iqoo") && isOriginOS -> SystemRomInfo(
+                brand == Brand.vivo && isOriginOS -> SystemRomInfo(
                     Rom.OriginOS,
-                    getSystemProperty(VivoProps.IQOO_VERSION_CODE_INC),
+                    getSystemProperty(VivoProps.VIVO_VERSION_CODE_INC),
                     getSystemProperty(VivoProps.VIVO_VERSION, Build.VERSION.INCREMENTAL),
                     getSystemProperty(VivoProps.VIVO_ORIGIN_OS)
                 )
 
-                series.contains("vivo") && isOriginOS -> createSystemRomInfo(
-                    Rom.OriginOS,
-                    VivoProps.VIVO_VERSION_CODE
-                )
-
-                series.contains("vivo") && isFuntouchOS -> createSystemRomInfo(
+                brand == Brand.vivo && isFuntouchOS -> SystemRomInfo(
                     Rom.FuntouchOS,
-                    VivoProps.VIVO_VERSION_CODE
+                    getSystemProperty(VivoProps.VIVO_VERSION_CODE),
+                    getSystemProperty(VivoProps.VIVO_VERSION, Build.VERSION.INCREMENTAL)
                 )
 
                 else -> defaultAndroidInfo()
             }
         }
 
-        private fun createSystemRomInfo(type: Rom, versionProperty: String): SystemRomInfo {
-            return SystemRomInfo(
-                type,
-                getSystemProperty(versionProperty),
-                getSystemProperty(VivoProps.VIVO_VERSION, Build.VERSION.INCREMENTAL)
-            )
-        }
     }
 
     /** 三星Rom检测 */
     private class SamsungRomDetector : RomDetectionStrategy {
 
-        private object SamsungProps {
+        object SamsungProps {
             const val ONEUI_VERSION = "ro.build.version.oneui"
             const val ONEUI_GSM_NAME = "gsm.version.baseband"
         }
@@ -468,7 +457,8 @@ object DeviceOS {
 
     /** 荣耀Rom检测 */
     private class HonorRomDetector : RomDetectionStrategy {
-        private object HonorProps {
+
+        object HonorProps {
             const val HONOR_MAGIC_VERSION = "ro.magic.systemversion"
             const val HONOR_MAGIC_VERSION_NAME = "mscw.hnouc.patch.display.version"
             const val HONOR_MAGIC_VERSION_CODE = "msc.config.magic.version"
@@ -515,12 +505,21 @@ object DeviceOS {
 
     /** 一加Rom检测 */
     private class OnePlusRomDetector : RomDetectionStrategy {
+
+        object OnePlusProps {
+            const val ONEPLUS_VERSION = "ro.build.version.oplusrom"
+            const val ONEPLUS_VERSION_DISPLAY = "ro.build.version.oplusrom.display"
+            const val ONEPLUS_OTA_DISPLAY = "persist.sys.oplus.ota_ver_display"
+        }
+
         override fun detect(): SystemRomInfo {
-            return if (hasSystemProperty("ro.oneplus.version")) {
+            return if (hasSystemProperty(OnePlusProps.ONEPLUS_VERSION_DISPLAY)) {
+                val property = getSystemProperty(OnePlusProps.ONEPLUS_VERSION)
                 SystemRomInfo(
-                    Rom.H2OS,
-                    getSystemProperty("ro.oneplus.version"),
-                    getSystemProperty("ro.oneplus.software.version", Build.VERSION.INCREMENTAL)
+                    Rom.ColorOS,
+                    getSystemProperty(OnePlusProps.ONEPLUS_OTA_DISPLAY),
+                    getSystemProperty(property, Build.VERSION.INCREMENTAL),
+                    "ColorOS $property"
                 )
             } else {
                 defaultAndroidInfo()
@@ -540,10 +539,33 @@ object DeviceOS {
             return if (hasSystemProperty(RealmeProps.REALME_VERSION)) {
                 val property = getSystemProperty(RealmeProps.REALME_VERSION)
                 SystemRomInfo(
-                    Rom.REALME_UI,
+                    Rom.realme_UI,
                     getSystemProperty(RealmeProps.REALME_VERSION_NAME),
                     getSystemProperty(RealmeProps.REALME_VERSION, Build.VERSION.INCREMENTAL),
-                    "realme UI ${property.replace("V", "")}"
+                    "realme UI ${StringTools.extractNumber(property)}"
+                )
+            } else {
+                defaultAndroidInfo()
+            }
+        }
+    }
+
+    /** IQOO Rom检测 */
+    private class IQOORomDetector : RomDetectionStrategy {
+
+        object IQOOProps {
+            const val IQOO_VERSION = "ro.vivo.os.version"
+            const val IQOO_ORIGIN_OS = "ro.vivo.os.build.display.id"
+            const val IQOO_VERSION_CODE_INC = "ro.vivo.product.version.incremental"
+        }
+
+        override fun detect(): SystemRomInfo {
+            return if (hasSystemProperty(IQOOProps.IQOO_ORIGIN_OS)) {
+                SystemRomInfo(
+                    Rom.OriginOS,
+                    getSystemProperty(IQOOProps.IQOO_VERSION_CODE_INC),
+                    getSystemProperty(IQOOProps.IQOO_VERSION, Build.VERSION.INCREMENTAL),
+                    getSystemProperty(IQOOProps.IQOO_ORIGIN_OS)
                 )
             } else {
                 defaultAndroidInfo()

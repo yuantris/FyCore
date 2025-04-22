@@ -233,6 +233,20 @@ object StringTools {
     }
 
     /**
+     * 从字符串中提取纯数字
+     * @param input 字符串 (如 "V15.0", "OS2.0")
+     * @return 纯数字版本号 (如 "15.0", "2.0")
+     *
+     * 示例:
+     * extractVersionNumber("V15.0") -> "15.0"
+     * extractVersionNumber("OS2.0") -> "2.0"
+     */
+    @JvmStatic
+    fun extractNumber(input: String): String {
+        return input.replace(Regex("[^0-9.]"), "")
+    }
+
+    /**
      * 是否包含数字
      */
     @JvmStatic

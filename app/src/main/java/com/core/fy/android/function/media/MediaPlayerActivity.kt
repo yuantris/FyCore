@@ -81,7 +81,7 @@ class MediaPlayerActivity : ReflectBindingActivity<ActivityMediaPlayerBinding>()
                         lifecycleScope.launch(Dispatchers.IO) {
                             val timeSilent = TimeMeasurer.measureTimeSilent {
                                 val paths = result.map { it.path }
-                                val validateMediaFiles = MediaHelper.validateMediaFiles(paths)
+                                val validateMediaFiles = MediaHelper.areVideosValid(paths)
                                 if (validateMediaFiles.isNotEmpty()) {
                                     val errorFiles = validateMediaFiles.filter { !it.value }
                                     if (errorFiles.isNotEmpty()) {

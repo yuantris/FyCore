@@ -107,9 +107,9 @@ class SetFragment : ReflectBindingFragment<FragmentSetBinding, MainActivity>() {
                 append("Api $androidApiVersion")
                 appendDivider(12, "🉐")
                 append("${DeviceOS.brand}")
-                append(DeviceOS.romInfo.versionDesc)
-                append("VName: ${DeviceOS.romInfo.versionName}")
-                append("VCode: ${DeviceOS.romInfo.versionCode}")
+                append(DeviceOS.romInfo.verDesc)
+                append("VerName: ${DeviceOS.romInfo.verName}")
+                append("VerCode: ${DeviceOS.romInfo.verCode}")
 
             }
 

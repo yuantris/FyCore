@@ -24,7 +24,7 @@ import kotlin.coroutines.CoroutineContext
 @Suppress("unused", "MemberVisibilityCanBePrivate")
 class Coroutine<T>(
     val scope: CoroutineScope,
-    context: CoroutineContext = Dispatchers.IO,
+    context: CoroutineContext = Dispatchers.Default,
     val startOption: CoroutineStart = CoroutineStart.DEFAULT,
     val executeContext: CoroutineContext = Dispatchers.Main,
     block: suspend CoroutineScope.() -> T
@@ -36,7 +36,7 @@ class Coroutine<T>(
 
         fun <T> async(
             scope: CoroutineScope = DEFAULT,
-            context: CoroutineContext = Dispatchers.IO,
+            context: CoroutineContext = Dispatchers.Default,
             start: CoroutineStart = CoroutineStart.DEFAULT,
             executeContext: CoroutineContext = Dispatchers.Main,
             block: suspend CoroutineScope.() -> T

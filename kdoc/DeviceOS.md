@@ -56,7 +56,7 @@ if (DeviceOS.isHarmonyOS) {
 }
 
 // 获取ROM详细信息
-val romVersion = DeviceOS.romInfo.versionName
+val romVersion = DeviceOS.romInfo.verName
 ```
 
 ### OEM信息展示
@@ -64,7 +64,7 @@ val romVersion = DeviceOS.romInfo.versionName
 // 构建系统信息字符串
 val systemInfo = buildString {
     append("品牌: ${DeviceOS.brand}")
-    append("ROM: ${DeviceOS.romInfo.type} ${DeviceOS.romInfo.versionCode}")
+    append("ROM: ${DeviceOS.romInfo.type} ${DeviceOS.romInfo.verCode}")
 }
 ```
 

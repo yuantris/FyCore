@@ -9,6 +9,9 @@ import com.core.fy.android.constants.AppConst.timeFormat
 import com.core.fy.android.constants.EventKey.BATTERY_CHANGED
 import com.core.fy.android.constants.EventKey.TIME_CHANGED
 import com.core.fy.android.databinding.FragmentBlankBinding
+import com.core.fy.android.databinding.ItemFunctionBinding
+import com.core.fy.android.databinding.ItemSingleTextBinding
+import com.core.fy.android.room.entity.Function
 import com.core.fy.android.ui.receiver.TimeBatteryReceiver
 import io.core.appCtx
 import io.core.common.base.component.fragment.ReflectBindingFragment
@@ -23,6 +26,8 @@ import io.core.common.util.extensions.ui.getCompatColor
 import io.core.common.util.extensions.ui.onClick
 import io.core.common.util.tools.ColorTools
 import io.core.common.util.tools.buildMultiLine
+import io.core.engine.brv.utils.linear
+import io.core.engine.brv.utils.setup
 import io.core.other.IntentData
 import io.core.widget.view.LoadingView
 import io.core.widget.view.RotateLoading
@@ -73,7 +78,6 @@ class BlankFragment : ReflectBindingFragment<FragmentBlankBinding, MainActivity>
 
         lifecycleScope.launch(Dispatchers.Default) {
             val props = getSystemProperties()
-            val build = StringBuilder()
 
             val manufacturer = Build.MANUFACTURER.orEmpty().lowercase()
             val brandName = Build.BRAND.orEmpty().lowercase()
@@ -81,12 +85,23 @@ class BlankFragment : ReflectBindingFragment<FragmentBlankBinding, MainActivity>
             val product = Build.PRODUCT.orEmpty().lowercase()
 
 
-            build.append("detect: manufacturer=$manufacturer, brand=$brandName, model=$model, product=$product\n\n")
+            val list = mutableListOf<String>()
+            list.add("detect: manufacturer=$manufacturer, brand=$brandName, model=$model, product=$product")
+            list.add("\n")
             props.forEach { (key, value) ->
-                build.append("[$key] = [$value]\n")
+                list.add("[${key}] = [$value]")
             }
-            withContext(Dispatchers.Main){
-                binding.text.text = build.toString()
+            withContext(Dispatchers.Main) {
+                binding.fastScroller.apply {
+                    linear().setup {
+                        addType<String>(R.layout.item_single_text)
+                        onBind {
+                            val binding = getBinding<ItemSingleTextBinding>()
+                            val data = getModel<String>()
+                            binding.text.text = data
+                        }
+                    }.models = list
+                }
             }
         }
 
