@@ -440,27 +440,24 @@ object FileTools {
      */
     @JvmStatic
     fun copy(src: File, tar: File): Boolean {
-        try {
+        return try {
             if (src.isFile) {
-                val inputStream = FileInputStream(src)
-                val outputStream = FileOutputStream(tar)
-                inputStream.use {
-                    outputStream.use {
-                        inputStream.copyTo(outputStream)
-                        outputStream.flush()
+                FileInputStream(src).use { input ->
+                    FileOutputStream(tar).use { output ->
+                        input.copyTo(output)
+                        output.flush()
+                        true
                     }
                 }
             } else if (src.isDirectory) {
                 tar.mkdirs()
-                src.listFiles()?.forEach { file ->
-                    copy(file.absoluteFile, File(tar.absoluteFile, file.name))
-                }
-            }
-            return true
+                src.listFiles()?.all { file ->
+                    copy(file, File(tar, file.name))
+                } ?: false
+            } else false
         } catch (e: Exception) {
-            return false
+            false
         }
-
     }
 
     /**
@@ -571,20 +568,16 @@ object FileTools {
      */
     @JvmStatic
     fun writeBytes(filepath: String, data: ByteArray): Boolean {
-        val file = File(filepath)
-        var fos: FileOutputStream? = null
         return try {
-            if (!file.exists()) {
-                file.parentFile?.mkdirs()
-                file.createNewFile()
+            val file = File(filepath).apply {
+                parentFile?.mkdirs()
+                if (exists()) delete()
+                createNewFile()
             }
-            fos = FileOutputStream(filepath)
-            fos.write(data)
+            FileOutputStream(file).use { it.write(data) }
             true
         } catch (e: IOException) {
             false
-        } finally {
-            closeSilently(fos)
         }
     }
 

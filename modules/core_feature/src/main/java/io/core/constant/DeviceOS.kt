@@ -190,9 +190,7 @@ object DeviceOS {
             return "poco" in manufacturer ||
                     "poco" in brand ||
                     model.startsWith("poco") ||
-                    product.startsWith("poco") ||
-                    model.startsWith("m2") || // POCO M2 series
-                    model.startsWith("x3")    // POCO X3 series
+                    product.startsWith("poco")
         }
     }
 
@@ -335,6 +333,7 @@ object DeviceOS {
         object XiaomiProps {
             const val MIUI_VERSION_NAME = "ro.miui.ui.version.name"
             const val MIUI_VERSION_CODE = "ro.miui.ui.version.code"
+            const val MIUI_VERSION_NAME_INC = "ro.odm.build.version.incremental"
             const val HYPER_VERSION_NAME = "ro.mi.os.version.name"
             const val HYPER_VERSION_INC = "ro.mi.os.version.incremental"
             const val HYPER_VERSION_CODE = "ro.mi.os.version.code"
@@ -359,12 +358,16 @@ object DeviceOS {
                     )
                 }
 
-                hasSystemProperty(XiaomiProps.MIUI_VERSION_NAME) ->
+                hasSystemProperty(XiaomiProps.MIUI_VERSION_NAME) -> {
+                    val verCode = getSystemProperty(XiaomiProps.MIUI_VERSION_CODE)
                     SystemRomInfo(
                         Rom.MIUI,
-                        versionName,
-                        getSystemProperty(XiaomiProps.MIUI_VERSION_CODE, Build.VERSION.INCREMENTAL)
+                        getSystemProperty(XiaomiProps.MIUI_VERSION_NAME_INC),
+                        verCode,
+                        "MIUI $verCode"
                     )
+                }
+
 
                 else -> defaultAndroidInfo()
             }
