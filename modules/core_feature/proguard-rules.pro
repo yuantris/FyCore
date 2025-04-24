@@ -38,11 +38,6 @@
 # 保留 Kotlin Lambda 生成的类
 -keep class io.core.**$$Lambda$* { *; }
 
-# 保留 suspend 函数的签名
--keepclassmembers class * {
-    suspend <methods>;
-}
-
 # 保留通过反射调用的字段和方法
 -keepclassmembers class * {
     public <methods>;
@@ -52,12 +47,15 @@
 # 保留 Kotlin 数据类及其构造函数
 -keep class * extends kotlin.Metadata { *; }
 -keep class kotlin.Metadata { *; }
--keep class kotlin.coroutines.** { *; }
+-keepclassmembers class ** {
+    @kotlin.Metadata *;
+}
 # 保留所有使用 @Keep 注解的类和方法
 -keep @androidx.annotation.Keep class * { *; }
 -keepclassmembers @androidx.annotation.Keep class * { *; }
 # 保留所有 Kotlin 编译器生成的代码
 -keep class kotlin.jvm.internal.** { *; }
+-keep class kotlin.jvm.functions.** { *; }
 -keep class kotlin.reflect.** { *; }
 -keep class kotlin.coroutines.** { *; }
 

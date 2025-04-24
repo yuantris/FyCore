@@ -1,8 +1,11 @@
 package io.core.common.util.tools
 
 import android.annotation.SuppressLint
+import android.content.res.Resources
 import android.text.TextUtils.isEmpty
 import android.util.Base64
+import androidx.annotation.StringRes
+import io.core.appCtx
 import io.core.common.util.extensions.cool.printOnDebug
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
@@ -10,6 +13,7 @@ import java.io.IOException
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.IllegalFormatException
 import java.util.Locale
 import java.util.regex.Matcher
 import java.util.regex.Pattern
@@ -404,4 +408,27 @@ object StringTools {
         }
     }
 
+
+    @JvmStatic
+    fun getString(@StringRes id: Int, vararg formatArgs: Any?): String {
+        return try {
+            format(appCtx.getString(id), *formatArgs) ?: ""
+        } catch (e: Resources.NotFoundException) {
+            id.toString()
+        }
+    }
+
+
+    fun format(str: String?, vararg args: Any?): String? {
+        var text = str
+        if (text != null) {
+            if (args.isNotEmpty()) {
+                try {
+                    text = String.format(str!!, *args)
+                } catch (e: IllegalFormatException) {
+                }
+            }
+        }
+        return text
+    }
 }

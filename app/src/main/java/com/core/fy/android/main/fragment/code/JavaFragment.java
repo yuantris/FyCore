@@ -19,7 +19,6 @@ import java.util.SortedMap;
 
 import io.core.common.base.component.fragment.ReflectBindingFragment;
 import io.core.common.helper.JsonUltra;
-import io.core.common.helper.MediaHelper;
 import io.core.common.helper.TryV2;
 import io.core.common.helper.track.AppLifecycleTracker;
 import io.core.common.util.MediaScanner;
@@ -33,7 +32,6 @@ import io.core.common.util.tools.CollectionTools;
 import io.core.common.util.tools.ThreadUltra;
 import io.core.common.util.tools.UriTools;
 import io.core.other.LiveDataPro;
-import kotlin.Pair;
 
 public class JavaFragment extends ReflectBindingFragment<FragmentJavaBinding, TestPageActivity> {
 

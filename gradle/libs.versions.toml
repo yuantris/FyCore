@@ -1,6 +1,6 @@
 [versions]
 # 定义 FyCore 库的发布版本与依赖来源
-fycore = "0.1.73-SNAPSHOT"
+fycore = "0.1.80-SNAPSHOT"
 local = "local"
 jitpack = "jitpack"
 package = "package"
