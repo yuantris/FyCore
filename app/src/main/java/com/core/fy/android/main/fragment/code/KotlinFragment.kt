@@ -8,11 +8,12 @@ import com.core.fy.android.help.ProgressNotifier
 import com.hjq.permissions.Permission
 import io.core.common.base.component.fragment.ReflectBindingFragment
 import io.core.common.helper.JsonUltra
-import io.core.common.util.concurrent.TaskExecutor
+import io.core.common.helper.ReflectHelper
 import io.core.common.helper.TimeoutCallback
 import io.core.common.helper.TimeoutHandler
 import io.core.common.helper.jetpack.SingleLiveData
 import io.core.common.util.concurrent.Concurrency
+import io.core.common.util.concurrent.TaskExecutor
 import io.core.common.util.extensions.cool.GSON
 import io.core.common.util.extensions.cool.PathType
 import io.core.common.util.extensions.cool.createMap
@@ -35,10 +36,6 @@ import io.core.engine.storage.storage
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
-import kotlin.collections.List
-import kotlin.collections.forEach
-import kotlin.collections.listOf
-import kotlin.collections.mapOf
 import kotlin.collections.set
 
 class KotlinFragment : ReflectBindingFragment<FragmentKotlinBinding, TestPageActivity>() {
@@ -94,7 +91,8 @@ class KotlinFragment : ReflectBindingFragment<FragmentKotlinBinding, TestPageAct
         val parse = JsonUltra.parse("{\"key\": \"{\\\"nested\\\": 1234}\"}")
         parse["key.nested"]?.asInt().logD()
 
-        JsonUltra.parse("{\"name\":\"yuantris@qq.com\",\"@aliyun.com\":18}")["@aliyun.com"]?.asString()?.logD()
+        JsonUltra.parse("{\"name\":\"yuantris@qq.com\",\"@aliyun.com\":18}")["@aliyun.com"]?.asString()
+            ?.logD()
 
         val ultra =
             JsonUltra.parse("{\"code\":1,\"message\":\"success\",\"data\":{\"邮政平邮\":\"youzhengbk\",\"申通快递\":\"shentong\",\"圆通快递\":\"yuantong\",\"中通快递\":\"zhongtong\",\"极兔速递\":\"jtexpress\",\"韵达快递\":\"yunda\",\"德邦快递\":\"debangkuaidi\",\"顺丰快递\":\"shunfeng\"}}")
@@ -110,18 +108,25 @@ class KotlinFragment : ReflectBindingFragment<FragmentKotlinBinding, TestPageAct
 //            }
         }
 
-        val timeoutHandler = TimeoutHandler(3000, object : TimeoutCallback {
-            override fun onTimeout() {
-//                LogPure.e {
-//                    "onTimeout"
-//                }
+        val timeoutHandler = TimeoutHandler(
+            timeoutMillis = 3000,
+            maxRetries = 3,
+            logger = { message -> LogPure.d { "[TimeoutHandler] $message" } },
+            timeoutCallback = object : TimeoutCallback {
+                override fun onTimeout(reason: TimeoutHandler.TimeoutReason) {
+                    when (reason) {
+                        TimeoutHandler.TimeoutReason.NORMAL -> LogPure.e { "正常超时" }
+                        TimeoutHandler.TimeoutReason.RETRY_LIMIT -> LogPure.e { "达到重试限制" }
+                        TimeoutHandler.TimeoutReason.MANUAL_TRIGGER -> LogPure.e { "手动触发" }
+                    }
+                }
             }
-        })
+        )
         val fixedRate = Concurrency.scheduleAtFixedRate({
 //            LogPure.w {
 //                "scheduleAtFixedRate"
 //            }
-            timeoutHandler.onProgress()
+            timeoutHandler.resetTimeout()
         }, 0, 2000, TimeUnit.MILLISECONDS)
         runDelayedMain(16000) {
             fixedRate.cancel(true)
@@ -146,7 +151,6 @@ class KotlinFragment : ReflectBindingFragment<FragmentKotlinBinding, TestPageAct
         runMain {
 
         }
-
     }
 
     override fun initData() {

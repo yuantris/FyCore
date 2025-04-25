@@ -9,7 +9,6 @@ import java.util.concurrent.CountDownLatch
 import java.util.concurrent.Executor
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
-import java.util.concurrent.ForkJoinPool
 import java.util.concurrent.ScheduledExecutorService
 import java.util.concurrent.ScheduledFuture
 import java.util.concurrent.ThreadFactory
@@ -93,6 +92,10 @@ class Concurrency private constructor() {
                     name = "async-scheduler-${AtomicInteger(0).incrementAndGet()}"
                     isDaemon = true
                 }
+            }.also { pool ->
+                Runtime.getRuntime().addShutdownHook(Thread {
+                    pool.shutdownNow()
+                })
             }
         }
 
@@ -214,12 +217,6 @@ class Concurrency private constructor() {
             }
         }
         // endregion
-
-        @JvmStatic
-        fun shutdown() {
-            scheduler.shutdownNow()
-            ForkJoinPool.commonPool().shutdown()
-        }
     }
 
     private class NamedThreadFactory(

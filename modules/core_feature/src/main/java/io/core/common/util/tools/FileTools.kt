@@ -186,24 +186,6 @@ object FileTools {
     }
 
     /**
-     * 关闭一个可关闭的资源，忽略任何由此产生的IOException。
-     * 这个方法主要用于简化资源的关闭操作，避免在关闭资源时处理异常。
-     *
-     * @param c 可关闭的资源，如文件流或网络连接。如果为null，则方法直接返回。
-     */
-    @JvmStatic
-    fun closeSilently(c: Closeable?) {
-        if (c == null) {
-            return
-        }
-        try {
-            c.close()
-        } catch (ignored: IOException) {
-        }
-
-    }
-
-    /**
      * 列出指定目录下的所有子目录
      */
     @JvmStatic
@@ -526,28 +508,23 @@ object FileTools {
      */
     @JvmStatic
     fun readBytes(filepath: String): ByteArray? {
-        var fis: FileInputStream? = null
-        try {
-            fis = FileInputStream(filepath)
-            val outputStream = ByteArrayOutputStream()
-            val buffer = ByteArray(1024)
-            while (true) {
-                val len = fis.read(buffer, 0, buffer.size)
-                if (len == -1) {
-                    break
-                } else {
-                    outputStream.write(buffer, 0, len)
+        return try {
+            FileInputStream(filepath).use { fis ->
+                ByteArrayOutputStream().use { outputStream ->
+                    val buffer = ByteArray(1024)
+                    while (true) {
+                        val len = fis.read(buffer, 0, buffer.size)
+                        if (len == -1) break
+                        outputStream.write(buffer, 0, len)
+                    }
+                    outputStream.toByteArray()
                 }
             }
-            val data = outputStream.toByteArray()
-            outputStream.close()
-            return data
         } catch (e: IOException) {
-            return null
-        } finally {
-            closeSilently(fis)
+            null
         }
     }
+
 
     /**
      * 保存文本内容
@@ -617,21 +594,20 @@ object FileTools {
      */
     @JvmStatic
     fun appendText(path: String, content: String): Boolean {
-        val file = File(path)
-        var writer: FileWriter? = null
         return try {
+            val file = File(path)
             if (!file.exists()) {
                 file.createNewFile()
             }
-            writer = FileWriter(file, true)
-            writer.write(content)
-            true
+            FileWriter(file, true).use { writer ->
+                writer.write(content)
+                true
+            }
         } catch (e: IOException) {
             false
-        } finally {
-            closeSilently(writer)
         }
     }
+
 
     /**
      * 获取文件大小

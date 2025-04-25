@@ -4,7 +4,6 @@ import android.app.Activity
 import android.os.Handler
 import android.os.Looper
 import androidx.fragment.app.Fragment
-import io.core.common.util.log.LogPure
 import io.core.common.util.tools.buildMainHandler
 import java.util.concurrent.atomic.AtomicBoolean
 
@@ -18,7 +17,7 @@ fun <T> T.runMain(
             if (isSafeToRun()) action()
         }
         // 子线程通过 Handler 提交
-        else -> MainThreadHandler.handler.post {
+        else -> HandlerGT.handler.post {
             if (isSafeToRun()) action()
         }
     }
@@ -36,7 +35,7 @@ fun <T> T.runDelayedMain(
         }
     }
 
-    MainThreadHandler.handler.postDelayed(runnable, duration)
+    HandlerGT.handler.postDelayed(runnable, duration)
     disposable.runnable = runnable
     return disposable
 }
@@ -56,7 +55,7 @@ class Disposable {
     fun cancel() {
         synchronized(this) {
             if (_active.compareAndSet(true, false)) {
-                runnable?.let { MainThreadHandler.handler.removeCallbacks(it) }
+                runnable?.let { HandlerGT.handler.removeCallbacks(it) }
             }
         }
     }
@@ -71,8 +70,34 @@ private fun <T> T.isSafeToRun(): Boolean where T : Any? {
     }
 }
 
-object MainThreadHandler {
+object HandlerGT {
     val handler: Handler by lazy { buildMainHandler() }
+
+    // region Java环境主线程切换兼容
+    @JvmStatic
+    fun runMain(runnable: Runnable) {
+        if (isMainThread()) {
+            runnable.run()
+        } else {
+            handler.post(runnable)
+        }
+    }
+
+    @JvmStatic
+    fun runDelayedMain(duration: Long, runnable: Runnable) {
+        handler.postDelayed(runnable, duration)
+    }
+
+    /**
+     * 判断当前线程是否为布局渲染线程。
+     * @return 如果当前线程不是布局渲染线程，则返回 `true`，否则返回 `false`。
+     */
+    @JvmStatic
+    fun isNotLayoutThread(): Boolean {
+        val thread = Thread.currentThread()
+        return "Layoutlib Render Thread" != thread.name
+    }
+
 }
 
 fun isMainThread(): Boolean {

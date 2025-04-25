@@ -202,6 +202,7 @@ class TaskExecutor private constructor(
                             callback.onError(ConcurrentAggregateException(errors.toList()))
                         }
                     }
+
                     else -> runMain { callback.onComplete(resultMap) }
                 }
             } catch (e: InterruptedException) {
@@ -233,18 +234,21 @@ class TaskExecutor private constructor(
          * @param results 按任务索引排序的结果集合
          */
         fun onComplete(results: SortedMap<Int, T>)
+
         /**
          * 部分任务完成时回调（可选）
          * @param partialResults 已完成的任务结果
          */
         fun onPartialComplete(partialResults: SortedMap<Int, T>) {}
         fun onError(e: Throwable)
+
         /**
          * 进度更新回调（可选）
          * @param completed 已完成任务数
          * @param total 总任务数
          */
         fun onProgress(completed: Int, total: Int) {}
+
         /**
          * 单个任务完成时回调（可选）
          * @param result 任务结果
@@ -253,8 +257,12 @@ class TaskExecutor private constructor(
         fun onEachResult(result: T, index: Int) {}
     }
 
-    open class ConcurrentException(message: String, cause: Throwable? = null) : Exception(message, cause)
-    class ConcurrentTimeoutException(message: String, cause: Throwable? = null) : ConcurrentException(message, cause)
+    open class ConcurrentException(message: String, cause: Throwable? = null) :
+        Exception(message, cause)
+
+    class ConcurrentTimeoutException(message: String, cause: Throwable? = null) :
+        ConcurrentException(message, cause)
+
     class ConcurrentAggregateException(
         val causes: List<Throwable>,
         var partialResults: Any? = null
@@ -281,8 +289,12 @@ class TaskExecutor private constructor(
         @JvmStatic
         fun get(): TaskExecutor = instance ?: synchronized(this) {
             instance ?: TaskExecutor(
-                Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors()),
-                Executors.newScheduledThreadPool(2)
+                Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors()).apply {
+                    Runtime.getRuntime().addShutdownHook(Thread { shutdownExecutor(this) })
+                },
+                Executors.newScheduledThreadPool(2).apply {
+                    Runtime.getRuntime().addShutdownHook(Thread { shutdownExecutor(this) })
+                }
             ).also { instance = it }
         }
 
@@ -303,8 +315,17 @@ class TaskExecutor private constructor(
             threadPoolSize: Int = Runtime.getRuntime().availableProcessors(),
             scheduledThreads: Int = 2
         ): TaskExecutor = TaskExecutor(
-            Executors.newFixedThreadPool(threadPoolSize),
-            Executors.newScheduledThreadPool(scheduledThreads)
+            Executors.newFixedThreadPool(threadPoolSize).apply {
+                Runtime.getRuntime().addShutdownHook(Thread { shutdownExecutor(this) })
+            },
+            Executors.newScheduledThreadPool(scheduledThreads).apply {
+                Runtime.getRuntime().addShutdownHook(Thread { shutdownExecutor(this) })
+            }
         )
+
+        private fun shutdownExecutor(executor: ExecutorService) = runCatching {
+            executor.shutdownNow()
+        }
+
     }
 }

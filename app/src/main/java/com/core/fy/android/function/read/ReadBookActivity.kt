@@ -25,9 +25,8 @@ import com.core.fy.android.help.config.ReadBookConfig
 import com.core.fy.android.room.entity.Book
 import io.core.common.base.component.activity.ReflectBindingActivity
 import io.core.common.helper.track.AppLifecycleTracker
-import io.core.common.helper.track.TimeTracker
 import io.core.common.util.DiveGestureLine
-import io.core.common.util.extensions.cool.MainThreadHandler.handler
+import io.core.common.util.extensions.cool.HandlerGT.handler
 import io.core.common.util.extensions.cool.toastOnUI
 import io.core.common.util.extensions.logD
 import io.core.common.util.extensions.ui.getCompatColor

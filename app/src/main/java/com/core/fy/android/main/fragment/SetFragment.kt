@@ -8,6 +8,7 @@ import com.core.fy.android.function.read.ReadBookActivity
 import com.core.fy.android.help.HighLightHelper
 import io.core.common.base.component.fragment.ReflectBindingFragment
 import io.core.common.helper.JsonUltra
+import io.core.common.helper.track.AppLifecycleTracker
 import io.core.common.helper.track.TimeTracker
 import io.core.common.util.extensions.cool.coolThread
 import io.core.common.util.extensions.cool.timeFormat
