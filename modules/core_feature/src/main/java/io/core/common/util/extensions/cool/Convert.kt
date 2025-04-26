@@ -18,12 +18,9 @@ import kotlin.math.roundToInt
 
 /**
  * 数据类型转换、单位转换
- *
- * @author 李玉江[QQ:1023694760]
- * @since 2014-4-18
  */
 @Suppress("MemberVisibilityCanBePrivate")
-object ConvertUtils {
+object ConvertTools {
     const val GB: Long = 1073741824
     const val MB: Long = 1048576
     const val KB: Long = 1024

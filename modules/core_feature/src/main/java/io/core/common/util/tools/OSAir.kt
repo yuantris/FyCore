@@ -15,23 +15,23 @@ import io.core.constant.ANDROID_8
 import io.core.constant.ANDROID_9
 
 val isAndroid15Plus
-    get() = OsUtils.atLeastV()
+    get() = OSAir.atLeastV()
 val isAndroid14Plus
-    get() = OsUtils.atLeastU()
+    get() = OSAir.atLeastU()
 val isAndroid13Plus
-    get() = OsUtils.atLeastT()
+    get() = OSAir.atLeastT()
 val isAndroid12Plus
-    get() = OsUtils.atLeastS()
+    get() = OSAir.atLeastS()
 val isAndroid11Plus
-    get() = OsUtils.atLeastR()
+    get() = OSAir.atLeastR()
 val isAndroid10Plus
-    get() = OsUtils.atLeastQ()
+    get() = OSAir.atLeastQ()
 val isAndroid9Plus
-    get() = OsUtils.atLeastP()
+    get() = OSAir.atLeastP()
 val isAndroid8Plus
-    get() = OsUtils.atLeastO()
+    get() = OSAir.atLeastO()
 val isAndroid7Plus
-    get() = OsUtils.atLeastN()
+    get() = OSAir.atLeastN()
 
 val androidApiVersion
     get() = Build.VERSION.SDK_INT
@@ -39,7 +39,7 @@ val androidApiVersion
 val androidVersion: String
     get() = Build.VERSION.RELEASE
 
-object OsUtils {
+object OSAir {
     /**
      * 检查是否至少是 Android 15 (Vanilla Ice Cream, API 35)
      */

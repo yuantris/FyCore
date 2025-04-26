@@ -14,7 +14,7 @@ import java.net.URL
 import java.util.BitSet
 
 @Suppress("unused", "MemberVisibilityCanBePrivate")
-object NetworkUtils {
+object NetworkTools {
 
     /**
      * 判断是否联网

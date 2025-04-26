@@ -1,9 +1,7 @@
 package io.core.common.util.log.bury
 
 import android.util.Log
-import androidx.lifecycle.Lifecycle.State.INITIALIZED
 import io.core.Android
-import io.core.BuildConfig
 import io.core.appCtx
 import io.core.common.util.extensions.ui.appVersionCode
 import kotlinx.coroutines.CoroutineScope

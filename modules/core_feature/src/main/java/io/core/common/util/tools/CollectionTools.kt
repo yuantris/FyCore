@@ -2,8 +2,6 @@
 
 package io.core.common.util.tools
 
-import com.google.gson.reflect.TypeToken
-import io.core.common.util.extensions.cool.GSON
 import io.core.common.util.extensions.cool.jsonToMap
 
 

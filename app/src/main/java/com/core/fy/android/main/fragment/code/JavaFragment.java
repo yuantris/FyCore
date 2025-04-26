@@ -20,7 +20,7 @@ import java.util.SortedMap;
 import io.core.common.base.component.fragment.ReflectBindingFragment;
 import io.core.common.helper.JsonUltra;
 import io.core.common.helper.TryV2;
-import io.core.common.helper.track.AppLifecycleTracker;
+import io.core.common.helper.track.AppTrackV2;
 import io.core.common.util.MediaScanner;
 import io.core.common.util.Toaster;
 import io.core.common.util.concurrent.Concurrency;
@@ -144,7 +144,7 @@ public class JavaFragment extends ReflectBindingFragment<FragmentJavaBinding, Te
                 new TaskExecutor.ConcurrentCallback<String>() {
                     @Override
                     public void onComplete(@NonNull SortedMap<Integer, String> results) {
-                        boolean existActivity = AppLifecycleTracker.hasActivity(TestPageActivity.class);
+                        boolean existActivity = AppTrackV2.hasActivity(TestPageActivity.class);
                         if (existActivity) {
                             List<String> strings = CollectionTools.mapValuesToList(results);
                             String json = GsonUtils.toJson(strings);
@@ -154,7 +154,7 @@ public class JavaFragment extends ReflectBindingFragment<FragmentJavaBinding, Te
 
                     @Override
                     public void onEachResult(String result, int index) {
-                        boolean existActivity = AppLifecycleTracker.hasActivity(TestPageActivity.class);
+                        boolean existActivity = AppTrackV2.hasActivity(TestPageActivity.class);
                         if (existActivity) {
                             LogPure.d(result);
                         }

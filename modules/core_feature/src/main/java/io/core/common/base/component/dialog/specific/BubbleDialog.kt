@@ -8,11 +8,9 @@ import android.view.View
 import android.view.WindowManager
 import android.widget.TextView
 import io.core.R
-import io.core.common.util.Toaster
 import io.core.common.util.extensions.cool.runDelayedMain
 import io.core.common.util.extensions.cool.runMain
 import io.core.common.util.extensions.ui.invisible
-import io.core.common.util.extensions.ui.visible
 import io.core.widget.view.LoadingView
 import io.core.widget.view.StatusView
 

@@ -7,12 +7,22 @@ import android.graphics.Bitmap
 import android.graphics.Bitmap.Config
 import android.graphics.BitmapFactory
 import android.graphics.Color
-import java.io.*
-import kotlin.math.*
+import androidx.core.graphics.get
+import java.io.ByteArrayInputStream
+import java.io.ByteArrayOutputStream
+import java.io.FileInputStream
+import java.io.IOException
+import java.io.InputStream
+import kotlin.math.ceil
+import kotlin.math.floor
+import kotlin.math.max
+import kotlin.math.min
+import kotlin.math.roundToInt
+import kotlin.math.sqrt
 
 
 @Suppress("WeakerAccess", "MemberVisibilityCanBePrivate")
-object BitmapUtils {
+object BitmapTools {
 
     /**
      * 从path中获取图片信息,在通过BitmapFactory.decodeFile(String path)方法将突破转成Bitmap时，
@@ -243,10 +253,8 @@ fun Bitmap.getMeanColor(): Int {
     var pixelSumGreen = 0
     for (i in 0..99) {
         for (j in 70..99) {
-            pixel = this.getPixel(
-                (i * width / 100.toFloat()).roundToInt(),
-                (j * height / 100.toFloat()).roundToInt()
-            )
+            pixel =
+                this[(i * width / 100.toFloat()).roundToInt(), (j * height / 100.toFloat()).roundToInt()]
             pixelSumRed += Color.red(pixel)
             pixelSumGreen += Color.green(pixel)
             pixelSumBlue += Color.blue(pixel)

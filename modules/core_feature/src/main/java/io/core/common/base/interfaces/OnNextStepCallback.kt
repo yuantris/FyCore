@@ -13,6 +13,6 @@ package io.core.common.base.interfaces
  * @description
  * @author Yuan
  */
-fun interface OnNextStep {
+fun interface OnNextStepCallback {
     fun invoke()
 }

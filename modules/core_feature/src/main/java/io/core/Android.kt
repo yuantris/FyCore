@@ -2,7 +2,7 @@ package io.core
 
 import android.app.Application
 import androidx.core.content.FileProvider
-import io.core.common.helper.track.AppLifecycleTracker
+import io.core.common.helper.track.AppTrackV2
 import io.core.common.util.Preferences
 import io.core.common.util.log.LogCat
 import io.core.common.util.log.bury.AppLog
@@ -31,7 +31,7 @@ object Android {
 
     @JvmStatic
     val context: Application
-        get() = _context ?: AppLifecycleTracker.getApplicationReflect()?.also {
+        get() = _context ?: AppTrackV2.getApplicationReflect()?.also {
             _context = it
         } ?: throw IllegalStateException("请先调用 initialize() 方法完成初始化")
 
@@ -57,7 +57,7 @@ object Android {
 
         application.run {
             // 注册Activity生命周期回调
-            AppLifecycleTracker.init(this)
+            AppTrackV2.init(this)
             // 注册全局CrashHandler
             CrashHandler.register(this)
             // 初始化日志

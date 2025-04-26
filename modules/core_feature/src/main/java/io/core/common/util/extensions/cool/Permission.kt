@@ -10,7 +10,7 @@ import androidx.fragment.app.Fragment
 import com.hjq.permissions.OnPermissionCallback
 import com.hjq.permissions.XXPermissions
 import io.core.common.util.extensions.ui.ctx
-import io.core.common.util.tools.OsUtils.higherThan
+import io.core.common.util.tools.OSAir.higherThan
 import io.core.common.util.tools.isAndroid11Plus
 import io.core.constant.ANDROID_10
 import io.core.constant.ANDROID_13

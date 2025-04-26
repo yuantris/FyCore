@@ -1,7 +1,8 @@
 @file:Suppress("unused")
 
-package io.core.common.helper.dialogs
+package io.core.engine.dialogs
 
+import android.R
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.DialogInterface
@@ -93,10 +94,10 @@ interface AlertBuilder<out D : DialogInterface> {
     }
 
     fun okButton(handler: ((dialog: DialogInterface) -> Unit)? = null) =
-        positiveButton(android.R.string.ok, handler)
+        positiveButton(R.string.ok, handler)
 
     fun cancelButton(handler: ((dialog: DialogInterface) -> Unit)? = null) =
-        negativeButton(android.R.string.cancel, handler)
+        negativeButton(R.string.cancel, handler)
 
     fun yesButton(handler: ((dialog: DialogInterface) -> Unit)? = null) =
         positiveButton("确定", handler)

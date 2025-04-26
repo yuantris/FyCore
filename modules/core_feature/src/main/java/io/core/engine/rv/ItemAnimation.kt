@@ -1,13 +1,13 @@
-package io.core.common.helper.rv
+package io.core.engine.rv
 
 import android.view.animation.Interpolator
 import android.view.animation.LinearInterpolator
-import io.core.common.helper.rv.animations.AlphaInAnimation
-import io.core.common.helper.rv.animations.BaseAnimation
-import io.core.common.helper.rv.animations.ScaleInAnimation
-import io.core.common.helper.rv.animations.SlideInBottomAnimation
-import io.core.common.helper.rv.animations.SlideInLeftAnimation
-import io.core.common.helper.rv.animations.SlideInRightAnimation
+import io.core.engine.rv.animations.AlphaInAnimation
+import io.core.engine.rv.animations.BaseAnimation
+import io.core.engine.rv.animations.ScaleInAnimation
+import io.core.engine.rv.animations.SlideInBottomAnimation
+import io.core.engine.rv.animations.SlideInLeftAnimation
+import io.core.engine.rv.animations.SlideInRightAnimation
 
 /**
  * Created by Invincible on 2017/12/15.

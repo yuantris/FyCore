@@ -7,8 +7,8 @@ import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.lifecycleScope
 import com.hjq.permissions.Permission
 import com.hjq.permissions.XXPermissions
-import io.core.common.helper.track.AppLifecycleTracker
 import io.core.common.helper.coroutine.Coroutine
+import io.core.common.helper.track.AppTrackV2
 import io.core.common.util.log.LogPure
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
@@ -32,7 +32,7 @@ abstract class BaseService : LifecycleService() {
     @CallSuper
     override fun onCreate() {
         super.onCreate()
-        AppLifecycleTracker.onServiceCreate(this)
+        AppTrackV2.onServiceCreate(this)
         if (isForegroundService()) checkPermission()
     }
 
@@ -61,7 +61,7 @@ abstract class BaseService : LifecycleService() {
     @CallSuper
     override fun onDestroy() {
         super.onDestroy()
-        AppLifecycleTracker.onServiceDestroy(this)
+        AppTrackV2.onServiceDestroy(this)
     }
 
     /**
@@ -80,7 +80,7 @@ abstract class BaseService : LifecycleService() {
      * 检测通知权限和后台权限
      */
     private fun checkPermission() {
-        AppLifecycleTracker.getTopActivity()?.let {
+        AppTrackV2.getTopActivity()?.let {
             XXPermissions.with(it)
                 .permission(Permission.POST_NOTIFICATIONS)
                 .request { _, _ ->

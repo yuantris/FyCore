@@ -4,9 +4,9 @@ package io.core.common.util
 
 import android.content.Context
 import android.content.SharedPreferences
+import androidx.core.content.edit
 import io.core.appCtx
 import io.core.constant.SP_NAME
-import androidx.core.content.edit
 
 /**
  * SharedPreferences 工具类，提供类型安全的持久化存储操作

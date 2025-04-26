@@ -20,8 +20,8 @@ import androidx.lifecycle.Observer;
 import io.core.Android;
 import io.core.common.util.extensions.cool.HandlerKt;
 import io.core.common.util.tools.HandlerFactoryKt;
-import io.core.common.util.tools.OsUtils;
-import io.core.common.util.tools.OsUtilsKt;
+import io.core.common.util.tools.OSAir;
+import io.core.common.util.tools.OSAirKt;
 import io.core.engine.livebus.ipc.consts.IpcConst;
 import io.core.engine.livebus.ipc.core.ProcessorManager;
 import io.core.engine.livebus.ipc.receiver.LebIpcReceiver;
@@ -127,7 +127,7 @@ public final class LiveEventBusCore {
         Application application = Android.getContext();
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(IpcConst.ACTION);
-        if (OsUtilsKt.isAndroid8Plus()) {
+        if (OSAirKt.isAndroid8Plus()) {
             application.registerReceiver(receiver, intentFilter, RECEIVER_EXPORTED);
         } else {
             application.registerReceiver(receiver, intentFilter);
@@ -347,7 +347,7 @@ public final class LiveEventBusCore {
                 return;
             }
             Intent intent = new Intent(IpcConst.ACTION);
-            if (foreground && OsUtils.higherThan(Build.VERSION_CODES.JELLY_BEAN)) {
+            if (foreground && OSAir.higherThan(Build.VERSION_CODES.JELLY_BEAN)) {
                 intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
             }
             if (onlyInApp) {

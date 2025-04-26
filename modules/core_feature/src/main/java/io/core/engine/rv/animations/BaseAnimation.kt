@@ -1,4 +1,4 @@
-package io.core.common.helper.rv.animations
+package io.core.engine.rv.animations
 
 import android.animation.Animator
 import android.view.View

@@ -12,7 +12,7 @@ import com.core.fy.android.main.fragment.code.KotlinFragment
 import com.google.android.material.tabs.TabLayoutMediator
 import io.core.common.base.component.activity.ReflectBindingActivity
 import io.core.common.helper.pool.ObjectPoolBuilder
-import io.core.common.helper.track.AppLifecycleTracker
+import io.core.common.helper.track.AppTrackV2
 import io.core.common.util.Preferences
 import io.core.common.util.Toaster
 import io.core.common.util.extensions.logD
@@ -40,7 +40,7 @@ class TestPageActivity : ReflectBindingActivity<ActivityTestPageBinding>() {
         ActivityUtils.getTopActivity()?.let {
             "topActivity1: ${it.javaClass.simpleName}".logD()
         }
-        AppLifecycleTracker.getTopActivity()?.let {
+        AppTrackV2.getTopActivity()?.let {
             "topActivity2: ${it.javaClass.simpleName}".logD()
         }
 

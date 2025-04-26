@@ -1,4 +1,4 @@
-package io.core.common.helper.dialogs
+package io.core.engine.dialogs
 
 import android.content.Context
 import android.content.DialogInterface

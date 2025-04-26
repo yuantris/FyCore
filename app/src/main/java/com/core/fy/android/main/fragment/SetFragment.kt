@@ -8,8 +8,11 @@ import com.core.fy.android.function.read.ReadBookActivity
 import com.core.fy.android.help.HighLightHelper
 import io.core.common.base.component.fragment.ReflectBindingFragment
 import io.core.common.helper.JsonUltra
-import io.core.common.helper.track.AppLifecycleTracker
 import io.core.common.helper.track.TimeTracker
+import io.core.common.helper.valid.ValidGT
+import io.core.common.helper.valid.excludeHiddenFiles
+import io.core.common.helper.valid.hasExtension
+import io.core.common.helper.valid.maxSize
 import io.core.common.util.extensions.cool.coolThread
 import io.core.common.util.extensions.cool.timeFormat
 import io.core.common.util.extensions.currentTimeMillis
@@ -35,9 +38,11 @@ import io.core.constant.TimeFormat
 import io.core.engine.storage.getWithAnnotation
 import io.core.engine.storage.put
 import io.core.engine.storage.storage
+import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import java.util.function.Predicate
 
 /**
 # ██████████
@@ -56,6 +61,18 @@ class SetFragment : ReflectBindingFragment<FragmentSetBinding, MainActivity>() {
 
     override fun initView() {
         super.initView()
+
+        val fileResult = ValidGT.forFile()
+            .excludeHiddenFiles()
+            .hasExtension(".jpg", ".png")
+            .maxSize(1024 * 1024 * 5)
+            .build(File("avatar.jpg"))
+
+        val complexCondition = Predicate<File> { it.name.startsWith("temp") }
+            .and(Predicate { it.length() > 1024 })
+
+        ValidGT.forFile()
+            .addCondition(complexCondition, "文件名必须以temp开头且大于1KB")
 
         JsonUltra.parse("{\"a\":1}").use {
             it["a"]?.asString().logD()

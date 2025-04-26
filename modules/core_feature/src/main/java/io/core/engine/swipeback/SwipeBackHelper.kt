@@ -1,4 +1,4 @@
-package io.core.common.helper.swipeback
+package io.core.engine.swipeback
 
 import android.animation.Animator
 import android.animation.ValueAnimator

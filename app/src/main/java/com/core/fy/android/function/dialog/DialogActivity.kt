@@ -22,7 +22,7 @@ import io.core.common.base.component.activity.ReflectBindingActivity
 import io.core.common.base.component.dialog.BasePopup
 import io.core.common.base.component.dialog.showCustomDialog
 import io.core.common.base.component.dialog.specific.BubbleDialog
-import io.core.common.helper.dialogs.showDialog
+import io.core.engine.dialogs.showDialog
 import io.core.common.util.CoreUtil
 import io.core.common.util.extensions.cool.dpToPx
 import io.core.common.util.extensions.cool.runDelayedMain

@@ -3,13 +3,12 @@ package io.core.common.util.tools
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
-import android.net.Uri
 import android.provider.Settings
 import android.view.Display
+import androidx.core.net.toUri
 import io.core.appCtx
 import io.core.common.util.extensions.displayManager
 import io.core.common.util.extensions.powerManager
-import androidx.core.net.toUri
 import io.core.constant.ANDROID_6
 
 
@@ -18,7 +17,7 @@ object SystemUtils {
     @JvmStatic
     @SuppressLint("BatteryLife")
     fun ignoreBatteryOptimization(activity: Activity) {
-        if (OsUtils.lowerThan(ANDROID_6)) return
+        if (OSAir.lowerThan(ANDROID_6)) return
 
         val hasIgnored = powerManager.isIgnoringBatteryOptimizations(activity.packageName)
         //  判断当前APP是否有加入电池优化的白名单，如果没有，弹出加入电池优化的白名单的设置对话框。

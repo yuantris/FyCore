@@ -1,5 +1,7 @@
-package io.core.common.helper.swipeback
+package io.core.engine.swipeback
 
+import android.R.attr.duration
+import android.R.attr.end
 import android.animation.TypeEvaluator
 import android.animation.ValueAnimator
 import android.content.Context

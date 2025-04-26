@@ -23,11 +23,13 @@ import io.core.common.util.extensions.ui.getPrefInt
 import io.core.common.util.extensions.ui.putPrefBoolean
 import io.core.common.util.extensions.ui.putPrefInt
 import io.core.common.util.log.LogCat
-import io.core.common.util.tools.BitmapUtils
+import io.core.common.util.tools.BitmapTools
 import io.core.common.util.tools.FileTools
 import io.core.common.util.tools.getMeanColor
 import io.core.common.util.tools.resizeAndRecycle
 import java.io.File
+import androidx.core.graphics.toColorInt
+import androidx.core.graphics.drawable.toDrawable
 
 /**
  * 阅读界面配置
@@ -502,9 +504,9 @@ object ReadBookConfig {
         private var initColorInt = false
 
         private fun initColorInt() {
-            textColorIntEInk = Color.parseColor(textColorEInk)
-            textColorIntNight = Color.parseColor(textColorNight)
-            textColorInt = Color.parseColor(textColor)
+            textColorIntEInk = textColorEInk.toColorInt()
+            textColorIntNight = textColorNight.toColorInt()
+            textColorInt = textColor.toColorInt()
             initColorInt = true
         }
 
@@ -573,17 +575,17 @@ object ReadBookConfig {
 
         fun curBgDrawable(width: Int, height: Int): Drawable {
             if (width == 0 || height == 0) {
-                return ColorDrawable(appCtx.getCompatColor(R.color.background))
+                return appCtx.getCompatColor(R.color.background).toDrawable()
             }
             var bgDrawable: Drawable? = null
             val resources = appCtx.resources
             try {
                 bgDrawable = when (curBgType()) {
-                    0 -> ColorDrawable(Color.parseColor(curBgStr()))
+                    0 -> curBgStr().toColorInt().toDrawable()
                     1 -> {
                         val path = "bg" + File.separator + curBgStr()
-                        val bitmap = BitmapUtils.decodeAssetsBitmap(appCtx, path, width, height)
-                        BitmapDrawable(resources, bitmap?.resizeAndRecycle(width, height))
+                        val bitmap = BitmapTools.decodeAssetsBitmap(appCtx, path, width, height)
+                        bitmap?.resizeAndRecycle(width, height)?.toDrawable(resources)
                     }
 
                     else -> {
@@ -591,8 +593,8 @@ object ReadBookConfig {
                             if (it.contains(File.separator)) it
                             else FileTools.getPath(appCtx.getBasePath(PathType.EXTERNAL_FILES), "bg", curBgStr())
                         }
-                        val bitmap = BitmapUtils.decodeBitmap(path, width, height)
-                        BitmapDrawable(resources, bitmap?.resizeAndRecycle(width, height))
+                        val bitmap = BitmapTools.decodeBitmap(path, width, height)
+                        bitmap?.resizeAndRecycle(width, height)?.toDrawable(resources)
                     }
                 }
             } catch (e: OutOfMemoryError) {
@@ -600,7 +602,7 @@ object ReadBookConfig {
             } catch (e: Exception) {
                 e.printOnDebug()
             }
-            return bgDrawable ?: ColorDrawable(appCtx.getCompatColor(R.color.background))
+            return bgDrawable ?: appCtx.getCompatColor(R.color.background).toDrawable()
         }
     }
 }

@@ -4,7 +4,8 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import java.io.*
+import java.io.File
+import java.io.InputStream
 
 object FolderFactory {
     private val folders = mutableMapOf<String, Folder>()

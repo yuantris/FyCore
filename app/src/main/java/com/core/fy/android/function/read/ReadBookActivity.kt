@@ -24,7 +24,7 @@ import com.core.fy.android.help.config.AppConfig
 import com.core.fy.android.help.config.ReadBookConfig
 import com.core.fy.android.room.entity.Book
 import io.core.common.base.component.activity.ReflectBindingActivity
-import io.core.common.helper.track.AppLifecycleTracker
+import io.core.common.helper.track.AppTrackV2
 import io.core.common.util.DiveGestureLine
 import io.core.common.util.extensions.cool.HandlerGT.handler
 import io.core.common.util.extensions.cool.toastOnUI
@@ -123,7 +123,7 @@ class ReadBookActivity : ReflectBindingActivity<ActivityBookReadBinding>(),
         //registerReceiver(timeBatteryReceiver, timeBatteryReceiver.filter)
         binding.readView.upTime()
 
-        AppLifecycleTracker.trackActivityTime(this)
+        AppTrackV2.trackActivityTime(this)
     }
 
     private var screenTimeOut: Long = 0

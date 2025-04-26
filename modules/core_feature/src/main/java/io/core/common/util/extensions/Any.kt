@@ -6,7 +6,7 @@ import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ProcessLifecycleOwner
 import io.core.appCtx
-import io.core.common.helper.track.AppLifecycleTracker
+import io.core.common.helper.track.AppTrackV2
 import io.core.common.util.extensions.cool.runDelayedMain
 import io.core.common.util.extensions.cool.timeFormat
 import io.core.common.util.extensions.ui.appPackageName
@@ -37,7 +37,7 @@ fun Any.simpleName(): String = this::class.simpleName ?: "Unknown"
 inline fun <T> T?.orElseRun(block: () -> T): T = this ?: block()
 
 fun Any?.exitApp() {
-    AppLifecycleTracker.finishAllActivities()
+    AppTrackV2.finishAllActivities()
     runDelayedMain(10) {
         exitProcess(0)
     }

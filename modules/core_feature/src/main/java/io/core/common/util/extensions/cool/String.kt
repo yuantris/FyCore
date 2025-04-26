@@ -2,7 +2,6 @@
 
 package io.core.common.util.extensions.cool
 
-import android.annotation.SuppressLint
 import android.icu.text.Collator
 import android.icu.util.ULocale
 import android.net.Uri
@@ -12,7 +11,6 @@ import android.text.Spanned
 import android.text.style.ForegroundColorSpan
 import androidx.annotation.ColorInt
 import io.core.common.util.Toaster
-import io.core.common.util.tools.OsUtils
 import io.core.common.util.tools.isAndroid7Plus
 import java.io.File
 import java.lang.Character.codePointCount

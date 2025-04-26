@@ -11,7 +11,7 @@ import com.core.fy.android.function.read.model.ReadBook
 import com.core.fy.android.help.config.AppConfig
 import com.core.fy.android.function.read.services.AudioPlayService
 import com.core.fy.android.function.read.services.BaseReadAloudService
-import io.core.common.helper.track.AppLifecycleTracker
+import io.core.common.helper.track.AppTrackV2
 import io.core.common.util.extensions.ui.getPrefBoolean
 import io.core.common.util.log.LogPure
 
@@ -90,7 +90,7 @@ class MediaButtonReceiver : BroadcastReceiver() {
                     // break
                 }
 
-                AppLifecycleTracker.hasActivity(ReadBookActivity::class.java) ->
+                AppTrackV2.hasActivity(ReadBookActivity::class.java) ->
                 {
                     //postEvent(EventBus.MEDIA_BUTTON, true)
                 }
@@ -100,7 +100,7 @@ class MediaButtonReceiver : BroadcastReceiver() {
 //                    //postEvent(EventBus.MEDIA_BUTTON, true)
 //                }
 
-                else -> if (AppConfig.mediaButtonOnExit || AppLifecycleTracker.aliveActivityCount() > 0 || !isMediaKey) {
+                else -> if (AppConfig.mediaButtonOnExit || AppTrackV2.aliveActivityCount() > 0 || !isMediaKey) {
                     ReadAloud.upReadAloudClass()
                     if (ReadBook.book != null) {
                         ReadBook.readAloud()

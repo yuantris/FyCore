@@ -1,12 +1,9 @@
 package io.core.common.util.extensions.cool
 
 import android.net.Uri
-import androidx.core.content.FileProvider
-import io.core.appCtx
 import io.core.common.util.CoreUtil
 import io.core.common.util.FileDoc
 import io.core.common.util.FileDocFilter
-import io.core.common.util.extensions.authority
 import io.core.common.util.extensions.currentTimeMillis
 import io.core.common.util.tools.FileTools
 import io.core.common.util.tools.UriTools

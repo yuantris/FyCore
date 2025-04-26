@@ -17,11 +17,11 @@ import androidx.viewpager2.widget.ViewPager2
 import com.gyf.immersionbar.BarHide
 import com.gyf.immersionbar.ImmersionBar
 import io.core.R
-import io.core.common.helper.dialogs.showDialog
 import io.core.common.util.extensions.addCallback
 import io.core.common.util.extensions.cool.dpToPx
 import io.core.common.util.extensions.exitApp
 import io.core.common.util.extensions.ui.onDebouncedClick
+import io.core.engine.dialogs.showDialog
 
 // GuideConfig.kt
 data class GuideConfig(

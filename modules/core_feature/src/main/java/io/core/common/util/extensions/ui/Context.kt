@@ -42,13 +42,13 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import io.core.R
 import io.core.common.base.component.dialog.CustomToast
+import io.core.common.util.Preferences
 import io.core.common.util.Toaster
 import io.core.common.util.extensions.cool.logPrint
 import io.core.common.util.extensions.cool.printOnDebug
 import io.core.common.util.extensions.cool.pxToDp
 import io.core.common.util.extensions.layoutInflater
 import io.core.common.util.extensions.windowManager
-import io.core.common.util.Preferences
 import kotlin.system.exitProcess
 
 val Context.ctx

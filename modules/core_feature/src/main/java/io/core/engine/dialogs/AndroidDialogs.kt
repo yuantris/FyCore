@@ -1,6 +1,6 @@
 @file:Suppress("NOTHING_TO_INLINE", "unused", "DEPRECATION")
 
-package io.core.common.helper.dialogs
+package io.core.engine.dialogs
 
 import android.annotation.SuppressLint
 import android.app.ProgressDialog

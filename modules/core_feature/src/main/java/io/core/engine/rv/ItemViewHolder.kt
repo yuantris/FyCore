@@ -1,4 +1,4 @@
-package io.core.common.helper.rv
+package io.core.engine.rv
 
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding

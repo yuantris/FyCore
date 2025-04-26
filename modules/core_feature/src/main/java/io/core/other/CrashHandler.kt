@@ -14,8 +14,8 @@ import io.core.common.CoreConfig
 import io.core.common.base.component.activity.CrashActivity
 import io.core.common.base.component.activity.CrashSameProcessActivity
 import io.core.common.base.component.activity.RestartActivity
-import io.core.common.base.interfaces.OnNextStep
-import io.core.common.helper.track.AppLifecycleTracker
+import io.core.common.base.interfaces.OnNextStepCallback
+import io.core.common.helper.track.AppTrackV2
 import io.core.common.util.extensions.cool.PathType
 import io.core.common.util.extensions.cool.createFolderReplace
 import io.core.common.util.extensions.cool.documentsDir
@@ -58,7 +58,7 @@ class CrashHandler private constructor(private val application: Application) :
 
         @JvmStatic
         @JvmOverloads
-        fun checkLatestCrash(scope: LifecycleCoroutineScope, action: OnNextStep? = null) {
+        fun checkLatestCrash(scope: LifecycleCoroutineScope, action: OnNextStepCallback? = null) {
             if (!CoreConfig.Crash.allowMultiProcess && Android.debug) {
                 val millis = System.currentTimeMillis()
                 val preferences = appCtx.getSharedPreferences(CRASH_FILE_NAME, Context.MODE_PRIVATE)
@@ -123,7 +123,7 @@ class CrashHandler private constructor(private val application: Application) :
                 }
                 map["PACKAGE_NAME"] = appCtx.packageName
                 map["CURRENT_ACTIVITY"] =
-                    AppLifecycleTracker.getTopActivity()?.javaClass?.name ?: "none"
+                    AppTrackV2.getTopActivity()?.javaClass?.name ?: "none"
             }
             map
         }

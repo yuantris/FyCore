@@ -1,4 +1,4 @@
-package io.core.common.helper.dialogs
+package io.core.engine.dialogs
 
 @Suppress("unused")
 data class SelectItem<T>(

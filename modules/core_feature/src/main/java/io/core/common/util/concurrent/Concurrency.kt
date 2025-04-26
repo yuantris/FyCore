@@ -65,7 +65,6 @@ import kotlin.coroutines.suspendCoroutine
  *
  * 注意：
  * - 所有线程池会在JVM关闭时自动关闭
- * - 也可以手动调用[shutdown]方法关闭所有线程池
  * - 默认使用CPU调度器执行协程任务
  *
  *  CompletableFuture处理集合

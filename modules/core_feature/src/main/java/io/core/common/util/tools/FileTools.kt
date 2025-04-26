@@ -4,12 +4,11 @@ import android.os.Environment
 import android.webkit.MimeTypeMap
 import androidx.annotation.IntDef
 import io.core.appCtx
-import io.core.common.util.extensions.cool.ConvertUtils
+import io.core.common.util.extensions.cool.ConvertTools
 import io.core.common.util.extensions.cool.cnCompare
 import io.core.common.util.extensions.cool.printOnDebug
 import io.core.common.util.extensions.currentTimeMillis
 import java.io.ByteArrayOutputStream
-import java.io.Closeable
 import java.io.File
 import java.io.FileFilter
 import java.io.FileInputStream
@@ -660,7 +659,7 @@ object FileTools {
     @JvmStatic
     fun getSize(path: String): String {
         val fileSize = getLength(path)
-        return ConvertUtils.formatFileSize(fileSize)
+        return ConvertTools.formatFileSize(fileSize)
     }
 
     /**

@@ -11,11 +11,11 @@ import com.tencent.mmkv.MMKV
 import io.core.Android
 import io.core.BR
 import io.core.common.CoreConfig
-import io.core.common.helper.track.AppLifecycleTracker
+import io.core.common.helper.track.AppTrackV2
 import io.core.common.helper.track.TurboTracker
 import io.core.common.util.extensions.notificationManager
 import io.core.common.util.log.LogPure
-import io.core.common.util.tools.OsUtils
+import io.core.common.util.tools.OSAir
 import io.core.constant.ANDROID_8
 import io.core.engine.brv.utils.BRV
 import io.core.engine.storage.StorageFactory
@@ -72,7 +72,7 @@ class App : Application() {
         // SoftKeyboardGlobal.install(this, false)
         createNotificationChannels()
 
-        AppLifecycleTracker.registerAppStatusListener { isForeground ->
+        AppTrackV2.registerAppStatusListener { isForeground ->
             LogPure.v {
                 "进入${if (isForeground) "前台" else "后台"}"
             }
@@ -84,7 +84,7 @@ class App : Application() {
      * 创建通知ID
      */
     private fun createNotificationChannels() {
-        if (OsUtils.lowerThan(ANDROID_8)) return
+        if (OSAir.lowerThan(ANDROID_8)) return
 
         val readAloudChannel = NotificationChannel(
             channelIdReadAloud,

@@ -1,16 +1,13 @@
 package io.core.common.util.tools
 
 import android.net.Uri
-import android.os.Build
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.FileProvider
+import androidx.core.net.toUri
 import io.core.appCtx
 import io.core.common.util.extensions.authority
-import io.core.constant.ANDROID_7
-import java.io.File
-import androidx.core.net.toUri
 import io.core.common.util.extensions.cool.isContentUri
 import io.core.common.util.extensions.cool.isFileUri
+import java.io.File
 
 /**
 # ██████████

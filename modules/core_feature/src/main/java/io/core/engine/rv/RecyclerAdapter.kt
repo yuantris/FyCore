@@ -1,4 +1,4 @@
-package io.core.common.helper.rv
+package io.core.engine.rv
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -53,7 +53,7 @@ abstract class RecyclerAdapter<ITEM, VB : ViewBinding>(protected val context: Co
 
     @Synchronized
     fun addHeaderView(header: ((parent: ViewGroup) -> ViewBinding)) {
-        kotlin.runCatching {
+        runCatching {
             val index = headerItems.size()
             headerItems.put(TYPE_HEADER_VIEW + headerItems.size(), header)
             notifyItemInserted(index)
@@ -62,7 +62,7 @@ abstract class RecyclerAdapter<ITEM, VB : ViewBinding>(protected val context: Co
 
     @Synchronized
     fun addFooterView(footer: ((parent: ViewGroup) -> ViewBinding)) {
-        kotlin.runCatching {
+        runCatching {
             val index = getActualItemCount() + footerItems.size()
             footerItems.put(TYPE_FOOTER_VIEW + footerItems.size(), footer)
             notifyItemInserted(index)
@@ -71,7 +71,7 @@ abstract class RecyclerAdapter<ITEM, VB : ViewBinding>(protected val context: Co
 
     @Synchronized
     fun removeHeaderView(header: ((parent: ViewGroup) -> ViewBinding)) {
-        kotlin.runCatching {
+        runCatching {
             val index = headerItems.indexOfValue(header)
             if (index >= 0) {
                 headerItems.remove(index)
@@ -82,7 +82,7 @@ abstract class RecyclerAdapter<ITEM, VB : ViewBinding>(protected val context: Co
 
     @Synchronized
     fun removeFooterView(footer: ((parent: ViewGroup) -> ViewBinding)) {
-        kotlin.runCatching {
+        runCatching {
             val index = footerItems.indexOfValue(footer)
             if (index >= 0) {
                 footerItems.remove(index)
@@ -94,7 +94,7 @@ abstract class RecyclerAdapter<ITEM, VB : ViewBinding>(protected val context: Co
     @SuppressLint("NotifyDataSetChanged")
     @Synchronized
     fun setItems(items: List<ITEM>?) {
-        kotlin.runCatching {
+        runCatching {
             if (this.items.isNotEmpty()) {
                 this.items.clear()
             }
@@ -112,7 +112,7 @@ abstract class RecyclerAdapter<ITEM, VB : ViewBinding>(protected val context: Co
         itemCallback: DiffUtil.ItemCallback<ITEM>,
         skipDiff: Boolean = false
     ) {
-        kotlin.runCatching {
+        runCatching {
             val oldItems = this.items.toList()
             val itemsSize = items?.size ?: 0
             val headerCount = getHeaderCount()
@@ -181,7 +181,7 @@ abstract class RecyclerAdapter<ITEM, VB : ViewBinding>(protected val context: Co
 
     @Synchronized
     fun setItem(position: Int, item: ITEM) {
-        kotlin.runCatching {
+        runCatching {
             val oldSize = getActualItemCount()
             if (position in 0 until oldSize) {
                 this.items[position] = item
@@ -193,7 +193,7 @@ abstract class RecyclerAdapter<ITEM, VB : ViewBinding>(protected val context: Co
 
     @Synchronized
     fun addItem(item: ITEM) {
-        kotlin.runCatching {
+        runCatching {
             val oldSize = getActualItemCount()
             if (this.items.add(item)) {
                 notifyItemInserted(oldSize + getHeaderCount())
@@ -204,7 +204,7 @@ abstract class RecyclerAdapter<ITEM, VB : ViewBinding>(protected val context: Co
 
     @Synchronized
     fun addItems(position: Int, newItems: List<ITEM>) {
-        kotlin.runCatching {
+        runCatching {
             if (this.items.addAll(position, newItems)) {
                 notifyItemRangeInserted(position + getHeaderCount(), newItems.size)
             }
@@ -215,7 +215,7 @@ abstract class RecyclerAdapter<ITEM, VB : ViewBinding>(protected val context: Co
     @SuppressLint("NotifyDataSetChanged")
     @Synchronized
     fun addItems(newItems: List<ITEM>) {
-        kotlin.runCatching {
+        runCatching {
             val oldSize = getActualItemCount()
             if (this.items.addAll(newItems)) {
                 if (oldSize == 0 && getHeaderCount() == 0) {
@@ -230,7 +230,7 @@ abstract class RecyclerAdapter<ITEM, VB : ViewBinding>(protected val context: Co
 
     @Synchronized
     fun removeItem(position: Int) {
-        kotlin.runCatching {
+        runCatching {
             if (this.items.removeAt(position) != null) {
                 notifyItemRemoved(position + getHeaderCount())
             }
@@ -240,7 +240,7 @@ abstract class RecyclerAdapter<ITEM, VB : ViewBinding>(protected val context: Co
 
     @Synchronized
     fun removeItem(item: ITEM) {
-        kotlin.runCatching {
+        runCatching {
             if (this.items.remove(item)) {
                 notifyItemRemoved(this.items.indexOf(item) + getHeaderCount())
             }
@@ -251,7 +251,7 @@ abstract class RecyclerAdapter<ITEM, VB : ViewBinding>(protected val context: Co
     @SuppressLint("NotifyDataSetChanged")
     @Synchronized
     fun removeItems(items: List<ITEM>) {
-        kotlin.runCatching {
+        runCatching {
             if (this.items.removeAll(items)) {
                 notifyDataSetChanged()
             }
@@ -261,7 +261,7 @@ abstract class RecyclerAdapter<ITEM, VB : ViewBinding>(protected val context: Co
 
     @Synchronized
     fun swapItem(oldPosition: Int, newPosition: Int) {
-        kotlin.runCatching {
+        runCatching {
             val size = getActualItemCount()
             if (oldPosition in 0 until size && newPosition in 0 until size) {
                 val srcPosition = oldPosition + getHeaderCount()
@@ -275,7 +275,7 @@ abstract class RecyclerAdapter<ITEM, VB : ViewBinding>(protected val context: Co
 
     @Synchronized
     fun updateItem(item: ITEM) {
-        kotlin.runCatching {
+        runCatching {
             val index = this.items.indexOf(item)
             if (index >= 0) {
                 this.items[index] = item
@@ -287,7 +287,7 @@ abstract class RecyclerAdapter<ITEM, VB : ViewBinding>(protected val context: Co
 
     @Synchronized
     fun updateItem(position: Int, payload: Any) {
-        kotlin.runCatching {
+        runCatching {
             val size = getActualItemCount()
             if (position in 0 until size) {
                 notifyItemChanged(position + getHeaderCount(), payload)
@@ -297,7 +297,7 @@ abstract class RecyclerAdapter<ITEM, VB : ViewBinding>(protected val context: Co
 
     @Synchronized
     fun updateItems(fromPosition: Int, toPosition: Int, payloads: Any) {
-        kotlin.runCatching {
+        runCatching {
             val size = getActualItemCount()
             if (fromPosition in 0 until size && toPosition in 0 until size) {
                 notifyItemRangeChanged(
@@ -312,7 +312,7 @@ abstract class RecyclerAdapter<ITEM, VB : ViewBinding>(protected val context: Co
     @SuppressLint("NotifyDataSetChanged")
     @Synchronized
     fun clearItems() {
-        kotlin.runCatching {
+        runCatching {
             this.items.clear()
             notifyDataSetChanged()
             onCurrentListChanged()

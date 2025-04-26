@@ -1,7 +1,9 @@
 package com.core.fy.android.main.fragment
 
 import android.annotation.SuppressLint
+import android.graphics.Bitmap
 import android.os.Build
+import androidx.core.graphics.createBitmap
 import androidx.lifecycle.lifecycleScope
 import com.core.fy.android.MainActivity
 import com.core.fy.android.R
@@ -11,6 +13,7 @@ import com.core.fy.android.ui.receiver.TimeBatteryReceiver
 import io.core.appCtx
 import io.core.common.base.component.fragment.ReflectBindingFragment
 import io.core.common.helper.coroutine.Coroutine
+import io.core.common.helper.pool.UniversalPool
 import io.core.common.util.extensions.ui.getCompatColor
 import io.core.engine.brv.utils.linear
 import io.core.engine.brv.utils.setup
@@ -43,6 +46,12 @@ class BlankFragment : ReflectBindingFragment<FragmentBlankBinding, MainActivity>
     @SuppressLint("UnspecifiedRegisterReceiverFlag")
     override fun initView() {
         super.initView()
+
+        val universalPool = UniversalPool.Builder<Bitmap>().apply {
+            creator = { createBitmap(1080, 1920) }
+        }.build()
+        val bitmap = universalPool.borrow()
+        universalPool.release(bitmap)
 
         val get = IntentData.get<Int>("23")
         appCtx.registerReceiver(timeBatteryReceiver, timeBatteryReceiver.filter)
