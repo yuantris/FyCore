@@ -27,7 +27,7 @@ class NetworkMonitor private constructor() {
 
     private val callback = object : ConnectivityManager.NetworkCallback() {
         override fun onCapabilitiesChanged(network: Network, capabilities: NetworkCapabilities) {
-            _networkState.value = capabilities.toNetworkState(network)
+            _networkState.value = capabilities.toNetworkState()
         }
 
         override fun onLost(network: Network) {
@@ -48,7 +48,7 @@ class NetworkMonitor private constructor() {
     fun getCurrentState(): NetworkState {
         return connectivityManager.activeNetwork?.let { network ->
             connectivityManager.getNetworkCapabilities(network)
-                ?.toNetworkState(network)
+                ?.toNetworkState()
         } ?: NetworkState.Disconnected
     }
 
@@ -112,7 +112,7 @@ sealed class NetworkState {
 /**
  * NetworkCapabilities扩展函数
  */
-private fun NetworkCapabilities.toNetworkState(network: Network): NetworkState {
+private fun NetworkCapabilities.toNetworkState(): NetworkState {
     return if (hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)) {
         NetworkState.Connected(
             isWifi = hasTransport(NetworkCapabilities.TRANSPORT_WIFI),

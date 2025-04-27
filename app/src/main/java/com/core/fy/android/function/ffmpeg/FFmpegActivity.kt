@@ -22,7 +22,7 @@ class FFmpegActivity : ReflectBindingActivity<ActivityFfmpegBinding>() {
         super.initial(savedInstanceState)
         startService<FFmpegService>()
         lifecycleScope.launch(Dispatchers.IO) {
-            val files = MediaScanner.queryFiles(setOf(MediaScanner.FileType.MP4))
+            val files = MediaScanner.queryFiles(setOf(MediaScanner.MediaFileType.MP4))
             withContext(Dispatchers.Main) {
                 val text = buildString {
                     for (file in files) {

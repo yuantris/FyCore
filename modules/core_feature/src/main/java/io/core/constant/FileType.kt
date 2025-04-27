@@ -1,6 +1,7 @@
 package io.core.constant
 
 import android.webkit.MimeTypeMap
+import java.io.File
 
 /**
  * FileType 是一个用于存储文件扩展名与 MIME 类型映射的工具类。
@@ -13,131 +14,139 @@ object FileType {
 
     /**
      * 文件扩展名与 MIME 类型的映射表。
-     * 键为文件扩展名（如 ".txt"），值为对应的 MIME 类型（如 "text/plain"）。
+     * 键为文件扩展名（如 ".txt"），值为对应的 MIME 类型列表。
      */
-    val MIME_TYPE_MAP = mapOf(
+    private val MIME_TYPE_MAP: Map<String, List<String>> = mapOf(
         // 图片类型
-        ".bmp" to "image/bmp",
-        ".gif" to "image/gif",
-        ".heic" to "image/heic",
-        ".ico" to "image/x-icon",
-        ".jpeg" to "image/jpeg",
-        ".jpg" to "image/jpeg",
-        ".png" to "image/png",
-        ".psd" to "image/vnd.adobe.photoshop",
-        ".svg" to "image/svg+xml",
-        ".tiff" to "image/tiff",
-        ".webp" to "image/webp",
-        
+        ".bmp" to listOf("image/bmp"),
+        ".gif" to listOf("image/gif"),
+        ".heic" to listOf("image/heic"),
+        ".ico" to listOf("image/x-icon"),
+        ".jpeg" to listOf("image/jpeg"),
+        ".jpg" to listOf("image/jpeg"),
+        ".png" to listOf("image/png"),
+        ".psd" to listOf("image/vnd.adobe.photoshop"),
+        ".svg" to listOf("image/svg+xml"),
+        ".tiff" to listOf("image/tiff"),
+        ".webp" to listOf("image/webp"),
+
         // 视频类型
-        ".3gp" to "video/3gpp",
-        ".asf" to "video/x-ms-asf",
-        ".avi" to "video/x-msvideo",
-        ".m4u" to "video/vnd.mpegurl",
-        ".m4v" to "video/x-m4v",
-        ".mov" to "video/quicktime",
-        ".mp4" to "video/mp4",
-        ".mpe" to "video/mpeg",
-        ".mpeg" to "video/mpeg",
-        ".mpg" to "video/mpeg",
-        ".mpg4" to "video/mp4",
-        ".rmvb" to "video/vnd.rn-realvideo",
-        ".wmv" to "video/x-ms-wmv",
-        
+        ".3gp" to listOf("video/3gpp"),
+        ".asf" to listOf("video/x-ms-asf"),
+        ".avi" to listOf("video/x-msvideo"),
+        ".m4u" to listOf("video/vnd.mpegurl"),
+        ".m4v" to listOf("video/x-m4v"),
+        ".mkv" to listOf("video/x-matroska", "video/mkv"),
+        ".mov" to listOf("video/quicktime"),
+        ".mp4" to listOf("video/mp4"),
+        ".mpe" to listOf("video/mpeg"),
+        ".mpeg" to listOf("video/mpeg"),
+        ".mpg" to listOf("video/mpeg"),
+        ".mpg4" to listOf("video/mp4"),
+        ".rmvb" to listOf("video/vnd.rn-realvideo"),
+        ".wmv" to listOf("video/x-ms-wmv"),
+
         // 音频类型
-        ".aac" to "audio/aac",
-        ".flac" to "audio/flac",
-        ".m4a" to "audio/mp4a-latm",
-        ".m4b" to "audio/mp4a-latm",
-        ".m4p" to "audio/mp4a-latm",
-        ".mid" to "audio/midi",
-        ".midi" to "audio/midi",
-        ".mp2" to "audio/x-mpeg",
-        ".mp3" to "audio/x-mpeg",
-        ".mpga" to "audio/mpeg",
-        ".ogg" to "audio/ogg",
-        ".wav" to "audio/x-wav",
-        ".wma" to "audio/x-ms-wma",
-        
+        ".aac" to listOf("audio/aac"),
+        ".flac" to listOf("audio/flac", "audio/x-flac"),
+        ".m4a" to listOf("audio/mp4", "audio/m4a", "audio/mp4a-latm"),
+        ".m4b" to listOf("audio/mp4a-latm"),
+        ".m4p" to listOf("audio/mp4a-latm"),
+        ".mid" to listOf("audio/midi"),
+        ".midi" to listOf("audio/midi"),
+        ".mp2" to listOf("audio/x-mpeg"),
+        ".mp3" to listOf("audio/mpeg", "audio/x-mpeg"),
+        ".mpga" to listOf("audio/mpeg"),
+        ".ogg" to listOf("audio/ogg"),
+        ".wav" to listOf("audio/wav", "audio/x-wav", "audio/wave"),
+        ".wma" to listOf("audio/x-ms-wma"),
+
         // 文档类型
-        ".csv" to "text/csv",
-        ".doc" to "application/msword",
-        ".docx" to "application/msword",
-        ".pdf" to "application/pdf",
-        ".ppt" to "application/vnd.ms-powerpoint",
-        ".pptx" to "application/vnd.openxmlformats-officedocument.presentationml.presentation",
-        ".rtf" to "application/rtf",
-        ".txt" to "text/plain",
-        ".xls" to "application/vnd.ms-excel",
-        ".xlsx" to "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-        
+        ".csv" to listOf("text/csv"),
+        ".doc" to listOf("application/msword"),
+        ".docx" to listOf("application/vnd.openxmlformats-officedocument.wordprocessingml.document"),
+        ".pdf" to listOf("application/pdf"),
+        ".ppt" to listOf("application/vnd.ms-powerpoint"),
+        ".pptx" to listOf("application/vnd.openxmlformats-officedocument.presentationml.presentation"),
+        ".rtf" to listOf("application/rtf"),
+        ".txt" to listOf("text/plain"),
+        ".epub" to listOf("application/epub+zip"),
+        ".xls" to listOf("application/vnd.ms-excel"),
+        ".xlsx" to listOf("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"),
+
         // 压缩文件
-        ".7z" to "application/x-7z-compressed",
-        ".dmg" to "application/x-apple-diskimage",
-        ".gz" to "application/x-gzip",
-        ".iso" to "application/x-iso9660-image",
-        ".rar" to "application/x-rar-compressed",
-        ".tar" to "application/x-tar",
-        ".tgz" to "application/x-compressed",
-        ".zip" to "application/zip",
-        ".z" to "application/x-compress",
-        
+        ".7z" to listOf("application/x-7z-compressed"),
+        ".dmg" to listOf("application/x-apple-diskimage"),
+        ".gz" to listOf("application/x-gzip"),
+        ".iso" to listOf("application/x-iso9660-image"),
+        ".rar" to listOf("application/x-rar-compressed"),
+        ".tar" to listOf("application/x-tar"),
+        ".tgz" to listOf("application/x-compressed"),
+        ".zip" to listOf("application/zip"),
+        ".z" to listOf("application/x-compress"),
+
         // 可执行文件
-        ".apk" to "application/vnd.android.package-archive",
-        ".bin" to "application/octet-stream",
-        ".class" to "application/octet-stream",
-        ".exe" to "application/octet-stream",
-        ".jar" to "application/java-archive",
-        
+        ".apk" to listOf("application/vnd.android.package-archive"),
+        ".bin" to listOf("application/octet-stream"),
+        ".class" to listOf("application/octet-stream"),
+        ".exe" to listOf("application/octet-stream"),
+        ".jar" to listOf("application/java-archive"),
+
         // 编程代码
-        ".c" to "text/plain",
-        ".conf" to "text/plain",
-        ".cpp" to "text/plain",
-        ".go" to "text/plain",
-        ".h" to "text/plain",
-        ".java" to "text/plain",
-        ".js" to "application/x-javascript",
-        ".json" to "application/json",
-        ".kt" to "text/plain",
-        ".log" to "text/plain",
-        ".md" to "text/markdown",
-        ".markdown" to "text/markdown",
-        ".php" to "application/x-httpd-php", 
-        ".prop" to "text/plain",
-        ".py" to "text/x-python",
-        ".rc" to "text/plain",
-        ".rs" to "text/plain",
-        ".sh" to "text/plain",
-        ".sql" to "application/sql",
-        ".swift" to "text/plain",
-        ".ts" to "application/typescript",
-        ".xml" to "text/plain",
-        ".yaml" to "text/yaml",
-        ".yml" to "text/yaml",
-        
+        ".c" to listOf("text/x-c"),
+        ".conf" to listOf("text/plain"),
+        ".cpp" to listOf("text/x-c++src"),
+        ".go" to listOf("text/x-go"),
+        ".h" to listOf("text/x-c-header"),
+        ".java" to listOf("text/x-java-source"),
+        ".js" to listOf("application/javascript"),
+        ".json" to listOf("application/json"),
+        ".kt" to listOf("text/x-kotlin"),
+        ".log" to listOf("text/plain"),
+        ".md" to listOf("text/markdown"),
+        ".markdown" to listOf("text/markdown"),
+        ".php" to listOf("application/x-httpd-php"),
+        ".prop" to listOf("text/plain"),
+        ".py" to listOf("text/x-python"),
+        ".rc" to listOf("text/plain"),
+        ".rs" to listOf("text/rust"),
+        ".sh" to listOf("application/x-sh"),
+        ".sql" to listOf("application/sql"),
+        ".swift" to listOf("text/x-swift"),
+        ".ts" to listOf("application/typescript"),
+        ".xml" to listOf("application/xml", "text/xml"),
+        ".yaml" to listOf("application/yaml"),
+        ".yml" to listOf("application/yaml"),
+
         // 其他
-        ".gtar" to "application/x-gtar",
-        ".htm" to "text/html",
-        ".html" to "text/html",
-        ".m3u" to "audio/x-mpegurl",
-        ".m4u" to "video/vnd.mpegurl",
-        ".mpc" to "application/vnd.mpohun.certificate",
-        ".msg" to "application/vnd.ms-outlook",
-        ".pps" to "application/vnd.ms-powerpoint",
-        ".wps" to "application/vnd.ms-works",
-        
+        ".gtar" to listOf("application/x-gtar"),
+        ".htm" to listOf("text/html"),
+        ".html" to listOf("text/html"),
+        ".m3u" to listOf("audio/x-mpegurl"),
+        ".mpc" to listOf("application/vnd.mpohun.certificate"),
+        ".msg" to listOf("application/vnd.ms-outlook"),
+        ".pps" to listOf("application/vnd.ms-powerpoint"),
+        ".wps" to listOf("application/vnd.ms-works"),
+
         // 默认
-        "" to "*/*"
+        "" to listOf("*/*")
     )
+
+    /**
+     * 获取只读的文件扩展名与MIME类型映射表（兼容旧版本）
+     */
+    @JvmStatic
+    fun getMimeTypeMap(): Map<String, List<String>> = MIME_TYPE_MAP
 
     /**
      * 根据文件扩展名获取对应的MIME类型
      * @param extension 文件扩展名（可以带点号如".jpg"，也可以不带如"jpg"）
      * @return 对应的MIME类型
      */
-    fun getMimeType(extension: String): String {
+    @JvmStatic
+    fun resolveMimeType(extension: String): String {
         // 先尝试自定义映射
-        return MIME_TYPE_MAP[normalizeExtension(extension)]
+        return MIME_TYPE_MAP[normalizeExtension(extension)]?.firstOrNull()
         // 自定义没有则使用系统API
             ?: MimeTypeMap.getSingleton()
                 .getMimeTypeFromExtension(normalizeExtension(extension).removePrefix("."))
@@ -146,17 +155,13 @@ object FileType {
     }
 
     /**
-     * 根据文件名或文件路径获取对应的MIME类型
-     * @param fileNameOrPath 文件名（如"test.jpg"）或完整路径（如"/path/to/test.jpg"）
-     * @return 对应的MIME类型
+     * 获取文件扩展名对应的所有MIME类型
+     * @param extension 文件扩展名（可以带点号如".jpg"，也可以不带如"jpg"）
+     * @return 对应的MIME类型列表，如果没有则返回空列表
      */
-    fun getMimeTypeFromFile(fileNameOrPath: String): String {
-        val lastDotIndex = fileNameOrPath.lastIndexOf('.')
-        return getMimeType(
-            if (lastDotIndex != -1) {
-                fileNameOrPath.substring(lastDotIndex).lowercase()
-            } else ""
-        )
+    @JvmStatic
+    fun resolveAllMimeTypes(extension: String): List<String> {
+        return MIME_TYPE_MAP[normalizeExtension(extension)].orEmpty()
     }
 
     /**
@@ -164,17 +169,38 @@ object FileType {
      * @param mimeType MIME类型（如"image/jpeg"）
      * @return 对应的文件扩展名列表（如[".jpg", ".jpeg"]）
      */
-    fun getExtensionsByMimeType(mimeType: String): List<String> {
+    @JvmStatic
+    fun resolveExtensions(mimeType: String): List<String> {
         return MIME_TYPE_MAP.entries
-            .filter { it.value.equals(mimeType, ignoreCase = true) }
+            .filter { it.value.any { v -> v.equals(mimeType, ignoreCase = true) } }
             .map { it.key }
-            .toList()
+    }
+
+
+    /**
+     * 根据文件获取对应的MIME类型
+     * @param file 文件
+     * @return 对应的MIME类型
+     */
+    @JvmStatic
+    fun mimeTypeOf(file: File): String = mimeTypeOf(file.name)
+
+    /**
+     * 根据文件名或文件路径获取对应的MIME类型
+     * @param fileNameOrPath 文件名（如"test.jpg"）或完整路径（如"/path/to/test.jpg"）
+     * @return 对应的MIME类型
+     */
+    @JvmStatic
+    fun mimeTypeOf(fileNameOrPath: String): String {
+        val extension = fileNameOrPath.substringAfterLast('.', "")
+        return resolveMimeType(extension)
     }
 
     /**
      * 检查扩展名是否有对应的MIME类型
      */
-    fun containsExtension(extension: String): Boolean {
+    @JvmStatic
+    fun isExtSupported(extension: String): Boolean {
         return MIME_TYPE_MAP.containsKey(normalizeExtension(extension))
     }
 

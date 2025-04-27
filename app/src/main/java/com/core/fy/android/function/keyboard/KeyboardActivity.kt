@@ -7,6 +7,10 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import com.core.fy.android.databinding.ActivityKeyboardBinding
 import io.core.common.base.component.activity.BaseInputActivity
 import io.core.common.util.DiveGestureLine
+import io.core.common.util.extensions.cool.launchAsync
+import io.core.common.util.extensions.ui.onDebouncedClick
+import io.core.common.util.tools.KeyboardTools
+import kotlinx.coroutines.delay
 
 /**
 # ██████████
@@ -33,11 +37,19 @@ class KeyboardActivity : BaseInputActivity<ActivityKeyboardBinding>() {
             DiveGestureLine.adaptXiaomi(window, Color.parseColor("#f4f4f4"))
         }
         super.initial(savedInstanceState)
-
     }
 
     override fun setListener() {
         super.setListener()
+        binding.apply {
+            show.onDebouncedClick {
+                KeyboardTools.showSoftInput()
+            }
+
+            hide.onDebouncedClick {
+                KeyboardTools.hideSoftInput(window)
+            }
+        }
 //        SoftKeyboardGlobal.addSoftKeyboardCallback(object :
 //            SoftKeyboardGlobal.SoftKeyboardCallback {
 //            override fun onOpen(height: Int) {

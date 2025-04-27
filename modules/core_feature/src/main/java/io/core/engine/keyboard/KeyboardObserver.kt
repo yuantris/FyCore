@@ -45,6 +45,8 @@ class KeyboardObserver private constructor(
          * @param activity activity that you want to watch.
          * @param showDebug true if you want to show debug UI indicator.
          */
+        @JvmStatic
+        @JvmOverloads
         fun create(activity: Activity, showDebug: Boolean = false): KeyboardObserver {
             return KeyboardObserver(activity, showDebug)
         }

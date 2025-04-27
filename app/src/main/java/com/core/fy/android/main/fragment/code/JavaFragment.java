@@ -119,7 +119,7 @@ public class JavaFragment extends ReflectBindingFragment<FragmentJavaBinding, Te
                 .put("height", 1920)
                 .build();
 
-        Concurrency.supplyAsync(() -> MediaScanner.queryFiles(CollectionKt.createSet(MediaScanner.FileType.M4A)))
+        Concurrency.supplyAsync(() -> MediaScanner.queryFiles(CollectionKt.createSet(MediaScanner.MediaFileType.M4A)))
                 .thenAccept(fileInfos -> {
                     Toaster.show("size:" + fileInfos.size());
                     String path = fileInfos.get(0).getPath();

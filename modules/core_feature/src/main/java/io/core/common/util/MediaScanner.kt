@@ -6,6 +6,7 @@ import android.provider.MediaStore
 import io.core.appCtx
 import io.core.common.util.extensions.cool.hasReadStoragePermission
 import io.core.common.util.log.LogPure
+import io.core.constant.FileType
 import io.core.constant.MediaStoreClauses
 
 /**
@@ -35,7 +36,7 @@ class MediaScanner {
 
         // 缓存状态跟踪
         private var cachedResults: List<FileInfo> = emptyList()
-        private var lastQueryParams: Triple<Set<FileType>, String, Long>? = null
+        private var lastQueryParams: Triple<Set<MediaFileType>, String, Long>? = null
         private var contentObserver: ContentObserver? = null
 
 
@@ -46,7 +47,7 @@ class MediaScanner {
         @JvmStatic
         @JvmOverloads
         fun queryFiles(
-            types: Set<FileType>,
+            types: Set<MediaFileType>,
             addFilter: ((FileInfo) -> Boolean)? = null,
             sortOrder: String = MediaStoreClauses.timeAddedDESC,
             forceRefresh: Boolean = false
@@ -83,7 +84,7 @@ class MediaScanner {
          */
         @JvmStatic
         @JvmOverloads
-        fun registerContentObserver(type: List<FileType>? = null) {
+        fun registerContentObserver(type: List<MediaFileType>? = null) {
             if (contentObserver == null) {
                 contentObserver = object : ContentObserver(null) {
                     override fun onChange(selfChange: Boolean, uri: Uri?) {
@@ -95,7 +96,7 @@ class MediaScanner {
                 }
 
                 // 注册所有相关URI的监听
-                val types = type ?: FileType.values().toList()
+                val types = type ?: MediaFileType.values().toList()
                 val uris = types.distinctBy { it.contentUri }.map { it.contentUri }
                 uris.forEach { uri ->
                     appCtx.contentResolver.registerContentObserver(
@@ -121,10 +122,10 @@ class MediaScanner {
         }
 
         private fun refreshAndGet(
-            params: Triple<Set<FileType>, String, Long>,
+            params: Triple<Set<MediaFileType>, String, Long>,
             filter: ((FileInfo) -> Boolean)?
         ): List<FileInfo> {
-            val (types, sortOrder, timestamp) = params
+            val (types, sortOrder, _) = params
 
             val results = mutableListOf<FileInfo>().apply {
                 types.groupBy { it.contentUri }.forEach { (uri, fileTypes) ->
@@ -141,7 +142,7 @@ class MediaScanner {
 
         private fun queryMediaStore(
             uri: Uri,
-            fileTypes: List<FileType>,
+            fileTypes: List<MediaFileType>,
             sortOrder: String
         ): List<FileInfo>? {
             val mimeTypes = fileTypes.flatMap { it.mimeTypes }.distinct()
@@ -175,7 +176,7 @@ class MediaScanner {
             }
         }
 
-        private fun isCacheValid(currentParams: Triple<Set<FileType>, String, Long>): Boolean {
+        private fun isCacheValid(currentParams: Triple<Set<MediaFileType>, String, Long>): Boolean {
             return lastQueryParams?.let { (cachedTypes, cachedSort, cachedTime) ->
                 currentParams.first == cachedTypes &&
                         currentParams.second == cachedSort &&
@@ -236,174 +237,174 @@ class MediaScanner {
         val mimeType: String?
     )
 
-    enum class FileType(
+    enum class MediaFileType(
         val mimeTypes: List<String>,
         val extensions: List<String>,
         val contentUri: Uri
     ) {
         // 图片类型
         JPG(
-            listOf("image/jpeg"),
+            FileType.resolveAllMimeTypes("jpg"),
             listOf("jpg", "jpeg"),
             MediaStore.Images.Media.EXTERNAL_CONTENT_URI
         ),
         PNG(
-            listOf("image/png"),
+            FileType.resolveAllMimeTypes("png"),
             listOf("png"),
             MediaStore.Images.Media.EXTERNAL_CONTENT_URI
         ),
         GIF(
-            listOf("image/gif"),
+            FileType.resolveAllMimeTypes("gif"),
             listOf("gif"),
             MediaStore.Images.Media.EXTERNAL_CONTENT_URI
         ),
         BMP(
-            listOf("image/bmp"),
+            FileType.resolveAllMimeTypes("bmp"),
             listOf("bmp"),
             MediaStore.Images.Media.EXTERNAL_CONTENT_URI
         ),
         WEBP(
-            listOf("image/webp"),
+            FileType.resolveAllMimeTypes("webp"),
             listOf("webp"),
             MediaStore.Images.Media.EXTERNAL_CONTENT_URI
         ),
         TIFF(
-            listOf("image/tiff"),
+            FileType.resolveAllMimeTypes("tiff"),
             listOf("tiff", "tif"),
             MediaStore.Images.Media.EXTERNAL_CONTENT_URI
         ),
 
         // 音频类型
         MP3(
-            listOf("audio/mpeg"),
+            FileType.resolveAllMimeTypes("mp3"),
             listOf("mp3"),
             MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
         ),
         WAV(
-            listOf("audio/wav", "audio/x-wav"),
+            FileType.resolveAllMimeTypes("wav"),
             listOf("wav"),
             MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
         ),
         OGG(
-            listOf("audio/ogg"),
+            FileType.resolveAllMimeTypes("ogg"),
             listOf("ogg"),
             MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
         ),
         FLAC(
-            listOf("audio/flac"),
+            FileType.resolveAllMimeTypes("flac"),
             listOf("flac"),
             MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
         ),
         M4A(
-            listOf("audio/mp4", "audio/m4a"),
+            FileType.resolveAllMimeTypes("m4a"),
             listOf("m4a"),
             MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
         ),
 
         // 视频类型
         MP4(
-            listOf("video/mp4"),
+            FileType.resolveAllMimeTypes("mp4"),
             listOf("mp4"),
             MediaStore.Video.Media.EXTERNAL_CONTENT_URI
         ),
         AVI(
-            listOf("video/x-msvideo"),
+            FileType.resolveAllMimeTypes("avi"),
             listOf("avi"),
             MediaStore.Video.Media.EXTERNAL_CONTENT_URI
         ),
         MKV(
-            listOf("video/x-matroska"),
+            FileType.resolveAllMimeTypes("mkv"),
             listOf("mkv"),
             MediaStore.Video.Media.EXTERNAL_CONTENT_URI
         ),
         MOV(
-            listOf("video/quicktime"),
+            FileType.resolveAllMimeTypes("mov"),
             listOf("mov"),
             MediaStore.Video.Media.EXTERNAL_CONTENT_URI
         ),
 
         // 文本文档
         TXT(
-            listOf("text/plain"),
+            FileType.resolveAllMimeTypes("txt"),
             listOf("txt"),
             MediaStore.Files.getContentUri("external")
         ),
         CSV(
-            listOf("text/csv"),
+            FileType.resolveAllMimeTypes("csv"),
             listOf("csv"),
             MediaStore.Files.getContentUri("external")
         ),
         HTML(
-            listOf("text/html"),
+            FileType.resolveAllMimeTypes("html"),
             listOf("html", "htm"),
             MediaStore.Files.getContentUri("external")
         ),
         XML(
-            listOf("application/xml", "text/xml"),
+            FileType.resolveAllMimeTypes("xml"),
             listOf("xml"),
             MediaStore.Files.getContentUri("external")
         ),
         JSON(
-            listOf("application/json"),
+            FileType.resolveAllMimeTypes("json"),
             listOf("json"),
             MediaStore.Files.getContentUri("external")
         ),
 
         // Office 文档
         DOC(
-            listOf("application/msword"),
+            FileType.resolveAllMimeTypes("doc"),
             listOf("doc"),
             MediaStore.Files.getContentUri("external")
         ),
         DOCX(
-            listOf("application/vnd.openxmlformats-officedocument.wordprocessingml.document"),
+            FileType.resolveAllMimeTypes("docx"),
             listOf("docx"),
             MediaStore.Files.getContentUri("external")
         ),
         XLSX(
-            listOf("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"),
+            FileType.resolveAllMimeTypes("xlsx"),
             listOf("xlsx"),
             MediaStore.Files.getContentUri("external")
         ),
         PPTX(
-            listOf("application/vnd.openxmlformats-officedocument.presentationml.presentation"),
+            FileType.resolveAllMimeTypes("pptx"),
             listOf("pptx"),
             MediaStore.Files.getContentUri("external")
         ),
         RTF(
-            listOf("application/rtf"),
+            FileType.resolveAllMimeTypes("rtf"),
             listOf("rtf"),
             MediaStore.Files.getContentUri("external")
         ),
         PDF(
-            listOf("application/pdf"),
+            FileType.resolveAllMimeTypes("pdf"),
             listOf("pdf"),
             MediaStore.Files.getContentUri("external")
         ),
 
         // 压缩包和其他格式
         ZIP(
-            listOf("application/zip"),
+            FileType.resolveAllMimeTypes("zip"),
             listOf("zip"),
             MediaStore.Files.getContentUri("external")
         ),
         RAR(
-            listOf("application/x-rar-compressed"),
+            FileType.resolveAllMimeTypes("rar"),
             listOf("rar"),
             MediaStore.Files.getContentUri("external")
         ),
         SEVEN_ZIP(
-            listOf("application/x-7z-compressed"),
+            FileType.resolveAllMimeTypes("7z"),
             listOf("7z"),
             MediaStore.Files.getContentUri("external")
         ),
         EPUB(
-            listOf("application/epub+zip"),
+            FileType.resolveAllMimeTypes("epub"),
             listOf("epub"),
             MediaStore.Files.getContentUri("external")
         ),
         APK(
-            listOf("application/vnd.android.package-archive"),
+            FileType.resolveAllMimeTypes("apk"),
             listOf("apk"),
             MediaStore.Files.getContentUri("external")
         )

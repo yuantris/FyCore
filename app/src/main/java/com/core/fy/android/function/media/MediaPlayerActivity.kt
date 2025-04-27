@@ -68,7 +68,7 @@ class MediaPlayerActivity : ReflectBindingActivity<ActivityMediaPlayerBinding>()
                     Coroutine.async {
                         val files = MediaScanner.queryFiles(
                             types = setOf(
-                                MediaScanner.FileType.MP4,
+                                MediaScanner.MediaFileType.MP4,
                             ),
                             addFilter = {
                                 it.size > 1024 * 1024

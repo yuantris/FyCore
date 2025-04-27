@@ -79,10 +79,6 @@ fun OnBackPressedDispatcher.addCallback(
     return callback
 }
 
-fun registerLifecycleObserver(observer: LifecycleObserver) {
-    ProcessLifecycleOwner.get().lifecycle.addObserver(observer)
-}
-
 fun Any?.logE(tag: String = TAG) {
     LogCat.e(this, tag = tag)
 }

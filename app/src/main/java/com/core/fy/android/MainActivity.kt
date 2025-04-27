@@ -41,7 +41,7 @@ class MainActivity : ReflectBindingActivity<ActivityMainBinding>() {
         setTakeOverBackPressed(true)
         super.initial(savedInstanceState)
         launchAsync {
-            MediaScanner.registerContentObserver(listOf(MediaScanner.FileType.MP4))
+            MediaScanner.registerContentObserver(listOf(MediaScanner.MediaFileType.MP4))
         }
 
         navigationAdapter = NavigationV2Adapter().apply {

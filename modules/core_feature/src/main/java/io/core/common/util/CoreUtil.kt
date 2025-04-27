@@ -138,7 +138,7 @@ class CoreUtil {
 
                 //文件的类型
                 val fileName = file.name
-                val type = FileType.getMimeTypeFromFile(fileName)
+                val type = FileType.mimeTypeOf(fileName)
 
                 runCatching {
                     // 直接跳过权限

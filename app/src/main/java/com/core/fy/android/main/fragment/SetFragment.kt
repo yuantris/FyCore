@@ -1,5 +1,6 @@
 package com.core.fy.android.main.fragment
 
+import com.blankj.utilcode.util.KeyboardUtils
 import com.core.fy.android.MainActivity
 import com.core.fy.android.constants.PreferKey
 import com.core.fy.android.databinding.FragmentSetBinding
@@ -38,6 +39,7 @@ import io.core.constant.DeviceOS
 import io.core.constant.FileSize
 import io.core.constant.FileSize.TimeUnitStyle.English
 import io.core.constant.FileSize.TimeUnitStyle.UnitCase
+import io.core.constant.FileType
 import io.core.constant.TimeFormat
 import io.core.engine.storage.getWithAnnotation
 import io.core.engine.storage.put
@@ -65,6 +67,10 @@ class SetFragment : ReflectBindingFragment<FragmentSetBinding, MainActivity>() {
 
     override fun initView() {
         super.initView()
+        val typeOf = FileType.mimeTypeOf("avatar.apk")
+        typeOf.logI()
+
+        // 网络监听
         val monitor = NetworkMonitor.get()
         launchAsync {
             monitor.networkState.collect { state ->
@@ -112,7 +118,7 @@ class SetFragment : ReflectBindingFragment<FragmentSetBinding, MainActivity>() {
         FileSize.formatDuration(
             duration,
             compact = true,
-            unitStyle = English.Long(UnitCase.CAPITAL)
+            unitStyle = English.Short()
         ).logE()
         FileSize.format(size).logI()
 

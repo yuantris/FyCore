@@ -15,6 +15,26 @@
         app:layout_constraintTop_toTopOf="parent"
         app:titleText="键盘" />
 
+    <Button
+        android:id="@+id/show"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_50"
+        android:text="显示键盘"
+        app:layout_constraintBottom_toTopOf="@id/hide"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/title_bar" />
+
+    <Button
+        android:id="@+id/hide"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="隐藏键盘"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/show" />
+
 
     <androidx.appcompat.widget.AppCompatEditText
         android:id="@+id/et_input"
