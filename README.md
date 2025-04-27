@@ -1,5 +1,5 @@
 # FyCore 🚀
-Android核心工具库 | [![](https://img.shields.io/badge/Version-0.1.7-brightgreen)]() [![](https://img.shields.io/badge/License-Apache%202.0-blue)]() 
+Android核心工具库 | [![](https://img.shields.io/badge/Version-0.1.8-brightgreen)]() [![](https://img.shields.io/badge/License-Apache%202.0-blue)]() 
 
 > 项目初始化
 ```kotlin
@@ -44,33 +44,33 @@ StorageFactory.initialize {
   - FileType(文件Mimetype汇总映射)
   - MediaStoreClauses(一些MediaStore的条件语句)
   - TimeFormat(日期时间格式模式常量集合)
-  - 
+  - DeviceOS(设备系统版本信息)
 - 工具类位置
 
   | io.core.common.**helper**                       | io.core.common.**util**          | io.core.**other**                       |
   |-------------------------------------------------|----------------------------------|-----------------------------------------|
-  | `AppLifecycleTracker`<br />（生命周期追踪类）            | `DiveGestureLine`<br />（手势小白条）   | `ClickSequenceHandler`<br />（三击+长按隐藏操作） |
+  | `AppTrackV2`<br />（生命周期追踪类）                     | `DiveGestureLine`<br />（手势小白条）   | `ClickSequenceHandler`<br />（三击+长按隐藏操作） |
   | `JsonUltra`                                     | `FileSharer`<br />（文件分享）         | `CrashHandler`<br />（崩溃捕获）              |
   | `ReflectHelper`<br />（反射帮助类）                    | `MediaScanner`<br />（媒体扫描）       | `DoubleClickProcessor`<br />（单击回调内双击处理） |
   |                                                 | `TaskExecutor`<br />（Java并发任务处理） | `RandomEventGenerator`<br />（随机事件生产类）   |
   | `TimeoutHandler`<br />（超时处理，设计场景FFmpeg进度回调）     |                                  | `SelectionController`<br />（多选控制）       |
-  | `TryCatchTurbo`                                 |                                  |                                         |
+  | `TryV2`                                         |                                  |                                         |
   | `TurboTracker`<br />（页面追踪，日志输出，可单独在Release环境开启） |                                  |                                         |)                     |                                |                                         |                                |                                         |
 
-- ColorUtils
-  - getRandomColor
-  - isColorLight
-  - intToString
-  - stripAlpha
-  - shiftColor
-  - darkenColor
-  - lightenColor
-  - invertColor
-  - adjustAlpha
-  - withAlpha
-- DocumentUtils
-- FileTools
-- TimeTools
+- ColorTools
+  - getRandomColor(获取随机颜色)
+  - isColorLight(判断颜色是否浅色)
+  - intToString(将颜色整数值转换为#RRGGBB格式字符串)
+  - stripAlpha(移除颜色值中的Alpha通道)
+  - shiftColor(调整给定颜色的亮度)
+  - darkenColor(降低亮度)
+  - lightenColor(增加亮度)
+  - invertColor(反转给定颜色值)
+  - adjustAlpha(调整给定颜色的透明度)
+  - withAlpha(给指定的颜色添加alpha透明度通道)
+- DocumentUtils(DocumentFile工具类)
+- FileTools(文件工具类)
+- TimeTools(时间工具类)
 
 - 常用拓展函数速览
   - 
@@ -81,9 +81,11 @@ StorageFactory.initialize {
   - ShapeView (https://github.com/getActivity/ShapeView)
   - StateLayout (https://github.com/liangjingkanji/StateLayout)
   - MultiStatePage (https://github.com/Zhao-Yan-Yan/MultiStatePage)
+  - retry (https://github.com/zj565061763/retry-ktx/tree/main)
 
-- AppLifecycleTracker
+- AppTrackV2
   - Lifecycle管理器,管理项目中Activity、service的状态
+  - 前后台切换
   
 - Coroutine使用
   ```kotlin
@@ -165,7 +167,7 @@ StorageFactory.initialize {
             return "兼容";
         });
   
-        TaskExecutor.Companion.get().executeForJava(tasks,
+        TaskExecutor.get().execute(tasks,
                 new TaskExecutor.ConcurrentCallback<String>() {
                     @Override
                     public void onComplete(@NonNull SortedMap<Integer, String> results) {
@@ -189,7 +191,7 @@ StorageFactory.initialize {
                     public void onError(@NonNull Throwable e) {
                         LogCat.e(e);
                     }
-                }, AsyncUtils.getExecutors());
+                });
   ```
   ```kotlin
         val tasks = listOf<suspend () -> String>(

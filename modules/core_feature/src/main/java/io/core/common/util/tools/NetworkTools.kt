@@ -1,28 +1,27 @@
 package io.core.common.util.tools
 
-import android.annotation.SuppressLint
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
-import android.os.Build
+import androidx.annotation.RequiresPermission
 import io.core.common.util.extensions.connectivityManager
 import io.core.common.util.extensions.cool.isAbsUrl
 import io.core.common.util.extensions.cool.isDataUrl
 import io.core.common.util.extensions.cool.printOnDebug
 import io.core.common.util.extensions.simpleName
 import io.core.common.util.log.bury.AppLog
+import io.core.constant.ANDROID_6
 import java.net.URL
 import java.util.BitSet
 
-@Suppress("unused", "MemberVisibilityCanBePrivate")
+@Suppress("unused")
 object NetworkTools {
 
     /**
      * 判断是否联网
      */
-    @SuppressLint("ObsoleteSdkInt", "MissingPermission")
-    @Suppress("DEPRECATION")
+    @RequiresPermission("android.permission.ACCESS_NETWORK_STATE")
     fun isAvailable(): Boolean {
-        if (Build.VERSION.SDK_INT < 23) {
+        if (OSAir.lowerThan(ANDROID_6)) {
             val mWiFiNetworkInfo = connectivityManager.activeNetworkInfo
             if (mWiFiNetworkInfo != null) {
                 // WIFI
@@ -138,7 +137,7 @@ object NetworkTools {
             relativeUrl = parseUrl.toString()
             return relativeUrl
         } catch (e: Exception) {
-            AppLog.error(simpleName(),"网址拼接出错\n${e.localizedMessage}", e)
+            AppLog.error(simpleName(), "网址拼接出错\n${e.localizedMessage}", e)
         }
         return relativeUrl
     }

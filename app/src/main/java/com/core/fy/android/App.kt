@@ -11,6 +11,7 @@ import com.tencent.mmkv.MMKV
 import io.core.Android
 import io.core.BR
 import io.core.common.CoreConfig
+import io.core.common.helper.net.NetworkMonitor
 import io.core.common.helper.track.AppTrackV2
 import io.core.common.helper.track.TurboTracker
 import io.core.common.util.extensions.notificationManager
@@ -72,6 +73,7 @@ class App : Application() {
         // SoftKeyboardGlobal.install(this, false)
         createNotificationChannels()
 
+        NetworkMonitor.initialize()
         AppTrackV2.registerAppStatusListener { isForeground ->
             LogPure.v {
                 "进入${if (isForeground) "前台" else "后台"}"

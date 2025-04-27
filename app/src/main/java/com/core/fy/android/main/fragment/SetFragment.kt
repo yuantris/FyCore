@@ -8,12 +8,16 @@ import com.core.fy.android.function.read.ReadBookActivity
 import com.core.fy.android.help.HighLightHelper
 import io.core.common.base.component.fragment.ReflectBindingFragment
 import io.core.common.helper.JsonUltra
+import io.core.common.helper.net.NetworkMonitor
+import io.core.common.helper.net.NetworkState
+import io.core.common.helper.net.awaitNetwork
 import io.core.common.helper.track.TimeTracker
 import io.core.common.helper.valid.ValidGT
 import io.core.common.helper.valid.excludeHiddenFiles
 import io.core.common.helper.valid.hasExtension
 import io.core.common.helper.valid.maxSize
 import io.core.common.util.extensions.cool.coolThread
+import io.core.common.util.extensions.cool.launchAsync
 import io.core.common.util.extensions.cool.timeFormat
 import io.core.common.util.extensions.currentTimeMillis
 import io.core.common.util.extensions.logD
@@ -26,11 +30,11 @@ import io.core.common.util.extensions.ui.postDelayed
 import io.core.common.util.extensions.ui.startActivity
 import io.core.common.util.log.LogCat
 import io.core.common.util.log.LogPure
-import io.core.constant.DeviceOS
 import io.core.common.util.tools.ThreadUltra
 import io.core.common.util.tools.androidApiVersion
 import io.core.common.util.tools.androidVersion
 import io.core.common.util.tools.buildMultiLine
+import io.core.constant.DeviceOS
 import io.core.constant.FileSize
 import io.core.constant.FileSize.TimeUnitStyle.English
 import io.core.constant.FileSize.TimeUnitStyle.UnitCase
@@ -61,6 +65,27 @@ class SetFragment : ReflectBindingFragment<FragmentSetBinding, MainActivity>() {
 
     override fun initView() {
         super.initView()
+        val monitor = NetworkMonitor.get()
+        launchAsync {
+            monitor.networkState.collect { state ->
+                when (state) {
+                    is NetworkState.Connected -> {
+                        if (state.isWifi) {
+                            // WiFi连接处理
+                            "WiFi连接".logI()
+                        } else if (state.isCellular) {
+                            // 移动数据连接处理
+                            "移动数据连接".logI()
+                        }
+                    }
+                    NetworkState.Disconnected -> {
+                        // 断开连接处理
+                        "断开连接".logI()
+                        loadNetworkData()
+                    }
+                }
+            }
+        }
 
         val fileResult = ValidGT.forFile()
             .excludeHiddenFiles()
@@ -69,10 +94,14 @@ class SetFragment : ReflectBindingFragment<FragmentSetBinding, MainActivity>() {
             .build(File("avatar.jpg"))
 
         val complexCondition = Predicate<File> { it.name.startsWith("temp") }
-            .and(Predicate { it.length() > 1024 })
+            .and { it.length() > 1024 }
 
         ValidGT.forFile()
             .addCondition(complexCondition, "文件名必须以temp开头且大于1KB")
+
+        val ageValidator = ValidGT.create<Int>()
+            .addCondition({ it in 18..60 }, "年龄必须在18-60岁之间")
+            .build(11)
 
         JsonUltra.parse("{\"a\":1}").use {
             it["a"]?.asString().logD()
@@ -139,6 +168,14 @@ class SetFragment : ReflectBindingFragment<FragmentSetBinding, MainActivity>() {
                     "Crash ${currentTimeMillis.timeFormat(TimeFormat.LOG_TIMESTAMP)}"
                 }
             }
+        }
+    }
+
+    suspend fun loadNetworkData() {
+        val hasNetwork = awaitNetwork { it.isConnected }
+        if (hasNetwork) {
+            // 执行网络请求
+            "执行网络请求".logE()
         }
     }
 
