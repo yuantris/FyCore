@@ -21,6 +21,7 @@ import io.core.common.base.component.fragment.ReflectBindingFragment;
 import io.core.common.helper.JsonUltra;
 import io.core.common.helper.TryV2;
 import io.core.common.helper.track.AppTrackV2;
+import io.core.common.helper.valid.NullCheck;
 import io.core.common.util.MediaScanner;
 import io.core.common.util.Toaster;
 import io.core.common.util.concurrent.Concurrency;
@@ -45,7 +46,10 @@ public class JavaFragment extends ReflectBindingFragment<FragmentJavaBinding, Te
     @Override
     protected void initView() {
         super.initView();
-        Toaster.show("初始化");
+
+        if (NullCheck.isBlank("")){
+            Toaster.show("初始化");
+        }
 
         String format = JsonUltra.format("{\"name\":\"张三\",\"age\":18}", false);
         LogCat.e(format);
