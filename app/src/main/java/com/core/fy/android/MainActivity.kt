@@ -17,6 +17,7 @@ import io.core.common.base.component.adapter.BaseViewHolder
 import io.core.common.base.component.adapter.createBindingViewHolder
 import io.core.common.base.component.fragment.BaseFragment
 import io.core.common.helper.StatusBarManager
+import io.core.common.helper.track.AppTrackV2
 import io.core.engine.dialogs.showDialog
 import io.core.engine.rv.ItemViewHolder
 import io.core.engine.rv.RecyclerAdapter
@@ -29,6 +30,7 @@ import io.core.common.util.extensions.ui.disableEdgeEffect
 import io.core.common.util.extensions.ui.getCompatDrawable
 import io.core.common.util.extensions.ui.notifyAllDataChanged
 import io.core.common.util.extensions.ui.onClick
+import io.core.common.util.log.LogPure
 import io.core.common.util.processNavigationBar
 import io.core.common.util.tools.TimeTools
 

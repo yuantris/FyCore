@@ -11,6 +11,7 @@ import io.core.common.helper.JsonUltra
 import io.core.common.helper.TimeoutCallback
 import io.core.common.helper.TimeoutHandler
 import io.core.common.helper.jetpack.SingleLiveData
+import io.core.common.helper.track.AppTrackV2
 import io.core.common.util.concurrent.Concurrency
 import io.core.common.util.concurrent.TaskExecutor
 import io.core.common.util.extensions.cool.GSON
@@ -43,6 +44,9 @@ class KotlinFragment : ReflectBindingFragment<FragmentKotlinBinding, TestPageAct
 
     override fun initView() {
         super.initView()
+
+        val fragments = AppTrackV2.getFragmentsByActivity(requireActivity())
+        fragments.forEach { LogPure.d("AppTrackV4", "${it::class.simpleName}") }
 
         _data.observe(this) {
             it.logD()

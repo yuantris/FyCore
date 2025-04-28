@@ -41,7 +41,7 @@ object NullCheck {
      * Java示例：NullCheck.isEmpty(string)
      */
     @JvmStatic
-    fun isEmpty(str: CharSequence?) = str == null || str.isEmpty()
+    fun isEmpty(str: CharSequence?) = str.isNullOrEmpty()
 
     /**
      * 检查字符串是否为非null且非空
@@ -55,7 +55,7 @@ object NullCheck {
      * Java示例：NullCheck.isBlank(string)
      */
     @JvmStatic
-    fun isBlank(str: CharSequence?) = str == null || str.isBlank()
+    fun isBlank(str: CharSequence?) = str.isNullOrBlank()
 
     /**
      * 检查字符串是否为非null且非空白
@@ -92,7 +92,7 @@ object NullCheck {
      * Java示例：NullCheck.isEmpty(array)
      */
     @JvmStatic
-    fun <T> isEmpty(array: Array<T>?) = array == null || array.isEmpty()
+    fun <T> isEmpty(array: Array<T>?) = array.isNullOrEmpty()
 
     /**
      * 检查基本类型数组是否为空

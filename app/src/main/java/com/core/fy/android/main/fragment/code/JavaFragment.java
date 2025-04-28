@@ -47,7 +47,7 @@ public class JavaFragment extends ReflectBindingFragment<FragmentJavaBinding, Te
     protected void initView() {
         super.initView();
 
-        if (NullCheck.isBlank("")){
+        if (NullCheck.isEmpty("1")){
             Toaster.show("初始化");
         }
 

@@ -13,6 +13,7 @@ import io.core.common.util.extensions.ui.appPackageName
 import io.core.common.util.log.LogCat
 import io.core.common.util.log.TAG
 import io.core.constant.TimeFormat
+import io.core.constant.X_FileProvider
 import kotlin.system.exitProcess
 
 inline fun <T> T?.verify(
@@ -53,7 +54,7 @@ val fileNameByTime: String
     get() = currentTimeMillis.timeFormat(TimeFormat.FILE_SAFE_TIMESTAMP)
 
 val authority: String
-    get() = "${appCtx.appPackageName}.fycore.fileprovider"
+    get() = "${appCtx.appPackageName}$X_FileProvider"
 
 /**
  * 返回键回调
