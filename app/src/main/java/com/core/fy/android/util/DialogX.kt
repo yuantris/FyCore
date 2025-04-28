@@ -7,6 +7,7 @@ import com.kongzue.dialogx.DialogX
 import com.kongzue.dialogx.dialogs.CustomDialog
 import com.kongzue.dialogx.dialogs.MessageDialog
 import com.kongzue.dialogx.dialogs.PopNotification
+import com.kongzue.dialogx.interfaces.DialogLifecycleCallback
 import com.kongzue.dialogx.interfaces.OnBindView
 import com.kongzue.dialogx.style.KongzueStyle
 
@@ -29,6 +30,8 @@ class NotificationConfig {
     var title: String = "温馨提示"
     var content: String = ""
     var icon: Int = 0
+    var onDismiss: () -> Unit = {}
+    var onShow: () -> Unit = {}
 }
 
 class CustomDialogConfig {
@@ -47,6 +50,17 @@ fun Application.initDialogX() {
 fun showDxNotification(block: NotificationConfig.() -> Unit): PopNotification {
     val config = NotificationConfig().apply(block)
     return PopNotification.show(config.icon, config.title, config.content)
+        .setDialogLifecycleCallback(object : DialogLifecycleCallback<PopNotification>() {
+            override fun onDismiss(dialog: PopNotification?) {
+                super.onDismiss(dialog)
+                config.onDismiss.invoke()
+            }
+
+            override fun onShow(dialog: PopNotification?) {
+                super.onShow(dialog)
+                config.onShow.invoke()
+            }
+        })
 }
 
 fun showDxMessage(block: DialogXConfig.() -> Unit): MessageDialog {

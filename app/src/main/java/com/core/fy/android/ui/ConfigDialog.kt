@@ -3,6 +3,7 @@ package com.core.fy.android.ui
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
+import com.core.fy.android.Config
 import com.core.fy.android.R
 import com.core.fy.android.constants.PreferKey
 import com.core.fy.android.databinding.DialogAppConfigBinding
@@ -63,30 +64,30 @@ class ConfigDialog : BaseDialogFragment(R.layout.dialog_app_config) {
             binding.toolBar.title = "应用配置"
         }
 
-        val isDisplaySplashAnim = storage.getWithAnnotation<Boolean>(PreferKey.SPLASH_ANIM)
-        val isDisplayGuide = storage.getWithAnnotation<Boolean>(PreferKey.GUIDE_PAGE)
-        val isDisplayHomeSkeletonAnim = storage.getWithAnnotation<Boolean>(PreferKey.HOME_SKELETON_ANIM)
+        val isDisplaySplashAnim = Config.isDisplaySplashAnim
+        val isDisplayGuide = Config.isDisplayGuide
+        val isDisplayHomeSkeletonAnim = Config.isDisplayHomeSkeletonAnim
 
         binding.apply {
             radioStartAnim.isChecked = isDisplaySplashAnim
             radioStartAnim.onClick {
                 val check = storage.getWithAnnotation<Boolean>(PreferKey.SPLASH_ANIM)
                 radioStartAnim.isChecked = !check
-                storage.put(PreferKey.SPLASH_ANIM, !check)
+                Config.isDisplaySplashAnim = !check
             }
 
             radioGuideShow.isChecked = isDisplayGuide
             radioGuideShow.onClick {
                 val check = storage.getWithAnnotation<Boolean>(PreferKey.GUIDE_PAGE)
                 radioGuideShow.isChecked = !check
-                storage.put(PreferKey.GUIDE_PAGE, !check)
+                Config.isDisplayGuide = !check
             }
 
             radioHomeSkeletonAnim.isChecked = isDisplayHomeSkeletonAnim
             radioHomeSkeletonAnim.onClick {
                 val check = storage.getWithAnnotation<Boolean>(PreferKey.HOME_SKELETON_ANIM)
                 radioHomeSkeletonAnim.isChecked = !check
-                storage.put(PreferKey.HOME_SKELETON_ANIM, !check)
+                Config.isDisplayHomeSkeletonAnim = !check
             }
 
             crumble.onClick {

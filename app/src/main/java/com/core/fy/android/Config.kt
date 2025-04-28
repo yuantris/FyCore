@@ -3,9 +3,8 @@ package com.core.fy.android
 import com.core.fy.android.constants.PreferKey
 import io.core.appCtx
 import io.core.common.CoreConfig
-import io.core.common.CoreConfig.Alert.negativeColor
-import io.core.common.CoreConfig.Alert.positiveColor
 import io.core.engine.storage.getWithAnnotation
+import io.core.engine.storage.put
 import io.core.engine.storage.storage
 
 /**
@@ -23,10 +22,23 @@ import io.core.engine.storage.storage
  * 2025/3/13 14:49
  */
 object Config {
+
     // 是否显示启动动画
-    var isDisplaySplashAnim = storage.getWithAnnotation<Boolean>(PreferKey.SPLASH_ANIM)
-    var isDisplayGuide = storage.getWithAnnotation<Boolean>(PreferKey.GUIDE_PAGE)
-    var isDisplayHomeSkeletonAnim = storage.getWithAnnotation<Boolean>(PreferKey.HOME_SKELETON_ANIM)
+    var isDisplaySplashAnim
+        get() = storage.getWithAnnotation<Boolean>(PreferKey.SPLASH_ANIM)
+        set(value) {
+            storage.put(PreferKey.SPLASH_ANIM, value)
+        }
+    var isDisplayGuide
+        get() = storage.getWithAnnotation<Boolean>(PreferKey.GUIDE_PAGE)
+        set(value) {
+            storage.put(PreferKey.GUIDE_PAGE, value)
+        }
+    var isDisplayHomeSkeletonAnim
+        get() = storage.getWithAnnotation<Boolean>(PreferKey.HOME_SKELETON_ANIM)
+        set(value) {
+            storage.put(PreferKey.HOME_SKELETON_ANIM, value)
+        }
 
     init {
         CoreConfig.configure {

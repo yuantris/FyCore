@@ -24,6 +24,8 @@ import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
 import io.core.common.util.extensions.cool.isDarkColor
 import io.core.common.util.tools.buildMainHandler
+import io.core.common.util.tools.isAndroid11Plus
+import io.core.common.util.tools.isAndroid6Plus
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -92,9 +94,8 @@ fun Activity.fullScreen() {
 }
 
 
-@SuppressLint("ObsoleteSdkInt")
 fun Activity.setLightStatusBar(isLightBar: Boolean) {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+    if (isAndroid11Plus) {
         window.insetsController?.let {
             if (isLightBar) {
                 it.setSystemBarsAppearance(
@@ -109,7 +110,7 @@ fun Activity.setLightStatusBar(isLightBar: Boolean) {
             }
         }
     }
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+    if (isAndroid6Plus) {
         val decorView = window.decorView
         val systemUiVisibility = decorView.systemUiVisibility
         if (isLightBar) {

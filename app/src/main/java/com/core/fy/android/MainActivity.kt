@@ -17,12 +17,9 @@ import io.core.common.base.component.adapter.BaseViewHolder
 import io.core.common.base.component.adapter.createBindingViewHolder
 import io.core.common.base.component.fragment.BaseFragment
 import io.core.common.helper.StatusBarManager
-import io.core.common.helper.track.AppTrackV2
-import io.core.engine.dialogs.showDialog
-import io.core.engine.rv.ItemViewHolder
-import io.core.engine.rv.RecyclerAdapter
 import io.core.common.util.MediaScanner
 import io.core.common.util.extensions.cool.launchAsync
+import io.core.common.util.extensions.cool.runDelayedMain
 import io.core.common.util.extensions.currentTimeMillis
 import io.core.common.util.extensions.exitApp
 import io.core.common.util.extensions.logD
@@ -30,9 +27,12 @@ import io.core.common.util.extensions.ui.disableEdgeEffect
 import io.core.common.util.extensions.ui.getCompatDrawable
 import io.core.common.util.extensions.ui.notifyAllDataChanged
 import io.core.common.util.extensions.ui.onClick
-import io.core.common.util.log.LogPure
+import io.core.common.util.extensions.ui.setLightStatusBar
 import io.core.common.util.processNavigationBar
 import io.core.common.util.tools.TimeTools
+import io.core.engine.dialogs.showDialog
+import io.core.engine.rv.ItemViewHolder
+import io.core.engine.rv.RecyclerAdapter
 
 class MainActivity : ReflectBindingActivity<ActivityMainBinding>() {
 
@@ -98,7 +98,18 @@ class MainActivity : ReflectBindingActivity<ActivityMainBinding>() {
 
     override fun onBackPressedCall() {
         exitHandler.handleBackPress(
-            onShowWarning = { showDxNotification { content = it } },
+            onShowWarning = {
+                showDxNotification {
+                    content = it
+                    onShow = {
+                        runDelayedMain(300) { setLightStatusBar(true) }
+                    }
+                    onDismiss = {
+                        StatusBarManager.with(this@MainActivity)
+                            .updateFromCurrentPage()
+                    }
+                }
+            },
             onTriggerExit = {
                 showDialog("温馨提示", "是否退出应用？") {
                     cancelButton {}

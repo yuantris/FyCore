@@ -14,7 +14,11 @@ import io.core.appCtx
 import io.core.common.base.component.fragment.ReflectBindingFragment
 import io.core.common.helper.coroutine.Coroutine
 import io.core.common.helper.pool.UniversalPool
+import io.core.common.helper.track.AppTrackV2
+import io.core.common.util.extensions.cool.runDelayedMain
+import io.core.common.util.extensions.logI
 import io.core.common.util.extensions.ui.getCompatColor
+import io.core.common.util.log.v
 import io.core.engine.brv.utils.linear
 import io.core.engine.brv.utils.setup
 import io.core.other.IntentData
@@ -101,6 +105,15 @@ class BlankFragment : ReflectBindingFragment<FragmentBlankBinding, MainActivity>
 
     override fun onFragmentResume(first: Boolean) {
         super.onFragmentResume(first)
+        runDelayedMain(100) {
+            AppTrackV2.getTopFragment()?.let {
+                "当前展示的Fragment为：${it.javaClass.simpleName}".v()
+            }
+        }
+        val fragments = AppTrackV2.getFragmentsByActivity(requireActivity())
+        if (fragments.isNotEmpty()) {
+            "当前Activity中的Fragment为：${fragments.joinToString { it.javaClass.simpleName }}".logI()
+        }
         val loadingView = LoadingView(requireContext(), 100, getCompatColor(R.color.black))
         val loading = RotateLoading(requireContext())
 //        addViewToZYLayout(binding.zyLayout, loadingView)

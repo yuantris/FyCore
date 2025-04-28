@@ -16,10 +16,17 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.OnLifecycleEvent
+import androidx.lifecycle.lifecycleScope
 import androidx.viewpager.widget.ViewPager
 import androidx.viewpager2.widget.ViewPager2
 import io.core.appCtx
 import io.core.common.util.extensions.ui.statusBarHeight
+import io.core.common.util.tools.isAndroid6Plus
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.util.Collections
 import java.util.WeakHashMap
 import java.util.concurrent.atomic.AtomicBoolean
@@ -45,6 +52,13 @@ class StatusBarManager private constructor(private val activity: Activity) : Lif
 
     // 接管启用透明状态栏
     private var enableTransparentStatusBar: Boolean = false
+
+    // 节流控制相关CoroutineScope
+    private val coroutineScope by lazy {
+        (activity as? LifecycleOwner)?.lifecycleScope ?: CoroutineScope(Dispatchers.Main)
+    }
+    private var updateJob: Job? = null
+
 
     /**
      * 初始化透明状态栏
@@ -204,6 +218,29 @@ class StatusBarManager private constructor(private val activity: Activity) : Lif
     }
 
     /**
+     * 主动根据当前页面更新状态栏颜色
+     * 适用于页面内容已发生改变但布局未触发更新的场景
+     */
+    fun updateFromCurrentPage() {
+        // 取消之前的任务
+        updateJob?.cancel()
+        updateJob = coroutineScope.launch {
+            // 添加防抖延迟
+            delay(50)
+            // 获取Activity顶层视图
+            val decorView = activity.window.decorView
+            // 计算状态栏中心点Y坐标
+            val centerY = (statusBarHeight / 2).coerceAtLeast(0)
+            // 获取状态栏区域颜色
+            val color = getStatusBarColorFromView(decorView, centerY)
+            // 更新状态栏外观（带节流控制）
+            if (!shouldThrottle()) {
+                updateStatusBarAppearance(color, false)
+            }
+        }
+    }
+
+    /**
      * 清除颜色缓存
      */
     fun clearCache() {
@@ -216,6 +253,9 @@ class StatusBarManager private constructor(private val activity: Activity) : Lif
      * 注意：如果Activity没有实现 LifecycleOwner ，仍然需要手动调用 cleanup()。
      */
     fun cleanup() {
+        // 取消协程任务
+        updateJob?.cancel()
+        updateJob = null
 
         // 单独处理DecorView监听器
         decorViewListeners.forEach { (view, listener) ->
@@ -344,21 +384,21 @@ class StatusBarManager private constructor(private val activity: Activity) : Lif
         return view.createBitmapFromView(1, 1, 0, y.coerceAtLeast(0))?.getPixel(0, 0) ?: Color.WHITE
     }
 
-    private fun updateStatusBarAppearance(color: Int) {
+    private fun updateStatusBarAppearance(color: Int, enableFilter: Boolean = true) {
         if (isUpdating.getAndSet(true)) return
 
         try {
             val isLight = isColorLight(color)
 
             // 避免不必要的更新
-            if (currentLightStatusBar == isLight) return
+            if (enableFilter && currentLightStatusBar == isLight) return
             currentLightStatusBar = isLight
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (isAndroid6Plus) {
                 WindowCompat.getInsetsController(
                     activity.window,
                     activity.window.decorView
-                )?.isAppearanceLightStatusBars = isLight
+                ).isAppearanceLightStatusBars = isLight
             }
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {

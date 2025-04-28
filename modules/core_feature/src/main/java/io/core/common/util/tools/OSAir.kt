@@ -10,6 +10,7 @@ import io.core.constant.ANDROID_12
 import io.core.constant.ANDROID_13
 import io.core.constant.ANDROID_14
 import io.core.constant.ANDROID_15
+import io.core.constant.ANDROID_6
 import io.core.constant.ANDROID_7
 import io.core.constant.ANDROID_8
 import io.core.constant.ANDROID_9
@@ -32,6 +33,8 @@ val isAndroid8Plus
     get() = OSAir.atLeastO()
 val isAndroid7Plus
     get() = OSAir.atLeastN()
+val isAndroid6Plus
+    get() = OSAir.higherThan(ANDROID_6)
 
 val androidApiVersion
     get() = Build.VERSION.SDK_INT

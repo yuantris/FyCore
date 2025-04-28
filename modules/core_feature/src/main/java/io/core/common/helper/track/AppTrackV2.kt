@@ -64,6 +64,21 @@ object AppTrackV2 : Application.ActivityLifecycleCallbacks, DefaultLifecycleObse
     private val fragmentCallbacks =
         ConcurrentHashMap<FragmentActivity, FragmentManager.FragmentLifecycleCallbacks>()
 
+    /** 存储Fragment的Resume时间 */
+    private val fragmentResumeTimes = ConcurrentHashMap<String, Long>()
+    @Volatile
+    var maxFragmentResumeRecords = 200
+        private set
+
+    /**
+     * 设置最大Fragment记录数。
+     * @param max 要设置的最大Fragment记录数。该值将被强制调整为至少为50。
+     */
+    @JvmStatic
+    fun setMaxFragmentRecords(max: Int) {
+        maxFragmentResumeRecords = max.coerceAtLeast(50)
+    }
+
     /**
      * Fragment类名排除列表（线程安全）
      *
@@ -260,6 +275,24 @@ object AppTrackV2 : Application.ActivityLifecycleCallbacks, DefaultLifecycleObse
     fun aliveActivityCount(): Int = activeActivities.size
 
     /**
+     * 获取当前栈顶Fragment（线程安全）
+     * @return 可能为null（当没有有效Fragment时）
+     *
+     * 注意事项：
+     * - 返回前会自动清理无效引用
+     * - 如果在Fragment的OnResume方法调用时，存在竞态条件，可能出现还未加入Fragment栈，而获取到之前的Fragment实例
+     *   因此此种情况需要延时获取
+     */
+    @JvmStatic
+    fun getTopFragment(): Fragment? {
+        cleanUpWeakReferences(fragmentStack)
+        return synchronized(fragmentStack) {
+            fragmentStack.mapNotNull { it.get() }
+                .firstOrNull { it.isAdded && !it.isDetached }
+        }
+    }
+
+    /**
      * 获取当前关联的Fragment集合
      * @param activity 宿主Activity
      */
@@ -268,23 +301,6 @@ object AppTrackV2 : Application.ActivityLifecycleCallbacks, DefaultLifecycleObse
         return fragmentStack.mapNotNull { it.get() }.filter {
             it.isAdded && it.activity == activity
         }.distinct()
-    }
-
-    /**
-     * 获取当前栈顶Fragment（线程安全）
-     *
-     * @return 可能为null（当没有有效Fragment时）
-     *
-     * 注意事项：
-     * - 返回前会自动清理无效引用
-     * - 需检查Fragment.isAdded状态
-     */
-    @JvmStatic
-    fun getTopFragment(): Fragment? {
-        cleanUpWeakReferences(fragmentStack) // ✅ 确保数据有效性
-        return fragmentStack
-            .mapNotNull { it.get() }
-            .firstOrNull { it.isAdded && !it.isDetached }
     }
 
 
@@ -379,6 +395,19 @@ object AppTrackV2 : Application.ActivityLifecycleCallbacks, DefaultLifecycleObse
         }
     }
 
+    /** 将Fragment移至栈顶 */
+    private fun bringFragmentToFront(fragment: Fragment) {
+        synchronized(fragmentStack) {
+            // 检查栈顶是否已经是当前Fragment
+            val topRef = fragmentStack.peekFirst()
+            if (topRef?.get() == fragment) return@synchronized
+
+            // 非栈顶时执行移除和添加操作
+            fragmentStack.removeAll { it.get() == fragment }
+            fragmentStack.addFirst(WeakReference(fragment))
+        }
+    }
+
     /** 设置Fragment生命周期监听 */
     private fun setupFragmentTracking(activity: FragmentActivity) {
         val callback = object : FragmentManager.FragmentLifecycleCallbacks() {
@@ -414,8 +443,49 @@ object AppTrackV2 : Application.ActivityLifecycleCallbacks, DefaultLifecycleObse
             LogPure.d(TAG, "Filtered fragment: ${fragment::class.simpleName}")
             return
         }
-        addToStack(fragmentStack, fragment)
         logLifecycle(fragment, event)
+        when (event) {
+            "onCreate" -> addToStack(fragmentStack, fragment)
+            "onResume" -> {
+                // 新增容量清理逻辑
+                if (fragmentResumeTimes.size >= maxFragmentResumeRecords) {
+                    val iterator = fragmentResumeTimes.entries.iterator()
+                    while (iterator.hasNext() && fragmentResumeTimes.size > maxFragmentResumeRecords * 0.9) {
+                        iterator.next()
+                        iterator.remove()
+                    }
+                }
+                val containsKey = fragmentResumeTimes.containsKey(fragment.javaClass.simpleName)
+                fragmentResumeTimes[fragment.javaClass.simpleName] = System.currentTimeMillis()
+                // 确保相同Fragment只保留最新实例在栈顶
+                synchronized(fragmentStack) {
+                    fragmentStack.removeAll { it.get() == fragment }
+                    addToStack(fragmentStack, fragment)
+                    bringFragmentToFront(fragment)
+
+                    // TODO: 补充代码：fragmentResumeTimes按照value时间戳从大到小排序，选择出value时间戳之差小于100ms的key(可能有多个)，
+                    // TODO: 按照时间戳时间最早排序取第一个key，然后将fragmentStack中该key的Fragment移至栈顶
+
+                    // todo完成新增代码：处理时间戳相近的Fragment
+                    val now = System.currentTimeMillis()
+                    val candidates = fragmentResumeTimes.entries
+                        .sortedByDescending { it.value } // 1. 按时间戳降序排序
+                        .takeWhile { now - it.value < 100 } // 2. 筛选100ms内的记录
+                        .sortedBy { it.value } // 3. 按时间戳升序（最早的排前）
+
+                    // 找到最早触发的有效Fragment实例
+                    candidates.firstOrNull()?.let { entry ->
+                        fragmentStack.firstOrNull { ref ->
+                            ref.get()?.javaClass?.simpleName == entry.key
+                        }?.get()?.let { candidate ->
+                            if (!containsKey)return@handleFragmentEvent
+                            // 将候选Fragment移至栈顶
+                            bringFragmentToFront(candidate)
+                        }
+                    }
+                }
+            }
+        }
     }
 
     /**
