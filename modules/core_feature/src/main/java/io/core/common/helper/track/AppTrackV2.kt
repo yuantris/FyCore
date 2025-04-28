@@ -58,10 +58,8 @@ object AppTrackV2 : Application.ActivityLifecycleCallbacks, DefaultLifecycleObse
 
     // 前台状态监听器
     private val foregroundListeners = ConcurrentHashMap<String, (Boolean) -> Unit>()
-
     // Activity暂停监听器
     private val pausedListeners = ConcurrentHashMap<String, (Activity) -> Unit>()
-
     // Fragment生命周期回调存储
     private val fragmentCallbacks =
         ConcurrentHashMap<FragmentActivity, FragmentManager.FragmentLifecycleCallbacks>()
@@ -127,7 +125,11 @@ object AppTrackV2 : Application.ActivityLifecycleCallbacks, DefaultLifecycleObse
     @JvmStatic
     fun addOnActivityPausedListener(activity: Activity, listener: () -> Unit) {
         val key = activity::class.java.name
-        pausedListeners[key] = { _ -> listener() }
+        pausedListeners[key] = { _ ->
+            listener.invoke()
+            // 自动触发一次清理（双重保障）
+            pausedListeners.remove(key)
+        }
     }
 
     /**
@@ -171,6 +173,8 @@ object AppTrackV2 : Application.ActivityLifecycleCallbacks, DefaultLifecycleObse
             val ref = it.get()
             ref == null || ref == activity || !ref.isAlive()
         }
+        // 新增内存泄漏修复代码
+        pausedListeners.remove(activity::class.java.name)
         if (activity is FragmentActivity) {
             fragmentCallbacks.remove(activity)?.let { callback ->
                 activity.supportFragmentManager.unregisterFragmentLifecycleCallbacks(callback)

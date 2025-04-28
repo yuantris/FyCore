@@ -122,11 +122,11 @@ abstract class BaseActivity : AppCompatActivity(), TitleBarAction, BundleAction 
     }
 
     protected open fun adaptOS() {
-        when (DeviceOS.brand) {
-            DeviceOS.Brand.Xiaomi -> xiaomiAdapt(window)
-            DeviceOS.Brand.HUAWEI -> huaweiAdapt(window)
-            DeviceOS.Brand.OPPO -> oppoAdapt(window)
-            DeviceOS.Brand.vivo -> vivoAdapt(window)
+        when (DeviceOS.romName) {
+            DeviceOS.Rom.HyperOS -> xiaomiAdapt(window)
+            DeviceOS.Rom.HarmonyOS -> huaweiAdapt(window)
+            DeviceOS.Rom.ColorOS -> oppoAdapt(window)
+            DeviceOS.Rom.OriginOS -> vivoAdapt(window)
 
             else -> Unit
         }
