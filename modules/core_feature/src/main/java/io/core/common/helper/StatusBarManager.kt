@@ -266,6 +266,7 @@ class StatusBarManager private constructor(private val activity: Activity) : Lif
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     private fun onDestroy() {
         cleanup()
+        instances.remove(activity)
     }
 
 
