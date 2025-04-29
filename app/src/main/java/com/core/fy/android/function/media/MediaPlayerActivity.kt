@@ -2,11 +2,10 @@ package com.core.fy.android.function.media
 
 import android.os.Bundle
 import androidx.lifecycle.lifecycleScope
-import com.core.fy.android.constants.BookSourceType.file
 import com.core.fy.android.databinding.ActivityMediaPlayerBinding
 import com.hjq.permissions.Permission
 import io.core.common.base.component.activity.ReflectBindingActivity
-import io.core.common.helper.MediaHelper
+import io.core.common.helper.media.MediaHelper
 import io.core.common.helper.coroutine.Coroutine
 import io.core.common.helper.media.FlowMediaPlayer
 import io.core.common.helper.media.PlayerState
@@ -15,15 +14,12 @@ import io.core.common.util.extensions.cool.GSON
 import io.core.common.util.extensions.cool.requestPermission
 import io.core.common.util.extensions.cool.runMain
 import io.core.common.util.extensions.cool.toastOnUI
-import io.core.common.util.extensions.logD
 import io.core.common.util.extensions.logE
-import io.core.common.util.extensions.logW
 import io.core.common.util.extensions.ui.onClick
 import io.core.common.util.extensions.ui.onTrackingTouch
 import io.core.common.util.log.LogCat
 import io.core.common.util.tools.UriTools
 import io.core.constant.FileSize
-import io.core.constant.FileSize.toFormattedFileSize
 import io.core.constant.FileSize.toFormattedPattern
 import io.core.other.TimeMeasurer
 import kotlinx.coroutines.Dispatchers

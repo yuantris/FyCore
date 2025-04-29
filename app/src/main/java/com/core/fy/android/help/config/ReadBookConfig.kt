@@ -1,10 +1,11 @@
 package com.core.fy.android.help.config
 
-import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import androidx.annotation.Keep
+import androidx.core.graphics.drawable.toDrawable
+import androidx.core.graphics.toColorInt
 import com.core.fy.android.R
 import com.core.fy.android.constants.PageAnim
 import com.core.fy.android.constants.PreferKey
@@ -15,8 +16,10 @@ import io.core.common.util.extensions.cool.PathType
 import io.core.common.util.extensions.cool.fromJsonArray
 import io.core.common.util.extensions.cool.fromJsonObject
 import io.core.common.util.extensions.cool.getBasePath
+import io.core.common.util.extensions.cool.getMeanColor
 import io.core.common.util.extensions.cool.hexString
 import io.core.common.util.extensions.cool.printOnDebug
+import io.core.common.util.extensions.cool.resizeAndRecycle
 import io.core.common.util.extensions.ui.getCompatColor
 import io.core.common.util.extensions.ui.getPrefBoolean
 import io.core.common.util.extensions.ui.getPrefInt
@@ -25,11 +28,7 @@ import io.core.common.util.extensions.ui.putPrefInt
 import io.core.common.util.log.LogCat
 import io.core.common.util.tools.BitmapTools
 import io.core.common.util.tools.FileTools
-import io.core.common.util.tools.getMeanColor
-import io.core.common.util.tools.resizeAndRecycle
 import java.io.File
-import androidx.core.graphics.toColorInt
-import androidx.core.graphics.drawable.toDrawable
 
 /**
  * 阅读界面配置
@@ -584,14 +583,18 @@ object ReadBookConfig {
                     0 -> curBgStr().toColorInt().toDrawable()
                     1 -> {
                         val path = "bg" + File.separator + curBgStr()
-                        val bitmap = BitmapTools.decodeAssetsBitmap(appCtx, path, width, height)
+                        val bitmap = BitmapTools.decodeAssetsBitmap(path, width, height)
                         bitmap?.resizeAndRecycle(width, height)?.toDrawable(resources)
                     }
 
                     else -> {
                         val path = curBgStr().let {
                             if (it.contains(File.separator)) it
-                            else FileTools.getPath(appCtx.getBasePath(PathType.EXTERNAL_FILES), "bg", curBgStr())
+                            else FileTools.getPath(
+                                appCtx.getBasePath(PathType.EXTERNAL_FILES),
+                                "bg",
+                                curBgStr()
+                            )
                         }
                         val bitmap = BitmapTools.decodeBitmap(path, width, height)
                         bitmap?.resizeAndRecycle(width, height)?.toDrawable(resources)

@@ -16,12 +16,12 @@ import io.core.common.base.component.adapter.SelectableItem
 import io.core.common.base.component.adapter.SelectionController
 import io.core.common.base.component.adapter.SingleTypeAdapter
 import io.core.common.util.Toaster
+import io.core.common.util.extensions.cool.findFirstByProperty
 import io.core.common.util.extensions.cool.removeWhitespace
 import io.core.common.util.extensions.ui.notifyAllDataChanged
 import io.core.common.util.extensions.ui.onClick
 import io.core.common.util.extensions.ui.toast
 import io.core.common.util.tools.GsonTools
-import io.core.common.util.tools.findFirstByProperty
 
 class SingleSelectActivity : ReflectBindingActivity<ActivitySingleSelectBinding>(),
     SelectionController.SelectionStateListener {

@@ -16,7 +16,7 @@ import io.core.common.util.extensions.logE
 import io.core.common.util.extensions.logI
 import io.core.common.util.log.LogPure
 import io.core.common.util.tools.FileTools
-import io.core.common.helper.MediaHelper
+import io.core.common.helper.media.MediaHelper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 

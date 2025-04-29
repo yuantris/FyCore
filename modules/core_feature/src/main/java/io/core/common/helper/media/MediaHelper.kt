@@ -1,4 +1,4 @@
-package io.core.common.helper
+package io.core.common.helper.media
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory

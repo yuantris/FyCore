@@ -96,7 +96,9 @@ fun Context.hasWriteStoragePermission(): Boolean {
     return when {
         higherThan(ANDROID_10) -> {
             // Android 10+ 使用Scoped Storage，默认允许应用私有目录写入
-            true
+            // true
+            // 优先判断是否有外置存储的权限
+            hasPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
         }
 
         higherThan(ANDROID_6) -> {
