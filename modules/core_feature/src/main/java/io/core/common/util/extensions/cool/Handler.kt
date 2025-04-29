@@ -17,7 +17,7 @@ fun <T> T.runMain(
             if (isSafeToRun()) action()
         }
         // 子线程通过 Handler 提交
-        else -> HandlerGT.handler.post {
+        else -> HandlerGT.main.post {
             if (isSafeToRun()) action()
         }
     }
@@ -35,7 +35,7 @@ fun <T> T.runDelayedMain(
         }
     }
 
-    HandlerGT.handler.postDelayed(runnable, duration)
+    HandlerGT.main.postDelayed(runnable, duration)
     disposable.runnable = runnable
     return disposable
 }
@@ -55,7 +55,7 @@ class Disposable {
     fun cancel() {
         synchronized(this) {
             if (_active.compareAndSet(true, false)) {
-                runnable?.let { HandlerGT.handler.removeCallbacks(it) }
+                runnable?.let { HandlerGT.main.removeCallbacks(it) }
             }
         }
     }
@@ -71,7 +71,7 @@ private fun <T> T.isSafeToRun(): Boolean where T : Any? {
 }
 
 object HandlerGT {
-    val handler: Handler by lazy { buildMainHandler() }
+    val main: Handler by lazy { buildMainHandler() }
 
     // region Java环境主线程切换兼容
     @JvmStatic
@@ -79,13 +79,13 @@ object HandlerGT {
         if (isMainThread()) {
             runnable.run()
         } else {
-            handler.post(runnable)
+            main.post(runnable)
         }
     }
 
     @JvmStatic
     fun runDelayedMain(duration: Long, runnable: Runnable) {
-        handler.postDelayed(runnable, duration)
+        main.postDelayed(runnable, duration)
     }
 
     /**

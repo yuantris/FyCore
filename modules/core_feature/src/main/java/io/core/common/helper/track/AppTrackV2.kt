@@ -63,9 +63,13 @@ object AppTrackV2 : Application.ActivityLifecycleCallbacks, DefaultLifecycleObse
     // Fragment生命周期回调存储
     private val fragmentCallbacks =
         ConcurrentHashMap<FragmentActivity, FragmentManager.FragmentLifecycleCallbacks>()
+    // Fragment Resume状态监听器
+    private val fragmentResumeListeners =
+        ConcurrentHashMap<String, Pair<WeakReference<Fragment>, (Fragment) -> Unit>>()
 
     /** 存储Fragment的Resume时间 */
     private val fragmentResumeTimes = ConcurrentHashMap<String, Long>()
+
     @Volatile
     var maxFragmentResumeRecords = 200
         private set
@@ -160,6 +164,28 @@ object AppTrackV2 : Application.ActivityLifecycleCallbacks, DefaultLifecycleObse
             val duration = System.currentTimeMillis() - startTime
             TimeTracker.updateStats(activity, duration)
         }
+    }
+
+    /**
+     * 注册Fragment显示状态监听器（自动绑定生命周期）
+     * @param owner 生命周期拥有者（Activity/Fragment）
+     * @param listener 显示回调（参数为显示的Fragment实例）
+     */
+    @JvmStatic
+    fun registerFragmentResumeListener(target: Fragment, listener: (Fragment) -> Unit) {
+        if (target.isRemoving || target.isDetached) {
+            LogPure.w(TAG, "Attempting to register listener for detached fragment")
+            return
+        }
+        val key = "${target.hashCode()}_${System.currentTimeMillis()}"
+        // 绑定Fragment生命周期自动注销
+        target.lifecycle.addObserver(object : DefaultLifecycleObserver {
+            override fun onDestroy(owner: LifecycleOwner) {
+                fragmentResumeListeners.remove(key)
+            }
+        })
+
+        fragmentResumeListeners[key] = Pair(WeakReference(target), listener)
     }
     // endregion
 
@@ -364,7 +390,7 @@ object AppTrackV2 : Application.ActivityLifecycleCallbacks, DefaultLifecycleObse
 
     /** 主线程执行 */
     private inline fun executeOnMain(crossinline action: () -> Unit) {
-        if (isMainThread()) action() else HandlerGT.handler.post { action.invoke() }
+        if (isMainThread()) action() else HandlerGT.main.post { action.invoke() }
     }
     // endregion
 
@@ -374,7 +400,7 @@ object AppTrackV2 : Application.ActivityLifecycleCallbacks, DefaultLifecycleObse
         foregroundListeners.values.forEach { listener ->
             try {
                 if (isMainThread()) listener(isForeground) else {
-                    HandlerGT.handler.post { listener(isForeground) }
+                    HandlerGT.main.post { listener(isForeground) }
                 }
             } catch (e: Exception) {
                 LogPure.e(TAG, "Listener error ${e.message}")
@@ -453,6 +479,18 @@ object AppTrackV2 : Application.ActivityLifecycleCallbacks, DefaultLifecycleObse
             "onCreate" -> addToStack(fragmentStack, fragment)
             "onDestroy" -> fragmentStack.removeAll { it.get() == fragment }
             "onResume" -> {
+                // 触发当前Fragment的显示回调
+                fragmentResumeListeners.values.forEach { (targetRef, listener) ->
+                    val targetFragment = targetRef.get()
+                    if (targetFragment == fragment) {
+                        if (isMainThread()) {
+                            listener(fragment)
+                        } else {
+                            HandlerGT.main.post { listener(fragment) }
+                        }
+                    }
+                }
+
                 // 新增容量清理逻辑
                 if (fragmentResumeTimes.size >= maxFragmentResumeRecords) {
                     val iterator = fragmentResumeTimes.entries.iterator()

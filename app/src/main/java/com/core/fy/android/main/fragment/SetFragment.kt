@@ -11,6 +11,7 @@ import io.core.common.helper.JsonUltra
 import io.core.common.helper.net.NetworkMonitor
 import io.core.common.helper.net.NetworkState
 import io.core.common.helper.net.awaitNetwork
+import io.core.common.helper.track.AppTrackV2
 import io.core.common.helper.track.TimeTracker
 import io.core.common.helper.valid.ValidGT
 import io.core.common.helper.valid.excludeHiddenFiles
@@ -30,6 +31,7 @@ import io.core.common.util.extensions.ui.postDelayed
 import io.core.common.util.extensions.ui.startActivity
 import io.core.common.util.log.LogCat
 import io.core.common.util.log.LogPure
+import io.core.common.util.log.i
 import io.core.common.util.tools.ThreadUltra
 import io.core.common.util.tools.TimeTools
 import io.core.common.util.tools.androidApiVersion
@@ -171,6 +173,10 @@ class SetFragment : ReflectBindingFragment<FragmentSetBinding, MainActivity>() {
                     "Crash ${currentTimeMillis.timeFormat(TimePatterns.LOG_TIMESTAMP)}"
                 }
             }
+        }
+
+        AppTrackV2.registerFragmentResumeListener(this) {
+            "Fragment: ${it.javaClass.simpleName} 恢复".i()
         }
     }
 

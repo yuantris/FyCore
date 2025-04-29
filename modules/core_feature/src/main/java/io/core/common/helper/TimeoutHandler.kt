@@ -19,7 +19,7 @@ class TimeoutHandler @JvmOverloads constructor(
     private val maxRetries: Int = -1, // -1 表示无限制
 ) {
     private val lock = Any()
-    private val handler = HandlerGT.handler
+    private val handler = HandlerGT.main
     private val retryCount = AtomicInteger(0)
 
     private val timeoutRunnable = RunnablePool.obtain {

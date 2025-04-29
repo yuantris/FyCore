@@ -26,7 +26,7 @@ import com.core.fy.android.room.entity.Book
 import io.core.common.base.component.activity.ReflectBindingActivity
 import io.core.common.helper.track.AppTrackV2
 import io.core.common.util.DiveGestureLine
-import io.core.common.util.extensions.cool.HandlerGT.handler
+import io.core.common.util.extensions.cool.HandlerGT.main
 import io.core.common.util.extensions.cool.toastOnUI
 import io.core.common.util.extensions.logD
 import io.core.common.util.extensions.ui.getCompatColor
@@ -183,7 +183,7 @@ class ReadBookActivity : ReflectBindingActivity<ActivityBookReadBinding>(),
     }
 
     override fun screenOffTimerStart() {
-        handler.post {
+        main.post {
             if (screenTimeOut < 0) {
                 keepScreenOn(true)
                 return@post
@@ -191,8 +191,8 @@ class ReadBookActivity : ReflectBindingActivity<ActivityBookReadBinding>(),
             val t = screenTimeOut - sysScreenOffTime
             if (t > 0) {
                 keepScreenOn(true)
-                handler.removeCallbacks(screenOffRunnable)
-                handler.postDelayed(screenOffRunnable, screenTimeOut)
+                main.removeCallbacks(screenOffRunnable)
+                main.postDelayed(screenOffRunnable, screenTimeOut)
             } else {
                 keepScreenOn(false)
             }
