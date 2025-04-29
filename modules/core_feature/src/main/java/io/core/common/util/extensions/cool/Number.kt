@@ -2,10 +2,10 @@ package io.core.common.util.extensions.cool
 
 import android.graphics.Color
 import io.core.common.util.tools.TimeTools
-import io.core.constant.TimeFormat
+import io.core.constant.TimePatterns
 import kotlin.math.abs
 
-fun Long.timeFormat(pattern: String = TimeFormat.TIME_FULL): String {
+fun Long.timeFormat(pattern: String = TimePatterns.TIME_FULL): String {
     return TimeTools.getDateFormat(pattern).format(this)
 }
 

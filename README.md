@@ -43,7 +43,7 @@ StorageFactory.initialize {
   - FileSize(📢文件大小和时间格式化工具类)
   - FileType(文件Mimetype汇总映射)
   - MediaStoreClauses(一些MediaStore的条件语句)
-  - TimeFormat(日期时间格式模式常量集合)
+  - TimePatterns(日期时间格式模式常量集合)
   - DeviceOS(设备系统版本信息)
 - 工具类位置
 

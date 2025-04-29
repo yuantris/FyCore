@@ -1,6 +1,5 @@
 package com.core.fy.android.main.fragment
 
-import com.blankj.utilcode.util.KeyboardUtils
 import com.core.fy.android.MainActivity
 import com.core.fy.android.constants.PreferKey
 import com.core.fy.android.databinding.FragmentSetBinding
@@ -32,15 +31,15 @@ import io.core.common.util.extensions.ui.startActivity
 import io.core.common.util.log.LogCat
 import io.core.common.util.log.LogPure
 import io.core.common.util.tools.ThreadUltra
+import io.core.common.util.tools.TimeTools
 import io.core.common.util.tools.androidApiVersion
 import io.core.common.util.tools.androidVersion
 import io.core.common.util.tools.buildMultiLine
 import io.core.constant.DeviceOS
 import io.core.constant.FileSize
 import io.core.constant.FileSize.TimeUnitStyle.English
-import io.core.constant.FileSize.TimeUnitStyle.UnitCase
 import io.core.constant.FileType
-import io.core.constant.TimeFormat
+import io.core.constant.TimePatterns
 import io.core.engine.storage.getWithAnnotation
 import io.core.engine.storage.put
 import io.core.engine.storage.storage
@@ -84,6 +83,7 @@ class SetFragment : ReflectBindingFragment<FragmentSetBinding, MainActivity>() {
                             "移动数据连接".logI()
                         }
                     }
+
                     NetworkState.Disconnected -> {
                         // 断开连接处理
                         "断开连接".logI()
@@ -171,7 +171,7 @@ class SetFragment : ReflectBindingFragment<FragmentSetBinding, MainActivity>() {
             }
             crash.onDebouncedClick {
                 require(false) {
-                    "Crash ${currentTimeMillis.timeFormat(TimeFormat.LOG_TIMESTAMP)}"
+                    "Crash ${currentTimeMillis.timeFormat(TimePatterns.LOG_TIMESTAMP)}"
                 }
             }
         }
@@ -188,17 +188,17 @@ class SetFragment : ReflectBindingFragment<FragmentSetBinding, MainActivity>() {
     // 获取统计数据
     private fun printTimeStats() {
         val stats = TimeTracker.getStats(ReadBookActivity::class.java)
-        val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
+        val formatter = TimePatterns.getFormatter("yyyy-MM-dd HH:mm")
 
         LogPure.d {
             """
             |页面停留统计:
-            |总时长: ${stats.totalDuration / 1000}秒
-            |今日: ${stats.todayDuration / 1000}秒
-            |本周: ${stats.weekDuration / 1000}秒
-            |本月: ${stats.monthDuration / 1000}秒
-            |首次访问: ${formatter.format(Date(stats.firstVisitTime))}
-            |最后访问: ${formatter.format(Date(stats.lastVisitTime))}
+            |总时长: ${TimeTools.convertMillis(stats.totalDuration)}秒
+            |今日: ${TimeTools.convertMillis(stats.todayDuration)}秒
+            |本周: ${TimeTools.convertMillis(stats.weekDuration)}秒
+            |本月: ${TimeTools.convertMillis(stats.monthDuration)}秒
+            |首次访问: ${TimeTools.millis2String(stats.firstVisitTime, "yyyy-MM-dd HH:mm")}
+            |最后访问: ${TimeTools.millis2String(stats.lastVisitTime, "yyyy-MM-dd HH:mm")}
             |访问次数: ${stats.visitCount}
         """.trimMargin()
         }

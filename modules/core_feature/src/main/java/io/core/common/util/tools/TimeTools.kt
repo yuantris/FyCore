@@ -3,21 +3,28 @@ package io.core.common.util.tools
 import android.icu.util.Calendar
 import io.core.common.util.extensions.cool.printOnDebug
 import io.core.common.util.extensions.currentTimeMillis
-import io.core.constant.TimeFormat
+import io.core.constant.TimePatterns
 import java.text.ParseException
 import java.text.SimpleDateFormat
 
 object TimeTools {
 
-    @JvmStatic
-    @JvmOverloads
-    fun getDateFormat(format: String = TimeFormat.TIME_FULL): SimpleDateFormat {
-        return TimeFormat.getFormatter(format)
+    /**
+     * 时间单位枚举
+     */
+    enum class Unit {
+        SECOND, MINUTE, HOUR, DAY
     }
 
     @JvmStatic
     @JvmOverloads
-    fun getNowString(pattern: String = TimeFormat.TIME_FULL): String {
+    fun getDateFormat(format: String = TimePatterns.TIME_FULL): SimpleDateFormat {
+        return TimePatterns.getFormatter(format)
+    }
+
+    @JvmStatic
+    @JvmOverloads
+    fun getNowString(pattern: String = TimePatterns.TIME_FULL): String {
         return getDateFormat(pattern).format(currentTimeMillis)
     }
 
@@ -175,13 +182,26 @@ object TimeTools {
      */
     @JvmStatic
     @JvmOverloads
-    fun string2Millis(time: String, pattern: String = TimeFormat.DATE_DASHES): Long {
+    fun string2Millis(time: String, pattern: String = TimePatterns.DATE_DASHES): Long {
         try {
             return getDateFormat(pattern).parse(time)?.time ?: -1
         } catch (e: ParseException) {
             e.printOnDebug()
         }
         return -1
+    }
+
+    /**
+     * 将时间戳转换为时间字符串
+     *
+     * @param millis 时间戳
+     * @param pattern 时间字符串格式(默认 yyyy-MM-dd HH:mm:ss)
+     * @return 时间字符串
+     */
+    @JvmStatic
+    @JvmOverloads
+    fun millis2String(millis: Long, pattern: String = TimePatterns.TIME_FULL): String {
+        return getDateFormat(pattern).format(millis)
     }
 
     /**
@@ -192,7 +212,24 @@ object TimeTools {
         return when {
             isToday(timestamp) -> "今天 ${getDateFormat("HH:mm").format(timestamp)}"
             isYesterday(timestamp) -> "昨天 ${getDateFormat("HH:mm").format(timestamp)}"
-            else -> getDateFormat(TimeFormat.DATE_DASHES).format(timestamp)
+            else -> getDateFormat(TimePatterns.DATE_DASHES).format(timestamp)
+        }
+    }
+
+    /**
+     * 毫秒时间单位转换
+     * @param millis 需要转换的毫秒值
+     * @param unit 时间单位（SECOND/MINUTE/HOUR/DAY）
+     * @return 转换后的整数单位值
+     */
+    @JvmStatic
+    @JvmOverloads
+    fun convertMillis(millis: Long, unit: Unit = Unit.SECOND): Int {
+        return when (unit) {
+            Unit.SECOND -> (millis / 1000).toInt()
+            Unit.MINUTE -> (millis / (1000 * 60)).toInt()
+            Unit.HOUR -> (millis / (1000 * 60 * 60)).toInt()
+            Unit.DAY -> (millis / (1000 * 60 * 60 * 24)).toInt()
         }
     }
 

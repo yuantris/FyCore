@@ -2,9 +2,7 @@ package io.core.common.util.extensions
 
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.OnBackPressedDispatcher
-import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.ProcessLifecycleOwner
 import io.core.appCtx
 import io.core.common.helper.track.AppTrackV2
 import io.core.common.util.extensions.cool.runDelayedMain
@@ -12,7 +10,7 @@ import io.core.common.util.extensions.cool.timeFormat
 import io.core.common.util.extensions.ui.appPackageName
 import io.core.common.util.log.LogCat
 import io.core.common.util.log.TAG
-import io.core.constant.TimeFormat
+import io.core.constant.TimePatterns
 import io.core.constant.X_FileProvider
 import kotlin.system.exitProcess
 
@@ -51,7 +49,7 @@ val currentTime: String
     get() = currentTimeMillis.timeFormat()
 
 val fileNameByTime: String
-    get() = currentTimeMillis.timeFormat(TimeFormat.FILE_SAFE_TIMESTAMP)
+    get() = currentTimeMillis.timeFormat(TimePatterns.FILE_SAFE_TIMESTAMP)
 
 val authority: String
     get() = "${appCtx.appPackageName}$X_FileProvider"

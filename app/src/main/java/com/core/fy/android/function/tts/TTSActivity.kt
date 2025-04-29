@@ -111,10 +111,12 @@ class TTSActivity : ReflectBindingActivity<ActivityTtsBinding>(), TextToSpeech.O
                     "This Language is not supported".logE()
                 } else {
                     "Initialization Succeed!".logD()
-                    // 设置语速（1.0 是默认语速，0.5 是慢速，2.0 是快速）
-                    tts.setSpeechRate(0.2f) // 设置为 1.2 倍速
-                    // 设置音调（1.0 是默认音调，0.5 是低音调，2.0 是高音调）
-                    tts.setPitch(0.5f) // 设置为 1.1 倍音调
+                    tts.apply {
+                        // 设置语速（1.0 是默认语速，0.5 是慢速，2.0 是快速）
+                        setSpeechRate(0.2f) // 设置为 1.2 倍速
+                        // 设置音调（1.0 是默认音调，0.5 是低音调，2.0 是高音调）
+                        setPitch(0.5f) // 设置为 1.1 倍音调
+                    }
                     readNextSentence()
                 }
             }

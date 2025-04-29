@@ -6,9 +6,11 @@ import android.util.Log
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.core.fy.android.databinding.ActivityKeyboardBinding
 import io.core.common.base.component.activity.BaseInputActivity
+import io.core.common.helper.track.AppTrackV2
 import io.core.common.util.DiveGestureLine
 import io.core.common.util.extensions.cool.launchAsync
 import io.core.common.util.extensions.ui.onDebouncedClick
+import io.core.common.util.log.d
 import io.core.common.util.tools.KeyboardTools
 import kotlinx.coroutines.delay
 
@@ -48,6 +50,9 @@ class KeyboardActivity : BaseInputActivity<ActivityKeyboardBinding>() {
 
             hide.onDebouncedClick {
                 KeyboardTools.hideSoftInput(window)
+            }
+            fragment.onDebouncedClick {
+                AppTrackV2.getTopFragment()?.javaClass?.simpleName?.d() ?: run { "null".d() }
             }
         }
 //        SoftKeyboardGlobal.addSoftKeyboardCallback(object :

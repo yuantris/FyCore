@@ -90,6 +90,7 @@ object AppTrackV2 : Application.ActivityLifecycleCallbacks, DefaultLifecycleObse
     private val excludedFragments = ConcurrentHashMap<String, Unit>().apply {
         // 内部预设值
         put("com.gyf.immersionbar.SupportRequestBarManagerFragment", Unit) // Immersionbar
+        put("com.gyf.immersionbar.RequestBarManagerFragment", Unit) // Immersionbar
     }
     // endregion
 
@@ -103,7 +104,7 @@ object AppTrackV2 : Application.ActivityLifecycleCallbacks, DefaultLifecycleObse
      * - 注册Activity生命周期全局监听
      * - 绑定ProcessLifecycleOwner观察应用前后台状态
      */
-    fun init(application: Application) {
+    internal fun init(application: Application) {
         application.registerActivityLifecycleCallbacks(this)
         ProcessLifecycleOwner.get().lifecycle.addObserver(this)
     }
@@ -287,8 +288,13 @@ object AppTrackV2 : Application.ActivityLifecycleCallbacks, DefaultLifecycleObse
     fun getTopFragment(): Fragment? {
         cleanUpWeakReferences(fragmentStack)
         return synchronized(fragmentStack) {
+            val topActivity = getTopActivity()
             fragmentStack.mapNotNull { it.get() }
-                .firstOrNull { it.isAdded && !it.isDetached }
+                .firstOrNull { fragment ->
+                    fragment.isAdded && !fragment.isDetached &&
+                            // 新增宿主Activity匹配检查
+                            fragment.activity == topActivity
+                }
         }
     }
 
@@ -429,7 +435,6 @@ object AppTrackV2 : Application.ActivityLifecycleCallbacks, DefaultLifecycleObse
 
             override fun onFragmentDestroyed(fm: FragmentManager, f: Fragment) {
                 handleFragmentEvent(f, "onDestroy")
-                fragmentStack.removeAll { it.get() == f }
             }
         }
         fragmentCallbacks[activity] = callback
@@ -446,6 +451,7 @@ object AppTrackV2 : Application.ActivityLifecycleCallbacks, DefaultLifecycleObse
         logLifecycle(fragment, event)
         when (event) {
             "onCreate" -> addToStack(fragmentStack, fragment)
+            "onDestroy" -> fragmentStack.removeAll { it.get() == fragment }
             "onResume" -> {
                 // 新增容量清理逻辑
                 if (fragmentResumeTimes.size >= maxFragmentResumeRecords) {
@@ -466,7 +472,7 @@ object AppTrackV2 : Application.ActivityLifecycleCallbacks, DefaultLifecycleObse
                     // TODO: 补充代码：fragmentResumeTimes按照value时间戳从大到小排序，选择出value时间戳之差小于100ms的key(可能有多个)，
                     // TODO: 按照时间戳时间最早排序取第一个key，然后将fragmentStack中该key的Fragment移至栈顶
 
-                    // todo完成新增代码：处理时间戳相近的Fragment
+                    // 完成新增代码：处理时间戳相近的Fragment
                     val now = System.currentTimeMillis()
                     val candidates = fragmentResumeTimes.entries
                         .sortedByDescending { it.value } // 1. 按时间戳降序排序
@@ -478,7 +484,7 @@ object AppTrackV2 : Application.ActivityLifecycleCallbacks, DefaultLifecycleObse
                         fragmentStack.firstOrNull { ref ->
                             ref.get()?.javaClass?.simpleName == entry.key
                         }?.get()?.let { candidate ->
-                            if (!containsKey)return@handleFragmentEvent
+                            if (!containsKey) return@handleFragmentEvent
                             // 将候选Fragment移至栈顶
                             bringFragmentToFront(candidate)
                         }

@@ -95,7 +95,7 @@ object AppLog {
         override fun initialValue() = SimpleDateFormat(config.dateFormat, Locale.getDefault())
     }
 
-    fun initialize(customConfig: LogConfig? = null) {
+    internal fun initialize(customConfig: LogConfig? = null) {
         if (!isInitialized.compareAndSet(false, true)) return
 
         customConfig?.let { config.applyFrom(it) }
@@ -104,6 +104,7 @@ object AppLog {
         writeLogStart()
     }
 
+    @JvmStatic
     fun updateMode(debug: Boolean) {
         isDebugMode = debug
     }

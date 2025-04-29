@@ -27,7 +27,7 @@ import io.core.common.util.extensions.cool.timeFormat
 import io.core.common.util.extensions.currentTimeMillis
 import io.core.common.util.tools.FileTools
 import io.core.constant.CRASH_FOLDER_NAME
-import io.core.constant.TimeFormat
+import io.core.constant.TimePatterns
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -131,7 +131,7 @@ class CrashHandler private constructor(private val application: Application) :
         /**
          * 保存错误信息到文件中
          */
-        fun saveCrashInfo2File(timestamp: Long, ex: Throwable): String {
+        private fun saveCrashInfo2File(timestamp: Long, ex: Throwable): String {
             val sb = StringBuilder()
             for ((key, value) in paramsMap) {
                 sb.append(key).append(" = ").append(value).append("\n")
@@ -149,9 +149,9 @@ class CrashHandler private constructor(private val application: Application) :
             val result = writer.toString()
             sb.append("\n").append(DIVIDER).append("\n").append(result)
             val crashLog = sb.toString()
-            val fileName = "crash-${timestamp.timeFormat(TimeFormat.LOG_TIMESTAMP_LINE)}.log"
+            val fileName = "crash-${timestamp.timeFormat(TimePatterns.LOG_TIMESTAMP_LINE)}.log"
             val fileNameExternal =
-                "crash-${timestamp.timeFormat(TimeFormat.FILE_SAFE_TIMESTAMP)}.log"
+                "crash-${timestamp.timeFormat(TimePatterns.FILE_SAFE_TIMESTAMP)}.log"
             kotlin.runCatching {
                 appCtx.externalCacheDir?.let { rootFile ->
                     val exceedTimeMillis = currentTimeMillis - TimeUnit.DAYS.toMillis(7)
@@ -186,7 +186,7 @@ class CrashHandler private constructor(private val application: Application) :
         /**
          * 进行堆转储
          */
-        fun doHeapDump(manually: Boolean = false) {
+        private fun doHeapDump(manually: Boolean = false) {
             val heapDir = appCtx.getBasePath(PathType.EXTERNAL_CACHE)
                 .getFile("heapDump")
             heapDir.createFolderReplace()

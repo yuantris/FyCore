@@ -1,6 +1,5 @@
 package com.core.fy.android.function.record
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import com.core.fy.android.databinding.ActivityAudioRecordBinding
 import com.hjq.permissions.Permission
@@ -16,7 +15,7 @@ import io.core.common.util.extensions.ui.onClick
 import io.core.common.util.log.LogPure
 import io.core.constant.FileSize
 import io.core.constant.FileSize.toFormattedPattern
-import io.core.constant.TimeFormat
+import io.core.constant.TimePatterns
 import java.io.File
 
 /**
@@ -54,14 +53,14 @@ class AudioRecordActivity : ReflectBindingActivity<ActivityAudioRecordBinding>()
                             "Recording: ${
                                 FileSize.formatDuration(
                                     state.duration,
-                                    TimeFormat.TIME_MM_SS
+                                    TimePatterns.TIME_MM_SS
                                 )
                             }"
                         )
 
                         is RecordingState.Paused -> updateUI(
                             "Paused: ${
-                                FileSize.formatDuration(state.duration, TimeFormat.TIME_MM_SS)
+                                FileSize.formatDuration(state.duration, TimePatterns.TIME_MM_SS)
                             }"
                         )
 
@@ -92,7 +91,7 @@ class AudioRecordActivity : ReflectBindingActivity<ActivityAudioRecordBinding>()
                 // 开始录音
                 recorder.start(
                     outputDir = getBasePath(PathType.MUSIC),
-                    fileName = "recording_${currentTimeMillis.timeFormat(TimeFormat.FILE_SAFE_TIMESTAMP)}"
+                    fileName = "recording_${currentTimeMillis.timeFormat(TimePatterns.FILE_SAFE_TIMESTAMP)}"
                 )
             }
         }

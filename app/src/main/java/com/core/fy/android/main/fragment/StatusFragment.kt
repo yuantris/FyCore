@@ -33,16 +33,11 @@ import com.core.fy.android.viewmodel.FunctionVM
 import io.core.common.base.component.dialog.CustomToast
 import io.core.common.base.component.fragment.ReflectBindingFragment
 import io.core.common.helper.track.AppTrackV2
-import io.core.common.util.extensions.cool.HandlerGT
 import io.core.common.util.extensions.cool.launchAsync
 import io.core.common.util.extensions.cool.runDelayedMain
-import io.core.common.util.extensions.cool.runMain
-import io.core.common.util.extensions.cool.timeFormat
-import io.core.common.util.extensions.logV
 import io.core.common.util.extensions.ui.onClick
 import io.core.common.util.extensions.ui.startActivity
 import io.core.common.util.log.v
-import io.core.constant.TimeFormat
 import io.core.engine.brv.BindingAdapter
 import io.core.engine.brv.listener.DefaultItemTouchCallback
 import io.core.engine.brv.utils.grid

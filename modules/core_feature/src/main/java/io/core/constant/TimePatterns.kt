@@ -12,7 +12,7 @@ import java.util.TimeZone
  * █ 所有模式符遵循SimpleDateFormat规范
  * █▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲
  */
-object TimeFormat {
+object TimePatterns {
 
     // ====================
     // 国际标准格式
@@ -103,6 +103,7 @@ object TimeFormat {
     // ====================
     // 扩展方法
     // ====================
+    @JvmStatic
     fun getFormatter(pattern: String): SimpleDateFormat {
         return SimpleDateFormat(pattern, Locale.getDefault()).apply {
             timeZone = TimeZone.getDefault() // 可根据需要设置为UTC等

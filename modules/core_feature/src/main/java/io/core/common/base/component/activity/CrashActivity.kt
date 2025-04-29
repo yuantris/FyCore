@@ -39,7 +39,7 @@ import io.core.common.util.extensions.ui.onDebouncedClick
 import io.core.common.util.share.FileSharer
 import io.core.common.util.share.ShareAir
 import io.core.constant.CRASH_FOLDER_NAME
-import io.core.constant.TimeFormat
+import io.core.constant.TimePatterns
 import io.core.engine.effect.ViewClickEffect
 import io.core.widget.view.SettingBar
 import kotlinx.coroutines.Dispatchers
@@ -224,7 +224,7 @@ class CrashActivity : BaseActivity() {
             .append("\n版本代码：\t").append(appVersionCode)
 
         try {
-            val dateFormat = TimeFormat.getFormatter("MM-dd HH:mm")
+            val dateFormat = TimePatterns.getFormatter("MM-dd HH:mm")
             val packageInfo: PackageInfo =
                 packageManager.getPackageInfo(packageName, PackageManager.GET_PERMISSIONS)
             builder.append("\n首次安装：\t")

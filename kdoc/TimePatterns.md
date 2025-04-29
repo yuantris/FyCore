@@ -1,4 +1,4 @@
-# TimeFormat 时间格式常量工具类
+# TimePatterns 时间格式常量工具类
 
 ## 概述
 提供标准化的日期时间格式模式常量，包含ISO、RFC标准及常用自定义格式。所有模式符遵循`SimpleDateFormat`规范。
@@ -52,10 +52,10 @@
 
 ```kotlin
 // 获取ISO格式的当前时间
-val isoDate = TimeFormat.getFormatter(TimeFormat.DATE_TIME_ISO_8601).format(Date())
+val isoDate = TimePatterns.getFormatter(TimeFormat.DATE_TIME_ISO_8601).format(Date())
 
 // 中文日期格式化
-val chineseDate = TimeFormat.getFormatter(TimeFormat.DATE_FULL_ZH).format(Date())
+val chineseDate = TimePatterns.getFormatter(TimeFormat.DATE_FULL_ZH).format(Date())
 
 // 日志时间戳
-val logTime = TimeFormat.getFormatter(TimeFormat.LOG_TIMESTAMP).format(Date())
+val logTime = TimePatterns.getFormatter(TimeFormat.LOG_TIMESTAMP).format(Date())
