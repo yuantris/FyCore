@@ -12,6 +12,7 @@ import io.core.common.helper.TimeoutCallback
 import io.core.common.helper.TimeoutHandler
 import io.core.common.helper.jetpack.SingleLiveData
 import io.core.common.helper.track.AppTrackV2
+import io.core.common.helper.track.FragmentVisibilityDetectorV2
 import io.core.common.util.concurrent.Concurrency
 import io.core.common.util.concurrent.TaskExecutor
 import io.core.common.util.extensions.cool.GSON
@@ -44,6 +45,10 @@ class KotlinFragment : ReflectBindingFragment<FragmentKotlinBinding, TestPageAct
 
     override fun initView() {
         super.initView()
+
+        FragmentVisibilityDetectorV2.attachToFragment(this){ isVisible->
+
+        }
 
         val fragments = AppTrackV2.getFragmentsByActivity(requireActivity())
         fragments.forEach { LogPure.d("AppTrackV4", "${it::class.simpleName}") }
