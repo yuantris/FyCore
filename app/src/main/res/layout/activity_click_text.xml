@@ -12,7 +12,7 @@
         app:subtitle="点击TextView"
         android:layout_height="wrap_content"/>
 
-    <io.core.widget.view.ClickableTextView
+    <com.core.fy.android.widget.ClickableTextView
         android:id="@+id/ct_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

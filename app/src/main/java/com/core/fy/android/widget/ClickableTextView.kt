@@ -1,4 +1,4 @@
-package io.core.widget.view
+package com.core.fy.android.widget
 
 import android.content.Context
 import android.graphics.Rect
@@ -15,7 +15,6 @@ import android.view.View
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
-import io.core.common.util.extensions.logD
 import java.util.regex.Pattern
 
 class ClickableTextView @JvmOverloads constructor(
@@ -38,14 +37,21 @@ class ClickableTextView @JvmOverloads constructor(
      */
     private fun formatTextWithNewLines(text: String?): String {
         // 去除所有换行符
-        val noNewLines = text?.replace("\\n".toRegex(), "")
+        val noNewLines = text?.replace("\\n".toRegex(), "") ?: ""
 
         // 在标点符号后加入换行符
         val punctuationPattern = Pattern.compile("[.,!?;:。！？，；：]")
-        val matcher = punctuationPattern.matcher(noNewLines.toString())
+        val matcher = punctuationPattern.matcher(noNewLines)
         val formattedText = matcher.replaceAll("$0\n")
 
-        return formattedText
+        // 移除最后一个换行符（如果存在）
+        val trimmedText = if (formattedText.isNotEmpty() && formattedText.endsWith("\n")) {
+            formattedText.substring(0, formattedText.length - 1)
+        } else {
+            formattedText
+        }
+
+        return trimmedText
     }
 
     fun setOnLetterClickListener(listener: (CharSequence, Int) -> Unit) {
@@ -59,15 +65,24 @@ class ClickableTextView @JvmOverloads constructor(
     }
 
     private fun updateTextSpans() {
-        val textContent = text ?: return
-        val spannableBuilder = SpannableStringBuilder(textContent)
-        clickedSpans?.clear() // 清除之前的点击背景样式
+        val formattedText = text?.toString() ?: return
+        val spannableBuilder = SpannableStringBuilder(formattedText)
+        clickedSpans?.clear()
 
-        textContent.forEachIndexed { index, char ->
+        // 创建原始文本索引映射表
+        val indexMap = mutableMapOf<Int, Int>()
+        var originalIndex = 0
+
+        formattedText.forEachIndexed { index, char ->
+            if (char != '\n') {
+                indexMap[index] = originalIndex
+                originalIndex++
+            }
             if (char.isLetterOrDigit()) { // 仅为字母和数字设置点击事件
                 spannableBuilder.setSpan(object : ClickableSpan() {
                     override fun onClick(widget: View) {
                         removeHighlight() // 移除之前高亮
+                        val originalPos = indexMap[index] ?: return
                         val backgroundColorSpan = BackgroundColorSpan(
                             ContextCompat.getColor(context, android.R.color.transparent)
                         )
@@ -79,7 +94,7 @@ class ClickableTextView @JvmOverloads constructor(
                             Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
                         )
                         text = spannableBuilder // 更新背景色
-                        onLetterClickListener?.invoke(char.toString(), index)
+                        onLetterClickListener?.invoke(char.toString(), originalPos)
                     }
 
                     override fun updateDrawState(ds: android.text.TextPaint) {
@@ -96,9 +111,7 @@ class ClickableTextView @JvmOverloads constructor(
      * 移除所有点击背景色
      */
     fun removeHighlight() {
-        "开始remove".logD()
         val textContent = text as? SpannableStringBuilder ?: SpannableStringBuilder(text)
-        "remove中".logD()
 
         // 获取所有类型的Span并移除
         val spans = textContent.getSpans(0, textContent.length, Any::class.java)
@@ -108,11 +121,10 @@ class ClickableTextView @JvmOverloads constructor(
 
         clickedSpans?.clear()
         text = textContent // 更新文字
-        "结束remove".logD()
     }
 
 
-    private class EnlargedLinkMovementMethod : LinkMovementMethod() {
+    private inner class EnlargedLinkMovementMethod : LinkMovementMethod() {
         private var lastClickableSpan: ClickableSpan? = null
 
         override fun onTouchEvent(

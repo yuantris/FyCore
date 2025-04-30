@@ -16,6 +16,7 @@ import io.core.common.base.component.adapter.BaseRecyclerAdapter
 import io.core.common.base.component.adapter.BaseViewHolder
 import io.core.common.base.component.adapter.createBindingViewHolder
 import io.core.common.base.component.fragment.BaseFragment
+import io.core.common.helper.StateTransactionHelper
 import io.core.common.helper.StatusBarManager
 import io.core.common.util.MediaScanner
 import io.core.common.util.extensions.cool.launchAsync
@@ -95,6 +96,7 @@ class MainActivity : ReflectBindingActivity<ActivityMainBinding>() {
     }
 
     private val exitHandler by lazy { DoubleBackExitHandler() }
+    private var transaction: StateTransactionHelper<Boolean>? = null
 
     override fun onBackPressedCall() {
         exitHandler.handleBackPress(
@@ -102,11 +104,25 @@ class MainActivity : ReflectBindingActivity<ActivityMainBinding>() {
                 showDxNotification {
                     content = it
                     onShow = {
-                        runDelayedMain(300) { setLightStatusBar(true) }
+                        transaction = StateTransactionHelper.beginTransaction(
+                            object : StateTransactionHelper.StateController<Boolean> {
+                                override val currentState: Boolean
+                                    get() = StatusBarManager.with(this@MainActivity)
+                                        .isStatusBarLight()
+
+                                override fun applyState(state: Boolean) {
+                                    StatusBarManager.with(this@MainActivity)
+                                        .updateStatusBarManually(state)
+                                }
+                            }
+                        )
+                        runDelayedMain(300) {
+                            transaction?.applyState(true)
+                        }
+
                     }
                     onDismiss = {
-                        StatusBarManager.with(this@MainActivity)
-                            .updateFromCurrentPage()
+                        transaction?.restore()
                     }
                 }
             },

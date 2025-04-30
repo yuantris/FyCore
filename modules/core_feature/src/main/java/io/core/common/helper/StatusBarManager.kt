@@ -214,7 +214,7 @@ class StatusBarManager private constructor(private val activity: Activity) : Lif
      */
     fun updateStatusBarManually(isLight: Boolean) {
         currentLightStatusBar = isLight
-        updateStatusBarAppearance(if (isLight) Color.WHITE else Color.BLACK)
+        updateStatusBarAppearance(if (isLight) Color.WHITE else Color.BLACK,false)
     }
 
     /**
@@ -237,6 +237,20 @@ class StatusBarManager private constructor(private val activity: Activity) : Lif
             if (!shouldThrottle()) {
                 updateStatusBarAppearance(color, false)
             }
+        }
+    }
+
+    /**
+     * 获取系统当前状态栏文字是否为浅色模式（实时读取系统设置）
+     * @return Boolean 当前系统实际状态栏文字是否为浅色模式
+     */
+    fun isStatusBarLight(): Boolean {
+        return if (isAndroid6Plus) {
+            WindowCompat.getInsetsController(activity.window, activity.window.decorView)
+                .isAppearanceLightStatusBars
+        } else {
+            // Android 6.0以下无法获取系统设置，返回当前维护状态
+            currentLightStatusBar ?: false
         }
     }
 

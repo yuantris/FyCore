@@ -2,7 +2,6 @@ package com.core.fy.android.util
 
 import android.app.Application
 import android.view.View
-import com.core.fy.android.R
 import com.kongzue.dialogx.DialogX
 import com.kongzue.dialogx.dialogs.CustomDialog
 import com.kongzue.dialogx.dialogs.MessageDialog
@@ -10,6 +9,7 @@ import com.kongzue.dialogx.dialogs.PopNotification
 import com.kongzue.dialogx.interfaces.DialogLifecycleCallback
 import com.kongzue.dialogx.interfaces.OnBindView
 import com.kongzue.dialogx.style.KongzueStyle
+import io.core.common.helper.coroutine.info.GlobalCoroutine
 
 // DSL 配置类
 class DialogXConfig {

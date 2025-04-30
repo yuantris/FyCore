@@ -6,6 +6,7 @@ import android.util.Log
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.core.fy.android.databinding.ActivityKeyboardBinding
 import io.core.common.base.component.activity.BaseInputActivity
+import io.core.common.helper.StatusBarManager
 import io.core.common.helper.track.AppTrackV2
 import io.core.common.util.DiveGestureLine
 import io.core.common.util.extensions.cool.launchAsync
@@ -29,6 +30,7 @@ import kotlinx.coroutines.delay
  */
 class KeyboardActivity : BaseInputActivity<ActivityKeyboardBinding>() {
     private val TAG by lazy { "KeyboardActivity_" }
+    private var isStatusBarLight = true
 
     override fun isShowKeyboardDebug(): Boolean {
         return true
@@ -53,6 +55,12 @@ class KeyboardActivity : BaseInputActivity<ActivityKeyboardBinding>() {
             }
             fragment.onDebouncedClick {
                 AppTrackV2.getTopFragment()?.javaClass?.simpleName?.d() ?: run { "null".d() }
+            }
+            statusBar.onDebouncedClick {
+                isStatusBarLight = !isStatusBarLight
+                val light = StatusBarManager.with(this@KeyboardActivity).isStatusBarLight()
+                StatusBarManager.with(this@KeyboardActivity)
+                    .updateStatusBarManually(!light)
             }
         }
 //        SoftKeyboardGlobal.addSoftKeyboardCallback(object :

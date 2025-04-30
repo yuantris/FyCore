@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
 
-import io.core.common.base.component.fragment.ReflectBindingFragment;
+import io.core.common.base.component.fragment.ReflectBindingFragmentV2;
 import io.core.common.helper.JsonUltra;
 import io.core.common.helper.TryV2;
 import io.core.common.helper.track.AppTrackV2;
@@ -34,20 +34,18 @@ import io.core.common.util.tools.ThreadUltra;
 import io.core.common.util.tools.UriTools;
 import io.core.other.LiveDataPro;
 
-public class JavaFragment extends ReflectBindingFragment<FragmentJavaBinding, TestPageActivity> {
+public class JavaFragment extends ReflectBindingFragmentV2<FragmentJavaBinding> {
 
 
     public JavaFragment() {
         // Required empty public constructor
-//        LifecycleCoroutineScope scope = LifecycleKt.getCoroutineScope(getLifecycle());
-//        CrashHandler.Companion.checkLastedCrash(scope);
     }
 
     @Override
     protected void initView() {
         super.initView();
 
-        if (NullCheck.isEmpty("1")){
+        if (NullCheck.isEmpty("1")) {
             Toaster.show("初始化");
         }
 
@@ -100,6 +98,12 @@ public class JavaFragment extends ReflectBindingFragment<FragmentJavaBinding, Te
         String formatted = JsonUltra.format("{\"key\": \"{\\\"nested\\\": 123}\"}");
         LogCat.e(formatted);
 
+    }
+
+    @Override
+    protected void onFragmentVisible() {
+        super.onFragmentVisible();
+        LogPure.e("Fragment JavaFragment is visible");
     }
 
     @Override
