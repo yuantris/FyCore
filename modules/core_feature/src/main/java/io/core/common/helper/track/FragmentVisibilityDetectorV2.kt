@@ -25,7 +25,7 @@ class FragmentVisibilityDetectorV2 private constructor(
 ) : DefaultLifecycleObserver {
 
     private var isCurrentlyVisible = false
-    private var callback: ((Boolean) -> Unit)? = null
+    private var callback: VisibilityCallback? = null
 
     // ViewPager2集成
     private var currentViewPager2: WeakReference<ViewPager2>? = null
@@ -90,7 +90,7 @@ class FragmentVisibilityDetectorV2 private constructor(
     private fun handleVisibilityChange(newState: Boolean, source: String?) {
         isCurrentlyVisible = newState
         debugLog("VisibilityChanged: $newState via ${source ?: "internal"}")
-        callback?.invoke(newState)
+        callback?.onVisibilityChanged(newState)
     }
 
     /** 多层级可见性计算 */
@@ -132,7 +132,7 @@ class FragmentVisibilityDetectorV2 private constructor(
     }
 
     /** 公开API：设置回调监听 */
-    fun setCallback(callback: (Boolean) -> Unit) {
+    fun setVisibilityCallback(callback: VisibilityCallback) {
         this.callback = callback
     }
 
@@ -141,6 +141,10 @@ class FragmentVisibilityDetectorV2 private constructor(
         currentViewPager2 = WeakReference(viewPager).also {
             viewPager.registerOnPageChangeCallback(pageChangeCallback)
         }
+    }
+
+    fun interface VisibilityCallback {
+        fun onVisibilityChanged(visible: Boolean)
     }
 
     companion object {
@@ -154,10 +158,10 @@ class FragmentVisibilityDetectorV2 private constructor(
                 checkWindowVisibility = true,
                 debugTag = fragment.javaClass.simpleName
             ),
-            callback: (Boolean) -> Unit
+            callback: VisibilityCallback
         ): FragmentVisibilityDetectorV2 {
             return FragmentVisibilityDetectorV2(fragment, config).apply {
-                setCallback(callback)
+                setVisibilityCallback(callback)
             }
         }
     }

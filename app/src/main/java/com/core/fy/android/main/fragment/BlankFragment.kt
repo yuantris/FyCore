@@ -15,6 +15,7 @@ import io.core.common.base.component.fragment.ReflectBindingFragment
 import io.core.common.helper.coroutine.Coroutine
 import io.core.common.helper.pool.UniversalPool
 import io.core.common.helper.track.AppTrackV2
+import io.core.common.helper.track.FragmentVisibilityDetectorV2
 import io.core.common.util.extensions.cool.runDelayedMain
 import io.core.common.util.extensions.logI
 import io.core.common.util.extensions.ui.getCompatColor
@@ -46,10 +47,17 @@ import java.io.InputStreamReader
 class BlankFragment : ReflectBindingFragment<FragmentBlankBinding, MainActivity>() {
 
     private val timeBatteryReceiver = TimeBatteryReceiver()
+    private var detectorV2: FragmentVisibilityDetectorV2? = null
 
     @SuppressLint("UnspecifiedRegisterReceiverFlag")
     override fun initView() {
         super.initView()
+
+        detectorV2 = FragmentVisibilityDetectorV2.attachToFragment(this) {
+            if (it) {
+                "Fragment ${this@BlankFragment.javaClass.simpleName} is visible".logI()
+            }
+        }
 
         val universalPool = UniversalPool.Builder<Bitmap>().apply {
             creator = { createBitmap(1080, 1920) }
@@ -99,6 +107,17 @@ class BlankFragment : ReflectBindingFragment<FragmentBlankBinding, MainActivity>
             }
         }
 
+    }
+
+    override fun onHiddenChanged(hidden: Boolean) {
+        super.onHiddenChanged(hidden)
+        detectorV2?.onHiddenChanged(hidden)
+    }
+
+    @Deprecated("Deprecated in Java")
+    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
+        super.setUserVisibleHint(isVisibleToUser)
+        detectorV2?.onUserVisibleHintChanged(isVisibleToUser)
     }
 
     private var job: Coroutine<*>? = null
