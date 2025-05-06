@@ -6,6 +6,7 @@ import android.content.SharedPreferences
 import android.os.Build
 import android.os.Debug
 import android.os.Process
+import android.util.Log
 import android.webkit.WebSettings
 import androidx.lifecycle.LifecycleCoroutineScope
 import io.core.Android
@@ -15,6 +16,7 @@ import io.core.common.base.component.activity.CrashActivity
 import io.core.common.base.component.activity.CrashSameProcessActivity
 import io.core.common.base.component.activity.RestartActivity
 import io.core.common.base.interfaces.OnNextStepCallback
+import io.core.common.helper.coroutine.info.GlobalCoroutine
 import io.core.common.helper.track.AppTrackV2
 import io.core.common.util.extensions.cool.PathType
 import io.core.common.util.extensions.cool.createFolderReplace
@@ -29,6 +31,8 @@ import io.core.common.util.tools.FileTools
 import io.core.constant.CRASH_FOLDER_NAME
 import io.core.constant.TimePatterns
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.PrintWriter
@@ -37,7 +41,10 @@ import java.util.concurrent.TimeUnit
 import kotlin.math.abs
 import kotlin.system.exitProcess
 
-class CrashHandler private constructor(private val application: Application) :
+class CrashHandler private constructor(
+    private val application: Application,
+    private val nextHandler: Thread.UncaughtExceptionHandler?
+) :
     Thread.UncaughtExceptionHandler {
 
     companion object {
@@ -53,7 +60,34 @@ class CrashHandler private constructor(private val application: Application) :
          * 注册 Crash 监听
          */
         fun register(application: Application) {
-            Thread.setDefaultUncaughtExceptionHandler(CrashHandler(application))
+            val current = Thread.getDefaultUncaughtExceptionHandler()
+            if (current is CrashHandler) return // 防止重复注册
+
+            val handler = CrashHandler(application, current)
+            Thread.setDefaultUncaughtExceptionHandler(handler)
+        }
+
+        /**
+         * 启动定时检查默认异常处理器的服务
+         * @param intervalMillis 检查间隔时间(毫秒)，默认10000
+         */
+        @JvmStatic
+        @JvmOverloads
+        fun startCheckHandler(
+            intervalMillis: Long = 10000
+        ) {
+            GlobalCoroutine.launch(Dispatchers.IO) {
+                while (isActive) {
+                    val current = Thread.getDefaultUncaughtExceptionHandler()
+                    if (current !is CrashHandler) {
+                        withContext(Dispatchers.Main) {
+                            register(appCtx)
+                            Log.w("CrashHandler", "检测到默认异常处理器被修改，已重新注册")
+                        }
+                    }
+                    delay(intervalMillis)
+                }
+            }
         }
 
         @JvmStatic
@@ -84,7 +118,8 @@ class CrashHandler private constructor(private val application: Application) :
                     }
 
                     if (file.lastModified() < millis - validTimeWindow ||
-                        abs(lastCrashTimeMillis - file.lastModified()) > validTimeWindow) {
+                        abs(lastCrashTimeMillis - file.lastModified()) > validTimeWindow
+                    ) {
                         withContext(Dispatchers.Main) { action?.invoke() }
                         return@launch
                     }
@@ -198,16 +233,6 @@ class CrashHandler private constructor(private val application: Application) :
             val heapFile = heapDir.getFile(fileName)
             val heapDumpName = heapFile.absolutePath
             Debug.dumpHprofData(heapDumpName)
-        }
-    }
-
-    private val nextHandler: Thread.UncaughtExceptionHandler? =
-        Thread.getDefaultUncaughtExceptionHandler()
-
-    init {
-        if ((javaClass.name == nextHandler?.javaClass?.name)) {
-            // 请不要重复注册 Crash 监听
-            throw IllegalStateException("are you ok?")
         }
     }
 

@@ -21,6 +21,7 @@ import io.core.constant.ANDROID_8
 import io.core.engine.brv.utils.BRV
 import io.core.engine.storage.StorageFactory
 import io.core.engine.storage.StorageType
+import io.core.other.CrashHandler
 
 
 /**
@@ -45,6 +46,7 @@ class App : Application() {
             enable(CoreConfig.Environment.isDebug)
             brief(true)
         }
+        CrashHandler.startCheckHandler()
         StorageFactory.initialize {
             type = StorageType.MMKV
             mmkvMode = MMKV.MULTI_PROCESS_MODE
