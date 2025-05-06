@@ -11,6 +11,7 @@ import com.core.fy.android.main.fragment.HomeFragment
 import com.core.fy.android.main.fragment.SetFragment
 import com.core.fy.android.util.DoubleBackExitHandler
 import com.core.fy.android.util.showDxNotification
+import io.core.appCtx
 import io.core.common.base.component.activity.ReflectBindingActivity
 import io.core.common.base.component.adapter.BaseRecyclerAdapter
 import io.core.common.base.component.adapter.BaseViewHolder
@@ -34,6 +35,7 @@ import io.core.common.util.tools.TimeTools
 import io.core.engine.dialogs.showDialog
 import io.core.engine.rv.ItemViewHolder
 import io.core.engine.rv.RecyclerAdapter
+import io.core.other.CrashHandler
 
 class MainActivity : ReflectBindingActivity<ActivityMainBinding>() {
 
@@ -117,6 +119,7 @@ class MainActivity : ReflectBindingActivity<ActivityMainBinding>() {
                             }
                         )
                         runDelayedMain(300) {
+                            CrashHandler.register(appCtx)
                             transaction?.applyState(true)
                         }
 

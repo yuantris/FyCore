@@ -75,6 +75,11 @@ object DeviceOS {
     @JvmStatic
     val romName: Rom get() = romInfo.type
 
+    @JvmStatic
+    val marketName: String by lazy {
+        RomDetectorFactory.createDetector(brand).marketName
+    }
+
     // 快捷访问属性
     @JvmStatic
     val isHuawei: Boolean get() = brand == Brand.HUAWEI
@@ -147,6 +152,7 @@ object DeviceOS {
     }
 
     private interface RomDetectionStrategy {
+        val marketName: String
         fun detect(): SystemRomInfo
     }
 
@@ -280,7 +286,71 @@ object DeviceOS {
             const val HARMONY_DISPLAY_ID = "ro.huawei.build.display.id"
             const val HARMONY_PLATFORM_VER = "hw_sc.build.platform.version"
             const val OEM_NAME = "ro.hw.oemName"
+            const val MARKET_NAME = "ro.product.name"
+
+            /** 华为市场名称映射 */
+            val huaweiMarketNameMap: HashMap<String, String> = hashMapOf(
+                // Mate系列
+                "ALP-AL00" to "HUAWEI Mate 10",
+                "BLA-AL00" to "HUAWEI Mate 10 Pro",
+                "LYA-AL00" to "HUAWEI Mate 20 Pro",
+                "EVR-AN00" to "HUAWEI Mate 20 X 5G",
+                "TAH-AN00" to "HUAWEI Mate X",
+                "TAS-AN00" to "HUAWEI Mate 30 5G",
+                "TAS-AL00" to "HUAWEI Mate 30",
+                "LIO-AN00" to "HUAWEI Mate 30 Pro 5G",
+                "OCE-AN00" to "HUAWEI Mate 40",
+                "NOH-AN00" to "HUAWEI Mate 40 Pro",
+                "NOP-AN00" to "HUAWEI Mate 40 Pro+",
+                "TET-AN00" to "HUAWEI Mate X2",
+                "PAL-AL00" to "HUAWEI Mate Xs 2",
+                "ALT-AL00" to "HUAWEI Mate X3",
+                "ALN-AL00" to "HUAWEI Mate 60 Pro",
+                "BRA-AL00" to "HUAWEI Mate 60",
+                "ALN-AL10" to "HUAWEI Mate 60 Pro+",
+                "CLS-AL00" to "HUAWEI Mate 70",
+                "PLR-AL00" to "HUAWEI Mate 70 Pro",
+                "PLA-AL10" to "HUAWEI Mate 70 Pro+",
+
+                // P/Pura系列
+                "ELS-AN00" to "HUAWEI P40 Pro",
+                "BAL-AL00" to "HUAWEI P50 Pocket",
+                "JAD-AL00" to "HUAWEI P50 Pro",
+                "LNA-AL00" to "HUAWEI P60",
+                "MNA-AL00" to "HUAWEI P60 Pro",
+                "ADY-AL00" to "HUAWEI Pura 70",
+                "HBN-AL00" to "HUAWEI Pura 70 Pro",
+                "HBN-AL10" to "HUAWEI Pura 70 Pro+",
+                "HBP-AL00" to "HUAWEI Pura 70 Ultra",
+
+                // Pocket折叠屏系列
+                "BAL-AL60" to "HUAWEI Pocket S",
+                "LEM-AL00" to "HUAWEI Pocket 2",
+
+                // Nova系列
+                "WAS-AL00" to "HUAWEI Nova 青春版",
+                "PAR-AL00" to "HUAWEI Nova 3",
+                "SEA-AL00" to "HUAWEI Nova 5",
+                "WLZ-AL10" to "HUAWEI Nova 6",
+                "NAM-AL00" to "HUAWEI Nova 9",
+                "NOC-AL00" to "HUAWEI Nova 10",
+                "FOA-AL00" to "HUAWEI Nova 11",
+                "PSD-AL00" to "HUAWEI Nova 12",
+
+                // 麦芒系列
+                "RNE-AL00" to "HUAWEI 麦芒6",
+                "SNE-AL00" to "HUAWEI 麦芒7",
+                "POT-AL00" to "HUAWEI 麦芒8",
+
+                // 特殊型号
+                "CRR-UL00" to "HUAWEI Mate S",
+                "MHA-AL00" to "HUAWEI Mate 9"
+            )
         }
+
+        override val marketName: String
+            get() = HuaweiProps.huaweiMarketNameMap[getSystemProperty(HuaweiProps.MARKET_NAME)]
+                ?: "${brand.name} ${getSystemProperty(HuaweiProps.MARKET_NAME)}"
 
         override fun detect(): SystemRomInfo {
             return when {
@@ -337,7 +407,11 @@ object DeviceOS {
             const val HYPER_VERSION_NAME = "ro.mi.os.version.name"
             const val HYPER_VERSION_INC = "ro.mi.os.version.incremental"
             const val HYPER_VERSION_CODE = "ro.mi.os.version.code"
+            const val MARKET_NAME = "ro.product.marketname"
         }
+
+        override val marketName: String
+            get() = getSystemProperty(XiaomiProps.MARKET_NAME)
 
         override fun detect(): SystemRomInfo {
             val versionName = getSystemProperty(XiaomiProps.MIUI_VERSION_NAME, "")
@@ -368,7 +442,6 @@ object DeviceOS {
                     )
                 }
 
-
                 else -> defaultAndroidInfo()
             }
         }
@@ -381,7 +454,11 @@ object DeviceOS {
             const val OPPO_VERSION_CODE = "ro.build.version.oplusrom"
             const val OPPO_VERSION_NAME = "ro.build.display.id"
             const val OPPO_BRAND = "ro.oplus.image.system_ext.brand"
+            const val MARKET_NAME = "ro.vendor.oplus.market.name"
         }
+
+        override val marketName: String
+            get() = getSystemProperty(OppoProps.MARKET_NAME)
 
         override fun detect(): SystemRomInfo {
             return if (hasSystemProperty(OppoProps.OPPO_BRAND)) {
@@ -408,7 +485,11 @@ object DeviceOS {
             const val VIVO_ORIGIN_OS = "ro.vivo.os.build.display.id"
             const val VIVO_VERSION_CODE_INC = "ro.vivo.product.version.incremental"
             const val VIVO_VERSION_CODE = "ro.vendor.vivo.product.version"
+            const val MARKET_NAME = "ro.vivo.market.name"
         }
+
+        override val marketName: String
+            get() = getSystemProperty(VivoProps.MARKET_NAME)
 
         override fun detect(): SystemRomInfo {
             val isOriginOS = hasSystemProperty(VivoProps.VIVO_ORIGIN_OS)
@@ -442,6 +523,9 @@ object DeviceOS {
             const val ONEUI_GSM_NAME = "gsm.version.baseband"
         }
 
+        override val marketName: String
+            get() = ""
+
         override fun detect(): SystemRomInfo {
             return if (hasSystemProperty(SamsungProps.ONEUI_VERSION)) {
                 val version =
@@ -466,6 +550,9 @@ object DeviceOS {
             const val HONOR_MAGIC_VERSION_NAME = "mscw.hnouc.patch.display.version"
             const val HONOR_MAGIC_VERSION_CODE = "msc.config.magic.version"
         }
+
+        override val marketName: String
+            get() = ""
 
         override fun detect(): SystemRomInfo {
             return if (hasSystemProperty("ro.horizon.version")) {
@@ -493,6 +580,10 @@ object DeviceOS {
 
     /** 魅族Rom检测 */
     private class MeizuRomDetector : RomDetectionStrategy {
+
+        override val marketName: String
+            get() = ""
+
         override fun detect(): SystemRomInfo {
             return if (hasSystemProperty("ro.build.flyme.version")) {
                 SystemRomInfo(
@@ -513,7 +604,12 @@ object DeviceOS {
             const val ONEPLUS_VERSION = "ro.build.version.oplusrom"
             const val ONEPLUS_VERSION_DISPLAY = "ro.build.version.oplusrom.display"
             const val ONEPLUS_OTA_DISPLAY = "persist.sys.oplus.ota_ver_display"
+            const val MARKET_NAME_CN = "ro.vendor.oplus.market.name"
+            const val MARKET_NAME_EN = "ro.vendor.oplus.market.enname"
         }
+
+        override val marketName: String
+            get() = getSystemProperty(OnePlusProps.MARKET_NAME_EN)
 
         override fun detect(): SystemRomInfo {
             return if (hasSystemProperty(OnePlusProps.ONEPLUS_VERSION_DISPLAY)) {
@@ -536,7 +632,12 @@ object DeviceOS {
         object RealmeProps {
             const val REALME_VERSION = "ro.build.version.realmeui"
             const val REALME_VERSION_NAME = "ro.build.display.id"
+            const val MARKET_NAME_CN = "ro.vendor.oplus.market.name"
+            const val MARKET_NAME_EN = "ro.vendor.oplus.market.enname"
         }
+
+        override val marketName: String
+            get() = getSystemProperty(RealmeProps.MARKET_NAME_EN)
 
         override fun detect(): SystemRomInfo {
             return if (hasSystemProperty(RealmeProps.REALME_VERSION)) {
@@ -560,7 +661,11 @@ object DeviceOS {
             const val IQOO_VERSION = "ro.vivo.os.version"
             const val IQOO_ORIGIN_OS = "ro.vivo.os.build.display.id"
             const val IQOO_VERSION_CODE_INC = "ro.vivo.product.version.incremental"
+            const val MARKET_NAME = "ro.vivo.market.name"
         }
+
+        override val marketName: String
+            get() = getSystemProperty(IQOOProps.MARKET_NAME)
 
         override fun detect(): SystemRomInfo {
             return if (hasSystemProperty(IQOOProps.IQOO_ORIGIN_OS)) {
@@ -578,6 +683,10 @@ object DeviceOS {
 
     /** 默认Android UI检测器 */
     private class DefaultAndroidUIDetector : RomDetectionStrategy {
+
+        override val marketName: String
+            get() = "Android Phone"
+
         override fun detect() = defaultAndroidInfo()
     }
 

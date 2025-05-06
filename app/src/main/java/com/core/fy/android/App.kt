@@ -46,7 +46,7 @@ class App : Application() {
             enable(CoreConfig.Environment.isDebug)
             brief(true)
         }
-        CrashHandler.startCheckHandler()
+        CrashHandler.startPeriodicTask()
         StorageFactory.initialize {
             type = StorageType.MMKV
             mmkvMode = MMKV.MULTI_PROCESS_MODE

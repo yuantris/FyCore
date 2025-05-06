@@ -6,7 +6,6 @@ import android.content.SharedPreferences
 import android.os.Build
 import android.os.Debug
 import android.os.Process
-import android.util.Log
 import android.webkit.WebSettings
 import androidx.lifecycle.LifecycleCoroutineScope
 import io.core.Android
@@ -16,7 +15,7 @@ import io.core.common.base.component.activity.CrashActivity
 import io.core.common.base.component.activity.CrashSameProcessActivity
 import io.core.common.base.component.activity.RestartActivity
 import io.core.common.base.interfaces.OnNextStepCallback
-import io.core.common.helper.coroutine.info.GlobalCoroutine
+import io.core.common.helper.coroutine.info.LoopEngine
 import io.core.common.helper.track.AppTrackV2
 import io.core.common.util.extensions.cool.PathType
 import io.core.common.util.extensions.cool.createFolderReplace
@@ -27,12 +26,14 @@ import io.core.common.util.extensions.cool.hasWriteStoragePermission
 import io.core.common.util.extensions.cool.ifNext
 import io.core.common.util.extensions.cool.timeFormat
 import io.core.common.util.extensions.currentTimeMillis
+import io.core.common.util.log.LogPure
 import io.core.common.util.tools.FileTools
+import io.core.common.util.tools.androidApiVersion
+import io.core.common.util.tools.androidVersion
 import io.core.constant.CRASH_FOLDER_NAME
+import io.core.constant.DeviceOS
 import io.core.constant.TimePatterns
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.PrintWriter
@@ -44,55 +45,69 @@ import kotlin.system.exitProcess
 class CrashHandler private constructor(
     private val application: Application,
     private val nextHandler: Thread.UncaughtExceptionHandler?
-) :
-    Thread.UncaughtExceptionHandler {
+) : Thread.UncaughtExceptionHandler {
 
     companion object {
+        const val TAG: String = "CrashHandler"
         const val DIVIDER: String = "--------------------------"
 
         /** Crash 文件名 */
-        const val CRASH_FILE_NAME: String = "crash_file"
+        const val CRASH_FILE_NAME: String = "fy_crash_file"
 
         /** Crash 时间记录 */
         const val KEY_CRASH_TIME: String = "key_crash_time"
+
+        /** 循环引擎 */
+        @Volatile
+        private var loopEngine: LoopEngine? = null
 
         /**
          * 注册 Crash 监听
          */
         fun register(application: Application) {
             val current = Thread.getDefaultUncaughtExceptionHandler()
-            if (current is CrashHandler) return // 防止重复注册
-
+            if (current is CrashHandler) throw IllegalStateException("are you ok?")
             val handler = CrashHandler(application, current)
             Thread.setDefaultUncaughtExceptionHandler(handler)
         }
 
         /**
          * 启动定时检查默认异常处理器的服务
-         * @param intervalMillis 检查间隔时间(毫秒)，默认10000
+         * @param intervalMillis 检查间隔时间(毫秒)，默认10_000
          */
         @JvmStatic
         @JvmOverloads
-        fun startCheckHandler(
-            intervalMillis: Long = 10000
-        ) {
-            GlobalCoroutine.launch(Dispatchers.IO) {
-                while (isActive) {
+        fun startPeriodicTask(intervalMillis: Long = 10_000) {
+            if (loopEngine?.isRunning() == true) return
+            loopEngine = LoopEngine.Builder().interval(intervalMillis)
+                .onStart { LogPure.d(TAG, "CheckHandler PeriodicTask start") }
+                .onStop { LogPure.d(TAG, "CheckHandler PeriodicTask stop") }
+                .onError {
+                    LogPure.e(TAG, "CheckHandler PeriodicTask error: ${it.message}")
+                    return@onError false
+                }
+                .task {
                     val current = Thread.getDefaultUncaughtExceptionHandler()
                     if (current !is CrashHandler) {
+                        val name = current.javaClass.name
                         withContext(Dispatchers.Main) {
                             register(appCtx)
-                            Log.w("CrashHandler", "检测到默认异常处理器被修改，已重新注册")
+                            LogPure.w(TAG, "检测到默认异常处理器被${name}修改，已重新注册")
                         }
                     }
-                    delay(intervalMillis)
-                }
-            }
+                }.build()
+            loopEngine?.start()
         }
 
         @JvmStatic
         @JvmOverloads
-        fun checkLatestCrash(scope: LifecycleCoroutineScope, action: OnNextStepCallback? = null) {
+        fun checkLatestCrash(
+            scope: LifecycleCoroutineScope,
+            startDefaultCheckTask: Boolean = false,
+            intervalMillis: Long = 10_000,
+            action: OnNextStepCallback? = null
+        ) {
+            if (startDefaultCheckTask) startPeriodicTask(intervalMillis)
             if (!CoreConfig.Crash.allowMultiProcess && Android.debug) {
                 val millis = System.currentTimeMillis()
                 val preferences = appCtx.getSharedPreferences(CRASH_FILE_NAME, Context.MODE_PRIVATE)
@@ -143,22 +158,24 @@ class CrashHandler private constructor(
          * 存储异常和参数信息
          */
         private val paramsMap by lazy {
-            val map = HashMap<String, String>()
-            kotlin.runCatching {
+            val map = LinkedHashMap<String, String>()
+            runCatching {
                 //获取系统信息
                 map["MANUFACTURER"] = Build.MANUFACTURER
                 map["BRAND"] = Build.BRAND
                 map["MODEL"] = Build.MODEL
-                map["SDK_INT"] = Build.VERSION.SDK_INT.toString()
-                map["RELEASE"] = Build.VERSION.RELEASE
+                map["MARKET"] = DeviceOS.marketName
+                map["SDK_INT"] = androidApiVersion.toString()
+                map["RELEASE"] = androidVersion
+                map["DEVICE_OS"] = DeviceOS.romInfo.toString()
+                map["PACKAGE_NAME"] = appCtx.packageName
+                map["CURRENT_ACTIVITY"] =
+                    AppTrackV2.getTopActivity()?.javaClass?.name ?: "none"
                 map["WebViewUserAgent"] = try {
                     WebSettings.getDefaultUserAgent(appCtx)
                 } catch (e: Throwable) {
                     e.toString()
                 }
-                map["PACKAGE_NAME"] = appCtx.packageName
-                map["CURRENT_ACTIVITY"] =
-                    AppTrackV2.getTopActivity()?.javaClass?.name ?: "none"
             }
             map
         }
@@ -187,7 +204,7 @@ class CrashHandler private constructor(
             val fileName = "crash-${timestamp.timeFormat(TimePatterns.LOG_TIMESTAMP_LINE)}.log"
             val fileNameExternal =
                 "crash-${timestamp.timeFormat(TimePatterns.FILE_SAFE_TIMESTAMP)}.log"
-            kotlin.runCatching {
+            runCatching {
                 appCtx.externalCacheDir?.let { rootFile ->
                     val exceedTimeMillis = currentTimeMillis - TimeUnit.DAYS.toMillis(7)
                     rootFile.getFile(CRASH_FOLDER_NAME).listFiles()?.forEach {
@@ -236,7 +253,6 @@ class CrashHandler private constructor(
         }
     }
 
-    @Suppress("ApplySharedPref")
     override fun uncaughtException(thread: Thread, throwable: Throwable) {
         val sharedPreferences: SharedPreferences = application.getSharedPreferences(
             CRASH_FILE_NAME, Context.MODE_PRIVATE
@@ -244,7 +260,7 @@ class CrashHandler private constructor(
         val currentCrashTime: Long = currentTimeMillis
         val lastCrashTime: Long = sharedPreferences.getLong(KEY_CRASH_TIME, 0)
         // 记录当前崩溃的时间，以便下次崩溃时进行比对
-        sharedPreferences.edit().putLong(KEY_CRASH_TIME, currentCrashTime).commit()
+        sharedPreferences.edit().putLong(KEY_CRASH_TIME, currentCrashTime).apply()
 
         // 保存崩溃信息
         val fileName = saveCrashInfo2File(currentTimeMillis, throwable)
