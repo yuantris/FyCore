@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 import com.blankj.utilcode.util.GsonUtils;
 import com.core.fy.android.databinding.FragmentJavaBinding;
 import com.core.fy.android.function.TestPageActivity;
+import com.core.fy.android.help.ProgressNotifier;
 import com.core.fy.android.util.SafeJson;
 
 import java.util.ArrayList;
@@ -33,6 +34,9 @@ import io.core.common.util.tools.CollectionTools;
 import io.core.common.util.tools.ThreadUltra;
 import io.core.common.util.tools.UriTools;
 import io.core.other.LiveDataPro;
+import kotlin.Unit;
+import kotlin.jvm.functions.Function1;
+import kotlin.jvm.functions.Function2;
 
 public class JavaFragment extends ReflectBindingFragmentV2<FragmentJavaBinding> {
 
@@ -98,6 +102,13 @@ public class JavaFragment extends ReflectBindingFragmentV2<FragmentJavaBinding> 
         String formatted = JsonUltra.format("{\"key\": \"{\\\"nested\\\": 123}\"}");
         LogCat.e(formatted);
 
+
+        String task = ProgressNotifier.startTask(100, 5000L, taskId -> {
+
+        });
+        ProgressNotifier.register((taskId, percent) -> {
+
+        });
     }
 
     @Override

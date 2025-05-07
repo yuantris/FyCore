@@ -17,7 +17,7 @@ import io.core.common.helper.valid.excludeHiddenFiles
 import io.core.common.helper.valid.hasExtension
 import io.core.common.helper.valid.maxSize
 import io.core.common.util.extensions.cool.coolThread
-import io.core.common.util.extensions.cool.launchAsync
+import io.core.common.util.extensions.cool.launch
 import io.core.common.util.extensions.cool.timeFormat
 import io.core.common.util.extensions.currentTimeMillis
 import io.core.common.util.extensions.logD
@@ -68,7 +68,7 @@ class SetFragment : ReflectBindingFragment<FragmentSetBinding, MainActivity>() {
 
         // 网络监听
         val monitor = NetworkMonitor.get()
-        launchAsync {
+        launch {
             monitor.networkState.collect { state ->
                 when (state) {
                     is NetworkState.Connected -> {

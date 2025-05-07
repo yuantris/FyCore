@@ -182,7 +182,7 @@ object TimeTools {
      */
     @JvmStatic
     @JvmOverloads
-    fun string2Millis(time: String, pattern: String = TimePatterns.DATE_DASHES): Long {
+    fun string2Millis(time: String, pattern: String = TimePatterns.DATE_YMD): Long {
         try {
             return getDateFormat(pattern).parse(time)?.time ?: -1
         } catch (e: ParseException) {
@@ -212,7 +212,7 @@ object TimeTools {
         return when {
             isToday(timestamp) -> "今天 ${getDateFormat("HH:mm").format(timestamp)}"
             isYesterday(timestamp) -> "昨天 ${getDateFormat("HH:mm").format(timestamp)}"
-            else -> getDateFormat(TimePatterns.DATE_DASHES).format(timestamp)
+            else -> getDateFormat(TimePatterns.DATE_YMD).format(timestamp)
         }
     }
 

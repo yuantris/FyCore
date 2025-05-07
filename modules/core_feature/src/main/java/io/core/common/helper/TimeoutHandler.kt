@@ -1,6 +1,10 @@
 package io.core.common.helper
 
+import android.os.Handler
+import android.os.HandlerThread
+import android.os.Looper
 import io.core.common.util.extensions.cool.HandlerGT
+import io.core.common.util.tools.buildMainHandler
 import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.concurrent.atomic.AtomicInteger
 import java.util.concurrent.atomic.AtomicReference
@@ -19,14 +23,15 @@ class TimeoutHandler @JvmOverloads constructor(
     private val maxRetries: Int = -1, // -1 表示无限制
 ) {
     private val lock = Any()
-    private val handler = HandlerGT.main
+    private val handlerThread = HandlerThread("TimeoutHandler").apply { start() }
+    private val handler = Handler(handlerThread.looper)
     private val retryCount = AtomicInteger(0)
 
     private val timeoutRunnable = RunnablePool.obtain {
         synchronized(lock) {
             if (state.getAndSet(State.TRIGGERED) == State.ACTIVE) {
                 logger?.invoke("Timeout triggered (reason: ${reason.get()})")
-                timeoutCallback.onTimeout(reason.get())
+                HandlerGT.main.post { timeoutCallback.onTimeout(reason.get()) }
             }
         }
     }
@@ -78,7 +83,7 @@ class TimeoutHandler @JvmOverloads constructor(
             if (state.getAndSet(State.TRIGGERED) == State.ACTIVE) {
                 handler.removeCallbacks(timeoutRunnable)
                 logger?.invoke("Timeout manually triggered (reason: $reason)")
-                timeoutCallback.onTimeout(reason)
+                HandlerGT.main.post { timeoutCallback.onTimeout(reason) }
             }
         }
     }

@@ -10,9 +10,12 @@ import io.core.common.base.component.fragment.ReflectBindingFragment
 import io.core.common.helper.JsonUltra
 import io.core.common.helper.TimeoutCallback
 import io.core.common.helper.TimeoutHandler
+import io.core.common.helper.coroutine.info.GlobalCoroutine
+import io.core.common.helper.coroutine.info.LoopEngine
 import io.core.common.helper.jetpack.SingleLiveData
 import io.core.common.helper.track.AppTrackV2
 import io.core.common.helper.track.FragmentVisibilityDetectorV2
+import io.core.common.util.Toaster
 import io.core.common.util.concurrent.Concurrency
 import io.core.common.util.concurrent.TaskExecutor
 import io.core.common.util.extensions.cool.GSON
@@ -20,11 +23,12 @@ import io.core.common.util.extensions.cool.PathType
 import io.core.common.util.extensions.cool.createMap
 import io.core.common.util.extensions.cool.getSettingsPathV2
 import io.core.common.util.extensions.cool.joinPath
-import io.core.common.util.extensions.cool.launchAsync
+import io.core.common.util.extensions.cool.launch
 import io.core.common.util.extensions.cool.mapBuilder
 import io.core.common.util.extensions.cool.requestPermission
 import io.core.common.util.extensions.cool.runDelayedMain
 import io.core.common.util.extensions.cool.runMain
+import io.core.common.util.extensions.cool.withMain
 import io.core.common.util.extensions.logD
 import io.core.common.util.extensions.simpleName
 import io.core.common.util.extensions.ui.ctx
@@ -42,11 +46,12 @@ import kotlin.collections.set
 class KotlinFragment : ReflectBindingFragment<FragmentKotlinBinding, TestPageActivity>() {
 
     private val _data = SingleLiveData<String>()
+    private var _count = 0
 
     override fun initView() {
         super.initView()
 
-        FragmentVisibilityDetectorV2.attachToFragment(this){ isVisible->
+        FragmentVisibilityDetectorV2.attachToFragment(this) { isVisible ->
 
         }
 
@@ -130,10 +135,9 @@ class KotlinFragment : ReflectBindingFragment<FragmentKotlinBinding, TestPageAct
                 }
             }
         )
+        var fixedRateCount = 0
         val fixedRate = Concurrency.scheduleAtFixedRate({
-//            LogPure.w {
-//                "scheduleAtFixedRate"
-//            }
+            fixedRateCount++
             timeoutHandler.resetTimeout()
         }, 0, 2000, TimeUnit.MILLISECONDS)
         runDelayedMain(16000) {
@@ -141,7 +145,7 @@ class KotlinFragment : ReflectBindingFragment<FragmentKotlinBinding, TestPageAct
         }
 
 
-        launchAsync {
+        launch {
             val listFiles =
                 FileTools.listFiles(ctx.getSettingsPathV2(PathType.EXTERNAL_CACHE, "mmkv_fy"))
             listFiles.forEach {
@@ -156,25 +160,50 @@ class KotlinFragment : ReflectBindingFragment<FragmentKotlinBinding, TestPageAct
         }
 
         joinPath("a", "b", "c").logD()
-        runMain {
-
-        }
     }
 
     override fun initData() {
         super.initData()
         // 注册监听器
         ProgressNotifier.register { id, progress ->
-            // LogPure.i { "id:$id\nprogress: $progress%" }
+            LogPure.i { "id:$id\nprogress: $progress%" }
         }
 
+        val engine = LoopEngine.Builder()
+            .interval(1_000)
+            .onStart { Toaster.show("LoopEngine start") }
+            .onStop { Toaster.show("LoopEngine stop") }
+            .task {
+                _count++
+                withMain {
+                    binding.tv.text = "count:$_count"
+                }
+            }
+            .build()
+
+        with(binding) {
+            btnStart.onClick {
+                engine.start()
+            }
+            btnPause.onClick {
+                engine.pause()
+            }
+            btnResume.onClick {
+                engine.resume()
+            }
+            btnStop.onClick {
+                engine.stop()
+
+                LogPure.e { "isRunning:${engine.isRunning()}" }
+            }
+        }
     }
 
 
     override fun onFragmentResume(first: Boolean) {
         super.onFragmentResume(first)
 
-        lifecycleScope.launch {
+        GlobalCoroutine.launch {
             val totalSteps = 24
             val taskId = ProgressNotifier.startTask(totalSteps)
 
@@ -193,7 +222,7 @@ class KotlinFragment : ReflectBindingFragment<FragmentKotlinBinding, TestPageAct
                 "video1"
             },
         )
-        launchAsync {
+        launch {
             TaskExecutor.get().executeConcurrent(
                 tasks,
                 onComplete = {

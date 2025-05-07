@@ -5,6 +5,7 @@ import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.Runnable
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.delay
@@ -25,6 +26,8 @@ class LoopEngine private constructor(
 ) {
     private val job: AtomicReference<Job?> = AtomicReference(null)
     private val isRunning = AtomicBoolean(false)
+    private val isPaused = AtomicBoolean(false)
+    private val pauseTime = AtomicReference<Long>(0L)
 
     // 使用独立的作用域控制生命周期
     private val processorScope = CoroutineScope(
@@ -70,10 +73,14 @@ class LoopEngine private constructor(
                 delay(config.initialDelayMs)
                 while (isActive) {
                     try {
+                        if (isPaused.get()) {
+                            delay(100) // 暂停时减少CPU使用
+                            continue
+                        }
                         config.block()
                         delay(config.intervalMs)
                     } catch (e: CancellationException) {
-                        break // 正常退出
+                        return@launch // 正常退出
                     } catch (e: Exception) {
                         val shouldContinue = config.onError?.let {
                             withContext(config.dispatcherForCallbacks) { it(e) }
@@ -84,12 +91,39 @@ class LoopEngine private constructor(
                     }
                 }
             } finally {
-                withContext(config.dispatcherForCallbacks) {
-                    config.onStop?.invoke()
+                withContext(NonCancellable){
+                    withContext(config.dispatcherForCallbacks) {
+                        config.onStop?.invoke()
+                    }
+                    isRunning.set(false)
+                    isPaused.set(false)
                 }
-                isRunning.set(false)
+
             }
         })
+    }
+
+    /**
+     * 暂停循环处理器
+     */
+    fun pause() {
+        if (isRunning.get() && !isPaused.get()) {
+            isPaused.set(true)
+            pauseTime.set(System.currentTimeMillis())
+        }
+    }
+
+    /**
+     * 继续循环处理器
+     */
+    fun resume() {
+        if (isRunning.get() && isPaused.get()) {
+            val pausedDuration = System.currentTimeMillis() - pauseTime.get()
+            processorScope.launch {
+                delay(pausedDuration.coerceAtLeast(0))
+                isPaused.set(false)
+            }
+        }
     }
 
     /**
@@ -106,6 +140,12 @@ class LoopEngine private constructor(
      * @return Boolean
      */
     fun isRunning(): Boolean = isRunning.get()
+
+    /**
+     * 获取当前是否处于暂停状态
+     * @return Boolean
+     */
+    fun isPaused(): Boolean = isPaused.get()
 
     /**
      * LoopProcessor构建器

@@ -20,6 +20,7 @@ import io.core.common.base.component.fragment.BaseFragment
 import io.core.common.helper.StateTransactionHelper
 import io.core.common.helper.StatusBarManager
 import io.core.common.util.MediaScanner
+import io.core.common.util.extensions.cool.launch
 import io.core.common.util.extensions.cool.launchAsync
 import io.core.common.util.extensions.cool.runDelayedMain
 import io.core.common.util.extensions.currentTimeMillis
@@ -32,10 +33,12 @@ import io.core.common.util.extensions.ui.onClick
 import io.core.common.util.extensions.ui.setLightStatusBar
 import io.core.common.util.processNavigationBar
 import io.core.common.util.tools.TimeTools
+import io.core.constant.TimePatterns
 import io.core.engine.dialogs.showDialog
 import io.core.engine.rv.ItemViewHolder
 import io.core.engine.rv.RecyclerAdapter
 import io.core.other.CrashHandler
+import kotlinx.coroutines.Dispatchers
 
 class MainActivity : ReflectBindingActivity<ActivityMainBinding>() {
 
@@ -45,7 +48,7 @@ class MainActivity : ReflectBindingActivity<ActivityMainBinding>() {
     override fun initial(savedInstanceState: Bundle?) {
         setTakeOverBackPressed(true)
         super.initial(savedInstanceState)
-        launchAsync {
+        launch(Dispatchers.IO) {
             MediaScanner.registerContentObserver(listOf(MediaScanner.MediaFileType.MP4))
         }
 
@@ -80,7 +83,7 @@ class MainActivity : ReflectBindingActivity<ActivityMainBinding>() {
             }
         }
 
-        val string2Millis = TimeTools.string2Millis("2021-11-10", "yyyy-MM-dd")
+        val string2Millis = TimeTools.string2Millis("2021-11-10", TimePatterns.DATE_YMD)
         TimeTools.daysBetween(string2Millis, currentTimeMillis).logD()
 
     }
@@ -119,7 +122,6 @@ class MainActivity : ReflectBindingActivity<ActivityMainBinding>() {
                             }
                         )
                         runDelayedMain(300) {
-                            CrashHandler.register(appCtx)
                             transaction?.applyState(true)
                         }
 

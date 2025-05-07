@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.core.view.isVisible
 import com.core.fy.android.databinding.ActivityVisibilityBinding
 import io.core.common.base.component.activity.ReflectBindingActivity
-import io.core.common.util.extensions.cool.launchSync
+import io.core.common.util.extensions.cool.launch
 import io.core.common.util.extensions.cool.runDelayedMain
 import io.core.common.util.extensions.ui.hide
 import io.core.common.util.extensions.ui.onDebouncedClick
@@ -50,7 +50,7 @@ class VisibilityActivity : ReflectBindingActivity<ActivityVisibilityBinding>() {
             onDebouncedClick {
                 if (isVisible) {
                     hide()
-                    launchSync {
+                    launch {
                         delay(1000)
                         show()
                     }

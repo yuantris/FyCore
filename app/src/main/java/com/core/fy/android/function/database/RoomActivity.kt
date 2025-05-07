@@ -12,8 +12,7 @@ import io.core.common.base.component.activity.ReflectBindingActivity
 import io.core.common.base.vm.ViewStatus
 import io.core.common.util.CoreUtil
 import io.core.common.util.Toaster
-import io.core.common.util.extensions.cool.launchAsync
-import io.core.common.util.extensions.cool.launchSync
+import io.core.common.util.extensions.cool.launch
 import io.core.common.util.extensions.logD
 import io.core.common.util.extensions.logE
 import io.core.common.util.extensions.logI
@@ -33,7 +32,7 @@ class RoomActivity : ReflectBindingActivity<ActivityRoomBinding>() {
             "查询到：${it?.name}，details：${it?.age}".logW()
         }
 
-        launchSync {
+        launch {
             userVM.getUserAsync(1).let {
                 "查询到：${it?.name}，details：${it?.age}".logD()
 
@@ -58,7 +57,7 @@ class RoomActivity : ReflectBindingActivity<ActivityRoomBinding>() {
         super.setListener()
         binding.apply {
             add.setOnClickListener {
-                launchAsync {
+                launch {
                     val user = User(name = name.text.toString(), age = age.text.toString().toInt())
                     val insert = userVM.insert(user)
                     Toaster.show("插入成功")
@@ -66,7 +65,7 @@ class RoomActivity : ReflectBindingActivity<ActivityRoomBinding>() {
             }
 
             del.setOnClickListener {
-                launchAsync {
+                launch {
                     userVM.getAll().collect {
                         if (it.isNotEmpty()) {
                             val user = it.last()
@@ -78,7 +77,7 @@ class RoomActivity : ReflectBindingActivity<ActivityRoomBinding>() {
             }
 
             update.setOnClickListener {
-                launchAsync {
+                launch {
                     userVM.getAll().collect {
                         if (it.isNotEmpty()) {
                             val user = it.last()
@@ -100,7 +99,7 @@ class RoomActivity : ReflectBindingActivity<ActivityRoomBinding>() {
                 it.forEach { bean ->
                     "查询到ID：${bean.id}，用户：${bean.name}，年龄：${bean.age}".logD()
 
-                    launchAsync {
+                    launch {
                         bean.age = 19
                         appDb.userDao().update(bean)
                         val byNameNext = userVM.getUserAsync(bean.id)

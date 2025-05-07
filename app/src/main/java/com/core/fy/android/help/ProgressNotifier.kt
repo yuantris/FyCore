@@ -1,52 +1,94 @@
 package com.core.fy.android.help
 
+import android.os.Handler
+import android.os.Looper
+import androidx.annotation.WorkerThread
+import androidx.core.util.Pools
+import com.core.fy.android.help.ProgressNotifier.ProgressCallback
+import com.core.fy.android.help.ProgressNotifier.TimeoutCallback
+import io.core.common.util.extensions.cool.withMain
 import io.core.common.util.extensions.currentTimeMillis
 import io.core.common.util.tools.buildMainHandler
+import kotlinx.coroutines.CoroutineName
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.lang.ref.WeakReference
 import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
-import java.util.concurrent.Executors
-import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicLong
-
-// 进度回调类型（默认在主线程执行）
-typealias ProgressCallback = (taskId: String, percent: Int) -> Unit
-typealias TimeoutCallback = (taskId: String) -> Unit
 
 /**
  * 进度通知器，用于通知进度变化和超时
  */
 object ProgressNotifier {
     // 主线程Handler，用于回调到UI线程
-    private val mainHandler = buildMainHandler()
+    private val mainHandler = Handler(Looper.getMainLooper())
 
     // 自动清理配置（10分钟未更新的任务视为闲置）
     private const val MAX_IDLE_TIME_MS = 10 * 60 * 1000L
 
     // 默认线程池（用于异步通知监听器）
-    // 使用单线程池（保持常驻）
-    private val notificationExecutor = Executors.newSingleThreadExecutor()
-    private val timeoutChecker = Executors.newSingleThreadScheduledExecutor().apply {
-        scheduleAtFixedRate(::checkTimeoutsAndIdleTasks, 1, 1, TimeUnit.SECONDS)
+    private val notificationScope =
+        CoroutineScope(Dispatchers.Default + SupervisorJob() + CoroutineName("notificationScope"))
+    private val timeoutScope =
+        CoroutineScope(Dispatchers.Default + SupervisorJob() + CoroutineName("timeoutScope"))
+
+    // 添加对象池
+    private val dataPool = Pools.SynchronizedPool<ProgressData>(10)
+
+    init {
+        timeoutScope.launch {
+            while (isActive) {
+                checkTimeoutsAndIdleTasks()
+                delay(1000)
+            }
+        }
+    }
+
+    /**
+     * 进度回调接口（兼容Java调用）
+     */
+    fun interface ProgressCallback {
+        fun onProgress(taskId: String, percent: Int)
+    }
+
+    /**
+     * 超时回调接口（兼容Java调用）
+     */
+    fun interface TimeoutCallback {
+        @WorkerThread
+        fun onTimeout(taskId: String)
     }
 
     // 注册默认超时监听（可选）
-    var defaultTimeoutHandler: TimeoutCallback = { _ -> }
+    var defaultTimeoutHandler = TimeoutCallback {
+        // 默认处理：取消任务
+    }
 
     // 使用弱引用存储监听器
     private val listeners = ConcurrentHashMap<String, WeakReference<ProgressCallback>>()
     private val tasks = ConcurrentHashMap<String, ProgressData>()
 
     // 注册进度监听（自动切换到主线程）
+    @JvmStatic
     fun register(listener: ProgressCallback): String {
         val id = UUID.randomUUID().toString()
-        listeners[id] = WeakReference { taskId, percent ->
-            mainHandler.post { listener(taskId, percent) }
-        }
+        listeners[id] = WeakReference(ProgressCallback { taskId, percent ->
+            listener.onProgress(
+                taskId,
+                percent
+            )
+        })
         return id
     }
 
     // 启动新任务（增加超时参数）
+    @JvmStatic
     fun startTask(
         totalSteps: Int,
         timeoutMillis: Long? = null,
@@ -54,15 +96,14 @@ object ProgressNotifier {
     ): String {
         require(totalSteps > 0) { "Total steps must be greater than 0" }
         val taskId = UUID.randomUUID().toString()
-        tasks[taskId] = ProgressData(
-            total = totalSteps,
-            timeout = timeoutMillis?.takeIf { it > 0 },
-            onTimeout = onTimeout
-        ).apply { updateTimestamp() }
+        val data = obtainProgressData(totalSteps, timeoutMillis?.takeIf { it > 0 }, onTimeout)
+        data.updateTimestamp()
+        tasks[taskId] = data
         return taskId
     }
 
     // 更新进度（增量）
+    @JvmStatic
     fun incrementProgress(taskId: String, step: Int = 1) {
         tasks[taskId]?.let { data ->
             synchronized(data) {
@@ -77,6 +118,7 @@ object ProgressNotifier {
     }
 
     // 直接设置当前进度
+    @JvmStatic
     fun setCurrentProgress(taskId: String, current: Int) {
         tasks[taskId]?.let { data ->
             synchronized(data) {
@@ -91,12 +133,14 @@ object ProgressNotifier {
     }
 
     // 完成进度（自动补满）
+    @JvmStatic
     fun complete(taskId: String) {
         tasks[taskId]?.let { data ->
             synchronized(data) {
                 data.current = data.total
                 checkAndNotify(taskId, data)
                 tasks.remove(taskId)
+                recycleProgressData(data)
             }
         }
     }
@@ -119,6 +163,35 @@ object ProgressNotifier {
         fun updateTimestamp() {
             lastUpdate.set(currentTimeMillis)
         }
+
+        // 对象池重置方法
+        fun reset() {
+            current = 0
+            lastPercent = -1
+            lastUpdate.set(currentTimeMillis)
+        }
+    }
+
+    // 从对象池获取或创建ProgressData
+    private fun obtainProgressData(
+        total: Int,
+        timeout: Long?,
+        onTimeout: TimeoutCallback?
+    ): ProgressData {
+        val data = dataPool.acquire()
+        return if (data != null && data.total == total && data.timeout == timeout && data.onTimeout == onTimeout) {
+            data.reset()
+            data
+        } else {
+            ProgressData(total, 0, -1, timeout, AtomicLong(currentTimeMillis), onTimeout)
+        }
+    }
+
+    // 释放ProgressData到对象池
+    private fun recycleProgressData(data: ProgressData) {
+        if (!dataPool.release(data)) {
+            // 对象池已满，丢弃对象
+        }
     }
 
     // 检查并通知进度变化
@@ -132,13 +205,16 @@ object ProgressNotifier {
 
     // 异步通知所有监听器（自动清理无效监听器）
     private fun notifyListeners(taskId: String, percent: Int) {
-        notificationExecutor.execute {
-            // 清理无效监听器
-            listeners.values.removeAll { it.get() == null }
+        notificationScope.launch {
+            // 使用缓存有效监听器
+            val validListeners = listeners.values
+                .mapNotNull { it.get() }
+                .takeIf { it.isNotEmpty() } ?: return@launch
 
-            // 通知有效监听器
-            listeners.values.forEach { ref ->
-                ref.get()?.invoke(taskId, percent)
+            validListeners.forEach { callback ->
+                withContext(Dispatchers.Main) {
+                    callback.onProgress(taskId, percent)
+                }
             }
         }
     }
@@ -146,7 +222,8 @@ object ProgressNotifier {
     // 合并超时检查和闲置任务清理
     private fun checkTimeoutsAndIdleTasks() {
         val now = currentTimeMillis
-        tasks.forEach { (taskId, data) ->
+        val taskSnapshot = tasks.toMap()
+        taskSnapshot.forEach { (taskId, data) ->
             // 处理超时任务
             data.timeout?.let { timeout ->
                 if (now - data.lastUpdate.get() > timeout) {
@@ -164,10 +241,8 @@ object ProgressNotifier {
     private fun handleTaskRemoval(taskId: String, data: ProgressData, isTimeout: Boolean) {
         if (tasks.remove(taskId, data)) {
             if (isTimeout) {
-                mainHandler.post {
-                    data.onTimeout?.invoke(taskId)
-                    defaultTimeoutHandler.invoke(taskId)
-                }
+                data.onTimeout?.onTimeout(taskId)
+                defaultTimeoutHandler.onTimeout(taskId)
             }
             notifyListeners(taskId, data.percent)
         }

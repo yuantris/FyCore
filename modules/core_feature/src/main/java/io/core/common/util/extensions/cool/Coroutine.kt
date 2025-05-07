@@ -11,6 +11,7 @@ import io.core.common.util.extensions.logE
 import io.core.common.util.log.LogCat
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -21,6 +22,8 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
+import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
@@ -117,27 +120,17 @@ fun <T> LifecycleOwner.flowStart(action: suspend () -> T): Flow<T> {
     }
 }
 
-fun LifecycleOwner.launchSync(action: suspend () -> Unit) {
-    lifecycleScope.launch {
+fun LifecycleOwner.launch(
+    contextV1: CoroutineContext = EmptyCoroutineContext,
+    startV1: CoroutineStart = CoroutineStart.DEFAULT,
+    blockV1: suspend CoroutineScope.() -> Unit
+) {
+    lifecycleScope.launch(contextV1, startV1) {
         try {
-            action()
+            blockV1()
         } catch (e: CancellationException) {
             // 处理协程取消
-            LogCat.e("协程取消--Sync", tr = e)
-        } catch (e: Exception) {
-            // 处理其他异常
-            "Exception: ${e.message}".logE()
-        }
-    }
-}
-
-fun LifecycleOwner.launchAsync(action: suspend () -> Unit) {
-    lifecycleScope.launch(Dispatchers.Default) {
-        try {
-            action()
-        } catch (e: CancellationException) {
-            // 处理协程取消
-            LogCat.e("协程取消--Async")
+            LogCat.w("协程取消--lifecycleScope.launch")
         } catch (e: Exception) {
             // 处理其他异常
             "Exception: ${e.message}".logE()
@@ -189,14 +182,26 @@ fun <T> flowStart(action: suspend () -> T): Flow<T> {
     }
 }
 
-suspend fun <T> withIOContext(action: suspend () -> T): T {
+suspend fun <T> withIO(action: suspend () -> T): T {
     return withContext(Dispatchers.IO) {
         action()
     }
 }
 
-suspend fun <T> withMainContext(action: suspend () -> T): T {
+suspend fun <T> withMain(action: suspend () -> T): T {
     return withContext(Dispatchers.Main) {
+        action()
+    }
+}
+
+suspend fun <T> withDefault(action: suspend () -> T): T {
+    return withContext(Dispatchers.Default) {
+        action()
+    }
+}
+
+suspend fun <T> withUnconfined(action: suspend () -> T): T {
+    return withContext(Dispatchers.Unconfined) {
         action()
     }
 }
