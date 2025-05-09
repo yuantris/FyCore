@@ -28,6 +28,22 @@ object TimeTools {
         return getDateFormat(pattern).format(currentTimeMillis)
     }
 
+    /**
+     * 获取相对于当前日期的日期字符串
+     * @param daysOffset 天数偏移量（正数表示往后推，负数表示往前推）
+     * @param pattern 日期格式（默认yyyy-MM-dd）
+     * @return 格式化后的日期字符串
+     */
+    @JvmStatic
+    @JvmOverloads
+    fun getDateString(daysOffset: Int, pattern: String = TimePatterns.DATE_YMD): String {
+        val calendar = Calendar.getInstance().apply {
+            add(Calendar.DAY_OF_YEAR, daysOffset)
+        }
+        return getDateFormat(pattern).format(calendar.timeInMillis)
+    }
+
+
     @JvmStatic
     fun getStartOfDay(): Long {
         val calendar = Calendar.getInstance().apply {

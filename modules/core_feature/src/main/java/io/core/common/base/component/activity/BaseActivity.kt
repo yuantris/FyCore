@@ -1,5 +1,6 @@
 package io.core.common.base.component.activity
 
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
@@ -13,6 +14,7 @@ import io.core.common.base.action.TitleBarAction
 import io.core.common.util.DiveGestureLine
 import io.core.common.util.extensions.addCallback
 import io.core.common.util.extensions.ui.BarColor
+import io.core.common.util.extensions.ui.ScreenOrientation
 import io.core.common.util.extensions.ui.adaptStatusBarToView
 import io.core.constant.DeviceOS
 import io.core.widget.layout.TitleBar
@@ -29,7 +31,11 @@ abstract class BaseActivity : AppCompatActivity(), TitleBarAction, BundleAction 
     /** 是否接管返回键 */
     private var isTakeOverBackPressed = false
 
+    /** 是否启用横竖屏方向锁定*/
+    var isLockOrientation = true
+
     override fun onCreate(savedInstanceState: Bundle?) {
+        configOrientation()
         super.onCreate(savedInstanceState)
         setContentView(contentViewBind())
         initial(savedInstanceState)
@@ -110,6 +116,10 @@ abstract class BaseActivity : AppCompatActivity(), TitleBarAction, BundleAction 
         return BarColor.BLACK // 根据实际情况返回 BarColor.BLACK 或 BarColor.WHITE
     }
 
+    protected open fun getLockOrientation(): ScreenOrientation {
+        return ScreenOrientation.VERTICAL // 根据实际情况返回
+    }
+
     // 定义针对不同设备的适配逻辑，默认实现
     protected open var xiaomiAdapt: (Window) -> Unit = { window ->
         DiveGestureLine.adaptXiaomi(window)
@@ -117,6 +127,7 @@ abstract class BaseActivity : AppCompatActivity(), TitleBarAction, BundleAction 
     protected open var huaweiAdapt: (Window) -> Unit = { window ->
     }
     protected open var oppoAdapt: (Window) -> Unit = { window ->
+        DiveGestureLine.adaptOPPO(window)
     }
     protected open var vivoAdapt: (Window) -> Unit = { window ->
     }
@@ -142,4 +153,11 @@ abstract class BaseActivity : AppCompatActivity(), TitleBarAction, BundleAction 
         return intent.extras
     }
 
+    private fun configOrientation() {
+        if (isLockOrientation) {
+            requestedOrientation = if (getLockOrientation() == ScreenOrientation.VERTICAL) {
+                ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+            } else ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+        }
+    }
 }

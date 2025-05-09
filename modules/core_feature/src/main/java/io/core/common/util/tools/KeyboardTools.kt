@@ -160,7 +160,7 @@ object KeyboardTools {
         Log.d(TAG, "getDecorViewInvisibleHeight: $delta")
 
         return when {
-            delta <= getNavBarHeight() + getStatusBarHeight() -> {
+            delta <= SizeTools.getNavigationBarHeight() + SizeTools.getStatusBarHeight() -> {
                 sDecorViewDelta = delta
                 0
             }
@@ -216,7 +216,7 @@ object KeyboardTools {
             Log.d(TAG, "getContentViewInvisibleHeight: $delta")
 
             when {
-                delta <= getStatusBarHeight() + getNavBarHeight() -> 0
+                delta <= SizeTools.getStatusBarHeight() + SizeTools.getNavigationBarHeight() -> 0
                 else -> delta
             }
         } ?: 0
@@ -259,19 +259,4 @@ object KeyboardTools {
         }
     }
 
-    @SuppressLint("DiscouragedApi", "InternalInsetResource")
-    private fun getStatusBarHeight(): Int {
-        val resources = Resources.getSystem()
-        val resourceId = resources.getIdentifier("status_bar_height", "dimen", "android")
-        return resources.getDimensionPixelSize(resourceId)
-    }
-
-    @SuppressLint("DiscouragedApi", "InternalInsetResource")
-    private fun getNavBarHeight(): Int {
-        val res = Resources.getSystem()
-        val resourceId = res.getIdentifier("navigation_bar_height", "dimen", "android")
-        return if (resourceId != 0) {
-            res.getDimensionPixelSize(resourceId)
-        } else 0
-    }
 }

@@ -5,7 +5,10 @@ package io.core.common.util.tools
 import android.graphics.Bitmap
 import android.graphics.Bitmap.Config
 import android.graphics.BitmapFactory
+import android.graphics.Canvas
+import androidx.annotation.DrawableRes
 import androidx.annotation.IdRes
+import androidx.core.content.ContextCompat
 import io.core.appCtx
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
@@ -66,16 +69,26 @@ object BitmapTools {
 
     /**
      * 以最省内存的方式读取本地资源的图片
-     * @param context 设备上下文
      * @param resId 资源ID
      * @return
      */
     @JvmStatic
-    fun decodeBitmap(@IdRes resId: Int): Bitmap? {
+    fun decodeBitmapWithLowMemory(@DrawableRes resId: Int): Bitmap? {
+        return decodeBitmap(resId, Config.RGB_565)
+    }
+
+    /**
+     * 以标准内存配置(ARGB_8888)读取本地资源图片
+     * @param resId 资源ID
+     * @return 解码后的Bitmap对象，如果解码失败则返回null
+     */
+    @JvmStatic
+    fun decodeBitmap(@DrawableRes resId: Int, config: Config = Config.ARGB_8888): Bitmap? {
         val opt = BitmapFactory.Options()
-        opt.inPreferredConfig = Config.RGB_565
+        opt.inPreferredConfig = config
         return BitmapFactory.decodeResource(appCtx.resources, resId, opt)
     }
+
 
     /**
      * @param resId 资源ID
@@ -84,7 +97,7 @@ object BitmapTools {
      * @return
      */
     @JvmStatic
-    fun decodeBitmap(@IdRes resId: Int, width: Int, height: Int): Bitmap? {
+    fun decodeBitmap(@DrawableRes resId: Int, width: Int, height: Int): Bitmap? {
         val op = BitmapFactory.Options()
         // inJustDecodeBounds如果设置为true,仅仅返回图片实际的宽和高,宽和高是赋值给opts.outWidth,opts.outHeight;
         op.inJustDecodeBounds = true

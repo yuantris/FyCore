@@ -1,12 +1,13 @@
 package io.core.common.util
 
+import android.graphics.Color
 import android.view.View
 import android.view.Window
 import android.view.WindowManager
-import com.gyf.immersionbar.ktx.navigationBarHeight
-import io.core.appCtx
 import io.core.common.util.extensions.ui.setPaddingBottom
+import io.core.common.util.tools.SizeTools
 import io.core.constant.DeviceOS
+
 
 /**
 # ██████████
@@ -23,9 +24,14 @@ import io.core.constant.DeviceOS
  */
 
 fun View.processNavigationBar() {
-    when(DeviceOS.brand){
-        DeviceOS.Brand.Xiaomi -> {
-            this.setPaddingBottom(appCtx.navigationBarHeight)
+    val navigationBarHeight = SizeTools.getNavigationBarHeight()
+    when (DeviceOS.romName) {
+        DeviceOS.Rom.HyperOS -> {
+            this.setPaddingBottom(navigationBarHeight)
+        }
+
+        DeviceOS.Rom.ColorOS -> {
+            this.setPaddingBottom(navigationBarHeight)
         }
 
         else -> {}
@@ -49,5 +55,18 @@ object DiveGestureLine {
             window.navigationBarColor = navigationBarColor
         }
 
+    }
+
+    fun adaptOPPO(window: Window) {
+        window.clearFlags(
+            WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS
+                    or WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION
+        )
+        window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                or View.SYSTEM_UI_FLAG_LAYOUT_STABLE)
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+        window.statusBarColor = Color.TRANSPARENT // 状态栏透明
+        window.navigationBarColor = Color.TRANSPARENT // 虚拟键栏透明
     }
 }

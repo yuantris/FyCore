@@ -18,6 +18,11 @@ enum class BarColor {
     WHITE
 }
 
+enum class ScreenOrientation {
+    VERTICAL,
+    HORIZONTAL
+}
+
 val WindowInsetsCompat.navigationBarHeight
     get() = (getInsets(WindowInsetsCompat.Type.systemBars()).bottom - imeHeight).coerceAtLeast(0)
 
