@@ -11,7 +11,6 @@ import com.core.fy.android.main.fragment.HomeFragment
 import com.core.fy.android.main.fragment.SetFragment
 import com.core.fy.android.util.DoubleBackExitHandler
 import com.core.fy.android.util.showDxNotification
-import io.core.appCtx
 import io.core.common.base.component.activity.ReflectBindingActivity
 import io.core.common.base.component.adapter.BaseRecyclerAdapter
 import io.core.common.base.component.adapter.BaseViewHolder
@@ -21,7 +20,6 @@ import io.core.common.helper.StateTransactionHelper
 import io.core.common.helper.StatusBarManager
 import io.core.common.util.MediaScanner
 import io.core.common.util.extensions.cool.launch
-import io.core.common.util.extensions.cool.launchAsync
 import io.core.common.util.extensions.cool.runDelayedMain
 import io.core.common.util.extensions.currentTimeMillis
 import io.core.common.util.extensions.exitApp
@@ -30,14 +28,12 @@ import io.core.common.util.extensions.ui.disableEdgeEffect
 import io.core.common.util.extensions.ui.getCompatDrawable
 import io.core.common.util.extensions.ui.notifyAllDataChanged
 import io.core.common.util.extensions.ui.onClick
-import io.core.common.util.extensions.ui.setLightStatusBar
 import io.core.common.util.processNavigationBar
 import io.core.common.util.tools.TimeTools
 import io.core.constant.TimePatterns
 import io.core.engine.dialogs.showDialog
 import io.core.engine.rv.ItemViewHolder
 import io.core.engine.rv.RecyclerAdapter
-import io.core.other.CrashHandler
 import kotlinx.coroutines.Dispatchers
 
 class MainActivity : ReflectBindingActivity<ActivityMainBinding>() {

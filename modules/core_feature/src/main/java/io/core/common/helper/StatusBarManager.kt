@@ -9,6 +9,7 @@ import android.os.Build
 import android.view.View
 import android.view.ViewTreeObserver
 import android.view.WindowInsetsController
+import androidx.core.graphics.createBitmap
 import androidx.core.view.WindowCompat
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
@@ -58,6 +59,21 @@ class StatusBarManager private constructor(private val activity: Activity) : Lif
         (activity as? LifecycleOwner)?.lifecycleScope ?: CoroutineScope(Dispatchers.Main)
     }
     private var updateJob: Job? = null
+
+    private val decorViewListeners =
+        mutableMapOf<View, ViewTreeObserver.OnGlobalLayoutListener>()
+    private val layoutListeners =
+        Collections.synchronizedMap(WeakHashMap<View, ViewTreeObserver.OnGlobalLayoutListener>())
+    private val scrollListeners =
+        Collections.synchronizedMap(WeakHashMap<View, ViewTreeObserver.OnScrollChangedListener>())
+    private val pageChangeCallbacks =
+        Collections.synchronizedMap(WeakHashMap<ViewPager2, ViewPager2.OnPageChangeCallback>())
+    private val pageChangeListeners =
+        Collections.synchronizedMap(WeakHashMap<ViewPager, ViewPager.OnPageChangeListener>())
+
+    // Rect缓存
+    private val statusBarRect by lazy { Rect() }
+    private val viewVisibleRect by lazy { Rect() }
 
 
     /**
@@ -214,7 +230,7 @@ class StatusBarManager private constructor(private val activity: Activity) : Lif
      */
     fun updateStatusBarManually(isLight: Boolean) {
         currentLightStatusBar = isLight
-        updateStatusBarAppearance(if (isLight) Color.WHITE else Color.BLACK,false)
+        updateStatusBarAppearance(if (isLight) Color.WHITE else Color.BLACK, false)
     }
 
     /**
@@ -250,7 +266,7 @@ class StatusBarManager private constructor(private val activity: Activity) : Lif
                 .isAppearanceLightStatusBars
         } else {
             // Android 6.0以下无法获取系统设置，返回当前维护状态
-            currentLightStatusBar ?: false
+            currentLightStatusBar == true
         }
     }
 
@@ -445,7 +461,7 @@ class StatusBarManager private constructor(private val activity: Activity) : Lif
         if (width <= 0 || height <= 0) return null
 
         val bitmap = try {
-            Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888).also {
+            createBitmap(width, height).also {
                 val canvas = Canvas(it)
                 canvas.translate(-x.toFloat(), -y.toFloat())
                 this.draw(canvas)
@@ -470,20 +486,7 @@ class StatusBarManager private constructor(private val activity: Activity) : Lif
 
         private val instances =
             Collections.synchronizedMap(WeakHashMap<Activity, StatusBarManager>())
-        private val decorViewListeners =
-            mutableMapOf<View, ViewTreeObserver.OnGlobalLayoutListener>()
-        private val layoutListeners =
-            Collections.synchronizedMap(WeakHashMap<View, ViewTreeObserver.OnGlobalLayoutListener>())
-        private val scrollListeners =
-            Collections.synchronizedMap(WeakHashMap<View, ViewTreeObserver.OnScrollChangedListener>())
-        private val pageChangeCallbacks =
-            Collections.synchronizedMap(WeakHashMap<ViewPager2, ViewPager2.OnPageChangeCallback>())
-        private val pageChangeListeners =
-            Collections.synchronizedMap(WeakHashMap<ViewPager, ViewPager.OnPageChangeListener>())
 
-        // Rect缓存
-        private val statusBarRect by lazy { Rect() }
-        private val viewVisibleRect by lazy { Rect() }
         private val statusBarHeight by lazy { appCtx.statusBarHeight }
 
         /**
