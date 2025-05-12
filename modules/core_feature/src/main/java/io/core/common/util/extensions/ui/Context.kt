@@ -27,6 +27,7 @@ import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.BatteryManager
 import android.os.Build
+import android.os.Bundle
 import android.os.Process
 import android.provider.Settings
 import android.view.View
@@ -94,11 +95,14 @@ fun Context.getLauncherActivityIntent(): Intent? {
     return packageManager.getLaunchIntentForPackage(packageName)
 }
 
-inline fun <reified A : Activity> Context.startActivity(configIntent: Intent.() -> Unit = {}) {
+inline fun <reified A : Activity> Context.startActivity(
+    options: Bundle? = null,
+    configIntent: Intent.() -> Unit = {}
+) {
     val intent = Intent(this, A::class.java)
     if (this !is Activity) intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
     intent.apply(configIntent)
-    startActivity(intent)
+    startActivity(intent, options)
 }
 
 inline fun <reified T : Service> Context.startService(

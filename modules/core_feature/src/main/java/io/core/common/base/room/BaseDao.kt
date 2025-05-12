@@ -11,10 +11,10 @@ import androidx.sqlite.db.SupportSQLiteQuery
 @Dao
 interface BaseDao<T : Any> {
 
-    @Insert(onConflict = OnConflictStrategy.NONE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(entity: T): Long
 
-    @Insert(onConflict = OnConflictStrategy.NONE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(entities: List<T>): List<Long>
 
     @Update
