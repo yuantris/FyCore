@@ -34,6 +34,9 @@ abstract class BaseActivity : AppCompatActivity(), TitleBarAction, BundleAction 
     /** 是否启用横竖屏方向锁定*/
     var isLockOrientation = true
 
+    /** 当前Activity的简单类名(只读) */
+    val simpleName: String by lazy { this::class.java.simpleName }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         configOrientation()
         super.onCreate(savedInstanceState)

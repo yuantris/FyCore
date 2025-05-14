@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:theme="?attr/actionBarStyle"
         app:popupTheme="@style/AppTheme.PopupOverlay"
-        app:titleTextAppearance="@style/ToolbarTitle" />
+        app:titleTextAppearance="@style/CoreToolbarTitle" />
 
     <FrameLayout
         android:layout_width="match_parent"

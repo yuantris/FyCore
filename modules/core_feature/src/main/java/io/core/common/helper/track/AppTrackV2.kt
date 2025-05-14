@@ -58,12 +58,12 @@ object AppTrackV2 : Application.ActivityLifecycleCallbacks, DefaultLifecycleObse
 
     // 前台状态监听器
     private val foregroundListeners = ConcurrentHashMap<String, (Boolean) -> Unit>()
+    private val activityLifecycleListeners = ConcurrentHashMap<String, (Activity, String) -> Unit>()
     // Activity暂停监听器
     private val pausedListeners = ConcurrentHashMap<String, (Activity) -> Unit>()
     // Fragment生命周期回调存储
     private val fragmentCallbacks =
         ConcurrentHashMap<FragmentActivity, FragmentManager.FragmentLifecycleCallbacks>()
-
     /** 存储Fragment的Resume时间 */
     private val fragmentResumeTimes = ConcurrentHashMap<String, Long>()
 
@@ -93,6 +93,9 @@ object AppTrackV2 : Application.ActivityLifecycleCallbacks, DefaultLifecycleObse
         put("com.gyf.immersionbar.SupportRequestBarManagerFragment", Unit) // Immersionbar
         put("com.gyf.immersionbar.RequestBarManagerFragment", Unit) // Immersionbar
     }
+
+    // 新增Activity排除列表
+    private val excludedActivities = ConcurrentHashMap<String, Unit>()
     // endregion
 
     // region 公共API
@@ -132,6 +135,24 @@ object AppTrackV2 : Application.ActivityLifecycleCallbacks, DefaultLifecycleObse
     @JvmStatic
     fun unregisterAppStatusListener(tag: String = TAG) {
         foregroundListeners.remove(tag)
+    }
+
+    /**
+     * 注册Activity生命周期监听器
+     * @param tag 监听器标识
+     * @param listener 生命周期回调(activity: Activity, event: "enter"/"exit")
+     */
+    @JvmStatic
+    fun registerActivityTransitionListener(tag: String = TAG, listener: (Activity, String) -> Unit) {
+        activityLifecycleListeners[tag] = listener
+    }
+
+    /**
+     * 注销Activity生命周期监听器
+     */
+    @JvmStatic
+    fun unregisterActivityTransitionListener(tag: String = TAG) {
+        activityLifecycleListeners.remove(tag)
     }
 
     /**
@@ -177,11 +198,19 @@ object AppTrackV2 : Application.ActivityLifecycleCallbacks, DefaultLifecycleObse
     override fun onActivityResumed(activity: Activity) {
         logLifecycle(activity, "onResume")
         bringToFront(activity)
+        // 修改为总是通知进入事件（但添加isChangingConfigurations检查）
+        if (!activity.isChangingConfigurations) {
+            notifyActivityLifecycleListeners(activity, "enter")
+        }
     }
 
     override fun onActivityPaused(activity: Activity) {
         val key = activity::class.java.name
         pausedListeners[key]?.invoke(activity)
+        // 添加配置变更检查
+        if (!activity.isChangingConfigurations) {
+            notifyActivityLifecycleListeners(activity, "exit")
+        }
     }
 
     override fun onActivityDestroyed(activity: Activity) {
@@ -310,6 +339,33 @@ object AppTrackV2 : Application.ActivityLifecycleCallbacks, DefaultLifecycleObse
         }.distinct()
     }
 
+    /**
+     * 批量添加需要排除的Activity类名
+     * @param classNames 全限定类名集合
+     */
+    @JvmStatic
+    fun addExcludedActivities(classNames: Collection<String>) {
+        classNames.forEach { excludedActivities[it] = Unit }
+    }
+
+    /**
+     * 批量添加需要排除的Activity类名（可变参数版本）
+     * @param classNames 全限定类名数组
+     */
+    @JvmStatic
+    fun addExcludedActivities(vararg classNames: String) {
+        classNames.forEach { excludedActivities[it] = Unit }
+    }
+
+    /**
+     * 移除已排除的Activity类名
+     * @param className 全限定类名
+     */
+    @JvmStatic
+    fun removeExcludedActivity(className: String) {
+        excludedActivities.remove(className)
+    }
+
 
     /**
      * 批量添加需要排除的Fragment类名（线程安全）
@@ -380,6 +436,18 @@ object AppTrackV2 : Application.ActivityLifecycleCallbacks, DefaultLifecycleObse
             } catch (e: Exception) {
                 LogPure.e(TAG, "Listener error ${e.message}")
             }
+        }
+    }
+
+    /** 统一通知生命周期监听器 */
+    private fun notifyActivityLifecycleListeners(activity: Activity, event: String) {
+        // 添加排除检查
+        if (excludedActivities.containsKey(activity::class.java.name)) {
+            LogPure.d(TAG, "Filtered activity transition: ${activity::class.simpleName}")
+            return
+        }
+        activityLifecycleListeners.values.forEach { listener ->
+            executeOnMain { listener(activity, event) }
         }
     }
 

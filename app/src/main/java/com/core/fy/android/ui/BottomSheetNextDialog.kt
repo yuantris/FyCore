@@ -19,7 +19,7 @@ import io.core.common.util.tools.DrawableBuilder
  * @description
  * @author Yuan
  */
-class BottomSheetNextDialog() : BaseBottomSheetDialog<DialogBottomStreetBinding>() {
+class BottomSheetNextDialog : BaseBottomSheetDialog<DialogBottomStreetBinding>() {
 
     override fun initConfig(builder: Builder) {
         val compatColor = getCompatColor(R.color.color_white)
