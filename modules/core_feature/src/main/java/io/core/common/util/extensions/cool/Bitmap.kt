@@ -48,3 +48,9 @@ fun Bitmap.getMeanColor(): Int {
     )
 
 }
+
+fun Bitmap.safeRecycle() {
+    if (!this.isRecycled) {
+        this.recycle()
+    }
+}
