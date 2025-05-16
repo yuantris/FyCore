@@ -7,8 +7,6 @@ import com.core.fy.android.function.TestPageActivity
 import com.core.fy.android.function.read.ReadBookActivity
 import com.core.fy.android.help.HighLightHelper
 import io.core.common.base.component.fragment.ReflectBindingFragment
-import io.core.common.helper.AesCrypto
-import io.core.common.helper.EncryptionResult
 import io.core.common.helper.JsonUltra
 import io.core.common.helper.net.NetworkMonitor
 import io.core.common.helper.net.NetworkState
@@ -68,19 +66,6 @@ class SetFragment : ReflectBindingFragment<FragmentSetBinding, MainActivity>() {
         super.initView()
         val typeOf = FileType.mimeTypeOf("avatar.apk")
         typeOf.logI()
-
-        val aesCrypto = AesCrypto.create("12345678")
-        when (val result = aesCrypto.encrypt("0826".toByteArray())) {
-            is EncryptionResult.Success -> {
-                result.data.logW()
-                runCatching {
-                    val decrypt = aesCrypto.decryptOrThrow(result.data)
-                    String(decrypt).logI()
-                }
-            }
-
-            is EncryptionResult.Error -> result.exception.message.logE()
-        }
 
         // 网络监听
         val monitor = NetworkMonitor.get()

@@ -319,8 +319,6 @@ object AppLog {
                         currentLogWriter?.let { writer ->
                             batch.forEach { line ->
                                 writer.write(line)
-                                // 内存中记录当前写入位置（可用于崩溃恢复）
-                                file.length() + line.toByteArray().size
                             }
                             writer.flush() // 注意：保持打开状态以提高性能
                         }
