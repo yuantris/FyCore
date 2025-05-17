@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_height="match_parent">
+
+    <io.core.widget.layout.ShapeFrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_300"
+        app:shape_radiusInTopLeft="@dimen/dp_16"
+        app:shape_radiusInTopRight="@dimen/dp_16"
+        app:shape_solidColor="@color/white"
+        android:layout_gravity="bottom">
+
+    </io.core.widget.layout.ShapeFrameLayout>
+</FrameLayout>

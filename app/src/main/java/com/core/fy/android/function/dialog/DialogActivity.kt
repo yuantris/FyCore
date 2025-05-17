@@ -13,7 +13,9 @@ import com.core.fy.android.R
 import com.core.fy.android.databinding.ActivityDialogBinding
 import com.core.fy.android.help.HighLightHelper
 import com.core.fy.android.ui.BottomSheetNextDialog
+import com.core.fy.android.ui.TestV2Dialog
 import com.core.fy.android.ui.WaitDialog
+import com.core.fy.android.util.showDxCustom
 import com.core.fy.android.util.showDxMessage
 import com.core.fy.android.util.showDxNotification
 import com.core.fy.android.widget.buildSpannable
@@ -22,7 +24,6 @@ import io.core.common.base.component.activity.ReflectBindingActivity
 import io.core.common.base.component.dialog.BasePopup
 import io.core.common.base.component.dialog.showCustomDialog
 import io.core.common.base.component.dialog.specific.BubbleDialog
-import io.core.engine.dialogs.showDialog
 import io.core.common.util.CoreUtil
 import io.core.common.util.extensions.cool.dpToPx
 import io.core.common.util.extensions.cool.runDelayedMain
@@ -36,6 +37,7 @@ import io.core.common.util.extensions.ui.toast
 import io.core.common.util.tools.DrawableBuilder
 import io.core.common.util.tools.androidApiVersion
 import io.core.common.util.tools.androidVersion
+import io.core.engine.dialogs.showDialog
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -210,6 +212,19 @@ class DialogActivity : ReflectBindingActivity<ActivityDialogBinding>() {
                         }
                     }
                 }
+            }
+
+            show5.onClick {
+                showDialogFragment<TestV2Dialog>()
+
+//                showDxCustom {
+//                    layoutResId = R.layout.dialog_common
+//
+//                    onBindView = { dialog, view ->
+//                        view.findViewById<TextView>(R.id.tv_title).text = "DialogX Custom"
+//                        view.findViewById<TextView>(R.id.tv_cancel).onClick { dialog.dismiss() }
+//                    }
+//                }
             }
         }
     }

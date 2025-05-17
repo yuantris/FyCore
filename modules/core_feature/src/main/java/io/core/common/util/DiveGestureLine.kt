@@ -40,6 +40,15 @@ fun View.processNavigationBar() {
 
 object DiveGestureLine {
 
+    @JvmStatic
+    fun setImmerse(window: Window) {
+        if (DeviceOS.isHyperOS) {
+            adaptXiaomi(window)
+        } else if (DeviceOS.isColorOS) {
+            adaptOPPO(window)
+        }
+    }
+
     @JvmOverloads
     fun adaptXiaomi(
         window: Window,
