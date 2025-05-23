@@ -163,6 +163,19 @@ inline fun <reified VB : ViewBinding> inflateBinding(layoutInflater: LayoutInfla
     VB::class.java.getMethod("inflate", LayoutInflater::class.java)
         .invoke(null, layoutInflater) as VB
 
+/**
+ * 简化ViewBinding初始化
+ * @param setContentView 是否自动设置contentView（默认为false）
+ */
+inline fun <reified VB : ViewBinding> ComponentActivity.viewBinding(
+    setContentView: Boolean = false
+) = lazy(LazyThreadSafetyMode.SYNCHRONIZED) {
+    (VB::class.java.getMethod("inflate", LayoutInflater::class.java)
+        .invoke(null, layoutInflater) as VB)
+        .also { if (setContentView) setContentView(it.root) }
+}
+
+
 //Fragment
 inline fun <reified VB : ViewBinding> Fragment.popupWindow(
     width: Int = ViewGroup.LayoutParams.WRAP_CONTENT,

@@ -4,6 +4,7 @@ import android.util.Log
 import io.core.Android
 import io.core.appCtx
 import io.core.common.util.extensions.ui.appVersionCode
+import io.core.common.util.log.TAG
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -176,7 +177,7 @@ object AppLog {
         logSignalChannel.trySend(Unit)
 
         if (shouldPrint(level)) {
-            printToConsole(level, tag, message, e)
+            printToConsole(level, "${TAG}$tag", message, e)
         }
 
     }
@@ -237,7 +238,7 @@ object AppLog {
                         it.write(
                             "${dateFormat.get()?.format(Date())} | " +
                                     "✅ APP START | " +
-                                    "Version ${appCtx.appVersionCode} | "+
+                                    "Version ${appCtx.appVersionCode} | " +
                                     "DebugMode: $isDebugMode\n"
                         )
                     }
@@ -260,7 +261,8 @@ object AppLog {
             while (isActive) {
                 try {
                     // 双重触发条件：信号或超时
-                    val waitTime = BUFFER_FLUSH_INTERVAL - (System.currentTimeMillis() - lastFlushTime)
+                    val waitTime =
+                        BUFFER_FLUSH_INTERVAL - (System.currentTimeMillis() - lastFlushTime)
                     val receivedSignal = withTimeoutOrNull(waitTime.coerceAtLeast(0)) {
                         logSignalChannel.receive()
                     } != null

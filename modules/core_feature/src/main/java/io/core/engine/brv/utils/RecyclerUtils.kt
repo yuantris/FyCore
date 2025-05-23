@@ -1,8 +1,5 @@
 package io.core.engine.brv.utils
 
-import android.graphics.Canvas
-import android.view.View
-import android.widget.EdgeEffect
 import androidx.annotation.DrawableRes
 import androidx.annotation.IntRange
 import androidx.recyclerview.widget.RecyclerView

@@ -153,7 +153,7 @@ fun String.spanForeColor(@ColorInt color: Int): SpannableString {
     return spannableString
 }
 
-fun String.toast(){
+fun String.toast() {
     Toaster.show(this)
 }
 

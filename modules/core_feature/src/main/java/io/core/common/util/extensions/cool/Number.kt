@@ -3,7 +3,21 @@ package io.core.common.util.extensions.cool
 import android.graphics.Color
 import io.core.common.util.tools.TimeTools
 import io.core.constant.TimePatterns
+import kotlin.jvm.Throws
 import kotlin.math.abs
+
+/**
+ * 安全获取数值，当为null时返回默认值
+ * @param default 默认值(默认为对应类型的零值)
+ * @return 原始数值或默认值(当为null时)
+ */
+inline fun <reified T : Number> T?.orThis(default: T = when (T::class) {
+    Long::class -> 0L
+    Int::class -> 0
+    Float::class -> 0f
+    Double::class -> 0.0
+    else -> throw IllegalArgumentException("不支持的数字类型: ${T::class.simpleName}")
+} as T): T = this ?: default
 
 fun Long.timeFormat(pattern: String = TimePatterns.TIME_FULL): String {
     return TimeTools.getDateFormat(pattern).format(this)

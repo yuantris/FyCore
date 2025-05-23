@@ -316,12 +316,12 @@ fun CustomToast.Builder.quickShow() = build().show()
 /**
  * 显示Toast
  */
-fun Context.toast(message: String) {
+fun Context.toast(message: String?) {
     takeIf { !it.isActivity }?.let {
         Toaster.show(message)
     } ?: run {
         CustomToast.Builder(this)
-            .setMessage(message)
+            .setMessage(message ?: "")
             .setDuration(1800)
             .quickShow()
     }
@@ -330,12 +330,12 @@ fun Context.toast(message: String) {
 /**
  * 长显示Toast
  */
-fun Context.toastLong(message: String) {
+fun Context.toastLong(message: String?) {
     takeIf { !it.isActivity }?.let {
         Toaster.show(message, Toast.LENGTH_LONG)
     } ?: run {
         CustomToast.Builder(this)
-            .setMessage(message)
+            .setMessage(message ?: "")
             .setDuration(3600)
             .quickShow()
     }
