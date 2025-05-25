@@ -45,6 +45,7 @@ import kotlin.collections.set
 
 class KotlinFragment : ReflectBindingFragment<FragmentKotlinBinding, TestPageActivity>() {
 
+    private var timeoutHandler: TimeoutHandler?=null
     private val _data = SingleLiveData<String>()
     private var _count = 0
 
@@ -121,7 +122,7 @@ class KotlinFragment : ReflectBindingFragment<FragmentKotlinBinding, TestPageAct
 //            }
         }
 
-        val timeoutHandler = TimeoutHandler(
+        timeoutHandler = TimeoutHandler(
             timeoutMillis = 3000,
             maxRetries = 3,
             logger = { message -> LogPure.d { "[TimeoutHandler] $message" } },
@@ -138,7 +139,7 @@ class KotlinFragment : ReflectBindingFragment<FragmentKotlinBinding, TestPageAct
         var fixedRateCount = 0
         val fixedRate = Concurrency.scheduleAtFixedRate({
             fixedRateCount++
-            timeoutHandler.resetTimeout()
+            timeoutHandler?.resetTimeout()
         }, 0, 2000, TimeUnit.MILLISECONDS)
         runDelayedMain(16000) {
             fixedRate.cancel(true)
@@ -223,7 +224,7 @@ class KotlinFragment : ReflectBindingFragment<FragmentKotlinBinding, TestPageAct
             },
         )
         launch {
-            TaskExecutor.get().executeConcurrent(
+            TaskExecutor.get().execute(
                 tasks,
                 onComplete = {
                     LogPure.i {
@@ -239,5 +240,10 @@ class KotlinFragment : ReflectBindingFragment<FragmentKotlinBinding, TestPageAct
         storage.getAllKeys().forEach {
             LogCat.e(it)
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        timeoutHandler?.cancel()
     }
 }

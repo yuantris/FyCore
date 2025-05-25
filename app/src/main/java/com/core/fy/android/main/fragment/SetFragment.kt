@@ -1,5 +1,6 @@
 package com.core.fy.android.main.fragment
 
+import androidx.lifecycle.lifecycleScope
 import com.core.fy.android.MainActivity
 import com.core.fy.android.constants.PreferKey
 import com.core.fy.android.databinding.FragmentSetBinding
@@ -16,14 +17,16 @@ import io.core.common.helper.valid.ValidGT
 import io.core.common.helper.valid.excludeHiddenFiles
 import io.core.common.helper.valid.hasExtension
 import io.core.common.helper.valid.maxSize
+import io.core.common.util.concurrent.TaskExecutorV2
 import io.core.common.util.extensions.cool.coolThread
 import io.core.common.util.extensions.cool.launch
 import io.core.common.util.extensions.cool.timeFormat
+import io.core.common.util.extensions.currentTime
 import io.core.common.util.extensions.currentTimeMillis
 import io.core.common.util.extensions.logD
 import io.core.common.util.extensions.logE
 import io.core.common.util.extensions.logI
-import io.core.common.util.extensions.logW
+import io.core.common.util.extensions.logV
 import io.core.common.util.extensions.ui.appVersionName
 import io.core.common.util.extensions.ui.onClick
 import io.core.common.util.extensions.ui.onDebouncedClick
@@ -31,6 +34,7 @@ import io.core.common.util.extensions.ui.postDelayed
 import io.core.common.util.extensions.ui.startActivity
 import io.core.common.util.log.LogCat
 import io.core.common.util.log.LogPure
+import io.core.common.util.log.bury.AppLog
 import io.core.common.util.tools.ThreadUltra
 import io.core.common.util.tools.TimeTools
 import io.core.common.util.tools.androidApiVersion
@@ -44,6 +48,8 @@ import io.core.constant.TimePatterns
 import io.core.engine.storage.getWithAnnotation
 import io.core.engine.storage.put
 import io.core.engine.storage.storage
+import kotlinx.coroutines.flow.forEach
+import kotlinx.coroutines.flow.launchIn
 import java.io.File
 import java.util.function.Predicate
 
@@ -64,6 +70,14 @@ class SetFragment : ReflectBindingFragment<FragmentSetBinding, MainActivity>() {
 
     override fun initView() {
         super.initView()
+
+        TaskExecutorV2.get(lifecycleScope)
+            .addTask { currentTime.logI() }
+            .addTask { currentTime.logI() }
+            .onComplete { "任务执行完成".logI() }
+            .execute()
+
+
         val typeOf = FileType.mimeTypeOf("avatar.apk")
         typeOf.logI()
 
@@ -149,7 +163,19 @@ class SetFragment : ReflectBindingFragment<FragmentSetBinding, MainActivity>() {
 //                    putBoolean("alloweWebViewHistoryBack", true)
 //                }
 
-                printTimeStats()
+//                printTimeStats()
+
+
+                val temporaryLog = AppLog.clearTemporaryLog()
+                val outputFile = File(temporaryLog)
+                AppLog.decryptFile(
+                    AppLog.getLogFiles()[0], outputFile
+                ).let {
+                    it.logV()
+                    if (it) {
+                        outputFile.readText().logI()
+                    }
+                }
 
             }
 

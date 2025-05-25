@@ -17,10 +17,13 @@ import io.core.common.base.component.adapter.SingleTypeAdapter
 import io.core.common.base.component.dialog.BaseDialogFragment
 import io.core.common.base.vm.BaseViewModel
 import io.core.common.util.FileDoc
+import io.core.common.util.extensions.cool.PathType
 import io.core.common.util.extensions.cool.getFile
+import io.core.common.util.extensions.cool.getSettingsPathV2
 import io.core.common.util.extensions.cool.getUri
 import io.core.common.util.extensions.cool.toastOnUI
 import io.core.common.util.extensions.logE
+import io.core.common.util.extensions.logI
 import io.core.common.util.extensions.ui.ctx
 import io.core.common.util.extensions.ui.getCompatColor
 import io.core.common.util.extensions.ui.setLayout
@@ -38,6 +41,7 @@ import io.core.databinding.DialogRecyclerViewBinding
 import io.core.other.DoubleClickProcessor
 import io.core.other.RandomEventGenerator
 import kotlinx.coroutines.isActive
+import java.io.File
 import java.io.FileFilter
 
 class CrashLogsDialog : BaseDialogFragment(R.layout.dialog_recycler_view),
@@ -87,7 +91,16 @@ class CrashLogsDialog : BaseDialogFragment(R.layout.dialog_recycler_view),
                 // ToolBar标题单击查看AppLog详细信息
                 setOnClickListener {
                     execute {
-                        AppLog.getLogFiles()[0].readText()
+                        val file = AppLog.getLogFiles()[0]
+                        val temporaryLog = AppLog.clearTemporaryLog()
+                        val outputFile = File(temporaryLog)
+                        val bool = AppLog.decryptFile(file, outputFile)
+                        if (bool) {
+                            outputFile.readText()
+                        } else {
+                            file.readText()
+                        }
+
                     }.onSuccess {
                         showDialogFragment(TextDialog("运行日志", it))
                     }

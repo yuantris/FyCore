@@ -3,8 +3,13 @@ package io.core.common.util.log.bury
 import android.util.Log
 import io.core.Android
 import io.core.appCtx
+import io.core.common.CoreConfig
+import io.core.common.helper.AESTurbo
+import io.core.common.util.extensions.cool.PathType
+import io.core.common.util.extensions.cool.getSettingsPathV2
 import io.core.common.util.extensions.ui.appVersionCode
 import io.core.common.util.log.TAG
+import io.core.common.util.tools.FileTools
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -69,8 +74,10 @@ object AppLog {
         var dateFormat: String = "yyyy-MM-dd HH:mm:ss.SSS",
         var fileDateFormat: String = "yyyy-MM-dd",
         @LogLevel var releasePrintLevel: Int = LogLevel.ERROR,
-        var storageStrategy: StorageStrategy = StorageStrategy.EXTERNAL_FIRST,
-        var enableThreadInfo: Boolean = true
+        var storageStrategy: StorageStrategy = StorageStrategy.INTERNAL_ONLY,
+        var enableThreadInfo: Boolean = true,
+        var enableEncryption: Boolean = true,
+        var encryptionKey: String? = CoreConfig.token
     )
 
     enum class StorageStrategy {
@@ -155,6 +162,36 @@ object AppLog {
             flushAndClose()
         }
     }
+
+    fun clearTemporaryLog(): String {
+        val interimLogPath = appCtx.getSettingsPathV2(
+            PathType.INTERNAL_FILES, fileName = "interim_log"
+        )
+        FileTools.delete(interimLogPath)
+        return interimLogPath
+    }
+
+    fun decryptFile(encryptedFile: File, outputFile: File): Boolean {
+        if (!config.enableEncryption || config.encryptionKey == null) return false
+        return try {
+            encryptedFile.forEachLine { line ->
+                decrypt(line)?.let { decrypted ->
+                    FileWriter(outputFile, true).use { it.write("$decrypted\n") }
+                } ?: run {
+                    FileWriter(outputFile, true).use { it.write("[--解密失败--]\n") }
+                }
+            }
+            true
+        } catch (e: Exception) {
+            handleInternalError("Decrypt failed", e)
+            false
+        }
+    }
+
+    private fun decrypt(data: String): String? {
+        if (!config.enableEncryption || config.encryptionKey == null) return null
+        return AESTurbo.decryptOrNull(data, config.encryptionKey!!)
+    }
     // endregion
 
     // region Core Implementation
@@ -220,7 +257,6 @@ object AppLog {
             append(tag)
             append("] | ")
             append(message)
-            append("\n")
         }
     }
 
@@ -233,14 +269,21 @@ object AppLog {
                         return@withLock
                     }
 
+                    val header = "${dateFormat.get()?.format(Date())} | " +
+                            "✅ APP START | " +
+                            "Version ${appCtx.appVersionCode} | " +
+                            "DebugMode: $isDebugMode"
+
                     // 强制写入初始化头
-                    FileWriter(file, true).use {
-                        it.write(
-                            "${dateFormat.get()?.format(Date())} | " +
-                                    "✅ APP START | " +
-                                    "Version ${appCtx.appVersionCode} | " +
-                                    "DebugMode: $isDebugMode\n"
-                        )
+                    if (config.enableEncryption && config.encryptionKey != null) {
+                        FileWriter(file, true).use { writer ->
+                            AESTurbo.encryptOrNull(header, config.encryptionKey!!)
+                                ?.let { encrypted ->
+                                    writer.write("$encrypted\n")
+                                } ?: run { writer.write("$header\n") }
+                        }
+                    } else {
+                        FileWriter(file, true).use { it.write("$header\n") }
                     }
 
                     // 重置写入器确保后续日志正常
@@ -320,8 +363,17 @@ object AppLog {
                     try {
                         currentLogWriter?.let { writer ->
                             batch.forEach { line ->
-                                writer.write(line)
+                                if (config.enableEncryption && config.encryptionKey != null) {
+                                    AESTurbo.encryptOrNull(line, config.encryptionKey!!)
+                                        ?.let { encrypted ->
+                                            writer.write("$encrypted\n")
+                                        } ?: run { writer.write("$line\n") }
+                                } else {
+                                    writer.write("$line\n")
+                                }
                             }
+
+
                             writer.flush() // 注意：保持打开状态以提高性能
                         }
                     } catch (e: IOException) {
@@ -380,8 +432,16 @@ object AppLog {
                     if (!exists()) {
                         parentFile?.mkdirs() // 确保目录存在
                         createNewFile()
-                        // 写入初始化头到新文件
-                        FileWriter(this).use { it.write("Initialization [${appCtx.packageName}] Log \n") }
+
+                        val header = "Initialization [${appCtx.packageName}] Log"
+                        if (config.enableEncryption && config.encryptionKey != null) {
+                            AESTurbo.encryptOrNull(header, config.encryptionKey!!)
+                                ?.let { encrypted ->
+                                    FileWriter(this).use { it.write("$encrypted\n") }
+                                } ?: run { FileWriter(this).use { it.write("$header\n") } }
+                        } else {
+                            FileWriter(this).use { it.write("$header\n") }
+                        }
                     }
                 } catch (e: IOException) {
                     handleInternalError("Create file failed", e)
@@ -447,6 +507,7 @@ object AppLog {
         releasePrintLevel = other.releasePrintLevel
         storageStrategy = other.storageStrategy
         enableThreadInfo = other.enableThreadInfo
+        enableEncryption = other.enableEncryption
     }
     // endregion
 }

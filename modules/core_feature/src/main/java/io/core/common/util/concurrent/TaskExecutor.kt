@@ -69,9 +69,9 @@ class TaskExecutor private constructor(
      * @param timeoutMillis 整体超时时间（null 表示无超时）
      * @param progressCallback 进度回调（主线程）
      */
-    suspend fun <T> executeConcurrent(
+    suspend fun <T> execute(
         tasks: List<suspend () -> T>,
-        context: CoroutineContext = Dispatchers.IO,
+        context: CoroutineContext = Dispatchers.Default,
         onEachComplete: ((T, Int) -> Unit)? = null,
         onComplete: (List<T>) -> Unit,
         onPartialComplete: ((List<T>) -> Unit)? = null,

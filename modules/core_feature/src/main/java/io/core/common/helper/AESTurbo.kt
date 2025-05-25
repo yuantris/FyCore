@@ -74,6 +74,36 @@ object AESTurbo {
         }
     }
 
+    /**
+     * 安全加密方法
+     * @param plaintext 明文
+     * @param key 密钥字符串
+     * @return Base64编码的加密结果（包含IV），加密失败时返回null
+     */
+    @JvmStatic
+    fun encryptOrNull(plaintext: String, key: String): String? {
+        return try {
+            encrypt(plaintext, key)
+        } catch (e: Exception) {
+            null
+        }
+    }
+
+    /**
+     * 安全解密方法，解密失败时返回null
+     * @param encryptedText Base64编码的加密结果
+     * @param key 加密时使用的密钥字符串
+     * @return 解密后的原始字符串，解密失败时返回null
+     */
+    @JvmStatic
+    fun decryptOrNull(encryptedText: String, key: String): String? {
+        return try {
+            decrypt(encryptedText, key)
+        } catch (e: Exception) {
+            null
+        }
+    }
+
     private fun extractIvAndCipherText(encryptedText: String): Pair<ByteArray, ByteArray> {
         val combined = Base64.decode(encryptedText, Base64.NO_WRAP)
         val iv = combined.copyOfRange(0, IV_LENGTH)

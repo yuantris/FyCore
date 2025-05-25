@@ -41,7 +41,7 @@ class App : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        Android.initialize(this, debug = true)
+        Android.initialize(this, debug = true, "1234")
         TurboTracker.initialize(this) {
             enable(CoreConfig.Environment.isDebug)
             brief(true)

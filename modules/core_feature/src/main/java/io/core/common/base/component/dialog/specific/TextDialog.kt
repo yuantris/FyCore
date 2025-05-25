@@ -11,6 +11,7 @@ import io.core.common.util.extensions.ui.getCompatColor
 import io.core.common.util.extensions.ui.setHtml
 import io.core.common.util.extensions.ui.setLayout
 import io.core.common.util.extensions.ui.viewBinding
+import io.core.common.util.log.bury.AppLog
 import io.core.databinding.DialogTextViewBinding
 import io.core.other.IntentData
 import kotlinx.coroutines.delay
@@ -46,6 +47,12 @@ class TextDialog() : BaseDialogFragment(R.layout.dialog_text_view) {
     override fun onStart() {
         super.onStart()
         setLayout(ViewGroup.LayoutParams.MATCH_PARENT, 0.9f)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        // 删除临时日志文件
+        AppLog.clearTemporaryLog()
     }
 
     override fun onFragmentCreated(view: View, savedInstanceState: Bundle?) {

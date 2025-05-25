@@ -105,9 +105,11 @@ object ThreadUltra {
             try {
                 future.get()
             } catch (e: InterruptedException) {
-                throw CancellationException()
+                throw CancellationException("Task interrupted")
             } catch (e: ExecutionException) {
                 throw e.cause ?: e
+            } catch (e: CancellationException) {
+                null // 返回null表示任务已取消
             }
         }, executor).whenComplete { result, ex ->
             handleCompletion(task, result, ex)

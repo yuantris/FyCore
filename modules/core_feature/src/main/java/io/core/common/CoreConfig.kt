@@ -21,6 +21,23 @@ import io.core.common.util.extensions.ui.isDebuggable
  */
 object CoreConfig {
 
+    @JvmStatic
+    var token: String = "FFGreatKing"
+        private set
+
+    /**
+     * 一次性设置token值
+     * @param newToken 新的token值
+     * @throws IllegalStateException 如果token已被设置过
+     */
+    @JvmStatic
+    fun setToken(newToken: String) {
+        if (token != "FFGreatKing") {
+            throw IllegalStateException("Token can only be set once")
+        }
+        token = newToken
+    }
+
     // region 颜色配置 -------------------------------------------------------------------------------
     object Alert {
         private val defaultAccentColor = appCtx.getCompatColor(R.color.common_accent_color)
@@ -57,6 +74,7 @@ object CoreConfig {
         @JvmStatic
         var afterJumpActivity: Class<*>? = null
             private set
+
         @JvmStatic
         var allowMultiProcess = false
             private set

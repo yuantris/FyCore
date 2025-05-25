@@ -2,6 +2,7 @@ package io.core
 
 import android.app.Application
 import androidx.core.content.FileProvider
+import io.core.common.CoreConfig
 import io.core.common.helper.track.AppTrackV2
 import io.core.common.util.Preferences
 import io.core.common.util.log.LogCat
@@ -48,7 +49,11 @@ object Android {
      * 初始化FyCore全局APPLICATION上下文
      */
     @JvmStatic
-    fun initialize(application: Application, debug: Boolean = true) {
+    fun initialize(
+        application: Application,
+        debug: Boolean = true,
+        key: String? = null
+    ) {
         _context?.run { return LogCat.e("<-------FyCore已经初始化过了，请勿重复初始化------->") }
 
         // 初始化配置
@@ -56,6 +61,7 @@ object Android {
         _context = application
 
         application.run {
+            key?.run { CoreConfig.setToken(this) }
             // 注册Activity生命周期回调
             AppTrackV2.init(this)
             // 注册全局CrashHandler
