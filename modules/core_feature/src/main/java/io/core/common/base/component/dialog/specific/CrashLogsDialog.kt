@@ -110,9 +110,12 @@ class CrashLogsDialog : BaseDialogFragment(R.layout.dialog_recycler_view),
                     AppLog.getLogFiles().let {
                         if (it.isNotEmpty()) {
                             val file = it[0]
+                            val temporaryLog = AppLog.clearTemporaryLog()
+                            val outputFile = File(temporaryLog)
+                            val bool = AppLog.decryptFile(file, outputFile)
                             FileSharer.Builder()
                                 .setChooserTitle("分享运行日志")
-                                .setFileList(listOf(file))
+                                .setFileList(listOf(if (bool) outputFile else file))
                                 .share(ctx)
                         }
                     }

@@ -191,8 +191,4 @@ class TaskExecutorV2(
     inline fun <reified T> List<ResultWithIndex>.getResult(index: Int): T {
         return this.first { it.index == index }.result as T
     }
-
-    fun Flow<ConcurrentEvent>.launch(){
-        launchIn(scope)
-    }
 }

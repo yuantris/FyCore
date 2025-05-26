@@ -166,6 +166,7 @@
 -keep class androidx.lifecycle.** { *; }
 -keep class androidx.arch.core.** { *; }
 
+-keep class io.core.common.helper.JsonUltra{ *; }
 -keep class io.core.common.helper.track.AppLifecycleTracker { *; }
 -keep class io.core.common.helper.track.TurboTracker { *; }
 -keep class io.core.common.helper.track.TurboTracker$DefaultLogger { *; }
