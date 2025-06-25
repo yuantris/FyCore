@@ -73,7 +73,7 @@ object DeviceOS {
     }
 
     @JvmStatic
-    val romName: Rom get() = romInfo.type
+    val rom: Rom get() = romInfo.type
 
     @JvmStatic
     val marketName: String by lazy {
@@ -88,16 +88,16 @@ object DeviceOS {
     val isXiaomi: Boolean get() = brand == Brand.Xiaomi
 
     @JvmStatic
-    val isMIUI: Boolean get() = romName == Rom.MIUI
+    val isMIUI: Boolean get() = rom == Rom.MIUI
 
     @JvmStatic
-    val isHyperOS: Boolean get() = romName == Rom.HyperOS
+    val isHyperOS: Boolean get() = rom == Rom.HyperOS
 
     @JvmStatic
-    val isHarmonyOS: Boolean get() = romName == Rom.HarmonyOS
+    val isHarmonyOS: Boolean get() = rom == Rom.HarmonyOS
 
     @JvmStatic
-    val isColorOS: Boolean get() = romName == Rom.ColorOS
+    val isColorOS: Boolean get() = rom == Rom.ColorOS
 
     // ========== 品牌检测核心 ==========
 

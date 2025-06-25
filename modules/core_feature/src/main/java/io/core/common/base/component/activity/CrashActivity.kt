@@ -32,6 +32,7 @@ import io.core.common.base.component.dialog.showPopupWindow
 import io.core.common.util.extensions.cool.dp
 import io.core.common.util.extensions.cool.getFile
 import io.core.common.util.extensions.cool.hasReadWriteStoragePermission
+import io.core.common.util.extensions.ui.ScreenOrientation
 import io.core.common.util.extensions.ui.appVersionCode
 import io.core.common.util.extensions.ui.appVersionName
 import io.core.common.util.extensions.ui.onClick
@@ -376,6 +377,10 @@ class CrashActivity : BaseActivity() {
     override fun createStatusBarConfig(): ImmersionBar {
         return super.createStatusBarConfig() // 指定导航栏背景颜色
             .navigationBarColor(R.color.white)
+    }
+
+    override fun getLockOrientation(): ScreenOrientation {
+        return ScreenOrientation.HORIZONTAL
     }
 
 

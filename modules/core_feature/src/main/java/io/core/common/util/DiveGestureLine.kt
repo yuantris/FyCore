@@ -4,6 +4,8 @@ import android.graphics.Color
 import android.view.View
 import android.view.Window
 import android.view.WindowManager
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import io.core.common.util.extensions.ui.setPaddingBottom
 import io.core.common.util.tools.SizeTools
 import io.core.constant.DeviceOS
@@ -25,7 +27,7 @@ import io.core.constant.DeviceOS
 
 fun View.processNavigationBar() {
     val navigationBarHeight = SizeTools.getNavigationBarHeight()
-    when (DeviceOS.romName) {
+    when (DeviceOS.rom) {
         DeviceOS.Rom.HyperOS -> {
             this.setPaddingBottom(navigationBarHeight)
         }
@@ -46,6 +48,8 @@ object DiveGestureLine {
             adaptXiaomi(window)
         } else if (DeviceOS.isColorOS) {
             adaptOPPO(window)
+        } else if (DeviceOS.isHarmonyOS) {
+            adaptHuawei(window)
         }
     }
 
@@ -77,5 +81,17 @@ object DiveGestureLine {
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
         window.statusBarColor = Color.TRANSPARENT // 状态栏透明
         window.navigationBarColor = Color.TRANSPARENT // 虚拟键栏透明
+    }
+
+    fun adaptHuawei(window: Window) {
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+
+        window.statusBarColor = Color.TRANSPARENT
+        window.navigationBarColor = Color.TRANSPARENT
+
+        WindowInsetsControllerCompat(window, window.decorView).apply {
+            isAppearanceLightNavigationBars = true // 设置导航栏图标为黑色（背景浅色时）
+            isAppearanceLightStatusBars = true     // 设置状态栏图标为黑色
+        }
     }
 }

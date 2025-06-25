@@ -59,11 +59,14 @@ object AppTrackV2 : Application.ActivityLifecycleCallbacks, DefaultLifecycleObse
     // 前台状态监听器
     private val foregroundListeners = ConcurrentHashMap<String, (Boolean) -> Unit>()
     private val activityLifecycleListeners = ConcurrentHashMap<String, (Activity, String) -> Unit>()
+
     // Activity暂停监听器
     private val pausedListeners = ConcurrentHashMap<String, (Activity) -> Unit>()
+
     // Fragment生命周期回调存储
     private val fragmentCallbacks =
         ConcurrentHashMap<FragmentActivity, FragmentManager.FragmentLifecycleCallbacks>()
+
     /** 存储Fragment的Resume时间 */
     private val fragmentResumeTimes = ConcurrentHashMap<String, Long>()
 
@@ -143,8 +146,13 @@ object AppTrackV2 : Application.ActivityLifecycleCallbacks, DefaultLifecycleObse
      * @param listener 生命周期回调(activity: Activity, event: "enter"/"exit")
      */
     @JvmStatic
-    fun registerActivityTransitionListener(tag: String = TAG, listener: (Activity, String) -> Unit) {
-        activityLifecycleListeners[tag] = listener
+    fun registerActivityTransitionListener(
+        tag: String = TAG,
+        listener: (Activity, ActivityTransitionEvent) -> Unit
+    ) {
+        activityLifecycleListeners[tag] = { activity, event ->
+            listener(activity, ActivityTransitionEvent.valueOf(event))
+        }
     }
 
     /**
@@ -200,7 +208,7 @@ object AppTrackV2 : Application.ActivityLifecycleCallbacks, DefaultLifecycleObse
         bringToFront(activity)
         // 修改为总是通知进入事件（但添加isChangingConfigurations检查）
         if (!activity.isChangingConfigurations) {
-            notifyActivityLifecycleListeners(activity, "enter")
+            notifyActivityLifecycleListeners(activity, ActivityTransitionEvent.ENTER)
         }
     }
 
@@ -209,7 +217,7 @@ object AppTrackV2 : Application.ActivityLifecycleCallbacks, DefaultLifecycleObse
         pausedListeners[key]?.invoke(activity)
         // 添加配置变更检查
         if (!activity.isChangingConfigurations) {
-            notifyActivityLifecycleListeners(activity, "exit")
+            notifyActivityLifecycleListeners(activity, ActivityTransitionEvent.EXIT)
         }
     }
 
@@ -440,14 +448,17 @@ object AppTrackV2 : Application.ActivityLifecycleCallbacks, DefaultLifecycleObse
     }
 
     /** 统一通知生命周期监听器 */
-    private fun notifyActivityLifecycleListeners(activity: Activity, event: String) {
+    private fun notifyActivityLifecycleListeners(
+        activity: Activity,
+        event: ActivityTransitionEvent
+    ) {
         // 添加排除检查
         if (excludedActivities.containsKey(activity::class.java.name)) {
             LogPure.d(TAG, "Filtered activity transition: ${activity::class.simpleName}")
             return
         }
         activityLifecycleListeners.values.forEach { listener ->
-            executeOnMain { listener(activity, event) }
+            executeOnMain { listener(activity, event.name) }
         }
     }
 

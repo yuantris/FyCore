@@ -1,18 +1,17 @@
 plugins {
     id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
-    id 'kotlin-kapt'
+    id 'com.google.devtools.ksp'
 }
 
 apply from: 'maven.gradle'
 
 android {
     namespace 'io.core'
-    compileSdk 35
+    compileSdk 36
 
     defaultConfig {
         minSdk 24
-        targetSdk 35
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "proguard-rules.pro"
@@ -90,9 +89,7 @@ dependencies {
     implementation libs.kotlinx.coroutines.android
 
     compileOnly libs.room.ktx
-    //noinspection KaptUsageInsteadOfKsp
-    kapt libs.room.compiler
-    annotationProcessor libs.room.compiler
+    ksp libs.room.compiler
 
     // MMKV
     compileOnly libs.mmkv

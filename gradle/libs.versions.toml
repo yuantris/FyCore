@@ -7,6 +7,7 @@ package = "package"
 # --------- # --------- #
 android-gradle = "7.3.1"
 kotlin-version = "1.7.20"
+ksp-version = "1.7.20-1.0.8"
 kotlinx-coroutines-android = "1.6.4"
 kotlinx-serialization-json = "1.4.0"
 
@@ -49,6 +50,7 @@ ffmpeg-kit-full = "6.0-2"
 # 项目build.gradle 所需依赖信息
 gradle = { module = "com.android.tools.build:gradle", version.ref = "android-gradle" }
 kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin-version" }
+ksp-gradle-plugin = { module = "com.google.devtools.ksp:com.google.devtools.ksp.gradle.plugin", version.ref = "ksp-version" }
 # 线上仓库
 fycore-git-package = { module = "io.core:fylibs", version.ref = "fycore" }
 fycore-github = { module = "com.github.yuantris:FyCore", version.ref = "fycore" }

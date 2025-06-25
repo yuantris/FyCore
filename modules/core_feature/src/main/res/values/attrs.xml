@@ -220,5 +220,17 @@
         <attr name="page_rv" format="reference" />
     </declare-styleable>
 
+    <declare-styleable name="OrbitLoadingView">
+        <attr name="bigCircleColor" format="color" />
+        <attr name="smallCircleColor" format="color" />
+    </declare-styleable>
 
+    <declare-styleable name="StatefulImageView">
+        <!-- 默认状态图片 -->
+        <attr name="defaultImage" format="reference" />
+        <!-- 选中状态图片 -->
+        <attr name="selectedImage" format="reference" />
+        <!-- 初始状态（false=默认，true=选中） -->
+        <attr name="initialState" format="boolean" />
+    </declare-styleable>
 </resources>

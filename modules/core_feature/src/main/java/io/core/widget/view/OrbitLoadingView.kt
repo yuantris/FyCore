@@ -6,9 +6,11 @@ import android.graphics.*
 import android.util.AttributeSet
 import android.view.View
 import android.view.animation.LinearInterpolator
+import io.core.R
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
+import androidx.core.content.withStyledAttributes
 
 class OrbitLoadingView @JvmOverloads constructor(
     context: Context,
@@ -45,6 +47,18 @@ class OrbitLoadingView @JvmOverloads constructor(
     private lateinit var smallCirclePaint: Paint
 
     init {
+        attrs?.let {
+            context.withStyledAttributes(it, R.styleable.OrbitLoadingView) {
+                bigCircleColor = getColor(
+                    R.styleable.OrbitLoadingView_bigCircleColor,
+                    Color.GRAY
+                )
+                smallCircleColor = getColor(
+                    R.styleable.OrbitLoadingView_smallCircleColor,
+                    Color.DKGRAY
+                )
+            }
+        }
         initializePaints()
     }
 

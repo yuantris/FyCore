@@ -3,6 +3,7 @@ package io.core.common.util
 import android.database.ContentObserver
 import android.net.Uri
 import android.provider.MediaStore
+import androidx.annotation.Keep
 import io.core.appCtx
 import io.core.common.util.extensions.cool.hasReadStoragePermission
 import io.core.common.util.log.LogPure
@@ -230,6 +231,7 @@ class MediaScanner {
 
     }
 
+    @Keep
     data class FileInfo(
         val path: String,
         val size: Long,

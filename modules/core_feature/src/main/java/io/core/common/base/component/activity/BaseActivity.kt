@@ -128,6 +128,7 @@ abstract class BaseActivity : AppCompatActivity(), TitleBarAction, BundleAction 
         DiveGestureLine.adaptXiaomi(window)
     }
     protected open var huaweiAdapt: (Window) -> Unit = { window ->
+        DiveGestureLine.adaptHuawei(window)
     }
     protected open var oppoAdapt: (Window) -> Unit = { window ->
         DiveGestureLine.adaptOPPO(window)
@@ -136,7 +137,7 @@ abstract class BaseActivity : AppCompatActivity(), TitleBarAction, BundleAction 
     }
 
     protected open fun adaptOS() {
-        when (DeviceOS.romName) {
+        when (DeviceOS.rom) {
             DeviceOS.Rom.HyperOS -> xiaomiAdapt(window)
             DeviceOS.Rom.HarmonyOS -> huaweiAdapt(window)
             DeviceOS.Rom.ColorOS -> oppoAdapt(window)
