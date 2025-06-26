@@ -1,12 +1,27 @@
 package io.core.common.helper.track
 
+import android.app.Activity
+import android.os.Build
 import android.util.Log
+import android.view.View
+import android.view.WindowInsets
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2
+import io.core.common.util.extensions.cool.runDelayedMain
+import io.core.common.util.extensions.logE
+import io.core.common.util.extensions.logI
+import io.core.common.util.extensions.logV
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.lang.ref.WeakReference
 
 /**
@@ -77,12 +92,21 @@ class FragmentVisibilityDetectorV2 private constructor(
     fun onHiddenChanged(hidden: Boolean) =
         checkVisibility("onHiddenChanged($hidden)")
 
-    /** 核心可见性检测逻辑 */
-    private fun checkVisibility(triggerSource: String? = null) {
+    /**
+     * 核心可见性检测逻辑
+     * @param triggerSource 触发源
+     * @param retryCount 当前重试次数，默认0
+     */
+    private fun checkVisibility(triggerSource: String? = null, retryCount: Int = 0) {
         val shouldBeVisible = calculateActualVisibility()
 
         if (shouldBeVisible != isCurrentlyVisible) {
             handleVisibilityChange(shouldBeVisible, triggerSource)
+        } else if (retryCount < 2) { // 最多重试2次
+            fragment.lifecycleScope.launch {
+                delay(300)
+                checkVisibility(triggerSource, retryCount + 1)
+            }
         }
     }
 
@@ -99,7 +123,6 @@ class FragmentVisibilityDetectorV2 private constructor(
             // 基础可见性检查
             val baseVisible = isAdded && !isHidden && userVisibleHint
                     && lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)
-
             // 可配置的扩展检查
             baseVisible && checkParentVisibility() && checkWindowVisibility()
         }
@@ -115,7 +138,8 @@ class FragmentVisibilityDetectorV2 private constructor(
     /** 检查Activity窗口可见性 */
     private fun checkWindowVisibility(): Boolean {
         return if (config.checkWindowVisibility) {
-            fragment.requireActivity().window.decorView.isVisible
+            val activity = fragment.activity ?: return true
+            activity.window.decorView.isVisible
         } else true
     }
 

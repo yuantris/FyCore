@@ -22,15 +22,19 @@ import io.core.common.util.extensions.cool.dpToPx
 import io.core.common.util.extensions.exitApp
 import io.core.common.util.extensions.ui.onDebouncedClick
 import io.core.engine.dialogs.showDialog
+import io.core.engine.multi_state.MultiStatePage.config
 
 // GuideConfig.kt
 data class GuideConfig(
     val guideImages: List<Int>,
     val enterButtonRes: Int,
     val enableEnterButton: Boolean = false,
-    val showIndicator: Boolean = true,
+    val showIndicator: Boolean = false,
     val indicatorGravity: Int = Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL,
     val enterButtonGravity: Int = Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL,
+
+    val enterButtonAnim: Animation? = null, // 自定义进入按钮动画
+    val enableButtonAnim: Boolean = true, // 自定义自定义按钮动画
 
     // 单位dp
     val indicatorMargin: Int = 32,
@@ -78,11 +82,11 @@ abstract class BaseGuideActivity : AppCompatActivity() {
                 if (config.enableEnterButton) {
                     btnEnterCustom.visibility =
                         if (position == config.guideImages.lastIndex) View.VISIBLE else View.GONE
-                    btnEnterCustom.breathingAnim()
+                    btnEnterCustom.breathingAnim(config)
                 } else {
                     btnEnter.visibility =
                         if (position == config.guideImages.lastIndex) View.VISIBLE else View.GONE
-                    btnEnter.breathingAnim()
+                    btnEnter.breathingAnim(config)
                 }
             }
         })
@@ -105,8 +109,7 @@ abstract class BaseGuideActivity : AppCompatActivity() {
             (btnEnter.layoutParams as FrameLayout.LayoutParams).apply {
                 gravity = config.enterButtonGravity
                 setMargins(
-                    config.enterButtonMargin.dpToPx(), config.enterButtonMargin.dpToPx(),
-                    config.enterButtonMargin.dpToPx(), config.enterButtonMargin.dpToPx()
+                    0, 0, 0, config.enterButtonMargin.dpToPx()
                 )
             }
             btnEnter.onDebouncedClick { onEnterClicked() }
@@ -114,16 +117,25 @@ abstract class BaseGuideActivity : AppCompatActivity() {
 
     }
 
-    private fun View.breathingAnim() {
+    private fun View.breathingAnim(config: GuideConfig) {
+        // 优先使用自定义动画
+        val anim = config.enterButtonAnim ?: createDefaultAnim()
+        if (config.enableButtonAnim) {
+            this.startAnimation(anim)
+        }
+    }
+
+    // 创建默认动画
+    private fun createDefaultAnim(): Animation {
         // 按钮呼吸动效
-        val animation = ScaleAnimation(
+        return ScaleAnimation(
             1.0f, 1.1f, 1.0f, 1.1f,
             Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f
-        )
-        animation.duration = 350
-        animation.repeatMode = Animation.REVERSE
-        animation.repeatCount = Animation.INFINITE
-        this.startAnimation(animation)
+        ).apply {
+            duration = 350
+            repeatMode = Animation.REVERSE
+            repeatCount = Animation.INFINITE
+        }
     }
 
     private fun initIndicator(config: GuideConfig) {
