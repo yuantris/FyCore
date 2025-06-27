@@ -4,13 +4,19 @@ import android.os.Bundle
 import com.core.fy.android.R
 import com.core.fy.android.databinding.ActivityEventBinding
 import com.gyf.immersionbar.ImmersionBar
+import com.hjq.permissions.Permission
 import io.core.common.base.component.activity.ReflectBindingActivity
+import io.core.common.helper.LocationHelper
+import io.core.common.util.extensions.cool.GSON
 import io.core.common.util.extensions.cool.observeEvent
 import io.core.common.util.extensions.cool.postEvent
+import io.core.common.util.extensions.cool.requestPermission
 import io.core.common.util.extensions.currentTimeMillis
 import io.core.common.util.extensions.logD
+import io.core.common.util.extensions.logE
 import io.core.common.util.extensions.ui.getCompatColor
 import io.core.common.util.extensions.ui.onClick
+import io.core.common.util.extensions.ui.onDebouncedClick
 import io.core.common.util.extensions.ui.toast
 import io.core.common.util.tools.DrawableBuilder
 import io.core.other.LiveDataPro
@@ -47,9 +53,24 @@ class EventActivity : ReflectBindingActivity<ActivityEventBinding>() {
                         .setRadius(12f)
                         .setSolidColor(context.getCompatColor(R.color.md_amber_A200))
                         .build()
-                onClick {
+                onDebouncedClick {
                     // toast(currentTimeMillis.toString())
-                    LiveDataPro.postEvent("123", "")
+//                    LiveDataPro.postEvent("123", "")'
+                    requestPermission(
+                        Permission.ACCESS_FINE_LOCATION,
+                        Permission.ACCESS_COARSE_LOCATION
+                    ) {
+                        LocationHelper.execute(object : LocationHelper.OnLocationCallback {
+                            override fun onLocationSuccess(address: Array<String>) {
+                                GSON.toJson(address).logE()
+                            }
+
+                            override fun onFailed() {
+
+                            }
+
+                        })
+                    }
                 }
             }
         }

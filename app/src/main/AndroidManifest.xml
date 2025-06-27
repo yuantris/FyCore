@@ -22,6 +22,8 @@
         android:maxSdkVersion="33" /> <!-- 仅对 Android 13 设备有效 -->
 
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <uses-feature
         android:name="android.hardware.camera"
@@ -48,7 +50,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.FyCore">
 
-        <service android:name=".ui.service.FFmpegService"/>
+        <service android:name=".ui.service.FFmpegService" />
+
         <activity
             android:name=".function.ffmpeg.FFmpegActivity"
             android:exported="false" />
