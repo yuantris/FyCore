@@ -5,10 +5,14 @@ import android.content.Context
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.Window
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.graphics.toColorInt
+import androidx.core.view.updateLayoutParams
 import io.core.R
 import io.core.appCtx
+import io.core.common.helper.track.AppTrackV2
+import io.core.common.util.extensions.cool.dpToPx
 import io.core.common.util.extensions.ui.layout2View
 import io.core.widget.view.OrbitLoadingView
 import java.lang.ref.WeakReference
@@ -19,7 +23,7 @@ import java.lang.ref.WeakReference
  * @param cancelable 是否可取消
  */
 class LoadingAir(context: Context, private val cancelable: Boolean = false) :
-    Dialog(context) {
+    Dialog(context, R.style.BubbleDialog) {
 
     private lateinit var loadingView: OrbitLoadingView
     private lateinit var messageTextView: TextView
@@ -66,6 +70,11 @@ class LoadingAir(context: Context, private val cancelable: Boolean = false) :
      */
     private fun reMsg(text: String) {
         messageTextView.text = text
+        if (text.isNotBlank()) {
+            messageTextView.updateLayoutParams<LinearLayout.LayoutParams> {
+                marginEnd = 16.dpToPx()
+            }
+        }
     }
 
     /**
@@ -135,7 +144,6 @@ class LoadingAir(context: Context, private val cancelable: Boolean = false) :
 
         /**
          * 创建并显示加载对话框
-         * @param context 上下文对象
          * @param cancelable 是否可取消，默认为false
          * @return 创建的对话框实例
          */
@@ -143,16 +151,18 @@ class LoadingAir(context: Context, private val cancelable: Boolean = false) :
         @JvmOverloads
         @Synchronized
         fun show(
-            context: Context,
             text: String = globalConfig.message,
             cancelable: Boolean = globalConfig.cancelable
-        ): LoadingAir {
-            weakInstance?.get()?.dismiss()
-            return LoadingAir(context, cancelable).also {
-                weakInstance = WeakReference(it)
-                it.show()
-                it.reMsg(text)
-            }
+        ): LoadingAir? {
+            return runCatching {
+                val activity = AppTrackV2.getTopActivity() ?: return null
+                weakInstance?.get()?.dismiss()
+                LoadingAir(activity).also {
+                    weakInstance = WeakReference(it)
+                    it.show()
+                    it.reMsg(text)
+                }
+            }.getOrNull()
         }
 
         @JvmStatic

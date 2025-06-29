@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.gyf.immersionbar.ImmersionBar
+import io.core.common.util.tools.KeyboardTools
 
 enum class BarColor {
     BLACK,
@@ -97,4 +98,8 @@ fun Window.setStatusBarTextColor(light: Boolean) {
         systemUiVisibility or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
     }
     decorView.systemUiVisibility = systemUiVisibility
+}
+
+fun Window.hideSoftInput() {
+    KeyboardTools.hideSoftInput(this)
 }

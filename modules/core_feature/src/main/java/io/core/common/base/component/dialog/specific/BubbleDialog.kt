@@ -3,16 +3,19 @@ package io.core.common.base.component.dialog.specific
 import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.view.WindowManager
 import android.widget.TextView
 import io.core.R
+import io.core.common.helper.track.AppTrackV2
 import io.core.common.util.extensions.cool.runDelayedMain
 import io.core.common.util.extensions.cool.runMain
 import io.core.common.util.extensions.ui.invisible
 import io.core.widget.view.LoadingView
 import io.core.widget.view.StatusView
+import java.lang.ref.WeakReference
 
 /**
  * 加载状态对话框
@@ -28,6 +31,58 @@ class BubbleDialog @JvmOverloads constructor(
 
     companion object {
         private const val DISMISS_DELAY = 1500L
+
+        private var weakInstance: WeakReference<BubbleDialog>? = null
+
+        /**
+         * 创建并显示加载对话框
+         * @param context 上下文对象
+         * @return 创建的对话框实例
+         */
+        @JvmStatic
+        @Synchronized
+        fun show(text: String? = null): BubbleDialog? {
+            return runCatching {
+                val activity = AppTrackV2.getTopActivity() ?: return null
+                weakInstance?.get()?.dismiss()
+                BubbleDialog(activity).also {
+                    weakInstance = WeakReference(it)
+                    it.show()
+                    text?.let { dialogText -> it.updateTitle(dialogText) }
+                }
+            }.getOrNull()
+        }
+
+        @JvmStatic
+        @Synchronized
+        fun updateMessage(text: String) {
+            weakInstance?.get()?.updateTitle(text)
+        }
+
+        @JvmStatic
+        @Synchronized
+        fun success(text: String) {
+            weakInstance?.get()?.showSuccess(text)
+        }
+
+        @JvmStatic
+        @Synchronized
+        fun error(text: String) {
+            weakInstance?.get()?.showError(text)
+        }
+
+        @JvmStatic
+        @Synchronized
+        fun warning(text: String) {
+            weakInstance?.get()?.showWarning(text)
+        }
+
+        @JvmStatic
+        @Synchronized
+        fun close() {
+            weakInstance?.get()?.dismiss()
+            weakInstance = null
+        }
     }
 
 

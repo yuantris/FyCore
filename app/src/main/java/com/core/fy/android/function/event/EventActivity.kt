@@ -6,7 +6,13 @@ import com.core.fy.android.databinding.ActivityEventBinding
 import com.gyf.immersionbar.ImmersionBar
 import com.hjq.permissions.Permission
 import io.core.common.base.component.activity.ReflectBindingActivity
-import io.core.common.helper.LocationHelper
+import io.core.common.base.component.dialog.specific.BubbleDialog
+import io.core.common.base.component.dialog.specific.LoadingAir
+import io.core.common.helper.LocationDetail
+import io.core.common.helper.LocationFailure
+import io.core.common.helper.LocationFetcher
+import io.core.common.helper.OnLocationCallback
+import io.core.common.util.CoreUtil.Companion.toast
 import io.core.common.util.extensions.cool.GSON
 import io.core.common.util.extensions.cool.observeEvent
 import io.core.common.util.extensions.cool.postEvent
@@ -60,15 +66,17 @@ class EventActivity : ReflectBindingActivity<ActivityEventBinding>() {
                         Permission.ACCESS_FINE_LOCATION,
                         Permission.ACCESS_COARSE_LOCATION
                     ) {
-                        LocationHelper.execute(object : LocationHelper.OnLocationCallback {
-                            override fun onLocationSuccess(address: Array<String>) {
-                                GSON.toJson(address).logE()
+                        LoadingAir.show("正在加载地理位置...")
+                        LocationFetcher.execute(object : OnLocationCallback {
+                            override fun onLocationRetrieved(detail: LocationDetail) {
+                                LoadingAir.close()
+                                GSON.toJson(detail).logD()
                             }
 
-                            override fun onFailed() {
-
+                            override fun onLocationFailed(failure: LocationFailure) {
+                                LoadingAir.close()
+                                GSON.toJson(failure).logE()
                             }
-
                         })
                     }
                 }

@@ -234,6 +234,7 @@ object KeyboardTools {
      * @param window 目标Window
      */
     @JvmStatic
+    @SuppressLint("PrivateApi")
     fun fixSoftInputLeaks(window: Window) {
         val imm =
             appCtx.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager ?: return

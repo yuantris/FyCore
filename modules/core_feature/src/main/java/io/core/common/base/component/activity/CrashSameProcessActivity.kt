@@ -318,7 +318,7 @@ class CrashSameProcessActivity : BaseActivity() {
             // 分享文本
             share.showPopupWindow {
                 setLayout(R.layout.popup_crash_log_share)
-                setSize(200.dp(), ViewGroup.LayoutParams.WRAP_CONTENT)
+                setSize(200.dp, ViewGroup.LayoutParams.WRAP_CONTENT)
                 setViewInitializer { _ ->
                     val tvShare = findViewById<SettingBar>(R.id.text)
                     val tvLog = findViewById<SettingBar>(R.id.log)

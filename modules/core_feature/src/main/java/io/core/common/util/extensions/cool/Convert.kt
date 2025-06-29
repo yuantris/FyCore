@@ -27,10 +27,16 @@ fun Float.spToPx(): Float = android.util.TypedValue.applyDimension(
 
 fun Float.pxToDp(): Float = this / Resources.getSystem().displayMetrics.density + 0.5f
 
-@Suppress("DEPRECATION")
 fun Float.pxToSp(): Float = this / Resources.getSystem().displayMetrics.scaledDensity + 0.5f
 
-fun Int.dp(): Int = (this * Resources.getSystem().displayMetrics.density).roundToInt()
-fun Int.px(): Int = (this / Resources.getSystem().displayMetrics.density).roundToInt()
-fun Float.dp(): Float = this * Resources.getSystem().displayMetrics.density
-fun Float.px(): Float = this / Resources.getSystem().displayMetrics.density
+val Float.dp: Float
+    get() = this * Resources.getSystem().displayMetrics.density
+
+val Int.dp: Int
+    get() = (this * Resources.getSystem().displayMetrics.density).roundToInt()
+
+val Float.px: Float
+    get() = this / Resources.getSystem().displayMetrics.density
+
+val Int.px: Int
+    get() = (this / Resources.getSystem().displayMetrics.density).roundToInt()

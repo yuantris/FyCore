@@ -38,6 +38,7 @@ import androidx.core.view.marginBottom
 import io.core.common.util.extensions.cool.printOnDebug
 import io.core.common.util.extensions.currentTimeMillis
 import io.core.common.util.extensions.inputMethodManager
+import io.core.common.util.tools.KeyboardTools
 import java.lang.reflect.Field
 
 private tailrec fun getCompatActivity(context: Context?): AppCompatActivity? {
@@ -67,6 +68,28 @@ fun View.onDebouncedClick(debounceTime: Long = 500L, onClick: () -> Unit) {
             onClick()
             lastClickTime = currentTime
         }
+    }
+}
+
+/**
+ * 为View设置点击事件，先隐藏软键盘再执行实际点击逻辑
+ * @param clickAction 实际的点击处理逻辑
+ */
+fun View.onClickWithKbHide(clickAction: () -> Unit) {
+    onClick {
+        // 先隐藏软键盘
+        KeyboardTools.hideSoftInput(this)
+        // 再执行实际点击操作
+        clickAction()
+    }
+}
+
+fun View.onDebouncedClickWithKbHide(clickAction: () -> Unit) {
+    onDebouncedClick {
+        // 先隐藏软键盘
+        KeyboardTools.hideSoftInput(this)
+        // 再执行实际点击操作
+        clickAction()
     }
 }
 
