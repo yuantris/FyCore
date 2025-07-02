@@ -49,6 +49,7 @@ object Android {
      * 初始化FyCore全局APPLICATION上下文
      */
     @JvmStatic
+    @JvmOverloads
     fun initialize(
         application: Application,
         debug: Boolean = true,

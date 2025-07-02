@@ -6,13 +6,11 @@ import com.core.fy.android.databinding.ActivityEventBinding
 import com.gyf.immersionbar.ImmersionBar
 import com.hjq.permissions.Permission
 import io.core.common.base.component.activity.ReflectBindingActivity
-import io.core.common.base.component.dialog.specific.BubbleDialog
 import io.core.common.base.component.dialog.specific.LoadingAir
 import io.core.common.helper.LocationDetail
 import io.core.common.helper.LocationFailure
 import io.core.common.helper.LocationFetcher
 import io.core.common.helper.OnLocationCallback
-import io.core.common.util.CoreUtil.Companion.toast
 import io.core.common.util.extensions.cool.GSON
 import io.core.common.util.extensions.cool.observeEvent
 import io.core.common.util.extensions.cool.postEvent
@@ -21,7 +19,6 @@ import io.core.common.util.extensions.currentTimeMillis
 import io.core.common.util.extensions.logD
 import io.core.common.util.extensions.logE
 import io.core.common.util.extensions.ui.getCompatColor
-import io.core.common.util.extensions.ui.onClick
 import io.core.common.util.extensions.ui.onDebouncedClick
 import io.core.common.util.extensions.ui.toast
 import io.core.common.util.tools.DrawableBuilder
@@ -44,6 +41,7 @@ class EventActivity : ReflectBindingActivity<ActivityEventBinding>() {
     override fun setListener() {
         super.setListener()
         "个数：${binding.root.childCount}".logD()
+        LocationFetcher.DEBUG = true
         binding.apply {
             fEvent.setOnClickListener {
                 postEvent(_ratio, 3)
@@ -66,16 +64,22 @@ class EventActivity : ReflectBindingActivity<ActivityEventBinding>() {
                         Permission.ACCESS_FINE_LOCATION,
                         Permission.ACCESS_COARSE_LOCATION
                     ) {
-                        LoadingAir.show("正在加载地理位置...")
-                        LocationFetcher.execute(object : OnLocationCallback {
+                        LoadingAir.show("正在加载位置信息...")
+                        LocationFetcher.startPeriodicLocationUpdates(callback = object :
+                            OnLocationCallback {
                             override fun onLocationRetrieved(detail: LocationDetail) {
-                                LoadingAir.close()
-                                GSON.toJson(detail).logD()
+                                LoadingAir.closeWith {
+                                    GSON.toJson(detail).logD()
+                                }
+
                             }
 
+
+
                             override fun onLocationFailed(failure: LocationFailure) {
-                                LoadingAir.close()
-                                GSON.toJson(failure).logE()
+                                LoadingAir.closeWith {
+                                    GSON.toJson(failure).logE()
+                                }
                             }
                         })
                     }
@@ -105,5 +109,10 @@ class EventActivity : ReflectBindingActivity<ActivityEventBinding>() {
             .with(this) { toast(currentTimeMillis.toString()) }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        LocationFetcher.stopRealtimeLocationTracking()
+        LocationFetcher.stopPeriodicLocationUpdates()
+    }
 }
 

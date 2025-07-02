@@ -60,7 +60,8 @@ class BlankFragment : ReflectBindingFragment<FragmentBlankBinding, MainActivity>
         }
 
         val universalPool = UniversalPool.Builder<Bitmap>().apply {
-            creator = { createBitmap(1080, 1920) }
+            maxSize(15)
+            create { createBitmap(1080, 1920) }
         }.build()
         val bitmap = universalPool.borrow()
         universalPool.release(bitmap)

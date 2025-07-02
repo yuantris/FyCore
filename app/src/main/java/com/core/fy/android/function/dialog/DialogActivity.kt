@@ -15,7 +15,6 @@ import com.core.fy.android.help.HighLightHelper
 import com.core.fy.android.ui.BottomSheetNextDialog
 import com.core.fy.android.ui.TestV2Dialog
 import com.core.fy.android.ui.WaitDialog
-import com.core.fy.android.util.showDxCustom
 import com.core.fy.android.util.showDxMessage
 import com.core.fy.android.util.showDxNotification
 import com.core.fy.android.widget.buildSpannable

@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.Window
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.cardview.widget.CardView
 import androidx.core.graphics.toColorInt
 import androidx.core.view.updateLayoutParams
 import io.core.R
@@ -46,7 +47,11 @@ class LoadingAir(context: Context, private val cancelable: Boolean = false) :
         messageTextView.text = globalConfig.message
         messageTextView.typeface = globalConfig.typeface
 
-        globalConfig.background?.let { rootView.background = it }
+        globalConfig.background?.let {
+            findViewById<CardView>(R.id.root_view).apply {
+                setCardBackgroundColor(it)
+            }
+        }
 
         // 设置对话框属性
         setCancelable(cancelable)
@@ -82,7 +87,7 @@ class LoadingAir(context: Context, private val cancelable: Boolean = false) :
      */
     data class Config(
         val cancelable: Boolean = false,
-        val background: Drawable? = null,
+        val background: Int? = null,
         val loadingColor: Int = "#333333".toColorInt(),
         val messageColor: Int = "#333333".toColorInt(),
         val typeface: android.graphics.Typeface? = null,
@@ -93,14 +98,14 @@ class LoadingAir(context: Context, private val cancelable: Boolean = false) :
          */
         class Builder {
             private var cancelable: Boolean = false
-            private var background: Drawable? = null
+            private var background: Int? = null
             private var loadingColor: Int = "#333333".toColorInt()
             private var messageColor: Int = "#333333".toColorInt()
             private var typeface: android.graphics.Typeface? = null
             private var message: String = ""
 
             fun setCancelable(cancelable: Boolean) = apply { this.cancelable = cancelable }
-            fun setBackground(drawable: Drawable) = apply { this.background = drawable }
+            fun setBackground(drawableColor: Int) = apply { this.background = drawableColor }
             fun setLoadingColor(color: Int) = apply { this.loadingColor = color }
             fun setMessageColor(color: Int) = apply { this.messageColor = color }
             fun setTypeface(typeface: android.graphics.Typeface?) =
@@ -157,7 +162,7 @@ class LoadingAir(context: Context, private val cancelable: Boolean = false) :
             return runCatching {
                 val activity = AppTrackV2.getTopActivity() ?: return null
                 weakInstance?.get()?.dismiss()
-                LoadingAir(activity).also {
+                LoadingAir(activity, cancelable).also {
                     weakInstance = WeakReference(it)
                     it.show()
                     it.reMsg(text)
@@ -176,6 +181,13 @@ class LoadingAir(context: Context, private val cancelable: Boolean = false) :
         fun close() {
             weakInstance?.get()?.dismiss()
             weakInstance = null
+        }
+
+        @Synchronized
+        fun closeWith(next: () -> Unit) {
+            weakInstance?.get()?.dismiss()
+            weakInstance = null
+            next()
         }
     }
 }
