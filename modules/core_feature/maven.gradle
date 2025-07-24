@@ -4,7 +4,7 @@ apply plugin: 'maven-publish'
 ext.isRelease = project.hasProperty('release')
 
 // 动态版本号配置
-def version_number = '0.1.85'
+def version_number = '0.1.86'
 def version_number_snapshot = isRelease ? version_number : "${version_number}-SNAPSHOT"
 
 /**

@@ -1108,25 +1108,27 @@ object DeviceOS {
         }
 
         override val marketName: String
-            get() = ""
+            get() = getSystemProperty("ro.config.marketing_name")
 
         override fun detect(): SystemRomInfo {
             return if (hasSystemProperty("ro.horizon.version")) {
                 SystemRomInfo(
                     Rom.MAGIC_UI,
                     getSystemProperty("ro.horizon.version"),
-                    getSystemProperty("ro.horizon.version.code", Build.VERSION.INCREMENTAL)
+                    getSystemProperty("ro.horizon.version.code", Build.VERSION.INCREMENTAL),
                 )
             }
             // 检测MagicOS
             else if (hasSystemProperty(HonorProps.HONOR_MAGIC_VERSION)) {
+                val property = getSystemProperty(
+                    HonorProps.HONOR_MAGIC_VERSION_CODE,
+                    Build.VERSION.INCREMENTAL
+                )
                 SystemRomInfo(
                     Rom.MagicOS,
                     getSystemProperty(HonorProps.HONOR_MAGIC_VERSION_NAME),
-                    getSystemProperty(
-                        HonorProps.HONOR_MAGIC_VERSION_CODE,
-                        Build.VERSION.INCREMENTAL
-                    )
+                    property,
+                    "MagicOS $property"
                 )
             } else {
                 defaultAndroidInfo()

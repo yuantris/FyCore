@@ -21,6 +21,7 @@ import io.core.common.util.extensions.addCallback
 import io.core.common.util.extensions.cool.dpToPx
 import io.core.common.util.extensions.exitApp
 import io.core.common.util.extensions.ui.onDebouncedClick
+import io.core.common.util.log.LogPure
 import io.core.engine.dialogs.showDialog
 import io.core.engine.multi_state.MultiStatePage.config
 
@@ -78,15 +79,24 @@ abstract class BaseGuideActivity : AppCompatActivity() {
         viewPager.adapter = GuidePagerAdapter(config)
         viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
+                LogPure.d { "$position" }
                 updateIndicator(position)
                 if (config.enableEnterButton) {
                     btnEnterCustom.visibility =
                         if (position == config.guideImages.lastIndex) View.VISIBLE else View.GONE
-                    btnEnterCustom.breathingAnim(config)
+                    if (position == config.guideImages.lastIndex) {
+                        btnEnterCustom.breathingAnim(config)
+                    } else {
+                        btnEnterCustom.clearAnimation()
+                    }
                 } else {
                     btnEnter.visibility =
                         if (position == config.guideImages.lastIndex) View.VISIBLE else View.GONE
-                    btnEnter.breathingAnim(config)
+                    if (position == config.guideImages.lastIndex) {
+                        btnEnter.breathingAnim(config)
+                    } else {
+                        btnEnter.clearAnimation()
+                    }
                 }
             }
         })

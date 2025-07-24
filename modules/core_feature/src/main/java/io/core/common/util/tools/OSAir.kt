@@ -10,11 +10,14 @@ import io.core.constant.ANDROID_12
 import io.core.constant.ANDROID_13
 import io.core.constant.ANDROID_14
 import io.core.constant.ANDROID_15
+import io.core.constant.ANDROID_16
 import io.core.constant.ANDROID_6
 import io.core.constant.ANDROID_7
 import io.core.constant.ANDROID_8
 import io.core.constant.ANDROID_9
 
+val isAndroid16Plus
+    get() = OSAir.atLeast16()
 val isAndroid15Plus
     get() = OSAir.atLeastV()
 val isAndroid14Plus
@@ -43,6 +46,16 @@ val androidVersion: String
     get() = Build.VERSION.RELEASE
 
 object OSAir {
+
+    /**
+     * 检查是否至少是 Android 16 (BAKLAVA, API 36)
+     */
+    @JvmStatic
+    @ChecksSdkIntAtLeast(api = Build.VERSION_CODES.BAKLAVA)
+    fun atLeast16(): Boolean {
+        return Build.VERSION.SDK_INT >= ANDROID_16
+    }
+
     /**
      * 检查是否至少是 Android 15 (Vanilla Ice Cream, API 35)
      */
@@ -148,6 +161,7 @@ object OSAir {
         version: Int, lower: OnLowerListener = OnLowerListener { }, higher: OnHigherListener
     ) {
         val isHigher = when (version) {
+            ANDROID_16 -> isAndroid16Plus
             ANDROID_15 -> isAndroid15Plus
             ANDROID_14 -> isAndroid14Plus
             ANDROID_13 -> isAndroid13Plus
