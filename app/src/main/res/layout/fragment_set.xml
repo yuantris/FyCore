@@ -8,43 +8,52 @@
     android:background="@color/common_window_background_color"
     android:orientation="vertical">
 
-    <View
-        android:layout_width="wrap_content"
-        android:layout_height="@dimen/dp_300" />
-
-    <io.core.widget.view.SettingBar
-        android:id="@+id/test_code"
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:bar_leftText="CodeTest"
-        app:bar_rightDrawable="@drawable/ic_arrow_right" />
+        android:layout_height="match_parent">
 
-    <io.core.widget.view.SettingBar
-        android:id="@+id/crash"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:bar_leftText="Crash Immediately" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-    <io.core.widget.view.SettingBar
-        android:id="@+id/version"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:bar_leftText="@string/app_name"
-        app:bar_rightText="@string/app_name" />
+            <View
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/dp_300" />
 
-    <View
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_weight="1" />
+            <io.core.widget.view.SettingBar
+                android:id="@+id/test_code"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:bar_leftText="CodeTest"
+                app:bar_rightDrawable="@drawable/ic_arrow_right" />
 
-    <io.core.widget.view.SmartTextView
-        android:id="@+id/system_info"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginBottom="@dimen/dp_50"
-        android:gravity="center"
-        android:textColor="@color/common_text_hint_color"
-        tools:text="System Info" />
+            <io.core.widget.view.SettingBar
+                android:id="@+id/crash"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:bar_leftText="Crash Immediately" />
 
+            <io.core.widget.view.SettingBar
+                android:id="@+id/version"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:bar_leftText="@string/app_name"
+                app:bar_rightText="@string/app_name" />
+
+            <View
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/dp_60" />
+
+            <io.core.widget.view.SmartTextView
+                android:id="@+id/system_info"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:textColor="@color/common_text_hint_color"
+                tools:text="System Info" />
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
 </LinearLayout>

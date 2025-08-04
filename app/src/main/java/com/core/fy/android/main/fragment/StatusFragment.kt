@@ -16,6 +16,7 @@ import com.core.fy.android.function.event.EventActivity
 import com.core.fy.android.function.ffmpeg.FFmpegActivity
 import com.core.fy.android.function.json.JsonActivity
 import com.core.fy.android.function.keyboard.KeyboardActivity
+import com.core.fy.android.function.lottie.LottieActivity
 import com.core.fy.android.function.media.MediaPlayerActivity
 import com.core.fy.android.function.read.ReadBookActivity
 import com.core.fy.android.function.record.AudioRecordActivity
@@ -126,6 +127,7 @@ class StatusFragment : ReflectBindingFragment<FragmentStatusBinding, MainActivit
                                 FunctionVM.Design.Media -> startActivity<MediaPlayerActivity>()
                                 FunctionVM.Design.Json -> startActivity<JsonActivity>()
                                 FunctionVM.Design.FFmpeg -> startActivity<FFmpegActivity>()
+                                FunctionVM.Design.Lottie -> startActivity<LottieActivity>()
                                 else -> {
                                     // do nothing
                                     CustomToast.Builder(requireContext())

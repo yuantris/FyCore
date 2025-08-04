@@ -41,6 +41,7 @@ class FunctionVM(var repository: FunctionRepository) : BaseViewModel() {
         Media("Media"),
         Json("Json"),
         FFmpeg("FFmpeg"),
+        Lottie("Lottie"),
         COLL_BAR("collBar");
 
         companion object {
@@ -71,6 +72,7 @@ class FunctionVM(var repository: FunctionRepository) : BaseViewModel() {
             Function(Design.Media),
             Function(Design.Json),
             Function(Design.FFmpeg),
+            Function(Design.Lottie),
             Function(Design.COLL_BAR),
         )
     }
@@ -116,7 +118,7 @@ class FunctionVM(var repository: FunctionRepository) : BaseViewModel() {
                 data.postValue(repository.getAllList())
             },
 
-             error = {
+            error = {
                 it.message?.logD()
             }
         )
