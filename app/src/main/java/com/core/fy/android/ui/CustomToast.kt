@@ -1,4 +1,4 @@
-package io.core.common.base.component.dialog
+package com.core.fy.android.ui
 
 import android.app.Activity
 import android.content.Context

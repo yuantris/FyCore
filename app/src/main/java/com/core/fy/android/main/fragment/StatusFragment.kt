@@ -31,7 +31,7 @@ import com.core.fy.android.room.VMFactory
 import com.core.fy.android.room.entity.Function
 import com.core.fy.android.room.repository.FunctionRepository
 import com.core.fy.android.viewmodel.FunctionVM
-import io.core.common.base.component.dialog.CustomToast
+import com.core.fy.android.ui.CustomToast
 import io.core.common.base.component.fragment.ReflectBindingFragment
 import io.core.common.helper.track.AppTrackV2
 import io.core.common.util.extensions.cool.launch

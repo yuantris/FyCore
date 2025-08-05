@@ -4,8 +4,9 @@ import android.os.Bundle
 import android.view.Gravity
 import com.core.fy.android.databinding.ActivityCustomToastBinding
 import io.core.common.base.component.activity.ReflectBindingActivity
+import io.core.common.base.component.custom.ToastGT
 import io.core.common.util.extensions.ui.toast
-import io.core.common.base.component.dialog.CustomToast
+import com.core.fy.android.ui.CustomToast
 
 /**
 # ██████████
@@ -31,17 +32,19 @@ class CustomToastActivity : ReflectBindingActivity<ActivityCustomToastBinding>()
         super.setListener()
         binding.apply {
             showTop.setOnClickListener {
-                CustomToast.Builder(this@CustomToastActivity)
-                    .setMessage("自定义Toast")
-                    .setGravity(Gravity.TOP)
-                    .build()
+                ToastGT.Builder(this@CustomToastActivity)
+                    .setMessage("自定义消息")
+                    .setAppearance(RedToastAppearance())
+                    .setAnimation(SlideAnimationStrategy())
+                    .setPosition(TopPositionStrategy())
                     .show()
             }
             showCenter.setOnClickListener {
-                CustomToast.Builder(this@CustomToastActivity)
-                    .setMessage("点什么点点什么点点什么点点什么点点什么点点什么点")
-                    .setGravity(Gravity.CENTER)
-                    .build().show()
+
+
+                ToastGT.showWithQueue(this@CustomToastActivity, "第一条消息")
+                ToastGT.showWithQueue(this@CustomToastActivity, "第二条消息")
+                ToastGT.showWithQueue(this@CustomToastActivity, "第三条消息")
             }
             showBottom.setOnClickListener {
                 toast("自定义Toast")

@@ -9,7 +9,7 @@ class LottieActivity : ReflectBindingActivity<ActivityLottieBinding>() {
         super.initial(savedInstanceState)
 
         binding.lavLottie.apply {
-            setAnimation("lottie/data.json")
+            setAnimation("lottie/chun(2).json")
 //            setAnimation("lottie/welcome.json")
         }
     }
