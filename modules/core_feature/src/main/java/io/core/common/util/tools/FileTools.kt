@@ -7,6 +7,7 @@ import io.core.appCtx
 import io.core.common.util.extensions.cool.cnCompare
 import io.core.common.util.extensions.cool.printOnDebug
 import io.core.common.util.extensions.currentTimeMillis
+import io.core.common.util.tools.file.*
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileFilter
@@ -23,139 +24,27 @@ import java.util.Collections
 import java.util.Locale
 import java.util.regex.Pattern
 
+/**
+ * 文件工具类 - 重构版本
+ * 
+ * 这是原始 FileTools 的重构版本，保持完全的向后兼容性
+ * 内部实现已经重构为模块化架构，提供更好的性能、安全性和可维护性
+ * 
+ * 重构改进：
+ * 1. 模块化设计：将功能拆分为 FileOperations、FileReader、FileWriter、PathUtils、FileListManager、FileMetadata 等模块
+ * 2. 类型安全：使用 FileOperationResult 封装操作结果，提供更好的错误处理
+ * 3. 现代化特性：支持协程、扩展函数、密封类等 Kotlin 特性
+ * 4. 性能优化：使用 NIO、优化缓冲区、减少内存分配
+ * 5. 安全增强：路径验证、权限检查、防止路径遍历攻击
+ * 
+ * 使用建议：
+ * - 新代码推荐直接使用 FileToolsV2 或具体的模块类
+ * - 现有代码可以继续使用此类，无需修改
+ * - 逐步迁移到新 API 以获得更好的性能和功能
+ */
 object FileTools {
 
-    /**
-     * 创建指定路径的文件（若不存在），自动创建所有必需的父目录
-     *
-     * @param root 基础目录路径，作为文件路径的根节点
-     * @param subDirFiles 可变参数，表示从根目录开始的子目录层级结构及最终文件名。
-     *                    例如：["dir1", "dir2", "file.txt"]
-     * @return 已存在或新创建的文件对象
-     *
-     * @throws IOException 当文件创建失败或路径中的某个元素是已存在的非目录文件时抛出
-     */
-    @JvmStatic
-    fun createFileIfNotExist(root: File, vararg subDirFiles: String): File {
-        val filePath = getPath(root, *subDirFiles)
-        return createFileIfNotExist(filePath)
-    }
-
-    @JvmStatic
-    fun createFolderIfNotExist(root: File, vararg subDirs: String): File {
-        val filePath = getPath(root, *subDirs)
-        return createFolderIfNotExist(filePath)
-    }
-
-    @JvmStatic
-    fun createFolderIfNotExist(filePath: String): File {
-        val file = File(filePath)
-        //如果文件夹不存在，就创建它
-        if (!file.exists()) {
-            file.mkdirs()
-        }
-        return file
-    }
-
-    @JvmStatic
-    @Synchronized
-    fun createFileIfNotExist(filePath: String): File {
-        val file = File(filePath)
-        try {
-            if (!file.exists()) {
-                //创建父类文件夹
-                file.parent?.let {
-                    createFolderIfNotExist(it)
-                }
-                //创建文件
-                file.createNewFile()
-            }
-        } catch (e: IOException) {
-            e.printOnDebug()
-        }
-        return file
-    }
-
-    /**
-     * 创建文件，如果文件已存在则删除并重新创建
-     *
-     * @param filePath 文件路径
-     * @return 返回创建的文件对象
-     */
-    @JvmStatic
-    fun createFileWithReplace(filePath: String): File {
-        val file = File(filePath)
-        if (!file.exists()) {
-            //创建父类文件夹
-            file.parent?.let {
-                createFolderIfNotExist(it)
-            }
-            //创建文件
-            file.createNewFile()
-        } else {
-            file.delete()
-            file.createNewFile()
-        }
-        return file
-    }
-
-    /**
-     * 生成完整的文件路径
-     *
-     * 该函数从一个根路径开始，根据可变数量的子目录文件名参数，构建一个完整的文件路径
-     * 它确保了路径的正确性，即每个子目录之间用正确的文件分隔符隔开，并且不会在路径末尾重复添加分隔符
-     *
-     * @param rootPath 根路径，路径构建的起点
-     * @param subDirFiles 可变数量的子目录文件名，用于构建最终路径
-     * @return 返回构建完成的完整文件路径
-     */
-    @JvmStatic
-    fun getPath(rootPath: String, vararg subDirFiles: String): String {
-        val path = StringBuilder(rootPath)
-        subDirFiles.forEach {
-            if (it.isNotEmpty()) {
-                if (!path.endsWith(File.separator)) {
-                    path.append(File.separator)
-                }
-                path.append(it)
-            }
-        }
-        return path.toString()
-    }
-
-    /**
-     * 根据根目录和子目录文件名生成完整路径字符串
-     *
-     * 该函数接受一个根目录文件对象和一个可变长度的子目录文件名数组，
-     * 并构建起一个完整的文件路径字符串它通过在根目录的绝对路径之后，
-     * 依次添加每个子目录文件名，使用系统文件分隔符连接
-     *
-     * @param root 根目录的文件对象，是构建路径的起点
-     * @param subDirFiles 可变长度的子目录文件名数组，表示路径中的子目录或文件名
-     * @return 返回构建的完整路径字符串
-     */
-    @JvmStatic
-    fun getPath(root: File, vararg subDirFiles: String): String {
-        val path = StringBuilder(root.absolutePath)
-        subDirFiles.forEach {
-            if (it.isNotEmpty()) {
-                path.append(File.separator).append(it)
-            }
-        }
-        return path.toString()
-    }
-
-    @JvmStatic
-    fun getSdCardPath(): String {
-        var sdCardDirectory = Environment.getExternalStorageDirectory().absolutePath
-        try {
-            sdCardDirectory = File(sdCardDirectory).canonicalPath
-        } catch (e: IOException) {
-            e.printOnDebug()
-        }
-        return sdCardDirectory
-    }
-
+    // ==================== 向后兼容的常量定义 ====================
     const val BY_NAME_ASC = 0
     const val BY_NAME_DESC = 1
     const val BY_TIME_ASC = 2
@@ -169,18 +58,67 @@ object FileTools {
     @Retention(AnnotationRetention.SOURCE)
     annotation class SortType
 
+    // ==================== 委托给 FileToolsV2 的实现 ====================
+
+    /**
+     * 创建指定路径的文件（若不存在），自动创建所有必需的父目录
+     */
+    @JvmStatic
+    fun createFileIfNotExist(root: File, vararg subDirFiles: String): File {
+        return FileToolsV2.createFileIfNotExist(root, *subDirFiles)
+    }
+
+    @JvmStatic
+    fun createFolderIfNotExist(root: File, vararg subDirs: String): File {
+        return FileToolsV2.createFolderIfNotExist(root, *subDirs)
+    }
+
+    @JvmStatic
+    fun createFolderIfNotExist(filePath: String): File {
+        return FileToolsV2.createFolderIfNotExist(filePath)
+    }
+
+    @JvmStatic
+    @Synchronized
+    fun createFileIfNotExist(filePath: String): File {
+        return FileToolsV2.createFileIfNotExist(filePath)
+    }
+
+    /**
+     * 创建文件，如果文件已存在则删除并重新创建
+     */
+    @JvmStatic
+    fun createFileWithReplace(filePath: String): File {
+        return FileToolsV2.createFileWithReplace(filePath)
+    }
+
+    /**
+     * 生成完整的文件路径
+     */
+    @JvmStatic
+    fun getPath(rootPath: String, vararg subDirFiles: String): String {
+        return FileToolsV2.getPath(rootPath, *subDirFiles)
+    }
+
+    /**
+     * 根据根目录和子目录文件名生成完整路径字符串
+     */
+    @JvmStatic
+    fun getPath(root: File, vararg subDirFiles: String): String {
+        return FileToolsV2.getPath(root, *subDirFiles)
+    }
+
+    @JvmStatic
+    fun getSdCardPath(): String {
+        return FileToolsV2.getSdCardPath()
+    }
+
     /**
      * 将目录分隔符统一为平台默认的分隔符，并为目录结尾添加分隔符
      */
     @JvmStatic
     fun separator(path: String): String {
-        var path1 = path
-        val separator = File.separator
-        path1 = path1.replace("\\", separator)
-        if (!path1.endsWith(separator)) {
-            path1 += separator
-        }
-        return path1
+        return FileToolsV2.separator(path)
     }
 
     /**
@@ -192,53 +130,7 @@ object FileTools {
         startDirPath: String,
         excludeDirs: Array<String>? = null, @SortType sortType: Int = BY_NAME_ASC
     ): Array<File> {
-        var excludeDirs1 = excludeDirs
-        val dirList = ArrayList<File>()
-        val startDir = File(startDirPath)
-        if (!startDir.isDirectory) {
-            return arrayOf()
-        }
-        val dirs = startDir.listFiles(FileFilter { f ->
-            if (f == null) {
-                return@FileFilter false
-            }
-            f.isDirectory
-        }) ?: return arrayOf()
-        if (excludeDirs1 == null) {
-            excludeDirs1 = arrayOf()
-        }
-        for (dir in dirs) {
-            val file = dir.absoluteFile
-            if (!excludeDirs1.contentDeepToString().contains(file.name)) {
-                dirList.add(file)
-            }
-        }
-        when (sortType) {
-            BY_NAME_ASC -> Collections.sort(dirList, SortByName())
-            BY_NAME_DESC -> {
-                Collections.sort(dirList, SortByName())
-                dirList.reverse()
-            }
-
-            BY_TIME_ASC -> Collections.sort(dirList, SortByTime())
-            BY_TIME_DESC -> {
-                Collections.sort(dirList, SortByTime())
-                dirList.reverse()
-            }
-
-            BY_SIZE_ASC -> Collections.sort(dirList, SortBySize())
-            BY_SIZE_DESC -> {
-                Collections.sort(dirList, SortBySize())
-                dirList.reverse()
-            }
-
-            BY_EXTENSION_ASC -> Collections.sort(dirList, SortByExtension())
-            BY_EXTENSION_DESC -> {
-                Collections.sort(dirList, SortByExtension())
-                dirList.reverse()
-            }
-        }
-        return dirList.toTypedArray()
+        return FileToolsV2.listDirs(startDirPath, excludeDirs, sortType)
     }
 
     /**
@@ -250,17 +142,7 @@ object FileTools {
         startDirPath: String,
         allowExtensions: Array<String>? = null
     ): Array<File>? {
-        val dirs: Array<File>?
-        val files: Array<File>? = if (allowExtensions == null) {
-            listFiles(startDirPath)
-        } else {
-            listFiles(startDirPath, allowExtensions)
-        }
-        dirs = listDirs(startDirPath)
-        if (files == null) {
-            return null
-        }
-        return dirs + files
+        return FileToolsV2.listDirsAndFiles(startDirPath, allowExtensions)
     }
 
     /**
@@ -272,51 +154,7 @@ object FileTools {
         startDirPath: String,
         filterPattern: Pattern? = null, @SortType sortType: Int = BY_NAME_ASC
     ): Array<File> {
-        val fileList = ArrayList<File>()
-        val f = File(startDirPath)
-        if (!f.isDirectory) {
-            return arrayOf()
-        }
-        val files = f.listFiles(FileFilter { file ->
-            if (file == null) {
-                return@FileFilter false
-            }
-            if (file.isDirectory) {
-                return@FileFilter false
-            }
-
-            filterPattern?.matcher(file.name)?.find() ?: true
-        })
-            ?: return arrayOf()
-        for (file in files) {
-            fileList.add(file.absoluteFile)
-        }
-        when (sortType) {
-            BY_NAME_ASC -> Collections.sort(fileList, SortByName())
-            BY_NAME_DESC -> {
-                Collections.sort(fileList, SortByName())
-                fileList.reverse()
-            }
-
-            BY_TIME_ASC -> Collections.sort(fileList, SortByTime())
-            BY_TIME_DESC -> {
-                Collections.sort(fileList, SortByTime())
-                fileList.reverse()
-            }
-
-            BY_SIZE_ASC -> Collections.sort(fileList, SortBySize())
-            BY_SIZE_DESC -> {
-                Collections.sort(fileList, SortBySize())
-                fileList.reverse()
-            }
-
-            BY_EXTENSION_ASC -> Collections.sort(fileList, SortByExtension())
-            BY_EXTENSION_DESC -> {
-                Collections.sort(fileList, SortByExtension())
-                fileList.reverse()
-            }
-        }
-        return fileList.toTypedArray()
+        return FileToolsV2.listFiles(startDirPath, filterPattern, sortType)
     }
 
     /**
@@ -324,13 +162,7 @@ object FileTools {
      */
     @JvmStatic
     fun listFiles(startDirPath: String, allowExtensions: Array<String>?): Array<File>? {
-        val file = File(startDirPath)
-        return file.listFiles { _, name ->
-            //返回当前目录所有以某些扩展名结尾的文件
-            val extension = getExtension(name)
-            allowExtensions?.contentDeepToString()?.contains(extension) == true
-                    || allowExtensions == null
-        }
+        return FileToolsV2.listFiles(startDirPath, allowExtensions)
     }
 
     /**
@@ -338,10 +170,7 @@ object FileTools {
      */
     @JvmStatic
     fun listFiles(startDirPath: String, allowExtension: String?): Array<File>? {
-        return if (allowExtension == null)
-            listFiles(startDirPath, allowExtension = null)
-        else
-            listFiles(startDirPath, arrayOf(allowExtension))
+        return FileToolsV2.listFiles(startDirPath, allowExtension)
     }
 
     /**
@@ -349,8 +178,7 @@ object FileTools {
      */
     @JvmStatic
     fun exist(path: String): Boolean {
-        val file = File(path)
-        return file.exists()
+        return FileToolsV2.exist(path)
     }
 
     /**
@@ -359,38 +187,7 @@ object FileTools {
     @JvmStatic
     @JvmOverloads
     fun delete(file: File, deleteRootDir: Boolean = false): Boolean {
-        var result = false
-        if (file.isFile) {
-            //是文件
-            result = deleteResolveEBUSY(file)
-        } else {
-            //是目录
-            val files = file.listFiles() ?: return false
-            if (files.isEmpty()) {
-                result = deleteRootDir && deleteResolveEBUSY(file)
-            } else {
-                for (f in files) {
-                    delete(f, deleteRootDir)
-                    result = deleteResolveEBUSY(f)
-                }
-            }
-            if (deleteRootDir) {
-                result = deleteResolveEBUSY(file)
-            }
-        }
-        return result
-    }
-
-    /**
-     * bug: open failed: EBUSY (Device or resource busy)
-     * fix: http://stackoverflow.com/questions/11539657/open-failed-ebusy-device-or-resource-busy
-     */
-    private fun deleteResolveEBUSY(file: File): Boolean {
-        // Before you delete a Directory or File: rename it!
-        val to = File(file.absolutePath + currentTimeMillis)
-
-        file.renameTo(to)
-        return to.delete()
+        return FileToolsV2.delete(file, deleteRootDir)
     }
 
     /**
@@ -399,11 +196,7 @@ object FileTools {
     @JvmStatic
     @JvmOverloads
     fun delete(path: String, deleteRootDir: Boolean = true): Boolean {
-        val file = File(path)
-
-        return if (file.exists()) {
-            delete(file, deleteRootDir)
-        } else false
+        return FileToolsV2.delete(path, deleteRootDir)
     }
 
     /**
@@ -411,8 +204,7 @@ object FileTools {
      */
     @JvmStatic
     fun copy(src: String, tar: String): Boolean {
-        val srcFile = File(src)
-        return srcFile.exists() && copy(srcFile, File(tar))
+        return FileToolsV2.copy(src, tar)
     }
 
     /**
@@ -420,24 +212,7 @@ object FileTools {
      */
     @JvmStatic
     fun copy(src: File, tar: File): Boolean {
-        return try {
-            if (src.isFile) {
-                FileInputStream(src).use { input ->
-                    FileOutputStream(tar).use { output ->
-                        input.copyTo(output)
-                        output.flush()
-                        true
-                    }
-                }
-            } else if (src.isDirectory) {
-                tar.mkdirs()
-                src.listFiles()?.all { file ->
-                    copy(file, File(tar, file.name))
-                } ?: false
-            } else false
-        } catch (e: Exception) {
-            false
-        }
+        return FileToolsV2.copy(src, tar)
     }
 
     /**
@@ -445,7 +220,7 @@ object FileTools {
      */
     @JvmStatic
     fun move(src: String, tar: String): Boolean {
-        return move(File(src), File(tar))
+        return FileToolsV2.move(src, tar)
     }
 
     /**
@@ -453,7 +228,7 @@ object FileTools {
      */
     @JvmStatic
     fun move(src: File, tar: File): Boolean {
-        return rename(src, tar)
+        return FileToolsV2.move(src, tar)
     }
 
     /**
@@ -461,7 +236,7 @@ object FileTools {
      */
     @JvmStatic
     fun rename(oldPath: String, newPath: String): Boolean {
-        return rename(File(oldPath), File(newPath))
+        return FileToolsV2.rename(oldPath, newPath)
     }
 
     /**
@@ -469,19 +244,16 @@ object FileTools {
      */
     @JvmStatic
     fun rename(src: File, tar: File): Boolean {
-        return src.renameTo(tar)
+        return FileToolsV2.rename(src, tar)
     }
 
     /**
      * 读取 assets 目录下的文件内容
-     * @param fileName 文件名或相对路径（例如：`"data/config.json"`）
-     * @return 文件内容字符串
-     * @throws IOException 文件不存在或读取失败时抛出
      */
     @JvmStatic
     @Throws(IOException::class)
     fun readFromAssets(fileName: String): String {
-        return appCtx.assets.open(fileName).bufferedReader().use { it.readText() }
+        return FileToolsV2.readFromAssets(fileName)
     }
 
     /**
@@ -490,15 +262,7 @@ object FileTools {
     @JvmStatic
     @JvmOverloads
     fun readText(filepath: String, charset: String = "utf-8"): String {
-        try {
-            val data = readBytes(filepath)
-            if (data != null) {
-                return String(data, Charset.forName(charset)).trim { it <= ' ' }
-            }
-        } catch (ignored: UnsupportedEncodingException) {
-        }
-
-        return ""
+        return FileToolsV2.readText(filepath, charset)
     }
 
     /**
@@ -506,23 +270,8 @@ object FileTools {
      */
     @JvmStatic
     fun readBytes(filepath: String): ByteArray? {
-        return try {
-            FileInputStream(filepath).use { fis ->
-                ByteArrayOutputStream().use { outputStream ->
-                    val buffer = ByteArray(1024)
-                    while (true) {
-                        val len = fis.read(buffer, 0, buffer.size)
-                        if (len == -1) break
-                        outputStream.write(buffer, 0, len)
-                    }
-                    outputStream.toByteArray()
-                }
-            }
-        } catch (e: IOException) {
-            null
-        }
+        return FileToolsV2.readBytes(filepath)
     }
-
 
     /**
      * 保存文本内容
@@ -530,12 +279,7 @@ object FileTools {
     @JvmStatic
     @JvmOverloads
     fun writeText(filepath: String, content: String, charset: String = "utf-8"): Boolean {
-        return try {
-            writeBytes(filepath, content.toByteArray(charset(charset)))
-        } catch (e: UnsupportedEncodingException) {
-            false
-        }
-
+        return FileToolsV2.writeText(filepath, content, charset)
     }
 
     /**
@@ -543,17 +287,7 @@ object FileTools {
      */
     @JvmStatic
     fun writeBytes(filepath: String, data: ByteArray): Boolean {
-        return try {
-            val file = File(filepath).apply {
-                parentFile?.mkdirs()
-                if (exists()) delete()
-                createNewFile()
-            }
-            FileOutputStream(file).use { it.write(data) }
-            true
-        } catch (e: IOException) {
-            false
-        }
+        return FileToolsV2.writeBytes(filepath, data)
     }
 
     /**
@@ -561,8 +295,7 @@ object FileTools {
      */
     @JvmStatic
     fun writeInputStream(filepath: String, data: InputStream): Boolean {
-        val file = File(filepath)
-        return writeInputStream(file, data)
+        return FileToolsV2.writeInputStream(filepath, data)
     }
 
     /**
@@ -570,21 +303,7 @@ object FileTools {
      */
     @JvmStatic
     fun writeInputStream(file: File, data: InputStream): Boolean {
-        return try {
-            if (!file.exists()) {
-                file.parentFile?.mkdirs()
-                file.createNewFile()
-            }
-            data.use {
-                FileOutputStream(file).use { fos ->
-                    data.copyTo(fos)
-                    fos.flush()
-                }
-            }
-            true
-        } catch (e: IOException) {
-            false
-        }
+        return FileToolsV2.writeInputStream(file, data)
     }
 
     /**
@@ -592,30 +311,15 @@ object FileTools {
      */
     @JvmStatic
     fun appendText(path: String, content: String): Boolean {
-        return try {
-            val file = File(path)
-            if (!file.exists()) {
-                file.createNewFile()
-            }
-            FileWriter(file, true).use { writer ->
-                writer.write(content)
-                true
-            }
-        } catch (e: IOException) {
-            false
-        }
+        return FileToolsV2.appendText(path, content)
     }
-
 
     /**
      * 获取文件大小
      */
     @JvmStatic
     fun getLength(path: String): Long {
-        val file = File(path)
-        return if (!file.isFile || !file.exists()) {
-            0
-        } else file.length()
+        return FileToolsV2.getLength(path)
     }
 
     /**
@@ -623,15 +327,7 @@ object FileTools {
      */
     @JvmStatic
     fun getName(path: String?): String {
-        if (path == null) {
-            return ""
-        }
-        val pos = path.lastIndexOf(File.separator)
-        return if (0 <= pos) {
-            path.substring(pos + 1)
-        } else {
-            path
-        }
+        return FileToolsV2.getName(path)
     }
 
     /**
@@ -639,17 +335,7 @@ object FileTools {
      */
     @JvmStatic
     fun getNameExcludeExtension(path: String): String {
-        return try {
-            var fileName = File(path).name
-            val lastIndexOf = fileName.lastIndexOf(".")
-            if (lastIndexOf != -1) {
-                fileName = fileName.substring(0, lastIndexOf)
-            }
-            fileName
-        } catch (e: Exception) {
-            ""
-        }
-
+        return FileToolsV2.getNameExcludeExtension(path)
     }
 
     /**
@@ -657,21 +343,15 @@ object FileTools {
      */
     @JvmStatic
     fun getSize(path: String): String {
-        val fileSize = getLength(path)
-        return ConvertTools.formatFileSize(fileSize)
+        return FileToolsV2.getSize(path)
     }
 
     /**
-     * 获取文件后缀,不包括“.”
+     * 获取文件后缀,不包括"."
      */
     @JvmStatic
     fun getExtension(pathOrUrl: String): String {
-        val dotPos = pathOrUrl.lastIndexOf('.')
-        return if (0 <= dotPos) {
-            pathOrUrl.substring(dotPos + 1)
-        } else {
-            "ext"
-        }
+        return FileToolsV2.getExtension(pathOrUrl)
     }
 
     /**
@@ -679,9 +359,7 @@ object FileTools {
      */
     @JvmStatic
     fun getMimeType(pathOrUrl: String): String {
-        val ext = getExtension(pathOrUrl)
-        val map = MimeTypeMap.getSingleton()
-        return map.getMimeTypeFromExtension(ext) ?: "*/*"
+        return FileToolsV2.getMimeType(pathOrUrl)
     }
 
     /**
@@ -690,8 +368,7 @@ object FileTools {
     @JvmStatic
     @JvmOverloads
     fun getDateTime(path: String, format: String = "yyyy年MM月dd日HH:mm"): String {
-        val file = File(path)
-        return getDateTime(file, format)
+        return FileToolsV2.getDateTime(path, format)
     }
 
     /**
@@ -699,9 +376,7 @@ object FileTools {
      */
     @JvmStatic
     fun getDateTime(file: File, format: String): String {
-        val cal = Calendar.getInstance()
-        cal.timeInMillis = file.lastModified()
-        return SimpleDateFormat(format, Locale.PRC).format(cal.time)
+        return FileToolsV2.getDateTime(file, format)
     }
 
     /**
@@ -709,13 +384,7 @@ object FileTools {
      */
     @JvmStatic
     fun compareLastModified(path1: String, path2: String): Int {
-        val stamp1 = File(path1).lastModified()
-        val stamp2 = File(path2).lastModified()
-        return when {
-            stamp1 > stamp2 -> 1
-            stamp1 < stamp2 -> -1
-            else -> 0
-        }
+        return FileToolsV2.compareLastModified(path1, path2)
     }
 
     /**
@@ -723,7 +392,7 @@ object FileTools {
      */
     @JvmStatic
     fun makeDirs(path: String): Boolean {
-        return makeDirs(File(path))
+        return FileToolsV2.makeDirs(path)
     }
 
     /**
@@ -731,25 +400,15 @@ object FileTools {
      */
     @JvmStatic
     fun makeDirs(file: File): Boolean {
-        return file.mkdirs()
+        return FileToolsV2.makeDirs(file)
     }
 
+    // ==================== 保持原有的排序器类 ====================
+
     class SortByExtension : Comparator<File> {
-
         override fun compare(f1: File?, f2: File?): Int {
-            return if (f1 == null || f2 == null) {
-                if (f1 == null) -1 else 1
-            } else {
-                if (f1.isDirectory && f2.isFile) {
-                    -1
-                } else if (f1.isFile && f2.isDirectory) {
-                    1
-                } else {
-                    f1.name.compareTo(f2.name, ignoreCase = true)
-                }
-            }
+            return FileToolsV2.SortByExtension().compare(f1, f2)
         }
-
     }
 
     class SortByName : Comparator<File> {
@@ -764,80 +423,19 @@ object FileTools {
         }
 
         override fun compare(f1: File?, f2: File?): Int {
-            if (f1 == null || f2 == null) {
-                return if (f1 == null) {
-                    -1
-                } else {
-                    1
-                }
-            } else {
-                return if (f1.isDirectory && f2.isFile) {
-                    -1
-                } else if (f1.isFile && f2.isDirectory) {
-                    1
-                } else {
-                    val s1 = f1.name
-                    val s2 = f2.name
-                    if (caseSensitive) {
-                        s1.cnCompare(s2)
-                    } else {
-                        s1.compareTo(s2, ignoreCase = true)
-                    }
-                }
-            }
+            return FileToolsV2.SortByName(caseSensitive).compare(f1, f2)
         }
-
     }
 
     class SortBySize : Comparator<File> {
-
         override fun compare(f1: File?, f2: File?): Int {
-            return if (f1 == null || f2 == null) {
-                if (f1 == null) {
-                    -1
-                } else {
-                    1
-                }
-            } else {
-                if (f1.isDirectory && f2.isFile) {
-                    -1
-                } else if (f1.isFile && f2.isDirectory) {
-                    1
-                } else {
-                    if (f1.length() < f2.length()) {
-                        -1
-                    } else {
-                        1
-                    }
-                }
-            }
+            return FileToolsV2.SortBySize().compare(f1, f2)
         }
-
     }
 
     class SortByTime : Comparator<File> {
-
         override fun compare(f1: File?, f2: File?): Int {
-            return if (f1 == null || f2 == null) {
-                if (f1 == null) {
-                    -1
-                } else {
-                    1
-                }
-            } else {
-                if (f1.isDirectory && f2.isFile) {
-                    -1
-                } else if (f1.isFile && f2.isDirectory) {
-                    1
-                } else {
-                    if (f1.lastModified() > f2.lastModified()) {
-                        -1
-                    } else {
-                        1
-                    }
-                }
-            }
+            return FileToolsV2.SortByTime().compare(f1, f2)
         }
-
     }
 }

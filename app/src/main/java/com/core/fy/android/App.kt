@@ -6,14 +6,18 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import com.core.fy.android.constants.AppConst.channelIdReadAloud
 import com.core.fy.android.constants.PreferKey
+import com.core.fy.android.util.HttpClient
+import com.core.fy.android.util.NetworkException
 import com.core.fy.android.util.initDialogX
 import com.tencent.mmkv.MMKV
 import io.core.Android
 import io.core.BR
 import io.core.common.CoreConfig
+import io.core.common.helper.coroutine.info.GlobalCoroutine
 import io.core.common.helper.net.NetworkMonitor
 import io.core.common.helper.track.AppTrackV2
 import io.core.common.helper.track.TurboTracker
+import io.core.common.util.CoreUtil.Companion.toast
 import io.core.common.util.extensions.notificationManager
 import io.core.common.util.log.LogPure
 import io.core.common.util.tools.OSAir
@@ -82,6 +86,23 @@ class App : Application() {
             }
         }
 
+        GlobalCoroutine.launch {
+            val result = HttpClient.getConfig()
+            result.fold(
+                onSuccess = { json ->
+                    // 解析 json
+                    LogPure.d { "json: $json" }
+                },
+                onFailure = { ex ->
+                    val msg = when (ex) {
+                        is NetworkException.IO -> "网络不给力，请稍后再试"
+                        is NetworkException.Http -> "服务器开小差了(${ex.code})"
+                        else -> "获取配置失败"
+                    }
+                    toast(msg)
+                }
+            )
+        }
     }
 
     /**

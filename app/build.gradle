@@ -121,6 +121,8 @@ dependencies {
     // https://github.com/arthenica/ffmpeg-kit/tree/main/android
     implementation libs.ffmpeg.kit.full
 
+    implementation("com.squareup.okhttp3:okhttp:4.10.0")  // OkHttp
+
     def camerax_version = "1.2.0"
     implementation "androidx.camera:camera-core:${camerax_version}"
     implementation "androidx.camera:camera-camera2:${camerax_version}"
