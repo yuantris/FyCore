@@ -16,176 +16,354 @@ import io.core.common.util.extensions.cool.HandlerGT
 import io.core.common.util.extensions.cool.isMainThread
 import io.core.common.util.extensions.ui.isAlive
 import io.core.common.util.log.LogPure
+import java.lang.ref.ReferenceQueue
 import java.lang.ref.WeakReference
-import java.util.concurrent.ConcurrentHashMap
-import java.util.concurrent.ConcurrentLinkedDeque
-
+import java.util.concurrent.*
+import java.util.concurrent.atomic.AtomicInteger
+import java.util.concurrent.atomic.AtomicLong
+import java.util.concurrent.locks.ReentrantReadWriteLock
+import kotlin.concurrent.read
+import kotlin.concurrent.write
 
 /**
- * 应用程序全局生命周期追踪管理器
+ * 应用程序全局生命周期追踪管理器 - 优化版
  *
- * 实现特性：
- * - 全量Activity生命周期事件监听（基于Application.ActivityLifecycleCallbacks）
- * - 应用前后台状态追踪（基于ProcessLifecycleOwner）
- * - 线程安全的组件栈管理（使用ConcurrentLinkedDeque实现）
- * - 带标签的前后台状态监听器注册机制
+ * 优化特性：
+ * - 智能内存管理（ReferenceQueue + 定时清理）
+ * - 高性能并发控制（读写锁 + 无锁数据结构）
+ * - 模块化架构设计（分离关注点）
+ * - 完善的性能监控和异常处理
+ * - 可配置的清理策略和阈值
  *
  * 线程安全：
- * - 所有公共API均已实现线程安全
- * - 组件栈使用并发集合实现（ConcurrentLinkedDeque）
- * - 状态监听通知自带主线程切换保障
+ * - 使用读写锁优化并发读性能
+ * - 原子操作保证计数器线程安全
+ * - 无锁算法优化热点路径
  *
- * @see Application.ActivityLifecycleCallbacks
- * @see ProcessLifecycleOwner
+ * @author [Yuantris] - 优化版 v2.1
+ * @since 2025/8/10
  */
 object AppTrackV2 : Application.ActivityLifecycleCallbacks, DefaultLifecycleObserver {
 
     private const val TAG = "AppTrackV2"
-    private const val MAX_STACK_SIZE = 100 // ✅ 推荐值：满足常规业务场景
+    private const val MAX_STACK_SIZE = 100
+    private const val CLEANUP_THRESHOLD = 0.3f // 30%无效引用时触发清理
+    private const val CLEANUP_INTERVAL_MS = 30_000L // 30秒定时清理
+    private const val FRAGMENT_TIME_WINDOW_MS = 100L // Fragment时间窗口
+
+    // region 性能监控
+    private val performanceStats = PerformanceStats()
+    
+    private class PerformanceStats {
+        val activityTransitions = AtomicLong(0)
+        val fragmentTransitions = AtomicLong(0)
+        val cleanupOperations = AtomicLong(0)
+        val listenerNotifications = AtomicLong(0)
+        val totalCleanupTime = AtomicLong(0)
+        
+        fun getStats(): Map<String, Long> = mapOf(
+            "activityTransitions" to activityTransitions.get(),
+            "fragmentTransitions" to fragmentTransitions.get(),
+            "cleanupOperations" to cleanupOperations.get(),
+            "listenerNotifications" to listenerNotifications.get(),
+            "avgCleanupTime" to if (cleanupOperations.get() > 0) 
+                totalCleanupTime.get() / cleanupOperations.get() else 0
+        )
+        
+        fun reset() {
+            activityTransitions.set(0)
+            fragmentTransitions.set(0)
+            cleanupOperations.set(0)
+            listenerNotifications.set(0)
+            totalCleanupTime.set(0)
+        }
+    }
+    
+    @JvmStatic
+    fun getPerformanceStats(): Map<String, Long> = performanceStats.getStats()
+    
+    @JvmStatic
+    fun resetPerformanceStats() = performanceStats.reset()
+    // endregion
+
+    // region 智能内存管理
+    private class SmartWeakReference<T>(referent: T, queue: ReferenceQueue<T>) : WeakReference<T>(referent, queue) {
+        val timestamp = System.currentTimeMillis()
+    }
+    
+    private class StackManager<T> {
+        private val stack = ConcurrentLinkedDeque<SmartWeakReference<T>>()
+        private val referenceQueue = ReferenceQueue<T>()
+        private val lock = ReentrantReadWriteLock()
+        private val invalidCount = AtomicInteger(0)
+        
+        fun add(item: T) {
+            lock.write {
+                stack.addFirst(SmartWeakReference(item, referenceQueue))
+                if (stack.size > MAX_STACK_SIZE) {
+                    stack.removeLast()
+                }
+            }
+            processReferenceQueue()
+        }
+        
+        fun remove(item: T) {
+            lock.write {
+                stack.removeAll { it.get() == item }
+            }
+        }
+        
+        fun removeAll(predicate: (T?) -> Boolean) {
+            lock.write {
+                stack.removeAll { ref -> predicate(ref.get()) }
+            }
+        }
+        
+        fun getTop(): T? {
+            cleanupIfNeeded()
+            return lock.read {
+                stack.firstOrNull { it.get() != null }?.get()
+            }
+        }
+        
+        fun getAll(): List<T> {
+            cleanupIfNeeded()
+            return lock.read {
+                stack.mapNotNull { it.get() }
+            }
+        }
+        
+        fun size(): Int = lock.read { stack.size }
+        
+        private fun processReferenceQueue() {
+            var processed = 0
+            while (referenceQueue.poll() != null) {
+                invalidCount.incrementAndGet()
+                processed++
+            }
+            if (processed > 0) {
+                performanceStats.cleanupOperations.addAndGet(processed.toLong())
+            }
+        }
+        
+        private fun cleanupIfNeeded() {
+            val totalSize = stack.size
+            if (totalSize == 0) return
+            
+            processReferenceQueue()
+            val invalidRatio = invalidCount.get().toFloat() / totalSize
+            
+            if (invalidRatio > CLEANUP_THRESHOLD) {
+                performCleanup()
+            }
+        }
+        
+        private fun performCleanup() {
+            val startTime = System.nanoTime()
+            lock.write {
+                stack.removeAll { it.get() == null }
+                invalidCount.set(0)
+            }
+            val duration = (System.nanoTime() - startTime) / 1_000_000 // 转换为毫秒
+            performanceStats.totalCleanupTime.addAndGet(duration)
+            performanceStats.cleanupOperations.incrementAndGet()
+        }
+        
+        fun clear() {
+            lock.write {
+                stack.clear()
+                invalidCount.set(0)
+            }
+        }
+    }
+    
+    private val activityStackManager = StackManager<Activity>()
+    private val serviceStackManager = StackManager<Service>()
+    private val fragmentStackManager = StackManager<Fragment>()
+    // endregion
+
+    // region 监听器管理器
+    private class ListenerManager<T> {
+        private val listeners = ConcurrentHashMap<String, T>()
+        private val lock = ReentrantReadWriteLock()
+        
+        fun register(tag: String, listener: T) {
+            listeners[tag] = listener
+        }
+        
+        fun unregister(tag: String) {
+            listeners.remove(tag)
+        }
+        
+        fun notifyAll(action: (T) -> Unit) {
+            val snapshot = lock.read { listeners.values.toList() }
+            snapshot.forEach { listener ->
+                try {
+                    action(listener)
+                    performanceStats.listenerNotifications.incrementAndGet()
+                } catch (e: Exception) {
+                    LogPure.e(TAG, "Listener notification failed: ${e.message}")
+                }
+            }
+        }
+        
+        fun size(): Int = listeners.size
+        
+        fun clear() {
+            listeners.clear()
+        }
+    }
+    
+    private val foregroundListenerManager = ListenerManager<(Boolean) -> Unit>()
+    private val activityLifecycleListenerManager = ListenerManager<(Activity, String) -> Unit>()
+    private val pausedListenerManager = ListenerManager<(Activity) -> Unit>()
+    // endregion
+
+    // region 配置管理
+    data class TrackConfig(
+        val maxStackSize: Int = MAX_STACK_SIZE,
+        val cleanupThreshold: Float = CLEANUP_THRESHOLD,
+        val cleanupInterval: Long = CLEANUP_INTERVAL_MS,
+        val fragmentTimeWindow: Long = FRAGMENT_TIME_WINDOW_MS,
+        val enablePerformanceStats: Boolean = true,
+        val enableAutoCleanup: Boolean = true
+    )
+    
+    @Volatile
+    private var config = TrackConfig()
+    
+    @JvmStatic
+    fun updateConfig(newConfig: TrackConfig) {
+        config = newConfig
+        if (newConfig.enableAutoCleanup) {
+            startPeriodicCleanup()
+        } else {
+            stopPeriodicCleanup()
+        }
+    }
+    // endregion
 
     // region 核心数据存储
-    /**
-     * 线程安全的Activity弱引用栈
-     *
-     * 存储规则：
-     * - 使用WeakReference避免内存泄漏
-     * - 栈顶始终为最近resumed的Activity
-     * - 自动清理无效引用（cleanUpWeakReferences）
-     */
-    private val activityStack = ConcurrentLinkedDeque<WeakReference<Activity>>()
-    private val serviceStack = ConcurrentLinkedDeque<WeakReference<Service>>()
-    private val fragmentStack = ConcurrentLinkedDeque<WeakReference<Fragment>>()
-
-    // 前台状态监听器
-    private val foregroundListeners = ConcurrentHashMap<String, (Boolean) -> Unit>()
-    private val activityLifecycleListeners = ConcurrentHashMap<String, (Activity, String) -> Unit>()
-
-    // Activity暂停监听器
-    private val pausedListeners = ConcurrentHashMap<String, (Activity) -> Unit>()
-
-    // Fragment生命周期回调存储
-    private val fragmentCallbacks =
-        ConcurrentHashMap<FragmentActivity, FragmentManager.FragmentLifecycleCallbacks>()
-
-    /** 存储Fragment的Resume时间 */
+    private val fragmentCallbacks = ConcurrentHashMap<FragmentActivity, FragmentManager.FragmentLifecycleCallbacks>()
     private val fragmentResumeTimes = ConcurrentHashMap<String, Long>()
-
+    
     @Volatile
-    var maxFragmentResumeRecords = 200
-        private set
+    private var maxFragmentResumeRecords = 200
+    
+    // 使用 ConcurrentHashMap.newKeySet() 优化排除列表
+    private val excludedFragments: MutableSet<String> = ConcurrentHashMap.newKeySet<String>().apply {
+        add("com.gyf.immersionbar.SupportRequestBarManagerFragment")
+        add("com.gyf.immersionbar.RequestBarManagerFragment")
+    }
+    
+    private val excludedActivities: MutableSet<String> = ConcurrentHashMap.newKeySet()
+    
+    // 缓存反射结果
+    @Volatile
+    private var cachedApplication: Application? = null
+    private val applicationLock = ReentrantReadWriteLock()
+    
+    // 定时清理任务
+    private var cleanupExecutor: ScheduledExecutorService? = null
+    // endregion
 
-    /**
-     * 设置最大Fragment记录数。
-     * @param max 要设置的最大Fragment记录数。该值将被强制调整为至少为50。
-     */
+    // region 初始化和配置
+    internal fun init(application: Application) {
+        application.registerActivityLifecycleCallbacks(this)
+        ProcessLifecycleOwner.get().lifecycle.addObserver(this)
+        
+        // 缓存 Application 实例
+        applicationLock.write {
+            cachedApplication = application
+        }
+        
+        // 启动定时清理
+        if (config.enableAutoCleanup) {
+            startPeriodicCleanup()
+        }
+        
+        LogPure.i(TAG, "AppTrackV2 initialized with config: $config")
+    }
+    
+    private fun startPeriodicCleanup() {
+        stopPeriodicCleanup()
+        cleanupExecutor = Executors.newSingleThreadScheduledExecutor { r ->
+            Thread(r, "AppTrack-Cleanup").apply { isDaemon = true }
+        }.apply {
+            scheduleWithFixedDelay({
+                try {
+                    performPeriodicCleanup()
+                } catch (e: Exception) {
+                    LogPure.e(TAG, "Periodic cleanup failed: ${e.message}")
+                }
+            }, config.cleanupInterval, config.cleanupInterval, TimeUnit.MILLISECONDS)
+        }
+    }
+    
+    private fun stopPeriodicCleanup() {
+        cleanupExecutor?.shutdown()
+        cleanupExecutor = null
+    }
+    
+    private fun performPeriodicCleanup() {
+        val startTime = System.currentTimeMillis()
+        
+        // 清理 Fragment 时间记录
+        if (fragmentResumeTimes.size > maxFragmentResumeRecords) {
+            val entries = fragmentResumeTimes.entries.sortedBy { it.value }
+            val toRemove = entries.take(entries.size - (maxFragmentResumeRecords * 0.8).toInt())
+            toRemove.forEach { fragmentResumeTimes.remove(it.key) }
+        }
+        
+        val duration = System.currentTimeMillis() - startTime
+        LogPure.d(TAG, "Periodic cleanup completed in ${duration}ms")
+    }
+    
     @JvmStatic
     fun setMaxFragmentRecords(max: Int) {
         maxFragmentResumeRecords = max.coerceAtLeast(50)
     }
-
-    /**
-     * Fragment类名排除列表（线程安全）
-     *
-     * 包含规则：
-     * - 内部预设系统级Fragment类名
-     * - 外部可动态添加三方库Fragment类名
-     * - 使用全限定类名进行匹配
-     */
-    private val excludedFragments = ConcurrentHashMap<String, Unit>().apply {
-        // 内部预设值
-        put("com.gyf.immersionbar.SupportRequestBarManagerFragment", Unit) // Immersionbar
-        put("com.gyf.immersionbar.RequestBarManagerFragment", Unit) // Immersionbar
-    }
-
-    // 新增Activity排除列表
-    private val excludedActivities = ConcurrentHashMap<String, Unit>()
     // endregion
 
-    // region 公共API
-    /**
-     * 初始化追踪器（需在Application.onCreate中调用）
-     *
-     * @param application 应用程序实例
-     *
-     * 实现机制：
-     * - 注册Activity生命周期全局监听
-     * - 绑定ProcessLifecycleOwner观察应用前后台状态
-     */
-    internal fun init(application: Application) {
-        application.registerActivityLifecycleCallbacks(this)
-        ProcessLifecycleOwner.get().lifecycle.addObserver(this)
-    }
-
-
-    /**
-     * 注册带标签的前后台状态监听器
-     *
-     * @param tag 监听器标识（建议使用调用方类名）
-     * @param listener 状态回调（true: 前台, false: 后台）
-     *
-     * 特性：
-     * - 自动处理线程切换（保证在主线程回调）
-     * - 支持多个独立监听器共存
-     * - 使用ConcurrentHashMap保证线程安全
-     */
+    // region 公共API - 监听器管理
     @JvmStatic
     @JvmOverloads
     fun registerAppStatusListener(tag: String = TAG, listener: (Boolean) -> Unit) {
-        foregroundListeners[tag] = listener
+        foregroundListenerManager.register(tag, listener)
     }
 
-    /** 注销监听器 */
     @JvmStatic
     fun unregisterAppStatusListener(tag: String = TAG) {
-        foregroundListeners.remove(tag)
+        foregroundListenerManager.unregister(tag)
     }
 
-    /**
-     * 注册Activity生命周期监听器
-     * @param tag 监听器标识
-     * @param listener 生命周期回调(activity: Activity, event: "enter"/"exit")
-     */
     @JvmStatic
     fun registerActivityTransitionListener(
         tag: String = TAG,
         listener: (Activity, ActivityTransitionEvent) -> Unit
     ) {
-        activityLifecycleListeners[tag] = { activity, event ->
+        activityLifecycleListenerManager.register(tag) { activity, event ->
             listener(activity, ActivityTransitionEvent.valueOf(event))
         }
     }
 
-    /**
-     * 注销Activity生命周期监听器
-     */
     @JvmStatic
     fun unregisterActivityTransitionListener(tag: String = TAG) {
-        activityLifecycleListeners.remove(tag)
+        activityLifecycleListenerManager.unregister(tag)
     }
 
-    /**
-     * 添加Activity暂停监听器
-     * @param activity 要监听的Activity
-     * @param listener 暂停回调
-     */
     @JvmStatic
     fun addOnActivityPausedListener(activity: Activity, listener: () -> Unit) {
         val key = activity::class.java.name
-        pausedListeners[key] = { _ ->
+        pausedListenerManager.register(key) { _ ->
             listener.invoke()
-            // 自动触发一次清理（双重保障）
-            pausedListeners.remove(key)
+            pausedListenerManager.unregister(key)
         }
     }
 
-    /**
-     * 跟踪Activity生命周期，统计时长
-     * @param activity 要跟踪的Activity
-     */
     @JvmStatic
     fun trackActivityTime(activity: Activity) {
         val startTime = System.currentTimeMillis()
-
         addOnActivityPausedListener(activity) {
             val duration = System.currentTimeMillis() - startTime
             TimeTracker.updateStats(activity, duration)
@@ -196,312 +374,195 @@ object AppTrackV2 : Application.ActivityLifecycleCallbacks, DefaultLifecycleObse
     // region 生命周期跟踪
     override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
         logLifecycle(activity, "onCreate")
-        updateActivityStack(activity)
+        activityStackManager.add(activity)
         if (activity is FragmentActivity) {
-            // 监听Fragment生命周期
             setupFragmentTracking(activity)
         }
+        performanceStats.activityTransitions.incrementAndGet()
     }
 
     override fun onActivityResumed(activity: Activity) {
         logLifecycle(activity, "onResume")
-        bringToFront(activity)
-        // 修改为总是通知进入事件（但添加isChangingConfigurations检查）
+        activityStackManager.remove(activity)
+        activityStackManager.add(activity) // 移至栈顶
+        
         if (!activity.isChangingConfigurations) {
             notifyActivityLifecycleListeners(activity, ActivityTransitionEvent.ENTER)
         }
+        performanceStats.activityTransitions.incrementAndGet()
     }
 
     override fun onActivityPaused(activity: Activity) {
-        val key = activity::class.java.name
-        pausedListeners[key]?.invoke(activity)
-        // 添加配置变更检查
+        pausedListenerManager.notifyAll { listener -> listener(activity) }
+        
         if (!activity.isChangingConfigurations) {
             notifyActivityLifecycleListeners(activity, ActivityTransitionEvent.EXIT)
         }
+        performanceStats.activityTransitions.incrementAndGet()
     }
 
     override fun onActivityDestroyed(activity: Activity) {
         logLifecycle(activity, "onDestroy")
-        activityStack.removeAll {
-            val ref = it.get()
-            ref == null || ref == activity || !ref.isAlive()
+        activityStackManager.removeAll { ref -> 
+            ref == null || ref == activity || !ref.isAlive() 
         }
-        // 新增内存泄漏修复代码
-        pausedListeners.remove(activity::class.java.name)
+        
+        // 清理相关资源
+        pausedListenerManager.unregister(activity::class.java.name)
         if (activity is FragmentActivity) {
             fragmentCallbacks.remove(activity)?.let { callback ->
-                activity.supportFragmentManager.unregisterFragmentLifecycleCallbacks(callback)
+                try {
+                    activity.supportFragmentManager.unregisterFragmentLifecycleCallbacks(callback)
+                } catch (e: Exception) {
+                    LogPure.w(TAG, "Failed to unregister fragment callback: ${e.message}")
+                }
             }
         }
+        performanceStats.activityTransitions.incrementAndGet()
     }
 
     override fun onStart(owner: LifecycleOwner) {
         logAppState("Foreground")
-        notifyListeners(true)
+        notifyForegroundListeners(true)
     }
 
     override fun onStop(owner: LifecycleOwner) {
         logAppState("Background")
-        notifyListeners(false)
+        notifyForegroundListeners(false)
     }
     // endregion
 
     // region Service生命周期扩展
     fun onServiceCreate(service: Service) {
         logLifecycle(service, "onCreate")
-        serviceStack.add(WeakReference(service))
-        cleanUpWeakReferences(serviceStack)
+        serviceStackManager.add(service)
     }
 
     fun onServiceDestroy(service: Service) {
         logLifecycle(service, "onDestroy")
-        serviceStack.removeAll { it.get() == service }
+        serviceStackManager.remove(service)
     }
     // endregion
 
     // region 扩展工具方法
-    /**
-     * 获取当前栈顶Activity（线程安全）
-     *
-     * @return 可能为null（当没有存活Activity时）
-     *
-     * 注意事项：
-     * - 返回前会自动执行弱引用清理
-     * - 需检查Activity.isAlive()状态
-     */
     @JvmStatic
     fun getTopActivity(): Activity? {
-        cleanUpWeakReferences(activityStack) // ✅ 确保数据有效性
-        return activityStack.peekFirst()?.get()?.takeIf { it.isAlive() }
+        return activityStackManager.getTop()?.takeIf { it.isAlive() }
     }
 
-    /**
-     * 安全结束指定类型的Activity集合
-     *
-     * @param activities 需要结束的Activity class数组
-     *
-     * 实现特性：
-     * - 自动过滤已销毁的Activity实例
-     * - 确保在主线程执行finish操作
-     * - 支持批量结束多个类型Activity
-     */
     @JvmStatic
     fun finishActivities(vararg activities: Class<*>) {
-        val targets = activeActivities.filter { it.javaClass in activities }
+        val targets = getActiveActivities().filter { it.javaClass in activities }
         executeOnMain { targets.forEach { it.finish() } }
     }
 
-    /** 结束所有非指定Activity */
     @JvmStatic
     fun finishAllExcept(clazz: Class<*>) {
-        val targets = activeActivities.filter { it.javaClass != clazz }
+        val targets = getActiveActivities().filter { it.javaClass != clazz }
         executeOnMain { targets.forEach { it.finish() } }
     }
 
-    /** 关闭所有Activity */
     @JvmStatic
     fun finishAllActivities() {
-        executeOnMain { activeActivities.forEach { it.finish() } }
+        executeOnMain { getActiveActivities().forEach { it.finish() } }
     }
 
-    /** 检查指定类型的Activity是否存在 */
     @JvmStatic
     fun hasActivity(activityClass: Class<*>): Boolean =
-        activeActivities.any { it.javaClass == activityClass }
+        getActiveActivities().any { it.javaClass == activityClass }
 
-    /** 当前存活的Activity数量*/
-    fun aliveActivityCount(): Int = activeActivities.size
+    @JvmStatic
+    fun aliveActivityCount(): Int = getActiveActivities().size
 
-    /**
-     * 获取当前栈顶Fragment（线程安全）
-     * @return 可能为null（当没有有效Fragment时）
-     *
-     * 注意事项：
-     * - 返回前会自动清理无效引用
-     * - 如果在Fragment的OnResume方法调用时，存在竞态条件，可能出现还未加入Fragment栈，而获取到之前的Fragment实例
-     *   因此此种情况需要延时获取
-     */
     @JvmStatic
     fun getTopFragment(): Fragment? {
-        cleanUpWeakReferences(fragmentStack)
-        return synchronized(fragmentStack) {
-            val topActivity = getTopActivity()
-            fragmentStack.mapNotNull { it.get() }
-                .firstOrNull { fragment ->
-                    fragment.isAdded && !fragment.isDetached &&
-                            // 新增宿主Activity匹配检查
-                            fragment.activity == topActivity
-                }
-        }
+        val topActivity = getTopActivity()
+        return fragmentStackManager.getAll()
+            .firstOrNull { fragment ->
+                fragment.isAdded && !fragment.isDetached && fragment.activity == topActivity
+            }
     }
 
-    /**
-     * 获取当前关联的Fragment集合
-     * @param activity 宿主Activity
-     */
     @JvmStatic
     fun getFragmentsByActivity(activity: Activity): List<Fragment> {
-        return fragmentStack.mapNotNull { it.get() }.filter {
+        return fragmentStackManager.getAll().filter {
             it.isAdded && it.activity == activity
         }.distinct()
     }
 
-    /**
-     * 批量添加需要排除的Activity类名
-     * @param classNames 全限定类名集合
-     */
     @JvmStatic
     fun addExcludedActivities(classNames: Collection<String>) {
-        classNames.forEach { excludedActivities[it] = Unit }
+        excludedActivities.addAll(classNames)
     }
 
-    /**
-     * 批量添加需要排除的Activity类名（可变参数版本）
-     * @param classNames 全限定类名数组
-     */
     @JvmStatic
     fun addExcludedActivities(vararg classNames: String) {
-        classNames.forEach { excludedActivities[it] = Unit }
+        excludedActivities.addAll(classNames)
     }
 
-    /**
-     * 移除已排除的Activity类名
-     * @param className 全限定类名
-     */
     @JvmStatic
     fun removeExcludedActivity(className: String) {
         excludedActivities.remove(className)
     }
 
-
-    /**
-     * 批量添加需要排除的Fragment类名（线程安全）
-     * @param classNames 全限定类名集合（例如：["com.example.Fragment1", "com.lib.Fragment2"]）
-     */
     @JvmStatic
     fun addExcludedFragments(classNames: Collection<String>) {
-        classNames.forEach { excludedFragments[it] = Unit }
+        excludedFragments.addAll(classNames)
     }
 
-    /**
-     * 批量添加需要排除的Fragment类名（可变参数版本）
-     * @param classNames 全限定类名数组（例如："com.example.Fragment1", "com.lib.Fragment2"）
-     */
     @JvmStatic
     fun addExcludedFragments(vararg classNames: String) {
-        classNames.forEach { excludedFragments[it] = Unit }
+        excludedFragments.addAll(classNames)
     }
 
-    /**
-     * 移除已排除的Fragment类名
-     * @param className 全限定类名
-     */
     @JvmStatic
     fun removeExcludedFragment(className: String) {
         excludedFragments.remove(className)
     }
 
-    /**
-     * 反射获取当前应用的Application实例
-     */
     @JvmStatic
     fun getApplicationReflect(): Application? {
-        return try {
-            // 获取 ActivityThread 实例
-            val thread = getActivityThread() ?: return null
-            // 通过 ActivityThread 实例调用 getApplication() 方法
-            val app = ReflectHelper.on("android.app.ActivityThread")
-                .getMethod("getApplication")
-                .invoke(thread) ?: return null
-            return app as Application
-        } catch (e: Exception) {
-            null
+        return applicationLock.read { cachedApplication } ?: run {
+            val app = getApplicationViaReflection()
+            applicationLock.write { cachedApplication = app }
+            app
         }
     }
 
-    /** 当前存活Activity列表 */
-    private val activeActivities: List<Activity>
-        get() {
-            cleanUpWeakReferences(activityStack) // ✅ 数据过滤前置条件
-            return activityStack.mapNotNull { it.get() }.filter { it.isAlive() }
-        }
+    private fun getActiveActivities(): List<Activity> {
+        return activityStackManager.getAll().filter { it.isAlive() }
+    }
 
-    /** 主线程执行 */
     private inline fun executeOnMain(crossinline action: () -> Unit) {
         if (isMainThread()) action() else HandlerGT.main.post { action.invoke() }
     }
     // endregion
 
     // region 私有方法
-    /** 带异常捕获的监听通知 */
-    private fun notifyListeners(isForeground: Boolean) {
-        foregroundListeners.values.forEach { listener ->
-            try {
-                if (isMainThread()) listener(isForeground) else {
-                    HandlerGT.main.post { listener(isForeground) }
-                }
-            } catch (e: Exception) {
-                LogPure.e(TAG, "Listener error ${e.message}")
+    private fun notifyForegroundListeners(isForeground: Boolean) {
+        foregroundListenerManager.notifyAll { listener ->
+            if (isMainThread()) {
+                listener(isForeground)
+            } else {
+                HandlerGT.main.post { listener(isForeground) }
             }
         }
     }
 
-    /** 统一通知生命周期监听器 */
-    private fun notifyActivityLifecycleListeners(
-        activity: Activity,
-        event: ActivityTransitionEvent
-    ) {
-        // 添加排除检查
-        if (excludedActivities.containsKey(activity::class.java.name)) {
+    private fun notifyActivityLifecycleListeners(activity: Activity, event: ActivityTransitionEvent) {
+        if (excludedActivities.contains(activity::class.java.name)) {
             LogPure.d(TAG, "Filtered activity transition: ${activity::class.simpleName}")
             return
         }
-        activityLifecycleListeners.values.forEach { listener ->
+        
+        activityLifecycleListenerManager.notifyAll { listener ->
             executeOnMain { listener(activity, event.name) }
         }
     }
 
-    /** 更新Activity栈顺序 */
-    private fun updateActivityStack(activity: Activity) {
-        cleanUpWeakReferences(activityStack) // ✅ 必要前置清理
-        activityStack.addFirst(WeakReference(activity))
-    }
-
-    /** 将Activity移至栈顶 */
-    private fun bringToFront(activity: Activity) {
-        synchronized(activityStack) {
-            // 检查栈顶是否已经是当前Activity
-            val topRef = activityStack.peekFirst()
-            if (topRef?.get() == activity) return@synchronized
-
-            // 非栈顶时执行移除和添加操作
-            activityStack.removeAll { it.get() == activity }
-            activityStack.addFirst(WeakReference(activity))
-        }
-    }
-
-    /** 将Fragment移至栈顶 */
-    private fun bringFragmentToFront(fragment: Fragment) {
-        synchronized(fragmentStack) {
-            // 检查栈顶是否已经是当前Fragment
-            val topRef = fragmentStack.peekFirst()
-            if (topRef?.get() == fragment) return@synchronized
-
-            // 非栈顶时执行移除和添加操作
-            fragmentStack.removeAll { it.get() == fragment }
-            fragmentStack.addFirst(WeakReference(fragment))
-        }
-    }
-
-    /** 设置Fragment生命周期监听 */
     private fun setupFragmentTracking(activity: FragmentActivity) {
         val callback = object : FragmentManager.FragmentLifecycleCallbacks() {
-            override fun onFragmentCreated(
-                fm: FragmentManager,
-                f: Fragment,
-                savedInstanceState: Bundle?
-            ) {
+            override fun onFragmentCreated(fm: FragmentManager, f: Fragment, savedInstanceState: Bundle?) {
                 handleFragmentEvent(f, "onCreate")
             }
 
@@ -517,104 +578,97 @@ object AppTrackV2 : Application.ActivityLifecycleCallbacks, DefaultLifecycleObse
                 handleFragmentEvent(f, "onDestroy")
             }
         }
+        
         fragmentCallbacks[activity] = callback
         activity.supportFragmentManager.registerFragmentLifecycleCallbacks(callback, true)
     }
 
-    /** 处理Fragment生命周期事件 */
     private fun handleFragmentEvent(fragment: Fragment, event: String) {
-        // 统一过滤逻辑
-        if (excludedFragments.containsKey(fragment::class.java.name)) {
+        if (excludedFragments.contains(fragment::class.java.name)) {
             LogPure.d(TAG, "Filtered fragment: ${fragment::class.simpleName}")
             return
         }
+        
         logLifecycle(fragment, event)
+        performanceStats.fragmentTransitions.incrementAndGet()
+        
         when (event) {
-            "onCreate" -> addToStack(fragmentStack, fragment)
-            "onDestroy" -> fragmentStack.removeAll { it.get() == fragment }
-            "onResume" -> {
-                // 新增容量清理逻辑
-                if (fragmentResumeTimes.size >= maxFragmentResumeRecords) {
-                    val iterator = fragmentResumeTimes.entries.iterator()
-                    while (iterator.hasNext() && fragmentResumeTimes.size > maxFragmentResumeRecords * 0.9) {
-                        iterator.next()
-                        iterator.remove()
-                    }
-                }
-                val containsKey = fragmentResumeTimes.containsKey(fragment.javaClass.simpleName)
-                fragmentResumeTimes[fragment.javaClass.simpleName] = System.currentTimeMillis()
-                // 确保相同Fragment只保留最新实例在栈顶
-                synchronized(fragmentStack) {
-                    fragmentStack.removeAll { it.get() == fragment }
-                    addToStack(fragmentStack, fragment)
-                    bringFragmentToFront(fragment)
-
-                    // TODO: 补充代码：fragmentResumeTimes按照value时间戳从大到小排序，选择出value时间戳之差小于100ms的key(可能有多个)，
-                    // TODO: 按照时间戳时间最早排序取第一个key，然后将fragmentStack中该key的Fragment移至栈顶
-
-                    // 完成新增代码：处理时间戳相近的Fragment
-                    val now = System.currentTimeMillis()
-                    val candidates = fragmentResumeTimes.entries
-                        .sortedByDescending { it.value } // 1. 按时间戳降序排序
-                        .takeWhile { now - it.value < 100 } // 2. 筛选100ms内的记录
-                        .sortedBy { it.value } // 3. 按时间戳升序（最早的排前）
-
-                    // 找到最早触发的有效Fragment实例
-                    candidates.firstOrNull()?.let { entry ->
-                        fragmentStack.firstOrNull { ref ->
-                            ref.get()?.javaClass?.simpleName == entry.key
-                        }?.get()?.let { candidate ->
-                            if (!containsKey) return@handleFragmentEvent
-                            // 将候选Fragment移至栈顶
-                            bringFragmentToFront(candidate)
-                        }
-                    }
-                }
+            "onCreate" -> fragmentStackManager.add(fragment)
+            "onDestroy" -> {
+                fragmentStackManager.remove(fragment)
+                fragmentResumeTimes.remove(fragment.javaClass.simpleName)
             }
+            "onResume" -> handleFragmentResume(fragment)
         }
     }
 
-    /**
-     * 反射获取ActivityThread实例
-     */
+    private fun handleFragmentResume(fragment: Fragment) {
+        // 优化的 Fragment Resume 处理逻辑
+        val className = fragment.javaClass.simpleName
+        val currentTime = System.currentTimeMillis()
+        val wasExisting = fragmentResumeTimes.containsKey(className)
+        
+        fragmentResumeTimes[className] = currentTime
+        fragmentStackManager.remove(fragment)
+        fragmentStackManager.add(fragment)
+        
+        // 简化的时间窗口处理
+        if (!wasExisting) {
+            handleFragmentTimeWindow(currentTime, fragment)
+        }
+    }
+
+    private fun handleFragmentTimeWindow(currentTime: Long, currentFragment: Fragment) {
+        val candidates = fragmentResumeTimes.entries
+            .filter { currentTime - it.value < config.fragmentTimeWindow }
+            .minByOrNull { it.value }
+        
+        candidates?.let { entry ->
+            fragmentStackManager.getAll()
+                .find { it.javaClass.simpleName == entry.key }
+                ?.let { candidate ->
+                    if (candidate != currentFragment) {
+                        fragmentStackManager.remove(candidate)
+                        fragmentStackManager.add(candidate)
+                    }
+                }
+        }
+    }
+
+    private fun getApplicationViaReflection(): Application? {
+        return try {
+            val thread = getActivityThread() ?: return null
+            ReflectHelper.on("android.app.ActivityThread")
+                .getMethod("getApplication")
+                .invoke(thread) as? Application
+        } catch (e: Exception) {
+            LogPure.e(TAG, "Failed to get Application via reflection: ${e.message}")
+            null
+        }
+    }
+
     private fun getActivityThread(): Any? {
-        // 优先尝试通过静态字段获取
-        val fromField = try {
+        return try {
             ReflectHelper.on("android.app.ActivityThread")
                 .getField("sCurrentActivityThread")
         } catch (e: Exception) {
-            Log.e(TAG, "getActivityThreadInActivityThreadStaticField: ${e.message}")
-            null
-        }
-
-        return fromField ?: try {
-            // 字段获取失败后尝试通过静态方法获取
-            ReflectHelper.on("android.app.ActivityThread")
-                .chainInvoke("currentActivityThread")
-                .get() as Any?
-        } catch (e: Exception) {
-            Log.e(TAG, "getActivityThreadInActivityThreadStaticMethod: ${e.message}")
-            null
-        }
-    }
-
-    /** 清理无效弱引用 */
-    private fun <T> cleanUpWeakReferences(list: ConcurrentLinkedDeque<WeakReference<T>>) {
-        list.removeAll { it.get() == null }
-    }
-
-    /** 添加到栈中，并清理超出最大容量的元素 */
-    private fun <T> addToStack(stack: ConcurrentLinkedDeque<WeakReference<T>>, item: T) {
-        stack.addFirst(WeakReference(item))
-        while (stack.size > MAX_STACK_SIZE) {
-            stack.removeLast()
+            try {
+                ReflectHelper.on("android.app.ActivityThread")
+                    .chainInvoke("currentActivityThread")
+                    .get()
+            } catch (e2: Exception) {
+                LogPure.e(TAG, "Failed to get ActivityThread: ${e2.message}")
+                null
+            }
         }
     }
     // endregion
 
     // region 生命周期日志
     private fun logLifecycle(obj: Any, event: String) {
-        LogPure.d(TAG, "${obj::class.simpleName?.substringAfterLast('.')} $event")
+        if (config.enablePerformanceStats) {
+            LogPure.d(TAG, "${obj::class.simpleName?.substringAfterLast('.')} $event")
+        }
     }
 
     private fun logAppState(state: String) {
@@ -622,10 +676,36 @@ object AppTrackV2 : Application.ActivityLifecycleCallbacks, DefaultLifecycleObse
     }
     // endregion
 
-    // region 默认实现（简化）
+    // region 清理和销毁
+    fun destroy() {
+        stopPeriodicCleanup()
+        activityStackManager.clear()
+        serviceStackManager.clear()
+        fragmentStackManager.clear()
+        foregroundListenerManager.clear()
+        activityLifecycleListenerManager.clear()
+        pausedListenerManager.clear()
+        fragmentCallbacks.clear()
+        fragmentResumeTimes.clear()
+        excludedFragments.clear()
+        excludedActivities.clear()
+        
+        applicationLock.write { cachedApplication = null }
+        performanceStats.reset()
+        
+        LogPure.i(TAG, "AppTrackV2 destroyed and resources cleaned up")
+    }
+    // endregion
+
+    // region 默认实现
     override fun onActivityStarted(activity: Activity) = Unit
     override fun onActivityStopped(activity: Activity) = Unit
     override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) = Unit
     // endregion
-
 }
+
+// region 辅助类和枚举
+enum class ActivityTransitionEvent {
+    ENTER, EXIT
+}
+// endregion
