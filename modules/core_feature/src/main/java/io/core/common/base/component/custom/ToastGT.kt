@@ -147,7 +147,7 @@ class ToastGT private constructor(
      */
     class Builder(private val context: Context) {
         private var message: String = ""
-        private var duration: Int = 1800
+        private var duration: Int = 2000
         private var appearance: ToastAppearanceStrategy = ToastConfigManager.getDefaultAppearance()
         private var animation: ToastAnimationStrategy = ToastConfigManager.getDefaultAnimation()
         private var position: ToastPositionStrategy = ToastConfigManager.getDefaultPosition()
@@ -175,7 +175,7 @@ class ToastGT private constructor(
         /**
          * 快捷显示方法，使用全局默认配置
          */
-        fun show(context: Context, message: String, duration: Int = 1800) {
+        fun show(context: Context, message: String, duration: Int = 2000) {
             Builder(context)
                 .setMessage(message)
                 .setDuration(duration)
@@ -188,7 +188,7 @@ class ToastGT private constructor(
         fun showWithQueue(
             context: Context,
             message: String,
-            duration: Int = 1800,
+            duration: Int = 2000,
             appearance: ToastAppearanceStrategy? = null,
             animation: ToastAnimationStrategy? = null,
             position: ToastPositionStrategy? = null

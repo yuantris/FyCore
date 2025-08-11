@@ -17,6 +17,8 @@ import io.core.common.helper.coroutine.info.GlobalCoroutine
 import io.core.common.helper.net.NetworkMonitor
 import io.core.common.helper.track.AppTrackV2
 import io.core.common.helper.track.TurboTracker
+import io.core.common.helper.track.v3.AppTrackV3
+import io.core.common.helper.track.v3.AppTrackV3Helper
 import io.core.common.util.CoreUtil.Companion.toast
 import io.core.common.util.extensions.notificationManager
 import io.core.common.util.log.LogPure

@@ -186,6 +186,9 @@ class CrashHandler private constructor(
         private fun saveCrashInfo2File(timestamp: Long, ex: Throwable): String {
             val sb = StringBuilder()
             for ((key, value) in paramsMap) {
+                if (key == "WebViewUserAgent") {
+                    sb.append("\n")
+                }
                 sb.append(key).append(" = ").append(value).append("\n")
             }
 

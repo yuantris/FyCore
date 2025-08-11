@@ -129,7 +129,6 @@ object FileOperations {
                 file.delete()
             }
         } catch (e: Exception) {
-            e.printOnDebug()
             false
         }
     }

@@ -328,7 +328,7 @@ fun Context.toastLong(message: String?) {
     takeIf { !it.isActivity }?.let {
         Toaster.show(message, Toast.LENGTH_LONG)
     } ?: run {
-        ToastGT.show(this, message ?: "", duration = 3600)
+        ToastGT.show(this, message ?: "", duration = 4000)
     }
 }
 

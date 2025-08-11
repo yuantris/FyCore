@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/_xpopup_content_color">
+    android:background="@color/md_amber_100">
 
     <io.core.widget.view.AppTitleBar
         android:id="@+id/title_bar"
@@ -12,13 +12,12 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/lav_lottie"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         app:lottie_autoPlay="true"
-        app:lottie_fileName="lottie/chun(2).json"
-        app:lottie_loop="true"
-        app:lottie_repeatMode="restart" />
+        app:lottie_fileName="lottie/shake_phone.json" />
 </FrameLayout>

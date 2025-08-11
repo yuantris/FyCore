@@ -9,6 +9,7 @@ import com.hjq.permissions.Permission
 import com.hjq.permissions.XXPermissions
 import io.core.common.helper.coroutine.Coroutine
 import io.core.common.helper.track.AppTrackV2
+import io.core.common.helper.track.v3.AppTrackV3
 import io.core.common.util.log.LogPure
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
@@ -33,6 +34,7 @@ abstract class BaseService : LifecycleService() {
     override fun onCreate() {
         super.onCreate()
         AppTrackV2.onServiceCreate(this)
+        AppTrackV3.onServiceCreate(this)
         if (isForegroundService()) checkPermission()
     }
 
@@ -62,6 +64,7 @@ abstract class BaseService : LifecycleService() {
     override fun onDestroy() {
         super.onDestroy()
         AppTrackV2.onServiceDestroy(this)
+        AppTrackV3.onServiceDestroy(this)
     }
 
     /**

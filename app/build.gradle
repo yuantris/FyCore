@@ -81,6 +81,7 @@ dependencies {
     implementation libs.core.splashscreen
     implementation fycoreDependencies[version]
     debugImplementation libs.leakcanary.android
+    implementation libs.annotations
 
     implementation libs.room.ktx
     //noinspection KaptUsageInsteadOfKsp

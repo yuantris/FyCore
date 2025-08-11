@@ -34,6 +34,7 @@ class CustomToastActivity : ReflectBindingActivity<ActivityCustomToastBinding>()
             showTop.setOnClickListener {
                 ToastGT.Builder(this@CustomToastActivity)
                     .setMessage("自定义消息")
+                    .setDuration(3000)
                     .setAppearance(RedToastAppearance())
                     .setAnimation(SlideAnimationStrategy())
                     .setPosition(TopPositionStrategy())

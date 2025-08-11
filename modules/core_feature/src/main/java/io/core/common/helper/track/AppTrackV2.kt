@@ -704,8 +704,4 @@ object AppTrackV2 : Application.ActivityLifecycleCallbacks, DefaultLifecycleObse
     // endregion
 }
 
-// region 辅助类和枚举
-enum class ActivityTransitionEvent {
-    ENTER, EXIT
-}
 // endregion

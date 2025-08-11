@@ -45,7 +45,7 @@ import kotlin.collections.set
 
 class KotlinFragment : ReflectBindingFragment<FragmentKotlinBinding, TestPageActivity>() {
 
-    private var timeoutHandler: TimeoutHandler?=null
+    private var timeoutHandler: TimeoutHandler? = null
     private val _data = SingleLiveData<String>()
     private var _count = 0
 
@@ -224,17 +224,22 @@ class KotlinFragment : ReflectBindingFragment<FragmentKotlinBinding, TestPageAct
             },
         )
         launch {
-            TaskExecutor.get().execute(
-                tasks,
-                onComplete = {
+            TaskExecutor.builder<String>()
+                .onProgress { completed, total ->   // 进度回调
+                    println("进度: $completed/$total")
+                }
+                .onEachComplete { result, index ->  // 单个任务完成回调
+                    LogPure.d { "result:$result,index:$index" }
+                }
+                .onError { error ->                // 错误回调
+                    println("执行出错: ${error.message}")
+                }
+                .onComplete {
                     LogPure.i {
                         "onComplete:${GsonUtils.toJson(it)}"
                     }
-                },
-                onEachComplete = { result, index ->
-                    LogPure.d { "result:$result,index:$index" }
-                },
-            )
+                }
+                .execute(tasks)
         }
 
         storage.getAllKeys().forEach {

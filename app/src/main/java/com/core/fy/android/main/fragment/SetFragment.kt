@@ -17,7 +17,6 @@ import io.core.common.helper.valid.ValidGT
 import io.core.common.helper.valid.excludeHiddenFiles
 import io.core.common.helper.valid.hasExtension
 import io.core.common.helper.valid.maxSize
-import io.core.common.util.concurrent.TaskExecutorV2
 import io.core.common.util.extensions.cool.coolThread
 import io.core.common.util.extensions.cool.launch
 import io.core.common.util.extensions.cool.timeFormat
@@ -70,13 +69,6 @@ class SetFragment : ReflectBindingFragment<FragmentSetBinding, MainActivity>() {
 
     override fun initView() {
         super.initView()
-
-        TaskExecutorV2.get(lifecycleScope)
-            .addTask { currentTime.logI() }
-            .addTask { currentTime.logI() }
-            .onComplete { "任务执行完成".logI() }
-            .execute()
-
 
         val typeOf = FileType.mimeTypeOf("avatar.apk")
         typeOf.logI()

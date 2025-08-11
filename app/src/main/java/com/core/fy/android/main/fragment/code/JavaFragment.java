@@ -11,7 +11,10 @@ import com.core.fy.android.function.TestPageActivity;
 import com.core.fy.android.help.ProgressNotifier;
 import com.core.fy.android.util.SafeJson;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -149,42 +152,42 @@ public class JavaFragment extends ReflectBindingFragmentV2<FragmentJavaBinding> 
                     return null;
                 });
 
+        List<TaskExecutor.ProcessorTask<String>> tasks = Arrays.asList(
+                () -> "234",
+                () -> {
+                    try {
+                        Thread.sleep(4000);
+                    } catch (InterruptedException e) {
+                    }
+                    return "兼容";
+                }
+        );
 
-        List<TaskExecutor.ProcessorTask<String>> tasks = new ArrayList<>();
-        tasks.add(() -> "234");
-        tasks.add(() -> {
-            try {
-                Thread.sleep(4000);
-            } catch (InterruptedException e) {
+        TaskExecutor.get().execute(tasks, new TaskExecutor.ConcurrentCallback<>() {
+            @Override
+            public void onComplete(@NotNull SortedMap<Integer, String> results) {
+                boolean existActivity = AppTrackV2.hasActivity(TestPageActivity.class);
+                if (existActivity) {
+                    List<String> strings = CollectionTools.mapValuesToList(results);
+                    String json = GsonUtils.toJson(strings);
+                    LogPure.e(json);
+                }
             }
-            return "兼容";
+
+            @Override
+            public void onEachResult(String result, int index) {
+                TaskExecutor.ConcurrentCallback.super.onEachResult(result, index);
+                boolean existActivity = AppTrackV2.hasActivity(TestPageActivity.class);
+                if (existActivity) {
+                    LogPure.d(result);
+                }
+            }
+
+            @Override
+            public void onError(@NonNull TaskExecutor.TaskExecutionException e) {
+                LogCat.e(e);
+            }
         });
-
-        TaskExecutor.get().execute(tasks,
-                new TaskExecutor.ConcurrentCallback<String>() {
-                    @Override
-                    public void onComplete(@NonNull SortedMap<Integer, String> results) {
-                        boolean existActivity = AppTrackV2.hasActivity(TestPageActivity.class);
-                        if (existActivity) {
-                            List<String> strings = CollectionTools.mapValuesToList(results);
-                            String json = GsonUtils.toJson(strings);
-                            LogPure.e(json);
-                        }
-                    }
-
-                    @Override
-                    public void onEachResult(String result, int index) {
-                        boolean existActivity = AppTrackV2.hasActivity(TestPageActivity.class);
-                        if (existActivity) {
-                            LogPure.d(result);
-                        }
-                    }
-
-                    @Override
-                    public void onError(@NonNull Throwable e) {
-                        LogCat.e(e);
-                    }
-                });
     }
 
     @Override

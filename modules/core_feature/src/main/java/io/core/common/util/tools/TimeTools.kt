@@ -16,6 +16,14 @@ object TimeTools {
         SECOND, MINUTE, HOUR, DAY
     }
 
+    /**
+     * 季节枚举
+     */
+    enum class Season(val value: String) {
+        SPRING("春"), SUMMER("夏"), AUTUMN("秋"), WINTER("冬")
+    }
+
+
     @JvmStatic
     @JvmOverloads
     fun getDateFormat(format: String = TimePatterns.TIME_FULL): SimpleDateFormat {
@@ -249,4 +257,72 @@ object TimeTools {
         }
     }
 
+
+    /**
+     * 获取指定时间戳所在的季节，默认当前时间
+     *
+     * @param timestamp 时间戳（毫秒），默认为当前时间戳
+     * @return 对应的季节
+     */
+    @JvmStatic
+    @JvmOverloads
+    fun getSeason(timestamp: Long = currentTimeMillis): Season {
+        val calendar = Calendar.getInstance().apply {
+            timeInMillis = timestamp
+        }
+        val month = calendar.get(Calendar.MONTH) + 1 // 月份从0开始，所以要加1
+
+        return when (month) {
+            in 3..5 -> Season.SPRING
+            in 6..8 -> Season.SUMMER
+            in 9..11 -> Season.AUTUMN
+            12, 1, 2 -> Season.WINTER
+            else -> Season.SPRING
+        }
+    }
+
+    /**
+     * 判断指定年份是否为闰年
+     *
+     * @param year 需要判断的年份
+     * @return 如果是闰年返回true，否则返回false
+     */
+    @JvmStatic
+    fun isLeapYear(year: Int): Boolean {
+        return (year % 4 == 0 && year % 100 != 0) || (year % 400 == 0)
+    }
+
+    /**
+     * 判断指定时间戳所在的年份是否为闰年
+     *
+     * @param timestamp 时间戳（毫秒），默认为当前时间戳
+     * @return 如果是闰年返回true，否则返回false
+     */
+    @JvmStatic
+    @JvmOverloads
+    fun isLeapYear(timestamp: Long = currentTimeMillis): Boolean {
+        val calendar = Calendar.getInstance().apply {
+            timeInMillis = timestamp
+        }
+        val year = calendar.get(Calendar.YEAR)
+        return isLeapYear(year)
+    }
+
+    /**
+     * 判断时间字符串所在的年份是否为闰年
+     *
+     * @param timeString 时间字符串
+     * @param pattern 时间字符串格式(默认 yyyy-MM-dd)
+     * @return 如果是闰年返回true，否则返回false
+     */
+    @JvmStatic
+    @JvmOverloads
+    fun isLeapYear(timeString: String, pattern: String = TimePatterns.DATE_YMD): Boolean {
+        val timestamp = string2Millis(timeString, pattern)
+        return if (timestamp != -1L) {
+            isLeapYear(timestamp)
+        } else {
+            false
+        }
+    }
 }
