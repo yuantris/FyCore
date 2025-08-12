@@ -52,6 +52,10 @@
         android:theme="@style/Theme.FyCore">
 
         <activity
+            android:name=".function.fold.FoldActivity"
+            android:exported="false" />
+
+        <activity
             android:name=".function.lottie.LottieActivity"
             android:exported="false" />
         <service android:name=".ui.service.FFmpegService" />

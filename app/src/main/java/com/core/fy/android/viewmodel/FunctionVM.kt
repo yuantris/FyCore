@@ -41,6 +41,7 @@ class FunctionVM(var repository: FunctionRepository) : BaseViewModel() {
         Media("Media"),
         Json("Json"),
         FFmpeg("FFmpeg"),
+        Fold("Fold"),
         Lottie("Lottie"),
         COLL_BAR("collBar");
 
@@ -74,6 +75,7 @@ class FunctionVM(var repository: FunctionRepository) : BaseViewModel() {
             Function(Design.FFmpeg),
             Function(Design.Lottie),
             Function(Design.COLL_BAR),
+            Function(Design.Fold),
         )
     }
 

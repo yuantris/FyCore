@@ -17,6 +17,7 @@ import com.core.fy.android.function.database.RoomActivity
 import com.core.fy.android.function.dialog.DialogActivity
 import com.core.fy.android.function.event.EventActivity
 import com.core.fy.android.function.ffmpeg.FFmpegActivity
+import com.core.fy.android.function.fold.FoldActivity
 import com.core.fy.android.function.json.JsonActivity
 import com.core.fy.android.function.keyboard.KeyboardActivity
 import com.core.fy.android.function.lottie.LottieActivity
@@ -138,6 +139,8 @@ class StatusFragment : ReflectBindingFragment<FragmentStatusBinding, MainActivit
                                 FunctionVM.Design.Json -> startActivity<JsonActivity>()
                                 FunctionVM.Design.FFmpeg -> startActivity<FFmpegActivity>()
                                 FunctionVM.Design.Lottie -> startActivity<LottieActivity>()
+                                FunctionVM.Design.Fold -> startActivity<FoldActivity>()
+
                                 else -> {
                                     // do nothing
                                     ToastGT.show(requireContext(), "该添加点击事件了")
