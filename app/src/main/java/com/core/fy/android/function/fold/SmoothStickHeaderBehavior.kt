@@ -8,6 +8,7 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.ViewCompat
 import com.core.fy.android.R
 import io.core.common.util.log.LogPure
+import kotlin.math.abs
 
 class SmoothStickHeaderBehavior(context: Context, attrs: AttributeSet) :
     CoordinatorLayout.Behavior<View>(context, attrs) {
@@ -96,7 +97,18 @@ class SmoothStickHeaderBehavior(context: Context, attrs: AttributeSet) :
                     currentTop - mStickyTop // 移动到吸顶位置
                 }
                 ViewCompat.offsetTopAndBottom(child, -moveDistance)
-                consumed[1] = moveDistance
+
+                // 关键修改：根据剩余距离动态调整消费比例，让内容也能同时滚动
+                val remainingDistance = currentTop - mStickyTop
+                val totalDistance = mOriginalTop - mStickyTop
+                val headerRatio = if (totalDistance > 0) {
+                    (remainingDistance.toFloat() / totalDistance.toFloat()).coerceIn(0.3f, 0.8f)
+                } else {
+                    0.5f
+                }
+
+                // 只消费部分事件，剩余的让NestedScrollView处理
+                consumed[1] = (moveDistance * 0.2f).toInt()
 
                 // 计算变换进度 (0.0 到 1.0)
                 val progress = 1f - (child.top.toFloat() / mOriginalTop.toFloat())
@@ -127,43 +139,43 @@ class SmoothStickHeaderBehavior(context: Context, attrs: AttributeSet) :
 
         when {
             mIsSticky -> {
-                if (!target.canScrollVertically(-1)) {
-                    val moveDistance = if (newTop <= mOriginalTop) {
-                        -dy
-                    } else {
-                        mOriginalTop - currentTop
-                    }
-
-                    Log.d("StickyBehavior", "Moving by: $moveDistance")
-                    Log.d("StickyBehavior", "Before move - child.top: ${child.top}")
-
-                    ViewCompat.offsetTopAndBottom(child, moveDistance)
-
-                    Log.d("StickyBehavior", "After move - child.top: ${child.top}")
-
-                    // 添加这里：计算向下滑动的进度并更新视图变换
-                    val progress = 1f - (child.top.toFloat() / mOriginalTop.toFloat())
-                    updateViewTransition(progress)
-
-                    consumed[1] = dy
-
-                    if (child.top >= mOriginalTop) {
-                        mIsSticky = false
-                        Log.d("StickyBehavior", "Sticky state changed to false")
-                        // 确保精确定位
-                        val finalAdjust = mOriginalTop - child.top
-                        if (finalAdjust != 0) {
-                            ViewCompat.offsetTopAndBottom(child, finalAdjust)
-                            Log.d(
-                                "StickyBehavior",
-                                "Final adjust: $finalAdjust, final top: ${child.top}"
-                            )
-                        }
-                        // 确保完全恢复到展开状态
-                        updateViewTransition(0f)
-                    }
+                // 计算实际需要移动的距离
+                val moveDistance = if (newTop <= mOriginalTop) {
+                    -dy
                 } else {
-                    Log.d("StickyBehavior", "Target can still scroll up, not moving sticky view")
+                    mOriginalTop - currentTop
+                }
+
+                Log.d("StickyBehavior", "Moving by: $moveDistance")
+                Log.d("StickyBehavior", "Before move - child.top: ${child.top}")
+
+                ViewCompat.offsetTopAndBottom(child, moveDistance)
+
+                Log.d("StickyBehavior", "After move - child.top: ${child.top}")
+
+                // 计算向下滑动的进度并更新视图变换
+                val progress = 1f - (child.top.toFloat() / mOriginalTop.toFloat())
+                updateViewTransition(progress)
+
+                // 关键修改：使用固定的较小消费比例，确保内容能持续滚动
+                // 不管内容是否还能滚动，都只消费一小部分事件
+                val headerRatio = 0.3f  // 固定使用较小比例
+                consumed[1] = (abs(dy) * headerRatio).toInt()
+
+                if (child.top >= mOriginalTop) {
+                    mIsSticky = false
+                    Log.d("StickyBehavior", "Sticky state changed to false")
+                    // 确保精确定位
+                    val finalAdjust = mOriginalTop - child.top
+                    if (finalAdjust != 0) {
+                        ViewCompat.offsetTopAndBottom(child, finalAdjust)
+                        Log.d(
+                            "StickyBehavior",
+                            "Final adjust: $finalAdjust, final top: ${child.top}"
+                        )
+                    }
+                    // 确保完全恢复到展开状态
+                    updateViewTransition(0f)
                 }
             }
 
@@ -177,11 +189,20 @@ class SmoothStickHeaderBehavior(context: Context, attrs: AttributeSet) :
                 }
                 ViewCompat.offsetTopAndBottom(child, moveDistance)
 
-                // 添加这里：计算恢复过程的进度并更新视图变换
+                // 计算恢复过程的进度并更新视图变换
                 val progress = 1f - (child.top.toFloat() / mOriginalTop.toFloat())
                 updateViewTransition(progress)
 
-                consumed[1] = dy
+                // 向下恢复时也使用动态消费比例
+                val remainingDistance = mOriginalTop - currentTop
+                val totalDistance = mOriginalTop - mStickyTop
+                val headerRatio = if (totalDistance > 0) {
+                    (remainingDistance.toFloat() / totalDistance.toFloat()).coerceIn(0.3f, 0.8f)
+                } else {
+                    0.5f
+                }
+                
+                consumed[1] = (abs(dy) * headerRatio).toInt()
             }
         }
     }

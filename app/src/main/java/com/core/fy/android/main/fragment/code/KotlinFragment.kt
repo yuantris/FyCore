@@ -1,6 +1,5 @@
 package com.core.fy.android.main.fragment.code
 
-import androidx.lifecycle.lifecycleScope
 import com.blankj.utilcode.util.GsonUtils
 import com.core.fy.android.databinding.FragmentKotlinBinding
 import com.core.fy.android.function.TestPageActivity
@@ -25,9 +24,7 @@ import io.core.common.util.extensions.cool.getSettingsPathV2
 import io.core.common.util.extensions.cool.joinPath
 import io.core.common.util.extensions.cool.launch
 import io.core.common.util.extensions.cool.mapBuilder
-import io.core.common.util.extensions.cool.requestPermission
 import io.core.common.util.extensions.cool.runDelayedMain
-import io.core.common.util.extensions.cool.runMain
 import io.core.common.util.extensions.cool.withMain
 import io.core.common.util.extensions.logD
 import io.core.common.util.extensions.simpleName
@@ -39,9 +36,7 @@ import io.core.common.util.log.bury.AppLog
 import io.core.common.util.tools.FileTools
 import io.core.engine.storage.storage
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
-import kotlin.collections.set
 
 class KotlinFragment : ReflectBindingFragment<FragmentKotlinBinding, TestPageActivity>() {
 
@@ -115,12 +110,6 @@ class KotlinFragment : ReflectBindingFragment<FragmentKotlinBinding, TestPageAct
             m["邮政平邮"]?.logD()
         }
         ultra.getNotNull("data").asString().logD()
-
-        ctx.requestPermission(Permission.MANAGE_EXTERNAL_STORAGE) {
-//            LogPure.v {
-//                "MANAGE_EXTERNAL_STORAGE permission granted"
-//            }
-        }
 
         timeoutHandler = TimeoutHandler(
             timeoutMillis = 3000,

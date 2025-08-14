@@ -96,8 +96,6 @@ dependencies {
     compileOnly libs.mmkv
     // Glide
     compileOnly(libs.glide)
-    // 权限请求框架
-    compileOnly libs.xxpermissions
 
     // https://github.com/gyf-dev/ImmersionBar
     api libs.immersionbar

@@ -21,8 +21,6 @@ import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.lifecycleScope
 import com.gyf.immersionbar.ImmersionBar
-import com.hjq.permissions.Permission
-import com.hjq.permissions.XXPermissions
 import io.core.R
 import io.core.appCtx
 import io.core.common.base.component.dialog.showPopupWindow
@@ -36,6 +34,7 @@ import io.core.common.util.extensions.ui.appVersionName
 import io.core.common.util.extensions.ui.onClick
 import io.core.common.util.extensions.ui.onDebouncedClick
 import io.core.common.util.share.ShareAir
+import io.core.common.util.tools.PermissionAir
 import io.core.common.util.tools.UriTools
 import io.core.constant.CRASH_FOLDER_NAME
 import io.core.constant.TimePatterns
@@ -180,31 +179,30 @@ class CrashSameProcessActivity : BaseActivity() {
                 .append("\n崩溃时间：\t").append(dateFormat.format(Date()))
             val permissions: MutableList<String> =
                 mutableListOf(*packageInfo.requestedPermissions ?: emptyArray())
-            if (permissions.contains(Permission.READ_EXTERNAL_STORAGE) ||
-                permissions.contains(Permission.WRITE_EXTERNAL_STORAGE)
+            if (permissions.contains(Manifest.permission.READ_EXTERNAL_STORAGE) ||
+                permissions.contains(Manifest.permission.WRITE_EXTERNAL_STORAGE)
             ) {
                 builder.append("\n存储权限：\t").append(
                     if (this.hasReadWriteStoragePermission()) "已获得" else "未获得"
                 )
             }
-            if (permissions.contains(Permission.ACCESS_FINE_LOCATION) ||
-                permissions.contains(Permission.ACCESS_COARSE_LOCATION)
+            if (permissions.contains(Manifest.permission.ACCESS_FINE_LOCATION) ||
+                permissions.contains(Manifest.permission.ACCESS_COARSE_LOCATION)
             ) {
                 builder.append("\n定位权限：\t")
-                if (XXPermissions.isGranted(
-                        this,
-                        Permission.ACCESS_FINE_LOCATION,
-                        Permission.ACCESS_COARSE_LOCATION
+                if (PermissionAir.areAllGranted(
+                            Manifest.permission.ACCESS_FINE_LOCATION,
+                            Manifest.permission.ACCESS_COARSE_LOCATION
                     )
                 ) {
                     builder.append("精确、粗略")
                 } else {
                     when {
-                        XXPermissions.isGranted(this, Permission.ACCESS_FINE_LOCATION) -> {
+                        PermissionAir.isGranted(Manifest.permission.ACCESS_FINE_LOCATION) -> {
                             builder.append("精确")
                         }
 
-                        XXPermissions.isGranted(this, Permission.ACCESS_COARSE_LOCATION) -> {
+                        PermissionAir.isGranted(Manifest.permission.ACCESS_COARSE_LOCATION) -> {
                             builder.append("粗略")
                         }
 
@@ -214,39 +212,35 @@ class CrashSameProcessActivity : BaseActivity() {
                     }
                 }
             }
-            if (permissions.contains(Permission.CAMERA)) {
+            if (permissions.contains(Manifest.permission.CAMERA)) {
                 builder.append("\n相机权限：\t")
                     .append(
-                        if (XXPermissions.isGranted(
-                                this,
-                                Permission.CAMERA
+                        if (PermissionAir.isGranted(
+                                Manifest.permission.CAMERA
                             )
                         ) "已获得" else "未获得"
                     )
             }
-            if (permissions.contains(Permission.RECORD_AUDIO)) {
+            if (permissions.contains(Manifest.permission.RECORD_AUDIO)) {
                 builder.append("\n录音权限：\t").append(
-                    if (XXPermissions.isGranted(
-                            this,
-                            Permission.RECORD_AUDIO
+                    if (PermissionAir.isGranted(
+                            Manifest.permission.RECORD_AUDIO
                         )
                     ) "已获得" else "未获得"
                 )
             }
-            if (permissions.contains(Permission.SYSTEM_ALERT_WINDOW)) {
+            if (permissions.contains(Manifest.permission.SYSTEM_ALERT_WINDOW)) {
                 builder.append("\n悬浮窗权限：\t").append(
-                    if (XXPermissions.isGranted(
-                            this,
-                            Permission.SYSTEM_ALERT_WINDOW
+                    if (PermissionAir.isGranted(
+                            Manifest.permission.SYSTEM_ALERT_WINDOW
                         )
                     ) "已获得" else "未获得"
                 )
             }
-            if (permissions.contains(Permission.REQUEST_INSTALL_PACKAGES)) {
+            if (permissions.contains(Manifest.permission.REQUEST_INSTALL_PACKAGES)) {
                 builder.append("\n安装包权限：\t").append(
-                    if (XXPermissions.isGranted(
-                            this,
-                            Permission.REQUEST_INSTALL_PACKAGES
+                    if (PermissionAir.isGranted(
+                            Manifest.permission.REQUEST_INSTALL_PACKAGES
                         )
                     ) "已获得" else "未获得"
                 )

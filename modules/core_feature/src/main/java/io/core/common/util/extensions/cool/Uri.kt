@@ -8,7 +8,6 @@ import android.os.ParcelFileDescriptor
 import androidx.appcompat.app.AppCompatActivity
 import androidx.documentfile.provider.DocumentFile
 import androidx.fragment.app.Fragment
-import com.hjq.permissions.Permission
 import io.core.appCtx
 import io.core.common.util.FileDoc
 import io.core.common.util.extensions.ui.checkSelfUriPermission
@@ -44,7 +43,7 @@ fun AppCompatActivity.readUri(
                 success.invoke(fileDoc, inputStream)
             }
         } else {
-            if (isGranted(Permission.MANAGE_EXTERNAL_STORAGE)) {
+            if (hasReadStoragePermission()) {
                 RealPathUtil.getPath(uri)?.let { path ->
                     val file = File(path)
                     val fileDoc = FileDoc.fromFile(file)
@@ -76,7 +75,7 @@ fun Fragment.readUri(uri: Uri?, success: (fileDoc: FileDoc, inputStream: InputSt
                 success.invoke(fileDoc, inputStream)
             }
         } else {
-            if (isGranted(Permission.MANAGE_EXTERNAL_STORAGE)) {
+            if (requireContext().hasReadStoragePermission()) {
                 RealPathUtil.getPath(uri)?.let { path ->
                     val file = File(path)
                     val fileDoc = FileDoc.fromFile(file)

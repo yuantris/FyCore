@@ -5,6 +5,7 @@ import com.core.fy.android.R
 import com.core.fy.android.databinding.ActivityEventBinding
 import com.gyf.immersionbar.ImmersionBar
 import com.hjq.permissions.Permission
+import com.hjq.permissions.XXPermissions
 import io.core.common.base.component.activity.ReflectBindingActivity
 import io.core.common.base.component.dialog.specific.LoadingAir
 import io.core.common.helper.LocationDetail
@@ -14,7 +15,6 @@ import io.core.common.helper.OnLocationCallback
 import io.core.common.util.extensions.cool.GSON
 import io.core.common.util.extensions.cool.observeEvent
 import io.core.common.util.extensions.cool.postEvent
-import io.core.common.util.extensions.cool.requestPermission
 import io.core.common.util.extensions.currentTimeMillis
 import io.core.common.util.extensions.logD
 import io.core.common.util.extensions.logE
@@ -60,29 +60,30 @@ class EventActivity : ReflectBindingActivity<ActivityEventBinding>() {
                 onDebouncedClick {
                     // toast(currentTimeMillis.toString())
 //                    LiveDataPro.postEvent("123", "")'
-                    requestPermission(
-                        Permission.ACCESS_FINE_LOCATION,
-                        Permission.ACCESS_COARSE_LOCATION
-                    ) {
-                        LoadingAir.show("正在加载位置信息...")
-                        LocationFetcher.startPeriodicLocationUpdates(callback = object :
-                            OnLocationCallback {
-                            override fun onLocationRetrieved(detail: LocationDetail) {
-                                LoadingAir.closeWith {
-                                    GSON.toJson(detail).logD()
+                    XXPermissions.with(this@EventActivity)
+                        .permission(
+                            Permission.ACCESS_FINE_LOCATION,
+                            Permission.ACCESS_COARSE_LOCATION
+                        )
+                        .request { permissions, allGranted ->
+                            LoadingAir.show("正在加载位置信息...")
+                            LocationFetcher.startPeriodicLocationUpdates(callback = object :
+                                OnLocationCallback {
+                                override fun onLocationRetrieved(detail: LocationDetail) {
+                                    LoadingAir.closeWith {
+                                        GSON.toJson(detail).logD()
+                                    }
+
                                 }
 
-                            }
 
-
-
-                            override fun onLocationFailed(failure: LocationFailure) {
-                                LoadingAir.closeWith {
-                                    GSON.toJson(failure).logE()
+                                override fun onLocationFailed(failure: LocationFailure) {
+                                    LoadingAir.closeWith {
+                                        GSON.toJson(failure).logE()
+                                    }
                                 }
-                            }
-                        })
-                    }
+                            })
+                        }
                 }
             }
         }

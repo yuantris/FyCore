@@ -5,8 +5,6 @@ import android.os.IBinder
 import androidx.annotation.CallSuper
 import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.lifecycleScope
-import com.hjq.permissions.Permission
-import com.hjq.permissions.XXPermissions
 import io.core.common.helper.coroutine.Coroutine
 import io.core.common.helper.track.AppTrackV2
 import io.core.common.helper.track.v3.AppTrackV3
@@ -14,7 +12,6 @@ import io.core.common.util.log.LogPure
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.isActive
 import kotlin.coroutines.CoroutineContext
 
 abstract class BaseService : LifecycleService() {
@@ -35,7 +32,6 @@ abstract class BaseService : LifecycleService() {
         super.onCreate()
         AppTrackV2.onServiceCreate(this)
         AppTrackV3.onServiceCreate(this)
-        if (isForegroundService()) checkPermission()
     }
 
     @CallSuper
@@ -79,18 +75,4 @@ abstract class BaseService : LifecycleService() {
 
     }
 
-    /**
-     * 检测通知权限和后台权限
-     */
-    private fun checkPermission() {
-        AppTrackV2.getTopActivity()?.let {
-            XXPermissions.with(it)
-                .permission(Permission.POST_NOTIFICATIONS)
-                .request { _, _ ->
-                    if (lifecycleScope.isActive) {
-                        startForegroundNotification()
-                    }
-                }
-        }
-    }
 }

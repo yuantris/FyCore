@@ -7,10 +7,9 @@ import android.content.pm.PackageManager
 import android.os.Environment
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import com.hjq.permissions.OnPermissionCallback
-import com.hjq.permissions.XXPermissions
 import io.core.common.util.extensions.ui.ctx
 import io.core.common.util.tools.OSAir.higherThan
+import io.core.common.util.tools.PermissionAir
 import io.core.common.util.tools.isAndroid11Plus
 import io.core.constant.ANDROID_10
 import io.core.constant.ANDROID_13
@@ -29,39 +28,6 @@ import io.core.constant.ANDROID_6
  * @description
  * @author Yuan
  */
-
-fun Activity.isGranted(vararg permissions: String): Boolean {
-    return XXPermissions.isGranted(this, *permissions)
-}
-
-fun Fragment.isGranted(vararg permissions: String): Boolean {
-    return XXPermissions.isGranted(requireContext(), *permissions)
-}
-
-fun Context.isGranted(vararg permissions: String): Boolean {
-    return XXPermissions.isGranted(this, *permissions)
-}
-
-fun Context.requestPermission(
-    vararg permissions: String,
-    onDenied: (MutableList<String>, Boolean) -> Unit = { _, _ ->/* 默认空实现 */ },
-    onGranted: (Boolean) -> Unit
-) {
-    this.ctx?.let {
-        XXPermissions.with(it)
-            .permission(*permissions)
-            .request(object : OnPermissionCallback {
-                override fun onGranted(permissions: MutableList<String>, allGranted: Boolean) {
-                    onGranted.invoke(allGranted)
-                }
-
-                override fun onDenied(permissions: MutableList<String>, doNotAskAgain: Boolean) {
-                    onDenied.invoke(permissions, doNotAskAgain)
-                }
-            })
-    }
-
-}
 
 fun Context.hasReadStoragePermission(): Boolean {
     // 1. 先检查是否拥有管理所有文件的权限

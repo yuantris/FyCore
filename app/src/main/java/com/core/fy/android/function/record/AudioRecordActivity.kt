@@ -3,11 +3,11 @@ package com.core.fy.android.function.record
 import android.os.Bundle
 import com.core.fy.android.databinding.ActivityAudioRecordBinding
 import com.hjq.permissions.Permission
+import com.hjq.permissions.XXPermissions
 import io.core.common.base.component.activity.ReflectBindingActivity
 import io.core.common.util.extensions.cool.PathType
 import io.core.common.util.extensions.cool.getBasePath
 import io.core.common.util.extensions.cool.refreshMediaLibrary
-import io.core.common.util.extensions.cool.requestPermission
 import io.core.common.util.extensions.cool.runMain
 import io.core.common.util.extensions.cool.timeFormat
 import io.core.common.util.extensions.currentTimeMillis
@@ -87,13 +87,15 @@ class AudioRecordActivity : ReflectBindingActivity<ActivityAudioRecordBinding>()
             })
 
         binding.start.onClick {
-            requestPermission(Permission.RECORD_AUDIO) {
-                // 开始录音
-                recorder.start(
-                    outputDir = getBasePath(PathType.MUSIC),
-                    fileName = "recording_${currentTimeMillis.timeFormat(TimePatterns.FILE_SAFE_TIMESTAMP)}"
-                )
-            }
+            XXPermissions.with(this)
+                .permission(Permission.RECORD_AUDIO)
+                .request { permissions, allGranted ->
+                    // 开始录音
+                    recorder.start(
+                        outputDir = getBasePath(PathType.MUSIC),
+                        fileName = "recording_${currentTimeMillis.timeFormat(TimePatterns.FILE_SAFE_TIMESTAMP)}"
+                    )
+                }
         }
 
         // 暂停/恢复

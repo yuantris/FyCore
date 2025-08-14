@@ -14,7 +14,10 @@ object PermissionAir {
      * @return true 如果权限已授予，false 否则
      */
     fun isGranted(permission: String): Boolean {
-        return ContextCompat.checkSelfPermission(appCtx, permission) == PackageManager.PERMISSION_GRANTED
+        return ContextCompat.checkSelfPermission(
+            appCtx,
+            permission
+        ) == PackageManager.PERMISSION_GRANTED
     }
 
     /**
@@ -22,7 +25,7 @@ object PermissionAir {
      * @param permissions 要检查的权限数组
      * @return true 如果所有权限都已授予，false 否则
      */
-    fun areAllGranted(permissions: Array<String>): Boolean {
+    fun areAllGranted(vararg permissions: String): Boolean {
         return permissions.all { permission ->
             isGranted(permission)
         }
