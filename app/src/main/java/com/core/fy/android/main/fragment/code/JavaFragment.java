@@ -1,5 +1,6 @@
 package com.core.fy.android.main.fragment.code;
 
+import android.app.Activity;
 import android.graphics.Bitmap;
 import android.net.Uri;
 
@@ -21,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
 
+import io.core.common.base.component.custom.ToastGT;
 import io.core.common.base.component.fragment.ReflectBindingFragmentV2;
 import io.core.common.helper.JsonUltra;
 import io.core.common.helper.TryV2;
@@ -51,6 +53,11 @@ public class JavaFragment extends ReflectBindingFragmentV2<FragmentJavaBinding> 
     @Override
     protected void initView() {
         super.initView();
+
+        AppTrackV2.executeUISafely(requireActivity(), activity -> {
+            ToastGT.Companion.show(activity,"初始化",3000);
+            return true;
+        });
 
 
         if (NullCheck.isEmpty("1")) {

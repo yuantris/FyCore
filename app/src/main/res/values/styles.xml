@@ -5,4 +5,10 @@
         <item name="android:textSize">12sp</item>
         <item name="android:textColor">@color/md_grey_300</item>
     </style>
+
+    <style name="CustomDialogTheme" parent="Theme.MaterialComponents.Dialog">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@drawable/custom_dim_bg</item>
+    </style>
+
 </resources>

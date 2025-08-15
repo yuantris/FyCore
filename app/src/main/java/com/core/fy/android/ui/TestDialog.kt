@@ -1,9 +1,14 @@
 package com.core.fy.android.ui
 
+import android.app.Dialog
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.view.View
+import android.view.ViewGroup
+import android.view.WindowManager
 import com.core.fy.android.R
 import com.core.fy.android.databinding.DialogTestBinding
-import com.core.fy.android.databinding.FragmentKotlinBinding
 import io.core.common.base.component.dialog.BaseDialogFragmentV2
 
 class TestDialog: BaseDialogFragmentV2<DialogTestBinding>(R.layout.dialog_test) {
@@ -20,6 +25,7 @@ class TestDialog: BaseDialogFragmentV2<DialogTestBinding>(R.layout.dialog_test) 
 
     override fun onStart() {
         super.onStart()
-        dialog?.window?.setDimAmount(0.2f)
+        dialog?.window?.setDimAmount(0.5f)
+        dialog?.window?.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
     }
 }

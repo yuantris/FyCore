@@ -175,6 +175,8 @@ class ToastGT private constructor(
         /**
          * 快捷显示方法，使用全局默认配置
          */
+        @JvmStatic
+        @JvmOverloads
         fun show(context: Context, message: String, duration: Int = 2000) {
             Builder(context)
                 .setMessage(message)
@@ -185,6 +187,8 @@ class ToastGT private constructor(
         /**
          * 使用队列显示Toast
          */
+        @JvmStatic
+        @JvmOverloads
         fun showWithQueue(
             context: Context,
             message: String,
@@ -201,6 +205,7 @@ class ToastGT private constructor(
         /**
          * 清空Toast队列
          */
+        @JvmStatic
         fun clearQueue() {
             ToastQueueManager.clearQueue()
         }
@@ -208,6 +213,7 @@ class ToastGT private constructor(
         /**
          * 获取队列大小
          */
+        @JvmStatic
         fun getQueueSize(): Int = ToastQueueManager.getQueueSize()
     }
 }

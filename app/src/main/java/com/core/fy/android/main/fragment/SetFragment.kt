@@ -7,11 +7,14 @@ import com.core.fy.android.databinding.FragmentSetBinding
 import com.core.fy.android.function.TestPageActivity
 import com.core.fy.android.function.read.ReadBookActivity
 import com.core.fy.android.help.HighLightHelper
+import com.core.fy.android.ui.TestDialog
+import io.core.common.base.component.custom.ToastGT
 import io.core.common.base.component.fragment.ReflectBindingFragment
 import io.core.common.helper.JsonUltra
 import io.core.common.helper.net.NetworkMonitor
 import io.core.common.helper.net.NetworkState
 import io.core.common.helper.net.awaitNetwork
+import io.core.common.helper.track.AppTrackV2
 import io.core.common.helper.track.TimeTracker
 import io.core.common.helper.valid.ValidGT
 import io.core.common.helper.valid.excludeHiddenFiles
@@ -30,6 +33,7 @@ import io.core.common.util.extensions.ui.appVersionName
 import io.core.common.util.extensions.ui.onClick
 import io.core.common.util.extensions.ui.onDebouncedClick
 import io.core.common.util.extensions.ui.postDelayed
+import io.core.common.util.extensions.ui.showDialogFragment
 import io.core.common.util.extensions.ui.startActivity
 import io.core.common.util.log.LogCat
 import io.core.common.util.log.LogPure
@@ -184,7 +188,13 @@ class SetFragment : ReflectBindingFragment<FragmentSetBinding, MainActivity>() {
             }
 
             testCode.onDebouncedClick {
-                startActivity<TestPageActivity>()
+//                startActivity<TestPageActivity>()
+
+                AppTrackV2.executeUISafely(requireActivity()) { activity ->
+                    ToastGT.show(activity, "12345")
+                    true
+                }
+//                showDialogFragment<TestDialog>()
             }
             crash.onDebouncedClick {
                 require(false) {

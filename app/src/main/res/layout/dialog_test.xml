@@ -6,10 +6,11 @@
 
     <io.core.widget.layout.ShapeFrameLayout
         android:layout_width="match_parent"
+        android:elevation="@dimen/dp_30"
         android:layout_height="@dimen/dp_300"
         app:shape_radiusInTopLeft="@dimen/dp_16"
         app:shape_radiusInTopRight="@dimen/dp_16"
-        app:shape_solidColor="@color/white"
+        app:shape_solidColor="@color/md_red_100"
         android:layout_gravity="bottom">
 
     </io.core.widget.layout.ShapeFrameLayout>

@@ -2,16 +2,25 @@ package io.core.common.helper.track
 
 import android.app.Activity
 import android.app.Application
+import android.app.Dialog
 import android.app.Service
 import android.os.Bundle
 import android.util.Log
+import android.view.View
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ProcessLifecycleOwner
+import com.google.android.material.snackbar.Snackbar
 import io.core.common.helper.ReflectHelper
+import io.core.common.helper.track.ui.DialogOperation
+import io.core.common.helper.track.ui.SafeUIManager
+import io.core.common.helper.track.ui.SnackbarOperation
+import io.core.common.helper.track.ui.ToastOperation
+import io.core.common.helper.track.ui.UIOperation
 import io.core.common.util.extensions.cool.HandlerGT
 import io.core.common.util.extensions.cool.isMainThread
 import io.core.common.util.extensions.ui.isAlive
@@ -53,6 +62,7 @@ object AppTrackV2 : Application.ActivityLifecycleCallbacks, DefaultLifecycleObse
 
     // region 性能监控
     private val performanceStats = PerformanceStats()
+    private val safeUIManager = SafeUIManager()
     
     private class PerformanceStats {
         val activityTransitions = AtomicLong(0)
@@ -369,6 +379,63 @@ object AppTrackV2 : Application.ActivityLifecycleCallbacks, DefaultLifecycleObse
             TimeTracker.updateStats(activity, duration)
         }
     }
+
+    /**
+     * 安全显示Toast
+     */
+    @JvmStatic
+    fun showToastSafely(activity: Activity, message: String, duration: Int = Toast.LENGTH_SHORT) {
+        safeUIManager.executeUISafely(activity, ToastOperation(message, duration))
+    }
+
+    /**
+     * 安全显示Dialog
+     */
+    @JvmStatic
+    fun showDialogSafely(activity: Activity, dialogBuilder: (Activity) -> Dialog) {
+        safeUIManager.executeUISafely(activity, DialogOperation(dialogBuilder))
+    }
+
+    /**
+     * 安全显示SnackBar
+     */
+    @JvmStatic
+    fun showSnackBarSafely(activity: Activity, view: View, message: String, duration: Int = Snackbar.LENGTH_SHORT) {
+        safeUIManager.executeUISafely(activity, SnackbarOperation(view, message, duration))
+    }
+
+    /**
+     * 通用UI操作安全执行
+     */
+    @JvmStatic
+    fun executeUISafely(activity: Activity, operation: UIOperation) {
+        safeUIManager.executeUISafely(activity, operation)
+    }
+
+    /**
+     * 自定义UI操作的便捷方法
+     */
+    @JvmStatic
+    @JvmOverloads
+    fun executeUISafely(
+        activity: Activity,
+        priority: Int = 0,
+        timeout: Long = 30_000L,
+        canExecuteCheck: (Activity) -> Boolean = { it.isAlive() && !it.isFinishing },
+        uiAction: (Activity) -> Boolean
+    ) {
+        val operation = object : UIOperation {
+            override val priority = priority
+            override val timeout = timeout
+
+            override fun execute(activity: Activity): Boolean = uiAction(activity)
+            override fun canExecute(activity: Activity): Boolean = canExecuteCheck(activity)
+            override fun onTimeout() {
+                LogPure.w("UIOperation", "Custom UI operation timeout")
+            }
+        }
+        safeUIManager.executeUISafely(activity, operation)
+    }
     // endregion
 
     // region 生命周期跟踪
@@ -385,6 +452,9 @@ object AppTrackV2 : Application.ActivityLifecycleCallbacks, DefaultLifecycleObse
         logLifecycle(activity, "onResume")
         activityStackManager.remove(activity)
         activityStackManager.add(activity) // 移至栈顶
+
+        // 处理延迟的UI操作 - 这是关键调用点！
+        safeUIManager.processPendingOperations(activity)
         
         if (!activity.isChangingConfigurations) {
             notifyActivityLifecycleListeners(activity, ActivityTransitionEvent.ENTER)
@@ -406,6 +476,9 @@ object AppTrackV2 : Application.ActivityLifecycleCallbacks, DefaultLifecycleObse
         activityStackManager.removeAll { ref -> 
             ref == null || ref == activity || !ref.isAlive() 
         }
+
+        // 清理该Activity相关的待执行UI操作
+        safeUIManager.clearPendingOperations(activity)
         
         // 清理相关资源
         pausedListenerManager.unregister(activity::class.java.name)

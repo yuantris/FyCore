@@ -18,34 +18,86 @@ import java.lang.Character.offsetByCodePoints
 import java.util.Locale
 import java.util.regex.Pattern
 
+// ========================================
+// 字符串验证与转换扩展
+// ========================================
+
+/**
+ * 安全去除字符串两端空白字符
+ * 如果字符串为null或空白，返回null；否则返回去除空白后的字符串
+ *
+ * @return 去除空白后的字符串或null
+ */
 fun String?.safeTrim() = if (this.isNullOrBlank()) null else this.trim()
 
+/**
+ * 检查字符串是否为content://协议
+ *
+ * @return true表示是content://协议，false表示不是
+ */
 fun String?.isContentScheme(): Boolean = this?.startsWith("content://") == true
 
+/**
+ * 将字符串转换为Editable对象
+ * 用于EditText等需要可编辑文本的场景
+ *
+ * @return Editable对象
+ */
 fun String.toEditable(): Editable = Editable.Factory.getInstance().newEditable(this)
 
+/**
+ * 将字符串解析为Uri对象
+ * 如果是URI格式则直接解析，否则作为文件路径处理
+ *
+ * @return Uri对象
+ */
 fun String.parseToUri(): Uri {
     return if (isUri()) Uri.parse(this) else {
         Uri.fromFile(File(this))
     }
 }
 
+/**
+ * 检查字符串是否为URI格式
+ * 支持file://和content://协议
+ *
+ * @return true表示是URI格式，false表示不是
+ */
 fun String?.isUri(): Boolean {
     this ?: return false
     return this.startsWith("file://", true) || isContentScheme()
 }
 
+/**
+ * 检查字符串是否为绝对URL
+ * 支持http://和https://协议
+ *
+ * @return true表示是绝对URL，false表示不是
+ */
 fun String?.isAbsUrl() =
     this?.let {
         it.startsWith("http://", true) || it.startsWith("https://", true)
     } ?: false
 
 val dataUriRegex = Regex("data:.*?;base64,(.*)")
+
+/**
+ * 检查字符串是否为Data URL格式
+ * 格式：data:[<mediatype>][;base64],<data>
+ *
+ * @return true表示是Data URL，false表示不是
+ */
 fun String?.isDataUrl() =
     this?.let {
         dataUriRegex.matches(it)
     } ?: false
 
+/**
+ * 检查字符串是否为JSON格式
+ * 支持JSON对象{}和JSON数组[]
+ *
+ * @return true表示是JSON格式，false表示不是
+ */
 fun String?.isJson(): Boolean =
     this?.run {
         val str = this.trim()
@@ -56,24 +108,49 @@ fun String?.isJson(): Boolean =
         }
     } ?: false
 
+/**
+ * 检查字符串是否为JSON对象格式
+ * 格式：{...}
+ *
+ * @return true表示是JSON对象，false表示不是
+ */
 fun String?.isJsonObject(): Boolean =
     this?.run {
         val str = this.trim()
         str.startsWith("{") && str.endsWith("}")
     } ?: false
 
+/**
+ * 检查字符串是否为JSON数组格式
+ * 格式：[...]
+ *
+ * @return true表示是JSON数组，false表示不是
+ */
 fun String?.isJsonArray(): Boolean =
     this?.run {
         val str = this.trim()
         str.startsWith("[") && str.endsWith("]")
     } ?: false
 
+/**
+ * 检查字符串是否为XML格式
+ * 简单检查是否以<开头并以>结尾
+ *
+ * @return true表示可能是XML格式，false表示不是
+ */
 fun String?.isXml(): Boolean =
     this?.run {
         val str = this.trim()
         str.startsWith("<") && str.endsWith(">")
     } ?: false
 
+/**
+ * 将字符串解析为布尔值
+ * 支持多种表示false的字符串：false、no、not、0（忽略大小写）
+ *
+ * @param nullIsTrue 当字符串为null时的返回值，默认为false
+ * @return 解析后的布尔值
+ */
 fun String?.isTrue(nullIsTrue: Boolean = false): Boolean {
     if (this.isNullOrBlank() || this == "null") {
         return nullIsTrue
@@ -81,11 +158,29 @@ fun String?.isTrue(nullIsTrue: Boolean = false): Boolean {
     return !this.trim().matches("(?i)^(false|no|not|0)$".toRegex())
 }
 
+// ========================================
+// 字符串分割与处理扩展
+// ========================================
+
+/**
+ * 分割字符串并过滤空白项
+ *
+ * @param delimiter 分隔符数组
+ * @param limit 分割限制，0表示无限制
+ * @return 过滤空白后的字符串数组
+ */
 fun String.splitNotBlank(vararg delimiter: String, limit: Int = 0): Array<String> = run {
     this.split(*delimiter, limit = limit).map { it.trim() }.filterNot { it.isBlank() }
         .toTypedArray()
 }
 
+/**
+ * 使用正则表达式分割字符串并过滤空白项
+ *
+ * @param regex 正则表达式
+ * @param limit 分割限制，0表示无限制
+ * @return 过滤空白后的字符串数组
+ */
 fun String.splitNotBlank(regex: Regex, limit: Int = 0): Array<String> = run {
     this.split(regex, limit).map { it.trim() }.filterNot { it.isBlank() }.toTypedArray()
 }
@@ -111,20 +206,39 @@ fun String.cnCompare(other: String): Int {
     }
 }
 
-/** 字符串所占内存大小 */
+// ========================================
+// 字符串分析与计算扩展
+// ========================================
+
+/**
+ * 计算字符串所占内存大小（字节）
+ * 基于Java字符串内存模型：对象头(40字节) + 字符数据(2*length字节)
+ *
+ * @return 内存大小（字节），null返回0
+ */
 fun String?.memorySize(): Int {
     this ?: return 0
     return 40 + 2 * length
 }
 
-/** 是否中文 */
+/**
+ * 检查字符串是否包含中文字符
+ * 使用Unicode范围[\u4e00-\u9fa5]匹配中文字符
+ *
+ * @return true表示包含中文，false表示不包含
+ */
 fun String.isChinese(): Boolean {
     val p = Pattern.compile("[\u4e00-\u9fa5]")
     val m = p.matcher(this)
     return m.find()
 }
 
-/** 将字符串拆分为单个字符,包含emoji */
+/**
+ * 将字符序列拆分为单个字符数组（支持emoji等多字节字符）
+ * 使用Unicode代码点正确处理emoji和其他复合字符
+ *
+ * @return 字符数组，每个元素为一个完整的字符（包括emoji）
+ */
 fun CharSequence.toStringArray(): Array<String> {
     var codePointIndex = 0
     return try {
@@ -138,9 +252,16 @@ fun CharSequence.toStringArray(): Array<String> {
     }
 }
 
+// ========================================
+// 字符串样式与显示扩展
+// ========================================
+
 /**
- * SpannableString
- * string 字符串文字颜色修改
+ * 为字符串设置前景色并返回SpannableString
+ * 用于在TextView中显示带颜色的文本
+ *
+ * @param color 前景色（ARGB格式）
+ * @return 设置了颜色的SpannableString
  */
 fun String.spanForeColor(@ColorInt color: Int): SpannableString {
     val spannableString = SpannableString(this)
@@ -153,14 +274,19 @@ fun String.spanForeColor(@ColorInt color: Int): SpannableString {
     return spannableString
 }
 
+/**
+ * 将字符串作为Toast消息显示
+ * 使用全局Toaster显示消息
+ */
 fun String.toast() {
     Toaster.show(this)
 }
 
 /**
- * 移除字符串中的所有空白字符。
- * 该函数通过正则表达式匹配并移除字符串中的所有空白字符（包括空格、制表符、换行符等）。
- * @return 返回一个不包含任何空白字符的新字符串。
+ * 移除字符串中的所有空白字符
+ * 该函数通过正则表达式匹配并移除字符串中的所有空白字符（包括空格、制表符、换行符等）
+ *
+ * @return 返回一个不包含任何空白字符的新字符串
  */
 fun String.removeWhitespace(): String {
     return this.replace("\\s+".toRegex(), "")

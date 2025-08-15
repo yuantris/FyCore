@@ -21,6 +21,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.DialogFragment
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import io.core.common.util.extensions.cool.isDarkColor
 import io.core.common.util.tools.buildMainHandler
@@ -30,7 +33,18 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-// 处理双击返回键退出应用的逻辑
+// ========================================
+// 1. Activity生命周期相关扩展
+// ========================================
+
+/**
+ * 处理双击返回键退出应用的逻辑
+ *
+ * @param interval 两次点击的时间间隔，默认2000毫秒
+ * @param promptMessage 提示消息，默认"再按一次退出APP"
+ * @param onShowPrompt 显示提示消息的回调
+ * @param onExit 退出应用的回调
+ */
 fun AppCompatActivity.handleDoubleBackPressExit(
     interval: Long = 2000,
     promptMessage: String = "再按一次退出APP",
@@ -66,6 +80,147 @@ fun AppCompatActivity.handleDoubleBackPressExit(
     onBackPressedDispatcher.addCallback(this, callback)
 }
 
+/**
+ * 检查Activity是否仍然存活（未被销毁或正在销毁）
+ *
+ * @return true表示Activity存活，false表示已销毁或正在销毁
+ */
+fun Activity.isAlive(): Boolean {
+    return !(isFinishing || isDestroyed)
+}
+
+/**
+ * 将Activity移到前台
+ * 注意：需将launchMode设置为SingleTop，否则会创建新实例
+ *
+ * @param context 上下文对象
+ */
+fun Activity.moveTaskToFront(context: Context) {
+    val intent = Intent(context, this.javaClass)
+    intent.flags =
+        Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_REORDER_TO_FRONT or Intent.FLAG_ACTIVITY_SINGLE_TOP
+    context.startActivity(intent)
+}
+
+/**
+ * 在Activity的onResume生命周期回调中执行指定代码块
+ *
+ * @param executeImmediatelyIfResumed 如果Activity已处于Resume状态，是否立即执行代码块
+ * @param callback 要执行的代码块
+ */
+fun AppCompatActivity.onResumeCallback(
+    executeImmediatelyIfResumed: Boolean = true,
+    callback: () -> Unit
+) {
+    // 如果已经是Resume状态且需要立即执行
+    if (executeImmediatelyIfResumed && lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) {
+        callback.invoke()
+        return
+    }
+
+    lifecycle.addObserver(object : DefaultLifecycleObserver {
+        override fun onResume(owner: LifecycleOwner) {
+            super.onResume(owner)
+            callback.invoke()
+            lifecycle.removeObserver(this)
+        }
+    })
+}
+
+/**
+ * 在Activity的生命周期中执行指定代码块
+ *
+ * @param event 要监听的生命周期事件
+ * @param callback 要执行的代码块
+ */
+fun AppCompatActivity.onLifecycleEvent(
+    event: Lifecycle.Event,
+    callback: () -> Unit
+) {
+    lifecycle.addObserver(object : DefaultLifecycleObserver {
+
+        override fun onCreate(owner: LifecycleOwner) {
+            if (event == Lifecycle.Event.ON_CREATE) {
+                callback.invoke()
+                lifecycle.removeObserver(this)
+            }
+        }
+
+        override fun onStart(owner: LifecycleOwner) {
+            if (event == Lifecycle.Event.ON_START) {
+                callback.invoke()
+                lifecycle.removeObserver(this)
+            }
+        }
+
+        override fun onResume(owner: LifecycleOwner) {
+            if (event == Lifecycle.Event.ON_RESUME) {
+                callback.invoke()
+                lifecycle.removeObserver(this)
+            }
+        }
+
+        override fun onPause(owner: LifecycleOwner) {
+            if (event == Lifecycle.Event.ON_PAUSE) {
+                callback.invoke()
+                lifecycle.removeObserver(this)
+            }
+        }
+
+        override fun onStop(owner: LifecycleOwner) {
+            if (event == Lifecycle.Event.ON_STOP) {
+                callback.invoke()
+                lifecycle.removeObserver(this)
+            }
+        }
+
+        override fun onDestroy(owner: LifecycleOwner) {
+            if (event == Lifecycle.Event.ON_DESTROY) {
+                callback.invoke()
+                lifecycle.removeObserver(this)
+            }
+        }
+
+    })
+}
+
+
+// ========================================
+// 2. Activity跳转相关扩展
+// ========================================
+
+/**
+ * 启动Activity并且不使用过渡动画（泛型版本）
+ *
+ * @param finish 是否结束当前Activity，默认为true
+ */
+inline fun <reified T : Activity> Activity.startNoTransition(finish: Boolean = true) {
+    startActivity(Intent(this, T::class.java))
+    overridePendingTransition(0, 0)
+    if (finish) finish()
+}
+
+/**
+ * 启动Activity并且不使用过渡动画（Class版本）
+ *
+ * @param clazz 目标Activity的Class对象
+ * @param finish 是否结束当前Activity，默认为true
+ */
+fun Activity.startNoTransition(clazz: Class<*>, finish: Boolean = true) {
+    startActivity(Intent(this, clazz))
+    overridePendingTransition(0, 0)
+    if (finish) finish()
+}
+
+// ========================================
+// 3. DialogFragment相关扩展
+// ========================================
+
+/**
+ * 显示DialogFragment（泛型版本，支持参数传递）
+ *
+ * @param arguments 传递给DialogFragment的参数配置
+ */
 inline fun <reified T : DialogFragment> AppCompatActivity.showDialogFragment(
     arguments: Bundle.() -> Unit = {}
 ) {
@@ -76,10 +231,23 @@ inline fun <reified T : DialogFragment> AppCompatActivity.showDialogFragment(
     dialog.show(supportFragmentManager, T::class.simpleName)
 }
 
+/**
+ * 显示DialogFragment（实例版本）
+ *
+ * @param dialogFragment 要显示的DialogFragment实例
+ */
 fun AppCompatActivity.showDialogFragment(dialogFragment: DialogFragment) {
     dialogFragment.show(supportFragmentManager, dialogFragment::class.simpleName)
 }
 
+// ========================================
+// 4. 屏幕显示相关扩展
+// ========================================
+
+/**
+ * 设置Activity为全屏模式
+ * 兼容Android R及以上版本
+ */
 fun Activity.fullScreen() {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
         window.setDecorFitsSystemWindows(true)
@@ -93,7 +261,12 @@ fun Activity.fullScreen() {
     window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
 }
 
-
+/**
+ * 设置状态栏为亮色或暗色模式
+ * 兼容Android 6.0及以上版本
+ *
+ * @param isLightBar true表示亮色状态栏（深色文字），false表示暗色状态栏（浅色文字）
+ */
 fun Activity.setLightStatusBar(isLightBar: Boolean) {
     if (isAndroid11Plus) {
         window.insetsController?.let {
@@ -123,6 +296,11 @@ fun Activity.setLightStatusBar(isLightBar: Boolean) {
     }
 }
 
+/**
+ * 控制屏幕常亮状态
+ *
+ * @param on true表示保持屏幕常亮，false表示取消屏幕常亮
+ */
 fun Activity.keepScreenOn(on: Boolean) {
     val isScreenOn =
         (window.attributes.flags and WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON) != 0
@@ -134,10 +312,16 @@ fun Activity.keepScreenOn(on: Boolean) {
     }
 }
 
-/////以下方法需要在View完全被绘制出来之后调用，否则判断不了,在比如 onWindowFocusChanged（）方法中可以得到正确的结果/////
+// ========================================
+// 5. NavigationBar相关属性扩展
+// 注意：以下方法需要在View完全被绘制出来之后调用，否则判断不了
+// 建议在onWindowFocusChanged()方法中调用可以得到正确的结果
+// ========================================
 
 /**
- * 返回NavigationBar
+ * 获取NavigationBar视图对象
+ *
+ * @return NavigationBar的View对象，如果不存在则返回null
  */
 val Activity.navigationBar: View?
     get() {
@@ -155,13 +339,17 @@ val Activity.navigationBar: View?
     }
 
 /**
- * 返回NavigationBar是否存在
+ * 检查NavigationBar是否存在
+ *
+ * @return true表示NavigationBar存在，false表示不存在
  */
 val Activity.isNavigationBarExist: Boolean
     get() = navigationBar != null
 
 /**
- * 返回NavigationBar高度
+ * 获取NavigationBar的高度
+ *
+ * @return NavigationBar的高度（像素），如果不存在则返回0
  */
 val Activity.navigationBarHeight: Int
     @SuppressLint("InternalInsetResource", "DiscouragedApi")
@@ -174,7 +362,9 @@ val Activity.navigationBarHeight: Int
     }
 
 /**
- * 返回navigationBar位置
+ * 获取NavigationBar的位置
+ *
+ * @return NavigationBar的Gravity位置，默认为Gravity.BOTTOM
  */
 val Activity.navigationBarGravity: Int
     get() {
@@ -182,40 +372,19 @@ val Activity.navigationBarGravity: Int
         return gravity ?: Gravity.BOTTOM
     }
 
-/////------------------------------------------------------------------------------------------------------/////
-
-inline fun <reified T : Activity> Activity.startNoTransition(finish: Boolean = true) {
-    startActivity(Intent(this, T::class.java))
-    overridePendingTransition(0, 0)
-    if (finish) finish()
-}
-
-fun Activity.startNoTransition(clazz: Class<*>, finish: Boolean = true) {
-    startActivity(Intent(this, clazz))
-    overridePendingTransition(0, 0)
-    if (finish) finish()
-}
-
-fun Activity.isAlive(): Boolean {
-    return !(isFinishing || isDestroyed)
-}
+// ========================================
+// 6. 状态栏自适应相关扩展
+// ========================================
 
 /**
- * 将Activity移到前台，需将launchMode设置为SingleTop，否则会创建新实例
+ * 根据指定视图自适应状态栏颜色
+ * 通过分析视图背景色的亮度来自动设置状态栏为亮色或暗色模式
+ *
+ * @param rootView 根视图，用于获取状态栏区域的颜色
+ * @param targetView 目标视图，优先使用其背景色，如果为null则从rootView采样
  */
-fun Activity.moveTaskToFront(context: Context) {
-    val intent = Intent(context, this.javaClass)
-    intent.flags =
-        Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_REORDER_TO_FRONT or Intent.FLAG_ACTIVITY_SINGLE_TOP
-    context.startActivity(intent)
-}
-
 @SuppressLint("DiscouragedApi", "InternalInsetResource")
 fun Activity.adaptStatusBarToView(rootView: View, targetView: View? = null) {
-//    // 设置透明状态栏
-//    WindowCompat.setDecorFitsSystemWindows(window, false)
-//    window.statusBarColor = Color.TRANSPARENT
-
     // 监听视图变化
     rootView.doOnPreDraw {
         val statusBarHeight = resources.getIdentifier(
@@ -240,11 +409,22 @@ fun Activity.adaptStatusBarToView(rootView: View, targetView: View? = null) {
     }
 }
 
+/**
+ * 根据当前Activity的decorView自适应状态栏颜色
+ *
+ * @param targetView 目标视图，优先使用其背景色，如果为null则从decorView采样
+ */
 fun Activity.adaptStatusBarToView(targetView: View? = null) {
     val rootView = this.window.decorView
     adaptStatusBarToView(rootView, targetView)
 }
 
+/**
+ * 根据图片资源自适应状态栏颜色
+ * 通过分析图片在状态栏区域的颜色来自动设置状态栏模式
+ *
+ * @param imageRes 图片资源ID
+ */
 @SuppressLint("DiscouragedApi", "InternalInsetResource")
 fun AppCompatActivity.adaptStatusBarToImage(@DrawableRes imageRes: Int) {
     lifecycleScope.launch(Dispatchers.IO) {

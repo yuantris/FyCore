@@ -1,8 +1,10 @@
 package io.core.common.base.component.dialog
 
 import android.app.Dialog
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -10,6 +12,7 @@ import android.view.ViewGroup
 import android.view.Window
 import androidx.annotation.LayoutRes
 import androidx.appcompat.view.ContextThemeWrapper
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.fragment.app.DialogFragment
 import androidx.viewbinding.ViewBinding
 import io.core.R
