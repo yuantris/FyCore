@@ -242,7 +242,7 @@
         <attr name="initialState" format="boolean" />
     </declare-styleable>
 
-    <declare-styleable name="AsyncStateImageView">
+    <declare-styleable name="StatefulImageViewV2">
         <!-- 默认状态图片 -->
         <attr name="defaultImage" />
         <!-- 加载中状态图片 -->
@@ -253,20 +253,18 @@
         <attr name="errorImage" />
         <!-- 初始状态 -->
         <attr name="initialViewState" format="enum">
-            <enum name="default" value="0" />
-            <enum name="loading" value="1" />
-            <enum name="selected" value="2" />
-            <enum name="error" value="3" />
+            <enum name="state_default" value="0" />
+            <enum name="state_loading" value="1" />
+            <enum name="state_selected" value="2" />
+            <enum name="state_error" value="3" />
         </attr>
         <!-- 是否启用动画 -->
         <attr name="animationEnabled" />
         <!-- 动画时长（毫秒） -->
         <attr name="animationDuration" />
-        <!-- 状态变化超时时间（毫秒） -->
-        <attr name="stateChangeTimeout" format="integer" />
     </declare-styleable>
 
-    <declare-styleable name="StateChangeImageView">
+    <declare-styleable name="PressToggleImageView">
         <attr name="defaultImage" />
         <attr name="pressedImage" format="reference" />
     </declare-styleable>

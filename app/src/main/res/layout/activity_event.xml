@@ -41,6 +41,20 @@
                 android:layout_height="wrap_content"
                 android:text="2:1" />
 
+            <io.core.widget.view.StatefulImageViewV2
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:defaultImage="@drawable/home_home_off_ic"
+                app:selectedImage="@drawable/home_home_on_ic"
+                android:id="@+id/async_img"/>
+
+            <io.core.widget.view.PressToggleImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:defaultImage="@drawable/home_home_off_ic"
+                app:pressedImage="@drawable/home_home_on_ic"
+                android:id="@+id/state_img"/>
+
             <io.core.widget.layout.EffectFrameLayout
                 android:id="@+id/iv_img"
                 android:layout_width="@dimen/dp_100"

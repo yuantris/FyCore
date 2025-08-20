@@ -1,5 +1,10 @@
 package io.core.common.base.component.dialog
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
+import android.animation.AnimatorSet
+import android.animation.ObjectAnimator
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Application.ActivityLifecycleCallbacks
 import android.content.Context
@@ -32,6 +37,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
+import androidx.viewbinding.ViewBinding
 import io.core.R
 import io.core.common.base.action.ActivityAction
 import io.core.common.base.action.AnimAction
@@ -40,6 +46,16 @@ import io.core.common.base.action.HandlerAction
 import io.core.common.base.action.KeyboardAction
 import io.core.common.base.action.ResourcesAction
 import java.lang.ref.SoftReference
+import androidx.core.util.size
+
+inline fun <reified VB : ViewBinding> BaseDialog.Builder<*>.setContentView(
+    crossinline bindingInflater: (LayoutInflater) -> VB,
+    crossinline configure: VB.() -> Unit = {}
+): BaseDialog.Builder<*> {
+    val binding = bindingInflater(LayoutInflater.from(getContext()))
+    binding.configure()
+    return setContentView(binding.root)
+}
 
 open class BaseDialog(context: Context, @StyleRes themeResId: Int = R.style.BaseDialogTheme) :
     AppCompatDialog(context, themeResId), LifecycleOwner, ActivityAction, ResourcesAction,
@@ -51,6 +67,15 @@ open class BaseDialog(context: Context, @StyleRes themeResId: Int = R.style.Base
     private var showListeners: MutableList<OnShowListener?>? = null
     private var cancelListeners: MutableList<OnCancelListener?>? = null
     private var dismissListeners: MutableList<OnDismissListener?>? = null
+    
+    /** 动画类型 */
+    private var animationType: AnimAction.AnimationType = AnimAction.AnimationType.DEFAULT
+    
+    /** 显示动画 */
+    private var showAnimator: AnimatorSet? = null
+    
+    /** 隐藏动画 */
+    private var hideAnimator: AnimatorSet? = null
 
     /**
      * 获取 Dialog 的根布局
@@ -127,18 +152,33 @@ open class BaseDialog(context: Context, @StyleRes themeResId: Int = R.style.Base
     }
 
     /**
-     * 设置 Dialog 的动画
+     * 设置 Dialog 的动画类型
      */
-    open fun setWindowAnimations(@StyleRes id: Int) {
-        window?.setWindowAnimations(id)
+    open fun setAnimationType(type: AnimAction.AnimationType) {
+        animationType = type
     }
 
     /**
-     * 获取 Dialog 的动画
+     * 获取 Dialog 的动画类型
      */
-    open fun getWindowAnimations(): Int {
-        val window: Window = window ?: return AnimAction.ANIM_DEFAULT
-        return window.attributes.windowAnimations
+    open fun getAnimationType(): AnimAction.AnimationType {
+        return animationType
+    }
+
+    /**
+     * 兼容旧版本的动画设置方法（已废弃，建议使用 setAnimationType）
+     */
+    @Deprecated("使用 setAnimationType 替代", ReplaceWith("setAnimationType(type)"))
+    open fun setWindowAnimations(type: AnimAction.AnimationType) {
+        setAnimationType(type)
+    }
+
+    /**
+     * 兼容旧版本的动画获取方法（已废弃，建议使用 getAnimationType）
+     */
+    @Deprecated("使用 getAnimationType 替代", ReplaceWith("getAnimationType()"))
+    open fun getWindowAnimations(): AnimAction.AnimationType {
+        return getAnimationType()
     }
 
     /**
@@ -159,16 +199,236 @@ open class BaseDialog(context: Context, @StyleRes themeResId: Int = R.style.Base
         window?.setDimAmount(dimAmount)
     }
 
+    override fun show() {
+        super.show()
+        startShowAnimation()
+    }
+
     override fun dismiss() {
-        removeCallbacks()
-        val focusView: View? = currentFocus
-        if (focusView != null) {
-            getSystemService(InputMethodManager::class.java).hideSoftInputFromWindow(
-                focusView.windowToken,
-                0
-            )
+        startDismissAnimation {
+            removeCallbacks()
+            val focusView: View? = currentFocus
+            if (focusView != null) {
+                getSystemService(InputMethodManager::class.java).hideSoftInputFromWindow(
+                    focusView.windowToken,
+                    0
+                )
+            }
+            super.dismiss()
         }
-        super.dismiss()
+    }
+
+    /**
+     * 开始显示动画
+     */
+    private fun startShowAnimation() {
+        val contentView = getContentView() ?: return
+        
+        showAnimator?.cancel()
+        showAnimator = when (animationType) {
+            AnimAction.AnimationType.SCALE -> createScaleInAnimation(contentView)
+            AnimAction.AnimationType.IOS -> createIOSInAnimation(contentView)
+            AnimAction.AnimationType.TOP -> createTopSlideInAnimation(contentView)
+            AnimAction.AnimationType.BOTTOM -> createBottomSlideInAnimation(contentView)
+            AnimAction.AnimationType.LEFT -> createLeftSlideInAnimation(contentView)
+            AnimAction.AnimationType.RIGHT -> createRightSlideInAnimation(contentView)
+            AnimAction.AnimationType.TOAST -> createToastInAnimation(contentView)
+            AnimAction.AnimationType.EMPTY -> null
+            else -> createScaleInAnimation(contentView)
+        }
+        showAnimator?.start()
+    }
+
+    /**
+     * 开始隐藏动画
+     */
+    private fun startDismissAnimation(onEnd: () -> Unit) {
+        val contentView = getContentView()
+        if (contentView == null || animationType == AnimAction.AnimationType.EMPTY) {
+            onEnd()
+            return
+        }
+        
+        hideAnimator?.cancel()
+        hideAnimator = when (animationType) {
+            AnimAction.AnimationType.SCALE -> createScaleOutAnimation(contentView)
+            AnimAction.AnimationType.IOS -> createIOSOutAnimation(contentView)
+            AnimAction.AnimationType.TOP -> createTopSlideOutAnimation(contentView)
+            AnimAction.AnimationType.BOTTOM -> createBottomSlideOutAnimation(contentView)
+            AnimAction.AnimationType.LEFT -> createLeftSlideOutAnimation(contentView)
+            AnimAction.AnimationType.RIGHT -> createRightSlideOutAnimation(contentView)
+            AnimAction.AnimationType.TOAST -> createToastOutAnimation(contentView)
+            AnimAction.AnimationType.EMPTY -> null
+            else -> createScaleOutAnimation(contentView)
+        }
+        
+        hideAnimator?.apply {
+            addListener(object : AnimatorListenerAdapter() {
+                override fun onAnimationEnd(animation: Animator) {
+                    onEnd()
+                }
+            })
+            start()
+        } ?: onEnd()
+    }
+
+    // 缩放动画
+    private fun createScaleInAnimation(view: View): AnimatorSet {
+        return AnimatorSet().apply {
+            playTogether(
+                ObjectAnimator.ofFloat(view, "scaleX", 0.95f, 1.0f),
+                ObjectAnimator.ofFloat(view, "scaleY", 0.95f, 1.0f),
+                ObjectAnimator.ofFloat(view, "alpha", 0f, 1f)
+            )
+            duration = 300
+            interpolator = android.view.animation.DecelerateInterpolator()
+        }
+    }
+
+    private fun createScaleOutAnimation(view: View): AnimatorSet {
+        return AnimatorSet().apply {
+            playTogether(
+                ObjectAnimator.ofFloat(view, "scaleX", 1.0f, 0.95f),
+                ObjectAnimator.ofFloat(view, "scaleY", 1.0f, 0.95f),
+                ObjectAnimator.ofFloat(view, "alpha", 1f, 0f)
+            )
+            duration = 200
+            interpolator = android.view.animation.AccelerateInterpolator()
+        }
+    }
+
+    // iOS 风格动画
+    private fun createIOSInAnimation(view: View): AnimatorSet {
+        return AnimatorSet().apply {
+            playTogether(
+                ObjectAnimator.ofFloat(view, "scaleX", 0.9f, 1.0f),
+                ObjectAnimator.ofFloat(view, "scaleY", 0.9f, 1.0f),
+                ObjectAnimator.ofFloat(view, "alpha", 0f, 1f)
+            )
+            duration = 400
+            interpolator = android.view.animation.OvershootInterpolator(0.8f)
+        }
+    }
+
+    private fun createIOSOutAnimation(view: View): AnimatorSet {
+        return AnimatorSet().apply {
+            playTogether(
+                ObjectAnimator.ofFloat(view, "scaleX", 1.0f, 0.9f),
+                ObjectAnimator.ofFloat(view, "scaleY", 1.0f, 0.9f),
+                ObjectAnimator.ofFloat(view, "alpha", 1f, 0f)
+            )
+            duration = 250
+            interpolator = android.view.animation.AccelerateInterpolator()
+        }
+    }
+
+    // 顶部滑入动画
+    private fun createTopSlideInAnimation(view: View): AnimatorSet {
+        return AnimatorSet().apply {
+            playTogether(
+                ObjectAnimator.ofFloat(view, "translationY", -view.height.toFloat(), 0f),
+                ObjectAnimator.ofFloat(view, "alpha", 0f, 1f)
+            )
+            duration = 300
+            interpolator = android.view.animation.DecelerateInterpolator()
+        }
+    }
+
+    private fun createTopSlideOutAnimation(view: View): AnimatorSet {
+        return AnimatorSet().apply {
+            playTogether(
+                ObjectAnimator.ofFloat(view, "translationY", 0f, -view.height.toFloat()),
+                ObjectAnimator.ofFloat(view, "alpha", 1f, 0f)
+            )
+            duration = 200
+            interpolator = android.view.animation.AccelerateInterpolator()
+        }
+    }
+
+    // 底部滑入动画
+    private fun createBottomSlideInAnimation(view: View): AnimatorSet {
+        return AnimatorSet().apply {
+            playTogether(
+                ObjectAnimator.ofFloat(view, "translationY", view.height.toFloat(), 0f),
+                ObjectAnimator.ofFloat(view, "alpha", 0f, 1f)
+            )
+            duration = 300
+            interpolator = android.view.animation.DecelerateInterpolator()
+        }
+    }
+
+    private fun createBottomSlideOutAnimation(view: View): AnimatorSet {
+        return AnimatorSet().apply {
+            playTogether(
+                ObjectAnimator.ofFloat(view, "translationY", 0f, view.height.toFloat()),
+                ObjectAnimator.ofFloat(view, "alpha", 1f, 0f)
+            )
+            duration = 200
+            interpolator = android.view.animation.AccelerateInterpolator()
+        }
+    }
+
+    // 左侧滑入动画
+    private fun createLeftSlideInAnimation(view: View): AnimatorSet {
+        return AnimatorSet().apply {
+            playTogether(
+                ObjectAnimator.ofFloat(view, "translationX", -view.width.toFloat(), 0f),
+                ObjectAnimator.ofFloat(view, "alpha", 0f, 1f)
+            )
+            duration = 300
+            interpolator = android.view.animation.DecelerateInterpolator()
+        }
+    }
+
+    private fun createLeftSlideOutAnimation(view: View): AnimatorSet {
+        return AnimatorSet().apply {
+            playTogether(
+                ObjectAnimator.ofFloat(view, "translationX", 0f, -view.width.toFloat()),
+                ObjectAnimator.ofFloat(view, "alpha", 1f, 0f)
+            )
+            duration = 200
+            interpolator = android.view.animation.AccelerateInterpolator()
+        }
+    }
+
+    // 右侧滑入动画
+    private fun createRightSlideInAnimation(view: View): AnimatorSet {
+        return AnimatorSet().apply {
+            playTogether(
+                ObjectAnimator.ofFloat(view, "translationX", view.width.toFloat(), 0f),
+                ObjectAnimator.ofFloat(view, "alpha", 0f, 1f)
+            )
+            duration = 300
+            interpolator = android.view.animation.DecelerateInterpolator()
+        }
+    }
+
+    private fun createRightSlideOutAnimation(view: View): AnimatorSet {
+        return AnimatorSet().apply {
+            playTogether(
+                ObjectAnimator.ofFloat(view, "translationX", 0f, view.width.toFloat()),
+                ObjectAnimator.ofFloat(view, "alpha", 1f, 0f)
+            )
+            duration = 200
+            interpolator = android.view.animation.AccelerateInterpolator()
+        }
+    }
+
+    // Toast 动画
+    private fun createToastInAnimation(view: View): AnimatorSet {
+        return AnimatorSet().apply {
+            play(ObjectAnimator.ofFloat(view, "alpha", 0f, 1f))
+            duration = 200
+            interpolator = android.view.animation.DecelerateInterpolator()
+        }
+    }
+
+    private fun createToastOutAnimation(view: View): AnimatorSet {
+        return AnimatorSet().apply {
+            play(ObjectAnimator.ofFloat(view, "alpha", 1f, 0f))
+            duration = 150
+            interpolator = android.view.animation.AccelerateInterpolator()
+        }
     }
 
 
@@ -334,8 +594,8 @@ open class BaseDialog(context: Context, @StyleRes themeResId: Int = R.style.Base
         /** 主题样式 */
         private var themeId: Int = R.style.BaseDialogTheme
 
-        /** 动画样式 */
-        private var animStyle: Int = AnimAction.ANIM_DEFAULT
+        /** 动画类型 */
+        private var animationType: AnimAction.AnimationType = AnimAction.ANIM_DEFAULT
 
         /** 宽度和高度 */
         private var width: Int = WindowManager.LayoutParams.WRAP_CONTENT
@@ -441,14 +701,22 @@ open class BaseDialog(context: Context, @StyleRes themeResId: Int = R.style.Base
         }
 
         /**
-         * 设置动画，已经封装好几种样式，具体可见[AnimAction]类
+         * 设置动画类型
          */
-        open fun setAnimStyle(@StyleRes id: Int): B {
-            animStyle = id
+        open fun setAnimationType(type: AnimAction.AnimationType): B {
+            animationType = type
             if (isCreated()) {
-                dialog?.setWindowAnimations(id)
+                dialog?.setAnimationType(type)
             }
             return this as B
+        }
+
+        /**
+         * 兼容旧版本的动画设置方法（已废弃，建议使用 setAnimationType）
+         */
+        @Deprecated("使用 setAnimationType 替代", ReplaceWith("setAnimationType(type)"))
+        open fun setAnimStyle(type: AnimAction.AnimationType): B {
+            return setAnimationType(type)
         }
 
         /**
@@ -700,6 +968,7 @@ open class BaseDialog(context: Context, @StyleRes themeResId: Int = R.style.Base
         /**
          * 创建
          */
+        @SuppressLint("UseKtx")
         open fun create(): BaseDialog {
             // 判断布局是否为空
             if (contentView == null) {
@@ -717,13 +986,13 @@ open class BaseDialog(context: Context, @StyleRes themeResId: Int = R.style.Base
             }
 
             // 如果当前没有设置动画效果，就设置一个默认的动画效果
-            if (animStyle == AnimAction.ANIM_DEFAULT) {
-                animStyle = when (gravity) {
+            if (animationType == AnimAction.ANIM_DEFAULT) {
+                animationType = when (gravity) {
                     Gravity.TOP -> AnimAction.ANIM_TOP
                     Gravity.BOTTOM -> AnimAction.ANIM_BOTTOM
                     Gravity.LEFT -> AnimAction.ANIM_LEFT
                     Gravity.RIGHT -> AnimAction.ANIM_RIGHT
-                    else -> AnimAction.ANIM_DEFAULT
+                    else -> AnimAction.ANIM_SCALE
                 }
             }
 
@@ -747,7 +1016,6 @@ open class BaseDialog(context: Context, @StyleRes themeResId: Int = R.style.Base
                     params.gravity = gravity
                     params.x = xOffset
                     params.y = yOffset
-                    params.windowAnimations = animStyle
 
                     if (backgroundDimEnabled) {
                         window.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
@@ -757,6 +1025,9 @@ open class BaseDialog(context: Context, @StyleRes themeResId: Int = R.style.Base
                     }
                     window.attributes = params
                 }
+
+                // 设置动画类型
+                dialog.setAnimationType(animationType)
 
                 clickArray?.let { array ->
                     var i = 0
@@ -909,15 +1180,15 @@ open class BaseDialog(context: Context, @StyleRes themeResId: Int = R.style.Base
             this.dialog?.addOnDismissListener(this)
         }
 
-        /** Dialog 动画样式（避免 Dialog 从后台返回到前台后再次触发动画效果） */
-        private var dialogAnim: Int = 0
+        /** Dialog 动画类型（避免 Dialog 从后台返回到前台后再次触发动画效果） */
+        private var dialogAnimType: AnimAction.AnimationType = AnimAction.AnimationType.DEFAULT
 
         override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {}
 
         override fun onActivityStarted(activity: Activity) {}
 
         override fun onActivityResumed(activity: Activity) {
-            if (activity !== activity) {
+            if (activity !== this.activity) {
                 return
             }
 
@@ -926,12 +1197,12 @@ open class BaseDialog(context: Context, @StyleRes themeResId: Int = R.style.Base
                     return
                 }
 
-                // 还原 Dialog 动画样式（这里必须要使用延迟设置，否则还是有一定几率会出现）
+                // 还原 Dialog 动画类型（这里必须要使用延迟设置，否则还是有一定几率会出现）
                 it.postDelayed({
                     if (!it.isShowing) {
                         return@postDelayed
                     }
-                    it.setWindowAnimations(dialogAnim)
+                    it.setAnimationType(dialogAnimType)
                 }, 100)
             }
         }
@@ -946,10 +1217,10 @@ open class BaseDialog(context: Context, @StyleRes themeResId: Int = R.style.Base
                     return
                 }
 
-                // 获取 Dialog 动画样式
-                dialogAnim = it.getWindowAnimations()
+                // 获取 Dialog 动画类型
+                dialogAnimType = it.getAnimationType()
                 // 设置 Dialog 无动画效果
-                it.setWindowAnimations(AnimAction.ANIM_EMPTY)
+                it.setAnimationType(AnimAction.ANIM_EMPTY)
             }
         }
 

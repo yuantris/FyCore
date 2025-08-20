@@ -1,6 +1,7 @@
 package com.core.fy.android.function.event
 
 import android.os.Bundle
+import androidx.lifecycle.lifecycleScope
 import com.core.fy.android.R
 import com.core.fy.android.databinding.ActivityEventBinding
 import com.gyf.immersionbar.ImmersionBar
@@ -23,6 +24,9 @@ import io.core.common.util.extensions.ui.onDebouncedClick
 import io.core.common.util.extensions.ui.toast
 import io.core.common.util.tools.DrawableBuilder
 import io.core.other.LiveDataPro
+import io.core.widget.view.StatefulImageViewV2
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class EventActivity : ReflectBindingActivity<ActivityEventBinding>() {
 
@@ -43,6 +47,22 @@ class EventActivity : ReflectBindingActivity<ActivityEventBinding>() {
         "个数：${binding.root.childCount}".logD()
         LocationFetcher.DEBUG = true
         binding.apply {
+
+            asyncImg.setOnClickListener {
+                lifecycleScope.launch {
+//                    asyncImg.syncState(StatefulImageViewV2.ViewState.LOADING)
+//                    asyncImg.showLoading()
+                    delay(2000L)
+                    asyncImg.syncState(StatefulImageViewV2.ViewState.SELECTED)
+
+                    asyncImg.playErrorAnimation()
+                }
+            }
+
+            stateImg.setOnClickListener {
+
+            }
+
             fEvent.setOnClickListener {
                 postEvent(_ratio, 3)
             }

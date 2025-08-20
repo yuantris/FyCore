@@ -13,6 +13,7 @@ import androidx.annotation.StringRes
 import io.core.R
 import io.core.common.base.action.AnimAction
 import io.core.common.base.component.dialog.BaseDialog
+import io.core.databinding.CoreUiDialogBinding
 
 
 class CommonDialog {
@@ -29,9 +30,8 @@ class CommonDialog {
 
         init {
             setContentView(R.layout.core_ui_dialog)
-            setAnimStyle(AnimAction.ANIM_IOS)
             setGravity(Gravity.CENTER)
-            setBackgroundDimAmount(0.3f)
+            setBackgroundDimAmount(0.5f)
             setOnClickListener(cancelView, confirmView)
         }
 

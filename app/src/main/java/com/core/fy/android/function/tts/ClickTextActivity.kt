@@ -5,6 +5,7 @@ import com.core.fy.android.databinding.ActivityClickTextBinding
 import com.core.fy.android.ui.MessageDialog
 import io.core.common.base.component.activity.ReflectBindingActivity
 import io.core.common.base.component.dialog.BaseDialog
+import io.core.common.base.component.dialog.specific.CommonDialog
 import java.util.regex.Pattern
 
 class ClickTextActivity : ReflectBindingActivity<ActivityClickTextBinding>() {

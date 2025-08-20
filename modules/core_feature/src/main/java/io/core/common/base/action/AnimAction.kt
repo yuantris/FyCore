@@ -1,37 +1,47 @@
 package io.core.common.base.action
 
-import io.core.R
-
-
 interface AnimAction {
+
+    /** 动画类型枚举 */
+    enum class AnimationType {
+        DEFAULT,
+        EMPTY,
+        SCALE,
+        IOS,
+        TOAST,
+        TOP,
+        BOTTOM,
+        LEFT,
+        RIGHT
+    }
 
     companion object {
 
         /** 默认动画效果 */
-        const val ANIM_DEFAULT: Int = -1
+        val ANIM_DEFAULT = AnimationType.DEFAULT
 
         /** 没有动画效果 */
-        const val ANIM_EMPTY: Int = 0
+        val ANIM_EMPTY = AnimationType.EMPTY
 
         /** 缩放动画 */
-        val ANIM_SCALE: Int = R.style.ScaleAnimStyle
+        val ANIM_SCALE = AnimationType.SCALE
 
         /** IOS 动画 */
-        val ANIM_IOS: Int = R.style.IOSAnimStyle
+        val ANIM_IOS = AnimationType.IOS
 
         /** 吐司动画 */
-        const val ANIM_TOAST: Int = android.R.style.Animation_Toast
+        val ANIM_TOAST = AnimationType.TOAST
 
         /** 顶部弹出动画 */
-        val ANIM_TOP: Int = R.style.TopAnimStyle
+        val ANIM_TOP = AnimationType.TOP
 
         /** 底部弹出动画 */
-        val ANIM_BOTTOM: Int = R.style.BottomAnimStyle
+        val ANIM_BOTTOM = AnimationType.BOTTOM
 
         /** 左边弹出动画 */
-        val ANIM_LEFT: Int = R.style.LeftAnimStyle
+        val ANIM_LEFT = AnimationType.LEFT
 
         /** 右边弹出动画 */
-        val ANIM_RIGHT: Int = R.style.RightAnimStyle
+        val ANIM_RIGHT = AnimationType.RIGHT
     }
 }

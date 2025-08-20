@@ -9,13 +9,14 @@ import android.util.AttributeSet
 import android.view.MotionEvent
 import androidx.appcompat.widget.AppCompatImageView
 import io.core.R
+import androidx.core.graphics.toColorInt
 
 class PressEffectImageView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : AppCompatImageView(context, attrs, defStyleAttr) {
 
     private val overlayPaint: Paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = Color.parseColor("#40B0B0B0") // 半透明灰色
+        color = "#40B0B0B0".toColorInt() // 半透明灰色
         style = Paint.Style.FILL
     }
 
