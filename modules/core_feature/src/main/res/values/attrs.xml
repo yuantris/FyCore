@@ -225,12 +225,49 @@
         <attr name="smallCircleColor" format="color" />
     </declare-styleable>
 
+    <!-- 共享的图片属性 -->
+    <attr name="defaultImage" format="reference" />
+    <attr name="selectedImage" format="reference" />
+    <attr name="loadingImage" format="reference" />
+    <attr name="errorImage" format="reference" />
+    <attr name="animationEnabled" format="boolean" />
+    <attr name="animationDuration" format="integer" />
+
     <declare-styleable name="StatefulImageView">
         <!-- 默认状态图片 -->
-        <attr name="defaultImage" format="reference" />
+        <attr name="defaultImage" />
         <!-- 选中状态图片 -->
-        <attr name="selectedImage" format="reference" />
+        <attr name="selectedImage" />
         <!-- 初始状态（false=默认，true=选中） -->
         <attr name="initialState" format="boolean" />
+    </declare-styleable>
+
+    <declare-styleable name="AsyncStateImageView">
+        <!-- 默认状态图片 -->
+        <attr name="defaultImage" />
+        <!-- 加载中状态图片 -->
+        <attr name="loadingImage" />
+        <!-- 选中状态图片 -->
+        <attr name="selectedImage" />
+        <!-- 错误状态图片 -->
+        <attr name="errorImage" />
+        <!-- 初始状态 -->
+        <attr name="initialState" format="enum">
+            <enum name="default" value="0" />
+            <enum name="loading" value="1" />
+            <enum name="selected" value="2" />
+            <enum name="error" value="3" />
+        </attr>
+        <!-- 是否启用动画 -->
+        <attr name="animationEnabled" />
+        <!-- 动画时长（毫秒） -->
+        <attr name="animationDuration" />
+        <!-- 状态变化超时时间（毫秒） -->
+        <attr name="stateChangeTimeout" format="integer" />
+    </declare-styleable>
+
+    <declare-styleable name="StateChangeImageView">
+        <attr name="defaultImage" />
+        <attr name="pressedImage" format="reference" />
     </declare-styleable>
 </resources>

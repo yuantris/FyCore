@@ -213,22 +213,17 @@ class KotlinFragment : ReflectBindingFragment<FragmentKotlinBinding, TestPageAct
             },
         )
         launch {
-            TaskExecutor.builder<String>()
-                .onProgress { completed, total ->   // 进度回调
-                    println("进度: $completed/$total")
-                }
-                .onEachComplete { result, index ->  // 单个任务完成回调
-                    LogPure.d { "result:$result,index:$index" }
-                }
-                .onError { error ->                // 错误回调
-                    println("执行出错: ${error.message}")
-                }
-                .onComplete {
+            TaskExecutor.get().execute(
+                tasks,
+                onComplete = {
                     LogPure.i {
                         "onComplete:${GsonUtils.toJson(it)}"
                     }
-                }
-                .execute(tasks)
+                },
+                onEachComplete = { result, index ->
+                    LogPure.d { "result:$result,index:$index" }
+                },
+            )
         }
 
         storage.getAllKeys().forEach {

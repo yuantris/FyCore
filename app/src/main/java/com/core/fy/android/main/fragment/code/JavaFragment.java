@@ -170,7 +170,12 @@ public class JavaFragment extends ReflectBindingFragmentV2<FragmentJavaBinding> 
                 }
         );
 
-        TaskExecutor.get().execute(tasks, new TaskExecutor.ConcurrentCallback<>() {
+        TaskExecutor.get().execute(tasks, new TaskExecutor.ConcurrentCallback<String>() {
+            @Override
+            public void onError(@NotNull Throwable e) {
+                LogCat.e(e);
+            }
+
             @Override
             public void onComplete(@NotNull SortedMap<Integer, String> results) {
                 boolean existActivity = AppTrackV2.hasActivity(TestPageActivity.class);
@@ -190,10 +195,6 @@ public class JavaFragment extends ReflectBindingFragmentV2<FragmentJavaBinding> 
                 }
             }
 
-            @Override
-            public void onError(@NonNull TaskExecutor.TaskExecutionException e) {
-                LogCat.e(e);
-            }
         });
     }
 
