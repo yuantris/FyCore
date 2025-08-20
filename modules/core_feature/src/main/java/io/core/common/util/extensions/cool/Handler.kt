@@ -1,9 +1,14 @@
 package io.core.common.util.extensions.cool
 
 import android.app.Activity
+import android.app.Application
+import android.content.Context
+import android.os.Build
 import android.os.Handler
 import android.os.Looper
+import android.os.Process
 import androidx.fragment.app.Fragment
+import io.core.appCtx
 import io.core.common.util.tools.buildMainHandler
 import java.util.concurrent.atomic.AtomicBoolean
 
@@ -102,4 +107,25 @@ object HandlerGT {
 
 fun isMainThread(): Boolean {
     return Looper.getMainLooper().thread == Thread.currentThread()
+}
+
+/**
+ * 判断是否为主进程
+ */
+fun isMainProcess(): Boolean {
+    val processName = getCurrentProcessName()
+    return processName == appCtx.packageName
+}
+
+/**
+ * 获取当前进程名
+ */
+fun getCurrentProcessName(): String {
+    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+        Application.getProcessName()
+    } else {
+        val pid = Process.myPid()
+        val manager = appCtx.getSystemService(Context.ACTIVITY_SERVICE) as android.app.ActivityManager
+        manager.runningAppProcesses?.find { it.pid == pid }?.processName ?: appCtx.packageName
+    }
 }

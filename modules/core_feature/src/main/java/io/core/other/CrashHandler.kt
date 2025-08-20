@@ -24,6 +24,7 @@ import io.core.common.util.extensions.cool.getBasePath
 import io.core.common.util.extensions.cool.getFile
 import io.core.common.util.extensions.cool.hasWriteStoragePermission
 import io.core.common.util.extensions.cool.ifNext
+import io.core.common.util.extensions.cool.isMainProcess
 import io.core.common.util.extensions.cool.timeFormat
 import io.core.common.util.extensions.currentTimeMillis
 import io.core.common.util.log.LogPure
@@ -171,10 +172,16 @@ class CrashHandler private constructor(
                 map["PACKAGE_NAME"] = appCtx.packageName
                 map["CURRENT_ACTIVITY"] =
                     AppTrackV2.getTopActivity()?.javaClass?.name ?: "none"
-                map["WebViewUserAgent"] = try {
-                    WebSettings.getDefaultUserAgent(appCtx)
-                } catch (e: Throwable) {
-                    e.toString()
+                
+                // 只在主进程中获取 WebView UserAgent，避免多进程冲突
+                if (isMainProcess()) {
+                    map["WebViewUserAgent"] = try {
+                        WebSettings.getDefaultUserAgent(appCtx)
+                    } catch (e: Throwable) {
+                        e.toString()
+                    }
+                } else {
+                    map["WebViewUserAgent"] = "N/A (non-main process)"
                 }
             }
             map
