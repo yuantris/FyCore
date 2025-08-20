@@ -121,7 +121,7 @@ class AsyncStateImageView @JvmOverloads constructor(
                 
                 // 初始状态
                 val initialStateValue = typedArray.getInt(
-                    R.styleable.AsyncStateImageView_initialState, 0
+                    R.styleable.AsyncStateImageView_initialViewState, 0
                 )
                 _currentState = ViewState.values()[initialStateValue.coerceIn(0, ViewState.values().size - 1)]
                 

@@ -252,7 +252,7 @@
         <!-- 错误状态图片 -->
         <attr name="errorImage" />
         <!-- 初始状态 -->
-        <attr name="initialState" format="enum">
+        <attr name="initialViewState" format="enum">
             <enum name="default" value="0" />
             <enum name="loading" value="1" />
             <enum name="selected" value="2" />
