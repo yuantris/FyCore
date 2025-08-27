@@ -1,10 +1,13 @@
-package io.core.common.helper.track
+package io.core.common.helper.track.activity
 
 import android.app.Activity
 import io.core.common.util.Preferences
 import io.core.common.util.extensions.cool.GSON
 import io.core.common.util.extensions.cool.fromJsonObject
+import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Date
+import java.util.Locale
 
 /**
  * 统计某一个Activity访问详情
@@ -12,6 +15,7 @@ import java.util.Calendar
 object TimeTracker {
     private val statsMap = mutableMapOf<String, TimeStats>()
     private const val STATS_PREFIX = "page_stats_"
+    private val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
 
     init {
         loadAllStats()
@@ -30,13 +34,19 @@ object TimeTracker {
     // 更新统计数据
     fun updateStats(activity: Activity, duration: Long) {
         val stats = getStats(activity::class.java)
+        val currentTime = System.currentTimeMillis()
+        val today = dateFormat.format(Date(currentTime))
+
         stats.apply {
             totalDuration += duration
             todayDuration += duration
             weekDuration += duration
             monthDuration += duration
-            lastVisitTime = System.currentTimeMillis()
+            lastVisitTime = currentTime
             visitCount++
+
+            // 更新每日统计
+            dailyStats[today] = (dailyStats[today] ?: 0) + duration
         }
 
         // 每天零点重置今日数据
@@ -55,6 +65,25 @@ object TimeTracker {
         }
 
         saveStats(activity::class.java, stats)
+    }
+
+    // 获取某一天的统计详情
+    fun getDailyStats(activityClass: Class<*>, date: Date): Long {
+        val stats = getStats(activityClass)
+        val dateString = dateFormat.format(date)
+        return stats.dailyStats[dateString] ?: 0
+    }
+
+    // 获取某一天的统计详情（字符串日期格式：yyyy-MM-dd）
+    fun getDailyStats(activityClass: Class<*>, dateString: String): Long {
+        val stats = getStats(activityClass)
+        return stats.dailyStats[dateString] ?: 0
+    }
+
+    // 获取所有日期的统计详情
+    fun getAllDailyStats(activityClass: Class<*>): Map<String, Long> {
+        val stats = getStats(activityClass)
+        return stats.dailyStats.toMap()
     }
 
     // 新增保存单个统计项
@@ -97,5 +126,4 @@ object TimeTracker {
         val calLast = Calendar.getInstance().apply { timeInMillis = lastTime }
         return calNow[Calendar.MONTH] != calLast[Calendar.MONTH]
     }
-
 }

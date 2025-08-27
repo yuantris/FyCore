@@ -5,7 +5,6 @@ import android.app.Application
 import android.app.Dialog
 import android.app.Service
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -16,6 +15,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ProcessLifecycleOwner
 import com.google.android.material.snackbar.Snackbar
 import io.core.common.helper.ReflectHelper
+import io.core.common.helper.track.activity.TimeTracker
 import io.core.common.helper.track.ui.DialogOperation
 import io.core.common.helper.track.ui.SafeUIManager
 import io.core.common.helper.track.ui.SnackbarOperation

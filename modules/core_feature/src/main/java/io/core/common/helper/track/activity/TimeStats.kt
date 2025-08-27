@@ -1,4 +1,4 @@
-package io.core.common.helper.track
+package io.core.common.helper.track.activity
 
 /**
  * 统计某一个Activity访问详情
@@ -17,5 +17,7 @@ data class TimeStats(
     // 最后访问时间
     var lastVisitTime: Long = System.currentTimeMillis(),
     // 访问次数
-    var visitCount: Int = 0
+    var visitCount: Int = 0,
+    // 每日统计数据 (日期字符串 -> 停留时间)
+    var dailyStats: MutableMap<String, Long> = mutableMapOf()
 )

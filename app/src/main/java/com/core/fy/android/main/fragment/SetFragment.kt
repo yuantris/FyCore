@@ -1,13 +1,10 @@
 package com.core.fy.android.main.fragment
 
-import androidx.lifecycle.lifecycleScope
 import com.core.fy.android.MainActivity
 import com.core.fy.android.constants.PreferKey
 import com.core.fy.android.databinding.FragmentSetBinding
-import com.core.fy.android.function.TestPageActivity
 import com.core.fy.android.function.read.ReadBookActivity
 import com.core.fy.android.help.HighLightHelper
-import com.core.fy.android.ui.TestDialog
 import io.core.common.base.component.custom.ToastGT
 import io.core.common.base.component.fragment.ReflectBindingFragment
 import io.core.common.helper.JsonUltra
@@ -15,7 +12,7 @@ import io.core.common.helper.net.NetworkMonitor
 import io.core.common.helper.net.NetworkState
 import io.core.common.helper.net.awaitNetwork
 import io.core.common.helper.track.AppTrackV2
-import io.core.common.helper.track.TimeTracker
+import io.core.common.helper.track.activity.TimeTracker
 import io.core.common.helper.valid.ValidGT
 import io.core.common.helper.valid.excludeHiddenFiles
 import io.core.common.helper.valid.hasExtension
@@ -23,7 +20,6 @@ import io.core.common.helper.valid.maxSize
 import io.core.common.util.extensions.cool.coolThread
 import io.core.common.util.extensions.cool.launch
 import io.core.common.util.extensions.cool.timeFormat
-import io.core.common.util.extensions.currentTime
 import io.core.common.util.extensions.currentTimeMillis
 import io.core.common.util.extensions.logD
 import io.core.common.util.extensions.logE
@@ -33,8 +29,6 @@ import io.core.common.util.extensions.ui.appVersionName
 import io.core.common.util.extensions.ui.onClick
 import io.core.common.util.extensions.ui.onDebouncedClick
 import io.core.common.util.extensions.ui.postDelayed
-import io.core.common.util.extensions.ui.showDialogFragment
-import io.core.common.util.extensions.ui.startActivity
 import io.core.common.util.log.LogCat
 import io.core.common.util.log.LogPure
 import io.core.common.util.log.bury.AppLog
@@ -51,8 +45,6 @@ import io.core.constant.TimePatterns
 import io.core.engine.storage.getWithAnnotation
 import io.core.engine.storage.put
 import io.core.engine.storage.storage
-import kotlinx.coroutines.flow.forEach
-import kotlinx.coroutines.flow.launchIn
 import java.io.File
 import java.util.function.Predicate
 
