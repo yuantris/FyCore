@@ -1,11 +1,13 @@
 package io.core.common.util.tools
 
 import android.icu.util.Calendar
+import androidx.annotation.Keep
 import io.core.common.util.extensions.cool.printOnDebug
 import io.core.common.util.extensions.currentTimeMillis
 import io.core.constant.TimePatterns
 import java.text.ParseException
 import java.text.SimpleDateFormat
+import java.util.Date
 
 object TimeTools {
 
@@ -21,6 +23,24 @@ object TimeTools {
      */
     enum class Season(val value: String) {
         SPRING("春"), SUMMER("夏"), AUTUMN("秋"), WINTER("冬")
+    }
+
+    /**
+     * 日期格式转换器
+     */
+    @Keep
+    data class DateFormatConverter(
+        val dateStr: String,
+        val sourcePattern: String
+    ) {
+        infix fun to(targetPattern: String): String {
+            try {
+                val date = getDateFormat(sourcePattern).parse(dateStr) ?: return ""
+                return getDateFormat(targetPattern).format(date)
+            } catch (e: ParseException) {
+                return ""
+            }
+        }
     }
 
 
@@ -229,6 +249,19 @@ object TimeTools {
     }
 
     /**
+     * 将Date对象转换为时间字符串
+     *
+     * @param date Date对象
+     * @param pattern 时间字符串格式(默认 yyyy-MM-dd HH:mm:ss)
+     * @return 时间字符串
+     */
+    @JvmStatic
+    @JvmOverloads
+    fun date2String(date: Date, pattern: String = TimePatterns.TIME_FULL): String {
+        return getDateFormat(pattern).format(date)
+    }
+
+    /**
      * 获取友好时间显示(今天/昨天显示具体时间，其他显示日期)
      */
     @JvmStatic
@@ -255,6 +288,36 @@ object TimeTools {
             Unit.HOUR -> (millis / (1000 * 60 * 60)).toInt()
             Unit.DAY -> (millis / (1000 * 60 * 60 * 24)).toInt()
         }
+    }
+
+    /**
+     * 转换日期字符串格式
+     * @param dateStr 原始日期字符串
+     * @param sourcePattern 原始日期格式
+     * @param targetPattern 目标日期格式
+     * @return 转换后的日期字符串
+     */
+    @JvmStatic
+    @JvmOverloads
+    fun convertDateString(
+        dateStr: String,
+        sourcePattern: String = TimePatterns.DATE_YMD,
+        targetPattern: String = TimePatterns.DATE_YMD
+    ): String {
+        try {
+            val date = getDateFormat(sourcePattern).parse(dateStr) ?: return ""
+            return getDateFormat(targetPattern).format(date)
+        } catch (e: ParseException) {
+            return ""
+        }
+    }
+
+    /**
+     * 创建日期格式转换器
+     */
+    @JvmStatic
+    fun convertDateFormat(dateStr: String, sourcePattern: String = TimePatterns.DATE_YMD): DateFormatConverter {
+        return DateFormatConverter(dateStr, sourcePattern)
     }
 
 

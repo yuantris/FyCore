@@ -135,6 +135,11 @@
 
     <declare-styleable name="PressEffectImageView">
         <attr name="defaultPadding" format="dimension" />
+        <attr name="effectType" format="enum">
+            <enum name="overlay" value="0" />
+            <enum name="scale" value="1" />
+            <enum name="none" value="2" />
+        </attr>
     </declare-styleable>
 
     <declare-styleable name="CollapsingHeaderLayout">

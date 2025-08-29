@@ -42,18 +42,25 @@
                 android:text="2:1" />
 
             <io.core.widget.view.StatefulImageViewV2
+                android:id="@+id/async_img"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:defaultImage="@drawable/home_home_off_ic"
-                app:selectedImage="@drawable/home_home_on_ic"
-                android:id="@+id/async_img"/>
+                app:selectedImage="@drawable/home_home_on_ic" />
 
             <io.core.widget.view.PressToggleImageView
+                android:id="@+id/state_img"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:defaultImage="@drawable/home_home_off_ic"
-                app:pressedImage="@drawable/home_home_on_ic"
-                android:id="@+id/state_img"/>
+                app:pressedImage="@drawable/home_home_on_ic" />
+
+            <io.core.widget.view.PressEffectImageView
+                android:id="@+id/effect_img"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/home_home_off_ic"
+                app:effectType="scale" />
 
             <io.core.widget.layout.EffectFrameLayout
                 android:id="@+id/iv_img"
@@ -97,19 +104,19 @@
                     android:layout_height="wrap_content"
                     android:padding="@dimen/dp_10">
 
-<!--                    <com.airbnb.lottie.LottieAnimationView-->
-<!--                        android:id="@+id/lav_splash_lottie"-->
-<!--                        android:layout_width="wrap_content"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        android:layout_gravity="center"-->
-<!--                        app:lottie_autoPlay="true"-->
-<!--                        app:lottie_loop="true"-->
-<!--                        app:lottie_rawRes="@raw/welcome" />-->
+                    <!--                    <com.airbnb.lottie.LottieAnimationView-->
+                    <!--                        android:id="@+id/lav_splash_lottie"-->
+                    <!--                        android:layout_width="wrap_content"-->
+                    <!--                        android:layout_height="wrap_content"-->
+                    <!--                        android:layout_gravity="center"-->
+                    <!--                        app:lottie_autoPlay="true"-->
+                    <!--                        app:lottie_loop="true"-->
+                    <!--                        app:lottie_rawRes="@raw/welcome" />-->
                     <ImageView
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:scaleType="fitXY"
-                        android:src="@drawable/splash_3"/>
+                        android:src="@drawable/splash_3" />
                 </io.core.widget.layout.BlurContainer>
 
                 <androidx.appcompat.widget.AppCompatTextView

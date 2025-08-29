@@ -63,6 +63,10 @@ class EventActivity : ReflectBindingActivity<ActivityEventBinding>() {
 
             }
 
+            effectImg.setOnClickListener {
+
+            }
+
             fEvent.setOnClickListener {
                 postEvent(_ratio, 3)
             }

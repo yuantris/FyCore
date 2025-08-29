@@ -35,6 +35,12 @@ val Float.dp: Float
 val Int.dp: Int
     get() = (this * Resources.getSystem().displayMetrics.density).roundToInt()
 
+val Float.sp: Float
+    get() = this * Resources.getSystem().displayMetrics.scaledDensity
+
+val Int.sp: Int
+    get() = (this * Resources.getSystem().displayMetrics.scaledDensity).roundToInt()
+
 val Float.px: Float
     get() = this / Resources.getSystem().displayMetrics.density
 

@@ -4,10 +4,9 @@ import android.app.Activity
 import io.core.common.util.Preferences
 import io.core.common.util.extensions.cool.GSON
 import io.core.common.util.extensions.cool.fromJsonObject
-import java.text.SimpleDateFormat
+import io.core.constant.TimePatterns
 import java.util.Calendar
 import java.util.Date
-import java.util.Locale
 
 /**
  * 统计某一个Activity访问详情
@@ -15,7 +14,7 @@ import java.util.Locale
 object TimeTracker {
     private val statsMap = mutableMapOf<String, TimeStats>()
     private const val STATS_PREFIX = "page_stats_"
-    private val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+    private val dateFormat = TimePatterns.getFormatter("yyyy-MM-dd")
 
     init {
         loadAllStats()
@@ -31,12 +30,18 @@ object TimeTracker {
         }
     }
 
-    // 更新统计数据
-    fun updateStats(activity: Activity, duration: Long) {
+    /**
+     * 更新统计数据
+     * @param activity 活动
+     * @param duration 持续时间
+     * @param dataId 数据项ID，可选，如果提供则同时更新数据项统计
+     */
+    fun updateStats(activity: Activity, duration: Long, dataId: String? = null) {
         val stats = getStats(activity::class.java)
         val currentTime = System.currentTimeMillis()
         val today = dateFormat.format(Date(currentTime))
 
+        // 更新基本统计数据
         stats.apply {
             totalDuration += duration
             todayDuration += duration
@@ -64,7 +69,126 @@ object TimeTracker {
             stats.monthDuration = duration
         }
 
+        // 如果提供了数据ID，则更新数据项统计
+        if (dataId != null) {
+            // 获取或创建数据项统计
+            val dataItemStats = stats.dataItemStats[dataId] ?: DataItemStats(dataId)
+
+            // 更新数据项统计
+            dataItemStats.apply {
+                totalDuration += duration
+                todayDuration += duration
+                lastVisitTime = currentTime
+                visitCount++
+
+                // 更新每日统计
+                dailyStats[today] = (dailyStats[today] ?: 0) + duration
+            }
+
+            // 每天零点重置今日数据
+            if (isNewDay(dataItemStats.lastVisitTime)) {
+                dataItemStats.todayDuration = duration
+            }
+
+            // 保存数据项统计
+            stats.dataItemStats[dataId] = dataItemStats
+        }
+
         saveStats(activity::class.java, stats)
+    }
+
+    /**
+     * 获取特定数据项的统计数据
+     * @param activityClass 活动类
+     * @param dataId 数据项ID
+     * @return 数据项统计信息，如果不存在则返回新创建的统计信息
+     */
+    fun getDataItemStats(activityClass: Class<*>, dataId: String): DataItemStats {
+        val stats = getStats(activityClass)
+        return stats.dataItemStats[dataId] ?: DataItemStats(dataId)
+    }
+
+    /**
+     * 获取特定数据项某一天的统计详情
+     * @param activityClass 活动类
+     * @param dataId 数据项ID
+     * @param date 日期
+     * @return 该日期的停留时间
+     */
+    fun getDataItemDailyStats(activityClass: Class<*>, dataId: String, date: Date): Long {
+        val dataItemStats = getDataItemStats(activityClass, dataId)
+        val dateString = dateFormat.format(date)
+        return dataItemStats.dailyStats[dateString] ?: 0
+    }
+
+    /**
+     * 获取特定数据项某一天的统计详情（字符串日期格式：yyyy-MM-dd）
+     * @param activityClass 活动类
+     * @param dataId 数据项ID
+     * @param dateString 日期字符串
+     * @return 该日期的停留时间
+     */
+    fun getDataItemDailyStats(activityClass: Class<*>, dataId: String, dateString: String): Long {
+        val dataItemStats = getDataItemStats(activityClass, dataId)
+        return dataItemStats.dailyStats[dateString] ?: 0
+    }
+
+    /**
+     * 获取特定数据项所有日期的统计详情
+     * @param activityClass 活动类
+     * @param dataId 数据项ID
+     * @return 所有日期的停留时间映射
+     */
+    fun getDataItemAllDailyStats(activityClass: Class<*>, dataId: String): Map<String, Long> {
+        val dataItemStats = getDataItemStats(activityClass, dataId)
+        return dataItemStats.dailyStats.toMap()
+    }
+
+    /**
+     * 获取活动中所有数据项的统计信息
+     * @param activityClass 活动类
+     * @return 所有数据项的统计信息映射
+     */
+    fun getAllDataItemStats(activityClass: Class<*>): Map<String, DataItemStats> {
+        val stats = getStats(activityClass)
+        return stats.dataItemStats.toMap()
+    }
+
+    /**
+     * 获取活动中某一天所有数据项的统计信息
+     * @param activityClass 活动类
+     * @param date 日期
+     * @return 所有数据项在指定日期的停留时间映射 (数据ID -> 停留时间)
+     */
+    fun getDailyAllDataItemStats(activityClass: Class<*>, date: Date): Map<String, Long> {
+        val stats = getStats(activityClass)
+        val dateString = dateFormat.format(date)
+        val result = mutableMapOf<String, Long>()
+
+        stats.dataItemStats.forEach { (dataId, dataItemStats) ->
+            val duration = dataItemStats.dailyStats[dateString] ?: 0
+            result[dataId] = duration
+        }
+
+        return result
+    }
+
+    /**
+     * 获取活动中某一天所有数据项的统计信息（字符串日期格式：yyyy-MM-dd）
+     * @param activityClass 活动类
+     * @param dateString 日期字符串
+     * @return 所有数据项在指定日期的停留时间映射 (数据ID -> 停留时间)
+     */
+    fun getDailyAllDataItemStats(activityClass: Class<*>, dateString: String): Map<String, Long> {
+        val stats = getStats(activityClass)
+        val result = mutableMapOf<String, Long>()
+
+        stats.dataItemStats.forEach { (dataId, dataItemStats) ->
+            val duration = dataItemStats.dailyStats[dateString] ?: 0
+            result[dataId] = duration
+        }
+
+        return result
     }
 
     // 获取某一天的统计详情
