@@ -89,24 +89,62 @@ inline fun <reified T : Activity> Fragment.startActivity(
 val Fragment.isCreated
     get() = lifecycle.currentState.isAtLeast(Lifecycle.State.CREATED)
 
-fun addViewToZYLayout(target: RelativeLayout, view: View) {
+/**
+ * 扩展函数：向RelativeLayout添加视图并支持动态设置布局规则
+ */
+fun Fragment.addViewToZYLayout(
+    target: RelativeLayout,
+    @LayoutRes layoutId: Int,
+    vararg rules: Int
+): View {
+    val view = requireContext().layout2View(layoutId)
+    addViewToZYLayout(target, view, *rules)
+    return view
+}
+
+/**
+ * 扩展函数：向RelativeLayout添加视图并支持动态设置布局规则
+ */
+fun addViewToZYLayout(target: RelativeLayout, view: View, vararg rules: Int) {
     // 安全类型转换
     val lp = target.layoutParams?.let { it as? RelativeLayout.LayoutParams }
         ?: RelativeLayout.LayoutParams(
             RelativeLayout.LayoutParams.MATCH_PARENT,
             RelativeLayout.LayoutParams.MATCH_PARENT
         )
+
     target.removeAllViews()
     val newLp = RelativeLayout.LayoutParams(lp)
-    newLp.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE)
+
+    // 如果没有指定规则，默认使用CENTER_IN_PARENT
+    if (rules.isEmpty()) {
+        newLp.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE)
+    } else {
+        // 应用所有指定的规则
+        rules.forEach { rule ->
+            when (rule) {
+                RelativeLayout.CENTER_IN_PARENT,
+                RelativeLayout.CENTER_VERTICAL,
+                RelativeLayout.CENTER_HORIZONTAL,
+                RelativeLayout.ALIGN_PARENT_TOP,
+                RelativeLayout.ALIGN_PARENT_BOTTOM,
+                RelativeLayout.ALIGN_PARENT_LEFT,
+                RelativeLayout.ALIGN_PARENT_RIGHT,
+                RelativeLayout.ALIGN_PARENT_START,
+                RelativeLayout.ALIGN_PARENT_END -> {
+                    newLp.addRule(rule, RelativeLayout.TRUE)
+                }
+                else -> {
+                    // 对于需要关联其他视图ID的规则，需要额外参数处理
+                    newLp.addRule(rule)
+                }
+            }
+        }
+    }
+
     target.addView(view, newLp)
 }
 
-fun Fragment.addViewToZYLayout(target: RelativeLayout, @LayoutRes layoutId: Int): View {
-    val view = requireContext().layout2View(layoutId)
-    addViewToZYLayout(target, view)
-    return view
-}
 
 val Fragment.ctx
     get() = requireContext()

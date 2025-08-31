@@ -40,3 +40,13 @@ fun RecyclerView.setEdgeEffectColor(@ColorInt color: Int) {
         }
     }
 }
+
+/**
+ * 安全获取 RecyclerView 的 Adapter 并转换为指定类型
+ *
+ * @param T 目标 Adapter 类型
+ * @return 指定类型的 Adapter 实例，如果当前 adapter 不是目标类型则返回 null
+ */
+inline fun <reified T : RecyclerView.Adapter<*>> RecyclerView.adapterAs(): T? {
+    return this.adapter as? T
+}
