@@ -1,5 +1,6 @@
 package com.core.fy.android.main.fragment
 
+import android.util.Log
 import com.core.fy.android.MainActivity
 import com.core.fy.android.constants.PreferKey
 import com.core.fy.android.databinding.FragmentSetBinding
@@ -17,6 +18,7 @@ import io.core.common.helper.valid.ValidGT
 import io.core.common.helper.valid.excludeHiddenFiles
 import io.core.common.helper.valid.hasExtension
 import io.core.common.helper.valid.maxSize
+import io.core.common.util.Toaster
 import io.core.common.util.extensions.cool.coolThread
 import io.core.common.util.extensions.cool.launch
 import io.core.common.util.extensions.cool.timeFormat
