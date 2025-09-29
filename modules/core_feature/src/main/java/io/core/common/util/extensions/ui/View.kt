@@ -71,6 +71,10 @@ fun View.onDebouncedClick(debounceTime: Long = 500L, onClick: () -> Unit) {
     }
 }
 
+fun onCommonClick(listener: (View) -> Unit, vararg views: View) {
+    views.forEach { it.setOnClickListener(listener) }
+}
+
 /**
  * 为View设置点击事件，先隐藏软键盘再执行实际点击逻辑
  * @param clickAction 实际的点击处理逻辑

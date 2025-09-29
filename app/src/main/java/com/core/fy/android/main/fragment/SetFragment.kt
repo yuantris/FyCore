@@ -1,6 +1,5 @@
 package com.core.fy.android.main.fragment
 
-import android.util.Log
 import com.core.fy.android.MainActivity
 import com.core.fy.android.constants.PreferKey
 import com.core.fy.android.databinding.FragmentSetBinding
@@ -14,11 +13,6 @@ import io.core.common.helper.net.NetworkState
 import io.core.common.helper.net.awaitNetwork
 import io.core.common.helper.track.AppTrackV2
 import io.core.common.helper.track.activity.TimeTracker
-import io.core.common.helper.valid.ValidGT
-import io.core.common.helper.valid.excludeHiddenFiles
-import io.core.common.helper.valid.hasExtension
-import io.core.common.helper.valid.maxSize
-import io.core.common.util.Toaster
 import io.core.common.util.extensions.cool.coolThread
 import io.core.common.util.extensions.cool.launch
 import io.core.common.util.extensions.cool.timeFormat
@@ -94,22 +88,6 @@ class SetFragment : ReflectBindingFragment<FragmentSetBinding, MainActivity>() {
                 }
             }
         }
-
-        val fileResult = ValidGT.forFile()
-            .excludeHiddenFiles()
-            .hasExtension(".jpg", ".png")
-            .maxSize(1024 * 1024 * 5)
-            .build(File("avatar.jpg"))
-
-        val complexCondition = Predicate<File> { it.name.startsWith("temp") }
-            .and { it.length() > 1024 }
-
-        ValidGT.forFile()
-            .addCondition(complexCondition, "文件名必须以temp开头且大于1KB")
-
-        val ageValidator = ValidGT.create<Int>()
-            .addCondition({ it in 18..60 }, "年龄必须在18-60岁之间")
-            .build(11)
 
         JsonUltra.parse("{\"a\":1}").use {
             it["a"]?.asString().logD()

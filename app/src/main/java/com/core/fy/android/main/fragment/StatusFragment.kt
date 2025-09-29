@@ -44,6 +44,7 @@ import io.core.common.helper.track.v3.ComponentFilter
 import io.core.common.util.extensions.cool.GSON
 import io.core.common.util.extensions.cool.launch
 import io.core.common.util.extensions.cool.runDelayedMain
+import io.core.common.util.extensions.ui.ctx
 import io.core.common.util.extensions.ui.onClick
 import io.core.common.util.extensions.ui.startActivity
 import io.core.common.util.log.e
@@ -53,6 +54,10 @@ import io.core.engine.brv.BindingAdapter
 import io.core.engine.brv.listener.DefaultItemTouchCallback
 import io.core.engine.brv.utils.grid
 import io.core.engine.brv.utils.setup
+import io.core.nav.NavigationManager
+import io.core.nav.navigator
+import io.core.nav.routerTo
+import kotlin.to
 
 /**
 # ██████████
@@ -139,7 +144,7 @@ class StatusFragment : ReflectBindingFragment<FragmentStatusBinding, MainActivit
                                 FunctionVM.Design.Json -> startActivity<JsonActivity>()
                                 FunctionVM.Design.FFmpeg -> startActivity<FFmpegActivity>()
                                 FunctionVM.Design.Lottie -> startActivity<LottieActivity>()
-                                FunctionVM.Design.Fold -> startActivity<FoldActivity>()
+                                FunctionVM.Design.Fold -> routerTo<FoldActivity>()
 
                                 else -> {
                                     // do nothing

@@ -10,6 +10,7 @@ import android.widget.Toast
 import io.core.BuildConfig
 import io.core.appCtx
 import io.core.common.util.extensions.cool.getUri
+import io.core.common.util.tools.UriTools
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -85,6 +86,11 @@ object ShareAir {
         @JvmOverloads
         fun file(uri: Uri, mimeType: String = MimeType.UNKNOWN) {
             this.content = ShareContent.File(uri, mimeType, this)
+        }
+
+        @JvmOverloads
+        fun file(file: File, mimeType: String = MimeType.UNKNOWN) {
+            this.content = ShareContent.File(UriTools.file2Uri(file), mimeType, this)
         }
 
         @JvmOverloads

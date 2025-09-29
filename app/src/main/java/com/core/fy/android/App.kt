@@ -1,11 +1,14 @@
 package com.core.fy.android
 
+import android.app.Activity
 import android.app.Application
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import com.core.fy.android.constants.AppConst.channelIdReadAloud
 import com.core.fy.android.constants.PreferKey
+import com.core.fy.android.function.fold.FoldActivity
+import com.core.fy.android.function.tts.ClickTextActivity
 import com.core.fy.android.util.HttpClient
 import com.core.fy.android.util.NetworkException
 import com.core.fy.android.util.initDialogX
@@ -27,6 +30,17 @@ import io.core.constant.ANDROID_8
 import io.core.engine.brv.utils.BRV
 import io.core.engine.storage.StorageFactory
 import io.core.engine.storage.StorageType
+import io.core.nav.AppAuthProvider
+import io.core.nav.AuthProvider
+import io.core.nav.LoginActivity
+import io.core.nav.LoginInterceptor
+import io.core.nav.NavigationInterceptor
+import io.core.nav.NavigationListener
+import io.core.nav.NavigationManager
+import io.core.nav.NavigationRequest
+import io.core.nav.OrderActivity
+import io.core.nav.ProfileActivity
+import io.core.nav.SettingsActivity
 import io.core.other.CrashHandler
 
 
@@ -86,6 +100,47 @@ class App : Application() {
             LogPure.v {
                 "进入${if (isForeground) "前台" else "后台"}"
             }
+        }
+
+        // 初始化导航
+        NavigationManager.configure {
+            setListener(object : NavigationListener{
+
+                override fun onNavigationStart(request: NavigationRequest) {
+                    super.onNavigationStart(request)
+                    LogPure.v {
+                        "开始导航: ${request.targetClass<Activity>()?.simpleName}"
+                    }
+                }
+                override fun onInterceptorExecute(
+                    interceptor: NavigationInterceptor,
+                    request: NavigationRequest
+                ) {
+                    super.onInterceptorExecute(interceptor, request)
+                    LogPure.v {
+                        "拦截器: ${interceptor.name} 拦截了请求: ${request.targetClass<Activity>()?.simpleName}"
+                    }
+                }
+            })
+            // 登录拦截器
+            addInterceptor(
+                LoginInterceptor(
+                    authProvider = object : AuthProvider{
+                        override suspend fun isLoggedIn(): Boolean {
+                            return false
+                        }
+
+                        override fun isLoggedInSync(): Boolean {
+                            return false
+                        }
+
+                    },
+                    loginActivityClass = ClickTextActivity::class,
+                    protectedActivities = setOf(
+                        FoldActivity::class,
+                    )
+                )
+            )
         }
 
         GlobalCoroutine.launch {

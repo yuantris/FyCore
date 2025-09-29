@@ -57,9 +57,9 @@ class UserVM(private var repository: UserRepository) : BaseViewModel() {
     }
 
 
-    fun getUserAsync(id: Long) = async {
-        repository.getUserById(id)
-    }
+//    fun getUserAsync(id: Long) = async {
+//        repository.getUserById(id)
+//    }
 
     fun getAllUsers() = launch(
         block = {

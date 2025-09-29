@@ -33,22 +33,22 @@ class RoomActivity : ReflectBindingActivity<ActivityRoomBinding>() {
         }
 
         launch {
-            userVM.getUserAsync(1).let {
-                "查询到：${it?.name}，details：${it?.age}".logD()
-
-                // 先判断是否为空，如果不为空则更新，否则插入
-                it?.let { user ->
-                    user.name = CoreUtil.Files.generateNameNoExtension("name")
-                    user.age = 100
-                    userVM.update(user)
-                    "查询到：${user.name}，details已更新为：${user.age}".logD()
-                } ?: run {
-                    "查询为空".logE()
-                    val origin = User(name = "fy", age = 16)
-                    userVM.insert(origin)
-                    "插入年龄为${origin.age}岁的用户".logI()
-                }
-            }
+//            userVM.getUserAsync(1).let {
+//                "查询到：${it?.name}，details：${it?.age}".logD()
+//
+//                // 先判断是否为空，如果不为空则更新，否则插入
+//                it?.let { user ->
+//                    user.name = CoreUtil.Files.generateNameNoExtension("name")
+//                    user.age = 100
+//                    userVM.update(user)
+//                    "查询到：${user.name}，details已更新为：${user.age}".logD()
+//                } ?: run {
+//                    "查询为空".logE()
+//                    val origin = User(name = "fy", age = 16)
+//                    userVM.insert(origin)
+//                    "插入年龄为${origin.age}岁的用户".logI()
+//                }
+//            }
         }
 
     }
@@ -102,8 +102,8 @@ class RoomActivity : ReflectBindingActivity<ActivityRoomBinding>() {
                     launch {
                         bean.age = 19
                         appDb.userDao().update(bean)
-                        val byNameNext = userVM.getUserAsync(bean.id)
-                        "根据名字查询到用户：${byNameNext?.name}，年龄：${byNameNext?.age}".logI()
+//                        val byNameNext = userVM.getUserAsync(bean.id)
+//                        "根据名字查询到用户：${byNameNext?.name}，年龄：${byNameNext?.age}".logI()
                     }
                     binding.dataShow.text = bean.age.toString()
                 }

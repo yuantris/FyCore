@@ -12,6 +12,7 @@ import io.core.engine.livebus.LiveEventBus
 import io.core.engine.livebus.logger.DefaultLogger
 import io.core.engine.storage.StorageFactory
 import io.core.engine.storage.storage
+import io.core.nav.NavigationManager
 import io.core.other.AppLauncher
 import io.core.other.CrashHandler
 import io.core.other.IntentData
@@ -69,6 +70,8 @@ object Android {
             AppTrackV3Helper.quickInit(this)
             // 注册全局CrashHandler
             CrashHandler.register(this)
+            // 初始化路由
+            NavigationManager.initialize()
             // 初始化日志
             AppLog.initialize()
             // LiveEventBus 初始化

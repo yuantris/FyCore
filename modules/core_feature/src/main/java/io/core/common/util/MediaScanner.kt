@@ -25,7 +25,10 @@ class MediaScanner {
             MediaStore.MediaColumns.DATA,
             MediaStore.MediaColumns.SIZE,
             MediaStore.MediaColumns.DATE_ADDED,
-            MediaStore.MediaColumns.MIME_TYPE
+            MediaStore.MediaColumns.DATE_MODIFIED,
+            MediaStore.MediaColumns.MIME_TYPE,
+            MediaStore.MediaColumns.DISPLAY_NAME,
+            MediaStore.MediaColumns.TITLE
         )
 
         private val EXCLUDED_PATTERNS = listOf(
@@ -161,15 +164,36 @@ class MediaScanner {
                 val dateIndex = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATE_ADDED)
                 val mimeIndex = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.MIME_TYPE)
 
+                // 获取额外字段的索引
+                val dateModifiedIndex = cursor.getColumnIndex(MediaStore.MediaColumns.DATE_MODIFIED)
+                val displayNameIndex = cursor.getColumnIndex(MediaStore.MediaColumns.DISPLAY_NAME)
+                val titleIndex = cursor.getColumnIndex(MediaStore.MediaColumns.TITLE)
+
+
                 val results = mutableListOf<FileInfo>()
                 while (cursor.moveToNext()) {
                     val path = cursor.getString(pathIndex) ?: continue
+
+                    // 构建额外参数 map
+                    val extMap = mutableMapOf<String, Any?>()
+
+                    if (dateModifiedIndex != -1) {
+                        extMap["dateModified"] = cursor.getLong(dateModifiedIndex)
+                    }
+                    if (displayNameIndex != -1) {
+                        extMap["displayName"] = cursor.getString(displayNameIndex)
+                    }
+                    if (titleIndex != -1) {
+                        extMap["title"] = cursor.getString(titleIndex)
+                    }
+
                     results.add(
                         FileInfo(
                             path = path,
                             size = cursor.getLong(sizeIndex),
                             dateAdded = cursor.getLong(dateIndex),
-                            mimeType = cursor.getString(mimeIndex)
+                            mimeType = cursor.getString(mimeIndex),
+                            ext = extMap
                         )
                     )
                 }
@@ -236,7 +260,8 @@ class MediaScanner {
         val path: String,
         val size: Long,
         val dateAdded: Long,
-        val mimeType: String?
+        val mimeType: String?,
+        val ext: Map<String, Any?> = emptyMap()
     )
 
     enum class MediaFileType(
@@ -300,6 +325,11 @@ class MediaScanner {
         M4A(
             FileType.resolveAllMimeTypes("m4a"),
             listOf("m4a"),
+            MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
+        ),
+        AAC(
+            FileType.resolveAllMimeTypes("aac"),
+            listOf("aac"),
             MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
         ),
 

@@ -12,6 +12,7 @@ import io.core.common.util.tools.file.FileSortStrategy
 import io.core.common.util.tools.file.FileSorter
 import io.core.common.util.tools.file.FileWriter
 import io.core.common.util.tools.file.PathUtils
+import io.core.common.util.tools.file.RenameResult
 import java.io.File
 import java.io.IOException
 import java.io.InputStream
@@ -262,6 +263,34 @@ object FileToolsV2 {
     @JvmStatic
     fun rename(src: File, tar: File): Boolean {
         return FileOperations.rename(src, tar).getOrNull() ?: false
+    }
+
+    /**
+     * 文件重命名（仅指定新的文件名，不包括扩展名）
+     * @param src 源文件
+     * @param newName 新的文件名（不包含扩展名）
+     */
+    @JvmStatic
+    fun renameFile(src: File, newName: String): RenameResult {
+        return try {
+            val parentDir = src.parentFile ?: return RenameResult(false, null)
+            val extension = FileMetadata.getExtension(src.absolutePath)
+            val newFile = File(parentDir, "$newName.$extension")
+            val success = FileOperations.rename(src, newFile).getOrNull() ?: false
+            RenameResult(success, if (success) newFile.absolutePath else null)
+        } catch (e: Exception) {
+            RenameResult(false, null)
+        }
+    }
+
+    /**
+     * 文件重命名（仅指定新的文件名，不包括扩展名）
+     * @param filePath 文件路径
+     * @param newName 新的文件名（不包含扩展名）
+     */
+    @JvmStatic
+    fun renameFile(filePath: String, newName: String): RenameResult {
+        return renameFile(File(filePath), newName)
     }
 
     // ==================== 文件读取操作 ====================
