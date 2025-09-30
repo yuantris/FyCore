@@ -74,10 +74,13 @@ class InterceptorChain internal constructor(
             val interceptor = interceptors[index]
             val next = InterceptorChain(interceptors, index + 1, scope, listener)
             try {
-                listener?.onInterceptorExecute(interceptor, request)
-                interceptor.intercept(request, next)
+                val result = interceptor.intercept(request, next)
+                listener?.onInterceptorExecute(interceptor, request, InterceptorResult.Intercepted(result))
+                result
             } catch (e: Exception) {
-                NavigationResult.Error(e, request.originalIntent)
+                val errorResult = NavigationResult.Error(e, request.originalIntent)
+                listener?.onInterceptorExecute(interceptor, request, InterceptorResult.Intercepted(errorResult))
+                errorResult
             }
         } else {
             NavigationResult.Proceed(request.intent, request.originalIntent)
@@ -89,10 +92,13 @@ class InterceptorChain internal constructor(
             val interceptor = interceptors[index]
             val next = InterceptorChain(interceptors, index + 1, scope, listener)
             try {
-                listener?.onInterceptorExecute(interceptor, request)
-                interceptor.interceptSuspend(request, next)
+                val result = interceptor.interceptSuspend(request, next)
+                listener?.onInterceptorExecute(interceptor, request, InterceptorResult.Intercepted(result))
+                result
             } catch (e: Exception) {
-                NavigationResult.Error(e, request.originalIntent)
+                val errorResult = NavigationResult.Error(e, request.originalIntent)
+                listener?.onInterceptorExecute(interceptor, request, InterceptorResult.Intercepted(errorResult))
+                errorResult
             }
         } else {
             NavigationResult.Proceed(request.intent, request.originalIntent)
@@ -158,12 +164,24 @@ class DefaultNavigationExecutor : NavigationExecutor {
 }
 
 /**
+ * 拦截器执行结果
+ */
+sealed class InterceptorResult {
+    object Proceed : InterceptorResult()
+    data class Intercepted(val result: NavigationResult) : InterceptorResult()
+}
+
+/**
  * 导航监听器
  */
 interface NavigationListener {
     fun onNavigationStart(request: NavigationRequest) {}
     fun onNavigationResult(result: NavigationResult) {}
-    fun onInterceptorExecute(interceptor: NavigationInterceptor, request: NavigationRequest) {}
+    fun onInterceptorExecute(
+        interceptor: NavigationInterceptor,
+        request: NavigationRequest,
+        result: InterceptorResult
+    ) {}
 }
 
 /**

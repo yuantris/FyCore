@@ -322,8 +322,8 @@ class NavigationBuilder<T : Activity>(
 
     private fun createIntent(): Intent {
         return Intent(context, activityClass.java).apply {
-            extras?.let { putExtras(it) }
-            flags?.let { setFlags(it) }
+            this@NavigationBuilder.extras?.let { putExtras(it) }
+            setFlags(flags)
             action?.let { setAction(it) }
         }
     }
@@ -387,8 +387,8 @@ class RouteNavigationBuilder(
 
     private fun createIntent(): Intent? {
         return navigator.createRouteIntent(context, route)?.apply {
-            extras?.let { putExtras(it) }
-            flags?.let { setFlags(it) }
+            this@RouteNavigationBuilder.extras?.let { putExtras(it) }
+            setFlags(flags)
         }
     }
 

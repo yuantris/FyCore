@@ -34,10 +34,12 @@ import io.core.nav.AppAuthProvider
 import io.core.nav.AuthProvider
 import io.core.nav.LoginActivity
 import io.core.nav.LoginInterceptor
+import io.core.nav.InterceptorResult
 import io.core.nav.NavigationInterceptor
 import io.core.nav.NavigationListener
 import io.core.nav.NavigationManager
 import io.core.nav.NavigationRequest
+import io.core.nav.NavigationResult
 import io.core.nav.OrderActivity
 import io.core.nav.ProfileActivity
 import io.core.nav.SettingsActivity
@@ -114,11 +116,21 @@ class App : Application() {
                 }
                 override fun onInterceptorExecute(
                     interceptor: NavigationInterceptor,
-                    request: NavigationRequest
+                    request: NavigationRequest,
+                    result: InterceptorResult
                 ) {
-                    super.onInterceptorExecute(interceptor, request)
+                    super.onInterceptorExecute(interceptor, request, result)
+                    val action = when (result) {
+                        is InterceptorResult.Intercepted -> when (result.result) {
+                            is NavigationResult.Proceed -> "放行"
+                            is NavigationResult.Redirect -> "重定向"
+                            is NavigationResult.Abort -> "拦截"
+                            is NavigationResult.Error -> "错误"
+                        }
+                        is InterceptorResult.Proceed -> "放行"
+                    }
                     LogPure.v {
-                        "拦截器: ${interceptor.name} 拦截了请求: ${request.targetClass<Activity>()?.simpleName}"
+                        "拦截器: ${interceptor.name} $action 了请求: ${request.targetClass<Activity>()?.simpleName}"
                     }
                 }
             })
@@ -126,14 +138,7 @@ class App : Application() {
             addInterceptor(
                 LoginInterceptor(
                     authProvider = object : AuthProvider{
-                        override suspend fun isLoggedIn(): Boolean {
-                            return false
-                        }
-
-                        override fun isLoggedInSync(): Boolean {
-                            return false
-                        }
-
+                        override suspend fun isLoggedIn(): Boolean = true
                     },
                     loginActivityClass = ClickTextActivity::class,
                     protectedActivities = setOf(

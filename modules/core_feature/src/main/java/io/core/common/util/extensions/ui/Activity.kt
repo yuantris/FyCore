@@ -188,6 +188,37 @@ fun AppCompatActivity.onLifecycleEvent(
 // ========================================
 // 2. Activity跳转相关扩展
 // ========================================
+/**
+ * 获取Activity的Intent中的数据
+ * @param key 键
+ * @param default 默认值
+ * @return 数据
+ */
+inline fun <reified T> Activity.getExtra(key: String, default: T? = null): T? {
+    return when (T::class) {
+        String::class -> intent.getStringExtra(key) as? T ?: default
+        Int::class -> intent.getIntExtra(key, default as? Int ?: 0) as? T ?: default
+        Boolean::class -> intent.getBooleanExtra(key, default as? Boolean ?: false) as? T ?: default
+        Long::class -> intent.getLongExtra(key, default as? Long ?: 0L) as? T ?: default
+        Float::class -> intent.getFloatExtra(key, default as? Float ?: 0f) as? T ?: default
+        Double::class -> intent.getDoubleExtra(key, default as? Double ?: 0.0) as? T ?: default
+        Bundle::class -> intent.getBundleExtra(key) as? T ?: default
+        ArrayList::class -> {
+            when {
+                default is ArrayList<*> && default.isNotEmpty() -> {
+                    when (default.firstOrNull()) {
+                        is String -> intent.getStringArrayListExtra(key) as? T ?: default
+                        is Int -> intent.getIntegerArrayListExtra(key) as? T ?: default
+                        else -> intent.getSerializableExtra(key) as? T ?: default
+                    }
+                }
+                else -> intent.getSerializableExtra(key) as? T ?: default
+            }
+        }
+        else -> intent.getSerializableExtra(key) as? T ?: default
+    }
+}
+
 
 /**
  * 启动Activity并且不使用过渡动画（泛型版本）

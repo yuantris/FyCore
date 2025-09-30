@@ -144,7 +144,9 @@ class StatusFragment : ReflectBindingFragment<FragmentStatusBinding, MainActivit
                                 FunctionVM.Design.Json -> startActivity<JsonActivity>()
                                 FunctionVM.Design.FFmpeg -> startActivity<FFmpegActivity>()
                                 FunctionVM.Design.Lottie -> startActivity<LottieActivity>()
-                                FunctionVM.Design.Fold -> routerTo<FoldActivity>()
+                                FunctionVM.Design.Fold -> routerTo<FoldActivity> {
+                                    with("param1", "2")
+                                }
 
                                 else -> {
                                     // do nothing

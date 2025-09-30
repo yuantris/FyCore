@@ -55,7 +55,7 @@ object NavigationManager {
      * 使用默认配置初始化，后续可通过动态配置方法进行设置
      */
     fun initialize() {
-        initialize { 
+        initialize {
             // 使用默认配置
         }
     }
@@ -172,7 +172,7 @@ object NavigationManager {
      * 动态配置构建器
      */
     class DynamicConfigBuilder internal constructor(private val manager: NavigationManager) {
-        
+
         /**
          * 添加拦截器
          */
@@ -230,11 +230,14 @@ object NavigationManager {
 val navigator: Navigator
     get() = NavigationManager.getNavigator()
 
-inline fun <reified T : Activity> Context.routerTo(): NavigationResult {
-    return navigator.to<T>(this).go()
+inline fun <reified T : Activity> Context.routerTo(builder: NavigationBuilder<T>.() -> Unit = {}): NavigationResult {
+    return navigator.to<T>(this)
+        .apply(builder)
+        .go()
 }
-
-inline fun <reified T : Activity> Fragment.routerTo(): NavigationResult {
-    return navigator.to<T>(requireContext()).go()
+inline fun <reified T : Activity> Fragment.routerTo(builder: NavigationBuilder<T>.() -> Unit = {}): NavigationResult {
+    return navigator.to<T>(requireContext())
+        .apply(builder)
+        .go()
 }
 

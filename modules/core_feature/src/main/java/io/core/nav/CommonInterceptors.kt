@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import kotlin.reflect.KClass
 
@@ -213,8 +214,15 @@ class ABTestInterceptor(
  * 认证提供者接口
  */
 interface AuthProvider {
+    /**
+     * 同步检查登录状态（默认实现基于异步方法）
+     */
+    fun isLoggedInSync(): Boolean = runBlocking { isLoggedIn() }
+    
+    /**
+     * 异步检查登录状态（必须实现）
+     */
     suspend fun isLoggedIn(): Boolean
-    fun isLoggedInSync(): Boolean
 }
 
 /**

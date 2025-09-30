@@ -24,7 +24,7 @@ object NavigationExample {
             // 自定义执行器和监听器
             setExecutor(ProductionNavigationExecutor())
             setListener(ProductionNavigationListener())
-            
+
             // 权限检查拦截器
             addInterceptor(
                 PermissionInterceptor(
@@ -39,7 +39,7 @@ object NavigationExample {
                     priority = 50
                 )
             )
-            
+
             // 登录拦截器
             addInterceptor(
                 LoginInterceptor(
@@ -53,7 +53,7 @@ object NavigationExample {
                     priority = 100
                 )
             )
-            
+
             // A/B测试拦截器
             addInterceptor(
                 ABTestInterceptor(
@@ -70,7 +70,7 @@ object NavigationExample {
                     priority = 150
                 )
             )
-            
+
             // 埋点拦截器
             addInterceptor(
                 AnalyticsInterceptor(
@@ -78,7 +78,7 @@ object NavigationExample {
                     priority = 200
                 )
             )
-            
+
             // 注册路由（可选）
             registerRoute<HomeActivity>("home")
             registerRoute<ProfileActivity>("profile")
@@ -105,6 +105,7 @@ class ProductionNavigationExecutor : NavigationExecutor {
                     CrashReporter.logException("Navigation failed", e)
                 }
             }
+
             is NavigationResult.Redirect -> {
                 try {
                     context.startActivity(result.intent)
@@ -112,6 +113,7 @@ class ProductionNavigationExecutor : NavigationExecutor {
                     CrashReporter.logException("Navigation redirect failed", e)
                 }
             }
+
             is NavigationResult.Abort -> {
                 // 可以显示用户友好的提示
                 if (result.reason.contains("权限")) {
@@ -122,6 +124,7 @@ class ProductionNavigationExecutor : NavigationExecutor {
                     showGenericError(context, result.reason)
                 }
             }
+
             is NavigationResult.Error -> {
                 CrashReporter.logException("Navigation error", result.exception)
                 showGenericError(context, "页面跳转失败")
@@ -151,19 +154,26 @@ class ProductionNavigationListener : NavigationListener {
             is NavigationResult.Proceed -> {
                 Logger.d("Navigation", "Navigation succeeded")
             }
+
             is NavigationResult.Redirect -> {
                 Logger.d("Navigation", "Navigation redirected: ${result.reason}")
             }
+
             is NavigationResult.Abort -> {
                 Logger.w("Navigation", "Navigation aborted: ${result.reason}")
             }
+
             is NavigationResult.Error -> {
                 Logger.e("Navigation", "Navigation error", result.exception)
             }
         }
     }
 
-    override fun onInterceptorExecute(interceptor: NavigationInterceptor, request: NavigationRequest) {
+    override fun onInterceptorExecute(
+        interceptor: NavigationInterceptor,
+        request: NavigationRequest,
+        result: InterceptorResult
+    ) {
         Logger.d("Navigation", "Executing interceptor: ${interceptor.name}")
     }
 }
@@ -203,14 +213,17 @@ class MainActivity : Activity() {
                         // 导航成功
                         hideLoading()
                     }
+
                     is NavigationResult.Redirect -> {
                         // 被重定向（比如跳转到登录页）
                         showMessage("需要先登录")
                     }
+
                     is NavigationResult.Abort -> {
                         // 导航被取消
                         showMessage(result.reason)
                     }
+
                     is NavigationResult.Error -> {
                         // 导航出错
                         showError("跳转失败")
@@ -282,14 +295,14 @@ class AppAuthProvider : AuthProvider {
 
 class AndroidPermissionChecker : PermissionChecker {
     override suspend fun hasPermissions(context: Context, permissions: List<String>): Boolean {
-        return permissions.all { 
-            context.checkSelfPermission(it) == android.content.pm.PackageManager.PERMISSION_GRANTED 
+        return permissions.all {
+            context.checkSelfPermission(it) == android.content.pm.PackageManager.PERMISSION_GRANTED
         }
     }
 
     override fun hasPermissionsSync(context: Context, permissions: List<String>): Boolean {
-        return permissions.all { 
-            context.checkSelfPermission(it) == android.content.pm.PackageManager.PERMISSION_GRANTED 
+        return permissions.all {
+            context.checkSelfPermission(it) == android.content.pm.PackageManager.PERMISSION_GRANTED
         }
     }
 }
