@@ -20,29 +20,22 @@ import io.core.common.helper.coroutine.info.GlobalCoroutine
 import io.core.common.helper.net.NetworkMonitor
 import io.core.common.helper.track.AppTrackV2
 import io.core.common.helper.track.TurboTracker
-import io.core.common.helper.track.v3.AppTrackV3
-import io.core.common.helper.track.v3.AppTrackV3Helper
 import io.core.common.util.CoreUtil.Companion.toast
 import io.core.common.util.extensions.notificationManager
+import io.core.common.util.extensions.simpleName
 import io.core.common.util.log.LogPure
 import io.core.common.util.tools.OSAir
 import io.core.constant.ANDROID_8
 import io.core.engine.brv.utils.BRV
 import io.core.engine.storage.StorageFactory
 import io.core.engine.storage.StorageType
-import io.core.nav.AppAuthProvider
 import io.core.nav.AuthProvider
-import io.core.nav.LoginActivity
 import io.core.nav.LoginInterceptor
-import io.core.nav.InterceptorResult
 import io.core.nav.NavigationInterceptor
 import io.core.nav.NavigationListener
 import io.core.nav.NavigationManager
 import io.core.nav.NavigationRequest
 import io.core.nav.NavigationResult
-import io.core.nav.OrderActivity
-import io.core.nav.ProfileActivity
-import io.core.nav.SettingsActivity
 import io.core.other.CrashHandler
 
 
@@ -106,7 +99,7 @@ class App : Application() {
 
         // 初始化导航
         NavigationManager.configure {
-            setListener(object : NavigationListener{
+            setListener(object : NavigationListener {
 
                 override fun onNavigationStart(request: NavigationRequest) {
                     super.onNavigationStart(request)
@@ -114,30 +107,35 @@ class App : Application() {
                         "开始导航: ${request.targetClass<Activity>()?.simpleName}"
                     }
                 }
+
                 override fun onInterceptorExecute(
                     interceptor: NavigationInterceptor,
                     request: NavigationRequest,
-                    result: InterceptorResult
+                    result: NavigationResult
                 ) {
                     super.onInterceptorExecute(interceptor, request, result)
                     val action = when (result) {
-                        is InterceptorResult.Intercepted -> when (result.result) {
-                            is NavigationResult.Proceed -> "放行"
-                            is NavigationResult.Redirect -> "重定向"
-                            is NavigationResult.Abort -> "拦截"
-                            is NavigationResult.Error -> "错误"
-                        }
-                        is InterceptorResult.Proceed -> "放行"
+                        is NavigationResult.Proceed -> "放行"
+                        is NavigationResult.Redirect -> "重定向"
+                        is NavigationResult.Abort -> "拦截"
+                        is NavigationResult.Error -> "错误"
                     }
+
+                    val currentName: String? = when (result) {
+                        is NavigationResult.Proceed -> result.intent.component?.shortClassName
+                        is NavigationResult.Redirect -> result.intent.component?.shortClassName
+                        else -> request.targetClass<Activity>()?.simpleName
+                    }
+
                     LogPure.v {
-                        "拦截器: ${interceptor.name} $action 了请求: ${request.targetClass<Activity>()?.simpleName}"
+                        "拦截器: ${interceptor.name} $action 了请求, 目标: ${request.originalTargetClass<Activity>()?.simpleName}, 当前: $currentName"
                     }
                 }
             })
             // 登录拦截器
             addInterceptor(
                 LoginInterceptor(
-                    authProvider = object : AuthProvider{
+                    authProvider = object : AuthProvider {
                         override suspend fun isLoggedIn(): Boolean = true
                     },
                     loginActivityClass = ClickTextActivity::class,

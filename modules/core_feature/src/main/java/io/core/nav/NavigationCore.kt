@@ -22,7 +22,10 @@ interface NavigationInterceptor {
     /**
      * 异步拦截（可选实现）
      */
-    suspend fun interceptSuspend(request: NavigationRequest, chain: InterceptorChain): NavigationResult {
+    suspend fun interceptSuspend(
+        request: NavigationRequest,
+        chain: InterceptorChain
+    ): NavigationResult {
         return intercept(request, chain)
     }
 }
@@ -38,6 +41,20 @@ data class NavigationRequest(
 ) {
     inline fun <reified T : Activity> targetClass(): KClass<T>? {
         return intent.component?.className?.let { className ->
+            try {
+                val clazz = Class.forName(className)
+                if (T::class.java.isAssignableFrom(clazz)) {
+                    @Suppress("UNCHECKED_CAST")
+                    clazz.kotlin as KClass<T>
+                } else null
+            } catch (e: Exception) {
+                null
+            }
+        }
+    }
+
+    inline fun <reified T : Activity> originalTargetClass(): KClass<T>? {
+        return originalIntent.component?.className?.let { className ->
             try {
                 val clazz = Class.forName(className)
                 if (T::class.java.isAssignableFrom(clazz)) {
@@ -75,11 +92,11 @@ class InterceptorChain internal constructor(
             val next = InterceptorChain(interceptors, index + 1, scope, listener)
             try {
                 val result = interceptor.intercept(request, next)
-                listener?.onInterceptorExecute(interceptor, request, InterceptorResult.Intercepted(result))
+                listener?.onInterceptorExecute(interceptor, request, result)
                 result
             } catch (e: Exception) {
                 val errorResult = NavigationResult.Error(e, request.originalIntent)
-                listener?.onInterceptorExecute(interceptor, request, InterceptorResult.Intercepted(errorResult))
+                listener?.onInterceptorExecute(interceptor, request, errorResult)
                 errorResult
             }
         } else {
@@ -93,11 +110,11 @@ class InterceptorChain internal constructor(
             val next = InterceptorChain(interceptors, index + 1, scope, listener)
             try {
                 val result = interceptor.interceptSuspend(request, next)
-                listener?.onInterceptorExecute(interceptor, request, InterceptorResult.Intercepted(result))
+                listener?.onInterceptorExecute(interceptor, request, result)
                 result
             } catch (e: Exception) {
                 val errorResult = NavigationResult.Error(e, request.originalIntent)
-                listener?.onInterceptorExecute(interceptor, request, InterceptorResult.Intercepted(errorResult))
+                listener?.onInterceptorExecute(interceptor, request, errorResult)
                 errorResult
             }
         } else {
@@ -112,22 +129,34 @@ class InterceptorChain internal constructor(
 sealed class NavigationResult {
     abstract val originalIntent: Intent
 
+    /**
+     * 继续执行
+     */
     data class Proceed(
         val intent: Intent,
         override val originalIntent: Intent
     ) : NavigationResult()
 
+    /**
+     * 跳转并重定向
+     */
     data class Redirect(
         val intent: Intent,
         override val originalIntent: Intent,
         val reason: String? = null
     ) : NavigationResult()
 
+    /**
+     * 中断导航
+     */
     data class Abort(
         val reason: String,
         override val originalIntent: Intent
     ) : NavigationResult()
 
+    /**
+     * 导航执行异常
+     */
     data class Error(
         val exception: Exception,
         override val originalIntent: Intent
@@ -150,12 +179,15 @@ class DefaultNavigationExecutor : NavigationExecutor {
             is NavigationResult.Proceed -> {
                 context.startActivity(result.intent)
             }
+
             is NavigationResult.Redirect -> {
                 context.startActivity(result.intent)
             }
+
             is NavigationResult.Abort -> {
                 // 可通过监听器处理
             }
+
             is NavigationResult.Error -> {
                 // 可通过监听器处理
             }
@@ -163,13 +195,6 @@ class DefaultNavigationExecutor : NavigationExecutor {
     }
 }
 
-/**
- * 拦截器执行结果
- */
-sealed class InterceptorResult {
-    object Proceed : InterceptorResult()
-    data class Intercepted(val result: NavigationResult) : InterceptorResult()
-}
 
 /**
  * 导航监听器
@@ -180,8 +205,9 @@ interface NavigationListener {
     fun onInterceptorExecute(
         interceptor: NavigationInterceptor,
         request: NavigationRequest,
-        result: InterceptorResult
-    ) {}
+        result: NavigationResult
+    ) {
+    }
 }
 
 /**

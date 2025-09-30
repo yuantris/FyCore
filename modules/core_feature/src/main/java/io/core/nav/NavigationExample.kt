@@ -172,7 +172,7 @@ class ProductionNavigationListener : NavigationListener {
     override fun onInterceptorExecute(
         interceptor: NavigationInterceptor,
         request: NavigationRequest,
-        result: InterceptorResult
+        result: NavigationResult
     ) {
         Logger.d("Navigation", "Executing interceptor: ${interceptor.name}")
     }
