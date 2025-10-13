@@ -1,11 +1,13 @@
 package com.core.fy.android.main.fragment.code
 
+import androidx.lifecycle.lifecycleScope
 import com.blankj.utilcode.util.GsonUtils
 import com.core.fy.android.databinding.FragmentKotlinBinding
 import com.core.fy.android.function.TestPageActivity
 import com.core.fy.android.help.ProgressNotifier
 import com.hjq.permissions.Permission
 import io.core.common.base.component.fragment.ReflectBindingFragment
+import io.core.common.helper.CallCoordinator
 import io.core.common.helper.JsonUltra
 import io.core.common.helper.TimeoutCallback
 import io.core.common.helper.TimeoutHandler
@@ -14,6 +16,7 @@ import io.core.common.helper.coroutine.info.LoopEngine
 import io.core.common.helper.jetpack.SingleLiveData
 import io.core.common.helper.track.AppTrackV2
 import io.core.common.helper.track.FragmentVisibilityDetectorV2
+import io.core.common.util.Preferences
 import io.core.common.util.Toaster
 import io.core.common.util.concurrent.Concurrency
 import io.core.common.util.concurrent.TaskExecutor
@@ -35,7 +38,10 @@ import io.core.common.util.log.LogPure
 import io.core.common.util.log.bury.AppLog
 import io.core.common.util.tools.FileTools
 import io.core.engine.storage.storage
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
 
 class KotlinFragment : ReflectBindingFragment<FragmentKotlinBinding, TestPageActivity>() {
@@ -46,6 +52,34 @@ class KotlinFragment : ReflectBindingFragment<FragmentKotlinBinding, TestPageAct
 
     override fun initView() {
         super.initView()
+
+//        Preferences.getValue(T.TTT,true).logD()
+
+        lifecycleScope.launch {
+            val d1 = async {
+                CallCoordinator.guardedSingleFlight("KET") {
+                    delay(300) // 模拟耗时
+                    LogPure.i { "我开始执行" }
+                    "OK"
+                }
+            }
+            val d2 = async {
+                CallCoordinator.guardedSingleFlight("KET") {
+                    delay(300)
+                    LogPure.i { "我开始执行" }
+                    "OK"
+                }
+            }
+            val d3 = async {
+                CallCoordinator.guardedSingleFlight("KET") {
+                    delay(300)
+                    LogPure.i { "我开始执行" }
+                    "OK"
+                }
+            }
+            awaitAll(d1, d2, d3)
+        }
+
 
         FragmentVisibilityDetectorV2.attachToFragment(this) { isVisible ->
 

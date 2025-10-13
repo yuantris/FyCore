@@ -4,7 +4,6 @@ import android.app.Application
 import androidx.core.content.FileProvider
 import io.core.common.CoreConfig
 import io.core.common.helper.track.AppTrackV2
-import io.core.common.helper.track.v3.AppTrackV3Helper
 import io.core.common.util.Preferences
 import io.core.common.util.log.LogCat
 import io.core.common.util.log.bury.AppLog
@@ -67,7 +66,6 @@ object Android {
             key?.run { CoreConfig.setToken(this) }
             // 注册Activity生命周期回调
             AppTrackV2.init(this)
-            AppTrackV3Helper.quickInit(this)
             // 注册全局CrashHandler
             CrashHandler.register(this)
             // 初始化路由

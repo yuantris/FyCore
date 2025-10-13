@@ -3,6 +3,7 @@ package com.core.fy.android.main.fragment
 import com.core.fy.android.MainActivity
 import com.core.fy.android.constants.PreferKey
 import com.core.fy.android.databinding.FragmentSetBinding
+import com.core.fy.android.function.TestPageActivity
 import com.core.fy.android.function.read.ReadBookActivity
 import com.core.fy.android.help.HighLightHelper
 import io.core.common.base.component.custom.ToastGT
@@ -41,6 +42,7 @@ import io.core.constant.TimePatterns
 import io.core.engine.storage.getWithAnnotation
 import io.core.engine.storage.put
 import io.core.engine.storage.storage
+import io.core.nav.routerTo
 import java.io.File
 import java.util.function.Predicate
 
@@ -160,12 +162,12 @@ class SetFragment : ReflectBindingFragment<FragmentSetBinding, MainActivity>() {
             }
 
             testCode.onDebouncedClick {
-//                startActivity<TestPageActivity>()
+                routerTo<TestPageActivity>()
 
-                AppTrackV2.executeUISafely(requireActivity()) { activity ->
-                    ToastGT.show(activity, "12345")
-                    true
-                }
+//                AppTrackV2.executeUISafely(requireActivity()) { activity ->
+//                    ToastGT.show(activity, "12345")
+//                    true
+//                }
 //                showDialogFragment<TestDialog>()
             }
             crash.onDebouncedClick {
