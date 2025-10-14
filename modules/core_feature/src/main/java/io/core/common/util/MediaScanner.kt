@@ -9,6 +9,11 @@ import io.core.common.util.extensions.cool.hasReadStoragePermission
 import io.core.common.util.log.LogPure
 import io.core.constant.FileType
 import io.core.constant.MediaStoreClauses
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.withContext
 
 /**
  * 媒体库扫描工具
@@ -72,6 +77,62 @@ class MediaScanner {
                 else -> refreshAndGet(currentParams, addFilter)
             }
         }
+        
+        /**
+         * 带缓存的媒体库查询（协程版本）
+         * 在IO线程执行查询操作，避免阻塞主线程
+         * @param forceRefresh 是否强制刷新缓存
+         */
+        suspend fun queryFilesAsync(
+            types: Set<MediaFileType>,
+            addFilter: ((FileInfo) -> Boolean)? = null,
+            sortOrder: String = MediaStoreClauses.timeAddedDESC,
+            forceRefresh: Boolean = false
+        ): List<FileInfo> = withContext(Dispatchers.IO) {
+            if (!appCtx.hasReadStoragePermission()) {
+                throw IllegalStateException("No permission to read external storage")
+            }
+
+            val currentParams = Triple(types, sortOrder, System.currentTimeMillis())
+
+            when {
+                forceRefresh -> refreshAndGetAsync(currentParams, addFilter)
+                isCacheValid(currentParams) -> {
+                    LogPure.d { "MediaScanner---- Using cached results" }
+                    processResults(cachedResults, addFilter)
+                }
+                else -> refreshAndGetAsync(currentParams, addFilter)
+            }
+        }
+        
+        /**
+         * 带缓存的媒体库查询（Flow版本）
+         * 提供响应式API，支持数据流处理
+         * @param forceRefresh 是否强制刷新缓存
+         */
+        fun queryFilesFlow(
+            types: Set<MediaFileType>,
+            addFilter: ((FileInfo) -> Boolean)? = null,
+            sortOrder: String = MediaStoreClauses.timeAddedDESC,
+            forceRefresh: Boolean = false
+        ): Flow<List<FileInfo>> = flow {
+            if (!appCtx.hasReadStoragePermission()) {
+                throw IllegalStateException("No permission to read external storage")
+            }
+
+            val currentParams = Triple(types, sortOrder, System.currentTimeMillis())
+            
+            val result = when {
+                forceRefresh -> refreshAndGetAsync(currentParams, addFilter)
+                isCacheValid(currentParams) -> {
+                    LogPure.d { "MediaScanner---- Using cached results" }
+                    processResults(cachedResults, addFilter)
+                }
+                else -> refreshAndGetAsync(currentParams, addFilter)
+            }
+            
+            emit(result)
+        }.flowOn(Dispatchers.IO)
 
         /**
          * 手动清除缓存
@@ -143,6 +204,77 @@ class MediaScanner {
             LogPure.d { "MediaScanner---- Cache updated (${cachedResults.size} items)" }
             return processResults(cachedResults, filter)
         }
+        
+        /**
+         * 异步刷新并获取结果（协程版本）
+         */
+        private suspend fun refreshAndGetAsync(
+            params: Triple<Set<MediaFileType>, String, Long>,
+            filter: ((FileInfo) -> Boolean)?
+        ): List<FileInfo> = withContext(Dispatchers.IO) {
+            val (types, sortOrder, _) = params
+
+            val results = mutableListOf<FileInfo>().apply {
+                types.groupBy { it.contentUri }.forEach { (uri, fileTypes) ->
+                    queryMediaStoreAsync(uri, fileTypes, sortOrder)?.let { addAll(it) }
+                }
+            }
+
+            synchronized(MediaScanner::class.java) {
+                cachedResults = processResults(results, null) // 基础缓存不过滤用户条件
+                lastQueryParams = params.copy(third = System.currentTimeMillis())
+            }
+
+            LogPure.d { "MediaScanner---- Cache updated async (${cachedResults.size} items)" }
+            processResults(cachedResults, filter)
+        }
+        
+        /**
+         * 分页查询媒体库文件
+         * @param pageSize 每页大小
+         * @param pageIndex 页码（从0开始）
+         */
+        suspend fun queryFilesPaged(
+            types: Set<MediaFileType>,
+            pageSize: Int = 20,
+            pageIndex: Int = 0,
+            addFilter: ((FileInfo) -> Boolean)? = null,
+            sortOrder: String = MediaStoreClauses.timeAddedDESC,
+            forceRefresh: Boolean = false
+        ): PagedResult<FileInfo> = withContext(Dispatchers.IO) {
+            if (!appCtx.hasReadStoragePermission()) {
+                throw IllegalStateException("No permission to read external storage")
+            }
+            
+            val currentParams = Triple(types, sortOrder, System.currentTimeMillis())
+            
+            val allResults = when {
+                forceRefresh -> refreshAndGetAsync(currentParams, addFilter)
+                isCacheValid(currentParams) -> {
+                    LogPure.d { "MediaScanner---- Using cached results for paging" }
+                    processResults(cachedResults, addFilter)
+                }
+                else -> refreshAndGetAsync(currentParams, addFilter)
+            }
+            
+            val totalCount = allResults.size
+            val startIndex = pageIndex * pageSize
+            val endIndex = minOf(startIndex + pageSize, totalCount)
+            
+            val pageContent = if (startIndex < totalCount) {
+                allResults.subList(startIndex, endIndex)
+            } else {
+                emptyList()
+            }
+            
+            PagedResult(
+                content = pageContent,
+                pageIndex = pageIndex,
+                pageSize = pageSize,
+                totalCount = totalCount,
+                hasMore = endIndex < totalCount
+            )
+        }
 
         private fun queryMediaStore(
             uri: Uri,
@@ -169,6 +301,65 @@ class MediaScanner {
                 val displayNameIndex = cursor.getColumnIndex(MediaStore.MediaColumns.DISPLAY_NAME)
                 val titleIndex = cursor.getColumnIndex(MediaStore.MediaColumns.TITLE)
 
+
+                val results = mutableListOf<FileInfo>()
+                while (cursor.moveToNext()) {
+                    val path = cursor.getString(pathIndex) ?: continue
+
+                    // 构建额外参数 map
+                    val extMap = mutableMapOf<String, Any?>()
+
+                    if (dateModifiedIndex != -1) {
+                        extMap["dateModified"] = cursor.getLong(dateModifiedIndex)
+                    }
+                    if (displayNameIndex != -1) {
+                        extMap["displayName"] = cursor.getString(displayNameIndex)
+                    }
+                    if (titleIndex != -1) {
+                        extMap["title"] = cursor.getString(titleIndex)
+                    }
+
+                    results.add(
+                        FileInfo(
+                            path = path,
+                            size = cursor.getLong(sizeIndex),
+                            dateAdded = cursor.getLong(dateIndex),
+                            mimeType = cursor.getString(mimeIndex),
+                            ext = extMap
+                        )
+                    )
+                }
+                results
+            }
+        }
+        
+        /**
+         * 异步查询媒体库（协程版本）
+         */
+        private suspend fun queryMediaStoreAsync(
+            uri: Uri,
+            fileTypes: List<MediaFileType>,
+            sortOrder: String
+        ): List<FileInfo>? = withContext(Dispatchers.IO) {
+            val mimeTypes = fileTypes.flatMap { it.mimeTypes }.distinct()
+            val extensions = fileTypes.flatMap { it.extensions }.distinct()
+
+            appCtx.contentResolver.query(
+                uri,
+                PROJECTION,
+                buildSelection(mimeTypes, extensions),
+                buildSelectionArgs(mimeTypes, extensions)?.toTypedArray(),
+                sortOrder
+            )?.use { cursor ->
+                val pathIndex = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA)
+                val sizeIndex = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.SIZE)
+                val dateIndex = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATE_ADDED)
+                val mimeIndex = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.MIME_TYPE)
+
+                // 获取额外字段的索引
+                val dateModifiedIndex = cursor.getColumnIndex(MediaStore.MediaColumns.DATE_MODIFIED)
+                val displayNameIndex = cursor.getColumnIndex(MediaStore.MediaColumns.DISPLAY_NAME)
+                val titleIndex = cursor.getColumnIndex(MediaStore.MediaColumns.TITLE)
 
                 val results = mutableListOf<FileInfo>()
                 while (cursor.moveToNext()) {
@@ -262,6 +453,18 @@ class MediaScanner {
         val dateAdded: Long,
         val mimeType: String?,
         val ext: Map<String, Any?> = emptyMap()
+    )
+    
+    /**
+     * 分页查询结果
+     */
+    @Keep
+    data class PagedResult<T>(
+        val content: List<T>,
+        val pageIndex: Int,
+        val pageSize: Int,
+        val totalCount: Int,
+        val hasMore: Boolean
     )
 
     enum class MediaFileType(

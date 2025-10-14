@@ -5,7 +5,6 @@ import com.blankj.utilcode.util.GsonUtils
 import com.core.fy.android.databinding.FragmentKotlinBinding
 import com.core.fy.android.function.TestPageActivity
 import com.core.fy.android.help.ProgressNotifier
-import com.hjq.permissions.Permission
 import io.core.common.base.component.fragment.ReflectBindingFragment
 import io.core.common.helper.CallCoordinator
 import io.core.common.helper.JsonUltra
@@ -16,7 +15,6 @@ import io.core.common.helper.coroutine.info.LoopEngine
 import io.core.common.helper.jetpack.SingleLiveData
 import io.core.common.helper.track.AppTrackV2
 import io.core.common.helper.track.FragmentVisibilityDetectorV2
-import io.core.common.util.Preferences
 import io.core.common.util.Toaster
 import io.core.common.util.concurrent.Concurrency
 import io.core.common.util.concurrent.TaskExecutor

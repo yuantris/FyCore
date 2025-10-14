@@ -1,6 +1,5 @@
 package com.core.fy.android.main.fragment.code;
 
-import android.app.Activity;
 import android.graphics.Bitmap;
 import android.net.Uri;
 
@@ -14,7 +13,6 @@ import com.core.fy.android.util.SafeJson;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -39,9 +37,6 @@ import io.core.common.util.tools.CollectionTools;
 import io.core.common.util.tools.ThreadUltra;
 import io.core.common.util.tools.UriTools;
 import io.core.other.LiveDataPro;
-import kotlin.Unit;
-import kotlin.jvm.functions.Function1;
-import kotlin.jvm.functions.Function2;
 
 public class JavaFragment extends ReflectBindingFragmentV2<FragmentJavaBinding> {
 
@@ -58,7 +53,6 @@ public class JavaFragment extends ReflectBindingFragmentV2<FragmentJavaBinding> 
             ToastGT.Companion.show(activity,"初始化",3000);
             return true;
         });
-
 
         if (NullCheck.isEmpty("1")) {
             Toaster.show("初始化");
