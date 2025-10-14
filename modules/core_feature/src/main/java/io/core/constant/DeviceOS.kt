@@ -72,7 +72,6 @@ object DeviceOS {
     private val brandDetector = BrandDetectorImpl()
 
     // ========== 公共API ==========
-
     /**
      * 获取设备品牌（带缓存）
      */
@@ -114,7 +113,8 @@ object DeviceOS {
     }
 
     @JvmStatic
-    val rom: Rom get() = romInfo.type
+    val rom: Rom
+        get() = romInfo.type
 
     @JvmStatic
     val marketName: String by lazy {
@@ -136,22 +136,28 @@ object DeviceOS {
 
     // 快捷访问属性
     @JvmStatic
-    val isHuawei: Boolean get() = brand == Brand.HUAWEI
+    val isHuawei: Boolean
+        get() = brand == Brand.HUAWEI
 
     @JvmStatic
-    val isXiaomi: Boolean get() = brand == Brand.Xiaomi
+    val isXiaomi: Boolean
+        get() = brand == Brand.Xiaomi
 
     @JvmStatic
-    val isMIUI: Boolean get() = rom == Rom.MIUI
+    val isMIUI: Boolean
+        get() = rom == Rom.MIUI
 
     @JvmStatic
-    val isHyperOS: Boolean get() = rom == Rom.HyperOS
+    val isHyperOS: Boolean
+        get() = rom == Rom.HyperOS
 
     @JvmStatic
-    val isHarmonyOS: Boolean get() = rom == Rom.HarmonyOS
+    val isHarmonyOS: Boolean
+        get() = rom == Rom.HarmonyOS
 
     @JvmStatic
-    val isColorOS: Boolean get() = rom == Rom.ColorOS
+    val isColorOS: Boolean
+        get() = rom == Rom.ColorOS
 
     /**
      * 清除所有缓存

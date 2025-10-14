@@ -69,7 +69,21 @@
     "PLR-AL30": "HUAWEI Mate 70 Pro",
     "PLR-AL50": "HUAWEI Mate 70 Pro 优享版",
     "PLA-AL10": "HUAWEI Mate 70 Pro+",
-    "PLU-AL10": "HUAWEI Mate 70 RS ULTIMATE DESIGN 非凡大师"
+    "PLU-AL10": "HUAWEI Mate 70 RS ULTIMATE DESIGN 非凡大师",
+    "TAH-AN00": "HUAWEI Mate X",
+    "TAH-AN00m": "HUAWEI Mate Xs",
+    "TET-AN00": "HUAWEI Mate X2 5G",
+    "TET-AN10": "HUAWEI Mate X2 5G",
+    "TET-AN50": "HUAWEI Mate X2 典藏版 5G",
+    "TET-AL00": "HUAWEI Mate X2 4G",
+    "PAL-AL00": "HUAWEI Mate Xs 2",
+    "PAL-AL10": "HUAWEI Mate Xs 2",
+    "ALT-AL00": "HUAWEI Mate X3",
+    "ALT-AL10": "HUAWEI Mate X5",
+    "GRL-AL10": "HUAWEI Mate XT 非凡大师",
+    "ICL-AL10": "HUAWEI Mate X6",
+    "ICL-AL20": "HUAWEI Mate X6 典藏版",
+    "GRL-AL20": "HUAWEI Mate XTs 非凡大师"
   },
   "p_series": {
     "U9200": "华为 Ascend P1",
@@ -142,6 +156,10 @@
     "HBN-AL10": "HUAWEI Pura 70 Pro+",
     "HBN-AL80": "HUAWEI Pura 70 Pro+",
     "HBP-AL00": "HUAWEI Pura 70 Ultra",
+    "HED-AL00": "HUAWEI Pura 80",
+    "LMR-AL00": "HUAWEI Pura 80 Pro",
+    "LMR-AL10": "HUAWEI Pura 80 Pro+",
+    "LMR-AL10": "HUAWEI Pura 80 Ultra",
     "VDE-AL00": "HUAWEI Pura X",
     "VDE-AL10": "HUAWEI Pura X 典藏版"
   },
@@ -222,7 +240,11 @@
     "ADA-AL10U": "HUAWEI nova 12 Ultra 星耀版",
     "PSD-AL00": "HUAWEI nova Flip",
     "BLK-AL80": "HUAWEI nova 13",
-    "MIS-AL00": "HUAWEI nova 13 Pro"
+    "MIS-AL00": "HUAWEI nova 13 Pro",
+    "TLR-AL00": "HUAWEI nova 14",
+    "MIA-AL00": "HUAWEI nova 14 Pro",
+    "MRT-AL10": "HUAWEI nova 14 Ultra",
+    "PSD-AL80": "HUAWEI nova Flip S"
   },
   "g_series": {
     "G6-T00": "华为 Ascend G6 移动版",
@@ -408,14 +430,20 @@
     "MRO-AL10": "HUAWEI MatePad Pro 12.2 英寸 SIM 卡版 (16GB+1TB)",
     "WEB-W00": "HUAWEI MatePad Pro 13.2 英寸 2025 Wi-Fi 版",
     "WEB-W10": "HUAWEI MatePad Pro 13.2 英寸 2025 Wi-Fi 版 (16GB+1TB)",
-    "WEB-AL00": "HUAWEI MatePad Pro 13.2 英寸 2025 典藏版 SIM 卡版"
+    "WEB-AL00": "HUAWEI MatePad Pro 13.2 英寸 2025 典藏版 SIM 卡版",
+    "WEB-AL10": "HUAWEI MatePad Pro 13.2 英寸 2025 SIM 卡版",
+    "MRDI-W00": "HUAWEI MatePad Pro 12.2 英寸 2025 Wi-Fi 版",
+    "MRDI-W10": "HUAWEI MatePad Pro 12.2 英寸 2025 Wi-Fi 柔光版",
+    "MRDI-W20": "HUAWEI MatePad Pro 12.2 英寸 2025 Wi-Fi 柔光版 (16GB+1TB)"
   },
   "pad_mate_air_series": {
     "DBY2-W00": "HUAWEI MatePad Air 11.5 英寸 Wi-Fi 版",
     "DBY2-AL00": "HUAWEI MatePad Air 11.5 英寸 LTE 版",
     "BKY-W00": "HUAWEI MatePad Air 12 英寸 Wi-Fi 版 (8GB+256GB)",
     "BKY-W10": "HUAWEI MatePad Air 12 英寸 Wi-Fi 版 (12GB+256GB)",
-    "BKY-W20": "HUAWEI MatePad Air 12 英寸 柔光版 Wi-Fi 版"
+    "BKY-W20": "HUAWEI MatePad Air 12 英寸 柔光版 Wi-Fi 版",
+    "LRT-W20": "HUAWEI MatePad Air 12 英寸 2025 Wi-Fi 版",
+    "LRT-W30": "HUAWEI MatePad Air 12 英寸 2025 Wi-Fi 柔光版"
   },
   "pad_mate_series": {
     "BAH3-W09": "HUAWEI MatePad 10.4 英寸 Wi-Fi 版 (麒麟 810)",
@@ -435,8 +463,12 @@
     "BTK-W00": "HUAWEI MatePad 11.5 英寸 2023 Wi-Fi 版",
     "BTK-AL00": "HUAWEI MatePad 11.5 英寸 2023 LTE 版",
     "BTKR-W00": "HUAWEI MatePad 11.5 英寸 2024 Wi-Fi 版",
-    "TGR-W00": " HUAWEI MatePad 11.5\" S Wi-Fi 版",
-    "TGR-W10": " HUAWEI MatePad 11.5\" S 柔光版 Wi-Fi 版",
-    "DMG-W00": " HUAWEI MatePad 11.5\" S 灵动款 Wi-Fi 版"
+    "TGR-W00": "HUAWEI MatePad 11.5 S Wi-Fi 版",
+    "TGR-W10": "HUAWEI MatePad 11.5 S Wi-Fi 柔光版",
+    "DMG-W00": "HUAWEI MatePad 11.5 S 灵动款 Wi-Fi 版",
+    "SLG-W10": "HUAWEI MatePad 11.5 S 2025 Wi-Fi 版",
+    "SLG-W50": "HUAWEI MatePad 11.5 S 2025 灵动款 Wi-Fi 版",
+    "MLR-AL00": "HUAWEI MatePad Mini 悦读版 8.8 英寸",
+    "MLR-AL10": "HUAWEI MatePad Mini 8.8 英寸"
   }
 }
