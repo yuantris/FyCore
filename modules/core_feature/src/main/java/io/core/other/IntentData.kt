@@ -2,8 +2,10 @@
 
 package io.core.other
 
-import io.core.common.util.extensions.currentTimeMillis
 import java.lang.ref.SoftReference
+import java.util.concurrent.Executors
+import java.util.concurrent.ThreadLocalRandom
+import java.util.concurrent.atomic.AtomicLong
 import java.util.concurrent.atomic.LongAdder
 import java.util.concurrent.locks.ReentrantReadWriteLock
 import kotlin.concurrent.read
@@ -43,6 +45,14 @@ object IntentData {
     private const val CLEANUP_FACTOR = 0.75 // 清理至75%容量
     private var maxEntries: Int = DEFAULT_MAX_ENTRIES
     private var cleanupFactor: Double = CLEANUP_FACTOR
+    
+    // 改进的key生成策略
+    private val keyCounter = AtomicLong(0)
+    
+    // 异步清理执行器
+    private val cleanupExecutor = Executors.newSingleThreadExecutor { 
+        Thread(it, "IntentData-Cleanup").apply { isDaemon = true }
+    }
 
     private data class CacheEntry(
         val data: SoftReference<Any>,
@@ -105,8 +115,8 @@ object IntentData {
 
         lock.write {
             cache[key] = entry
-            // 触发自动清理
-            if (cache.size >= DEFAULT_MAX_ENTRIES) {
+            // 使用动态配置而不是硬编码
+            if (cache.size >= maxEntries) {
                 cleanUp()
             }
         }
@@ -122,7 +132,8 @@ object IntentData {
      */
     @JvmStatic
     fun <T : Any?> put(data: T, ttl: Long = 0L): String {
-        val key = currentTimeMillis.toString()
+        // 使用时间戳 + 计数器 + 随机数避免冲突
+        val key = "${System.currentTimeMillis()}_${keyCounter.incrementAndGet()}_${ThreadLocalRandom.current().nextInt()}"
         return put(key, data, ttl)
     }
 
@@ -140,22 +151,30 @@ object IntentData {
     fun <T : Any> get(key: String?): T? {
         if (key.isNullOrEmpty()) return null
 
-        return lock.read {
+        var result: T? = null
+        var shouldRemove = false
+        
+        lock.read {
             cache[key]?.let { entry ->
                 if (isEntryValid(entry)) {
                     totalHits.increment()
                     entry.lastAccess = System.currentTimeMillis()
-                    entry.data.get() as? T
+                    result = entry.data.get() as? T
                 } else {
-                    lock.write { cache.remove(key) }
+                    shouldRemove = true
                     totalMisses.increment()
-                    null
                 }
             } ?: run {
                 totalMisses.increment()
-                null
             }
         }
+        
+        // 在read锁外进行清理，避免死锁
+        if (shouldRemove) {
+            lock.write { cache.remove(key) }
+        }
+        
+        return result
     }
 
     /**
@@ -200,8 +219,94 @@ object IntentData {
 
         return lock.read {
             "Hit Rate: ${"%.2f".format(hitRate)}% | " +
-                    "Entries: ${cache.size}/$DEFAULT_MAX_ENTRIES | " +
-                    "Memory: ${cache.size * 32} bytes (approx)"
+                    "Entries: ${cache.size}/$maxEntries | " +
+                    "Memory: ${calculateMemoryUsage()} bytes"
+        }
+    }
+    
+    /**
+     * 计算实际内存使用量
+     */
+    private fun calculateMemoryUsage(): Long {
+        return cache.entries.sumOf { (_, entry) ->
+            val data = entry.data.get()
+            when (data) {
+                null -> 0L
+                is String -> data.length * 2L // 估算字符串内存
+                is Number -> 8L // 数字类型
+                is Boolean -> 1L
+                is Collection<*> -> data.size * 16L // 集合类型估算
+                is Array<*> -> data.size * 8L // 数组类型估算
+                else -> 64L // 其他对象估算
+            }
+        }
+    }
+
+    /**
+     * 批量存储缓存对象
+     * 
+     * @param entries 要缓存的键值对
+     * @param ttl 存活时间（毫秒，0表示永久缓存）
+     */
+    @JvmStatic
+    fun putAll(entries: Map<String, Any>, ttl: Long = 0L) {
+        lock.write {
+            val expireTime = if (ttl > 0) System.currentTimeMillis() + ttl else Long.MAX_VALUE
+            entries.forEach { (key, value) ->
+                cache[key] = CacheEntry(SoftReference(value), expireTime)
+            }
+            if (cache.size >= maxEntries) {
+                cleanUp()
+            }
+        }
+    }
+    
+    /**
+     * 批量获取缓存对象
+     * 
+     * @param keys 要获取的缓存键集合
+     * @return 键值对映射，不存在的键对应的值为null
+     */
+    @JvmStatic
+    fun getAll(keys: Collection<String>): Map<String, Any?> {
+        return lock.read {
+            keys.associateWith { key ->
+                cache[key]?.let { entry ->
+                    if (isEntryValid(entry)) {
+                        entry.data.get()
+                    } else null
+                }
+            }
+        }
+    }
+    
+    /**
+     * 缓存预热功能
+     * 
+     * @param entries 预热的键值对
+     * @param ttl 存活时间（毫秒，0表示永久缓存）
+     */
+    @JvmStatic
+    fun warmUp(entries: Map<String, Any>, ttl: Long = 0L) {
+        putAll(entries, ttl)
+    }
+    
+    /**
+     * 预加载功能
+     * 
+     * @param keys 要预加载的键集合
+     * @param loader 数据加载器
+     */
+    @JvmStatic
+    fun preload(keys: Collection<String>, loader: (String) -> Any?) {
+        lock.write {
+            keys.forEach { key ->
+                if (!cache.containsKey(key)) {
+                    loader(key)?.let { value ->
+                        cache[key] = CacheEntry(SoftReference(value), Long.MAX_VALUE)
+                    }
+                }
+            }
         }
     }
 
@@ -240,6 +345,28 @@ object IntentData {
             }
         }
     }
+    
+    /**
+     * 异步清理过期条目
+     */
+    private fun scheduleAsyncCleanup() {
+        cleanupExecutor.submit {
+            lock.write {
+                val now = System.currentTimeMillis()
+                cache.entries.removeAll { (_, entry) ->
+                    entry.data.get() == null || now >= entry.expireTime
+                }
+            }
+        }
+    }
+    
+    /**
+     * 手动触发异步清理
+     */
+    @JvmStatic
+    fun cleanupAsync() {
+        scheduleAsyncCleanup()
+    }
 
     /**
      * 检查缓存条目是否有效
@@ -247,5 +374,15 @@ object IntentData {
     private fun isEntryValid(entry: CacheEntry): Boolean {
         return entry.data.get() != null &&
                 System.currentTimeMillis() < entry.expireTime
+    }
+    
+    /**
+     * 关闭缓存系统，清理资源
+     * 注意：调用后缓存将不可用，需要重新初始化
+     */
+    @JvmStatic
+    fun shutdown() {
+        cleanupExecutor.shutdown()
+        clear()
     }
 }
