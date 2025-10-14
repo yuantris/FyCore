@@ -18,6 +18,9 @@ import io.core.appCtx
 import io.core.common.util.tools.ApkTools
 import java.io.File
 import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.locks.ReentrantReadWriteLock
+import kotlin.concurrent.read
+import kotlin.concurrent.write
 
 /**
  * AppLauncher 是一个用于启动应用的工具类。
@@ -26,24 +29,50 @@ import java.util.concurrent.ConcurrentHashMap
  * - 启动指定应用的特定 Activity。
  * - 通过 URI Scheme 启动应用，支持 MIME 类型匹配。
  * - 智能启动：自动选择最佳匹配应用，支持多应用选择器。
- * - 缓存 Intent 解析结果以提高性能。
+ * - LRU缓存 Intent 解析结果以提高性能。
+ * - 启动统计和性能监控。
  */
 object AppLauncher {
 
     private const val CACHE_MAX_SIZE = 50
+    private const val SYSTEM_APP_CACHE_SIZE = 200
+    
     private val packageManager = appCtx.packageManager
-    private val resolveCache = object : ConcurrentHashMap<String, List<ResolveInfo>>() {
-        override fun put(key: String, value: List<ResolveInfo>): List<ResolveInfo>? {
-            if (size >= CACHE_MAX_SIZE) clear()
-            return super.put(key, value)
+    private val cacheLock = ReentrantReadWriteLock()
+    
+    // LRU缓存，自动移除最久未使用的条目
+    private val resolveCache = object : LinkedHashMap<String, List<ResolveInfo>>(16, 0.75f, true) {
+        override fun removeEldestEntry(eldest: MutableMap.MutableEntry<String, List<ResolveInfo>>?): Boolean {
+            return size > CACHE_MAX_SIZE
         }
     }
+    
+    // 系统应用标志缓存，避免重复计算
+    private val systemAppCache = ConcurrentHashMap<String, Boolean>(SYSTEM_APP_CACHE_SIZE)
+    
+    // 启动统计
+    private val launchStats = ConcurrentHashMap<String, Int>()
 
     /**
      * 清除所有缓存的Intent解析结果
      */
     fun clearCache() {
-        resolveCache.clear()
+        cacheLock.write {
+            resolveCache.clear()
+            systemAppCache.clear()
+        }
+    }
+    
+    /**
+     * 获取启动统计信息
+     */
+    fun getLaunchStats(): Map<String, Int> = launchStats.toMap()
+    
+    /**
+     * 清除启动统计
+     */
+    fun clearStats() {
+        launchStats.clear()
     }
 
     /**
@@ -51,17 +80,20 @@ object AppLauncher {
      * @return 是否成功找到并尝试启动应用
      */
     fun launchAppByPackage(packageName: String): Boolean {
-        if (!ApkTools.isAppInstalled(packageName)) return false
-
-        return try {
-            packageManager.getLaunchIntentForPackage(packageName)
-                ?.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                ?.let { appCtx.startActivity(it) }
-                .let { true }
-        } catch (e: Exception) {
-            handleException(e) { Log.w("AppLauncher", "Launch main failed: ${e.message}") }
-            false
+        if (!ApkTools.isAppInstalled(packageName)) {
+            recordLaunchAttempt(packageName, false)
+            return false
         }
+
+        return safeLaunch(
+            operation = {
+                packageManager.getLaunchIntentForPackage(packageName)
+                    ?.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    ?.let { appCtx.startActivity(it) }
+                    .let { true }
+            },
+            errorMessage = "Launch main failed for package: $packageName"
+        ) ?: false.also { recordLaunchAttempt(packageName, false) }
     }
 
     /**
@@ -74,15 +106,15 @@ object AppLauncher {
         uri: Uri? = null,
         extras: Bundle.() -> Unit = {}
     ): Boolean {
-        return try {
-            createExplicitIntent(packageName, activityClass, uri, extras)
-                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                .let { appCtx.startActivity(it) }
-                .let { true }
-        } catch (e: Exception) {
-            handleException(e) { Log.w("AppLauncher", "Launch activity failed: ${e.message}") }
-            false
-        }
+        return safeLaunch(
+            operation = {
+                createExplicitIntent(packageName, activityClass, uri, extras)
+                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    .let { appCtx.startActivity(it) }
+                    .let { true }
+            },
+            errorMessage = "Launch activity failed for $packageName.$activityClass"
+        ) ?: false.also { recordLaunchAttempt(packageName, false) }
     }
 
     /**
@@ -154,8 +186,16 @@ object AppLauncher {
 
     private fun queryResolveInfo(intent: Intent): List<ResolveInfo> {
         val cacheKey = "${intent.filterHashCode()}-${intent.flags}"
-        return resolveCache.getOrPut(cacheKey) {
-            packageManager.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY)
+        
+        return cacheLock.read {
+            resolveCache[cacheKey]
+        } ?: cacheLock.write {
+            resolveCache.getOrPut(cacheKey) {
+                packageManager.queryIntentActivities(
+                    intent, 
+                    PackageManager.MATCH_DEFAULT_ONLY or PackageManager.MATCH_ALL
+                )
+            }
         }
     }
 
@@ -170,6 +210,7 @@ object AppLauncher {
         }.also {
             logLaunchAttempt(it)
             appCtx.startActivity(it)
+            recordLaunchAttempt(info.activityInfo.packageName, true)
             callback?.invoke(LaunchResult.Success)
         }
     }
@@ -195,6 +236,8 @@ object AppLauncher {
         }.also {
             logLaunchAttempt(it)
             appCtx.startActivity(it)
+            // 记录选择器启动，不记录具体包名
+            recordLaunchAttempt("chooser", true)
             callback?.invoke(LaunchResult.Success)
         }
     }
@@ -206,6 +249,31 @@ object AppLauncher {
             is ActivityNotFoundException -> callback?.invoke(LaunchResult.AppNotFound(e))
             else -> callback?.invoke(LaunchResult.UnknownError(e))
         }
+    }
+    
+    /**
+     * 简化的异常处理包装器
+     */
+    private inline fun <T> safeLaunch(
+        operation: () -> T,
+        errorMessage: String,
+        noinline callback: LaunchResultCallback? = null
+    ): T? {
+        return try {
+            operation()
+        } catch (e: Exception) {
+            Log.w("AppLauncher", errorMessage, e)
+            handleException(e, callback)
+            null
+        }
+    }
+    
+    /**
+     * 记录启动尝试
+     */
+    private fun recordLaunchAttempt(packageName: String, success: Boolean) {
+        val key = if (success) "success_$packageName" else "failed_$packageName"
+        launchStats[key] = (launchStats[key] ?: 0) + 1
     }
 
     private fun logLaunchAttempt(intent: Intent) {
@@ -247,15 +315,23 @@ object AppLauncher {
     }
 
     private fun Uri.normalizeSchemeV2(): Uri {
-        return when (scheme?.lowercase()) {
-            "file" -> {
-                if (path?.contains(File.separator) == true) this
-                else Uri.parse("file://$this")
-            }
+        return when (val scheme = scheme?.lowercase()) {
+            "file" -> normalizeFileUri()
             "http", "https" -> this
-            else -> {
-                if (isOpaque) this
-                else buildUpon().scheme(scheme ?: "content").build()
+            null -> buildUpon().scheme("content").build()
+            else -> if (isOpaque) this else buildUpon().scheme(scheme).build()
+        }
+    }
+    
+    private fun Uri.normalizeFileUri(): Uri {
+        return if (path?.contains(File.separator) == true) {
+            this
+        } else {
+            try {
+                "file://$this".toUri()
+            } catch (e: Exception) {
+                Log.w("AppLauncher", "Failed to normalize file URI: $this", e)
+                this
             }
         }
     }
@@ -274,7 +350,9 @@ object AppLauncher {
         }
 
         private val ResolveInfo.isSystemApp: Boolean
-            get() = (activityInfo.applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM) != 0
+            get() = systemAppCache.getOrPut(activityInfo.packageName) {
+                (activityInfo.applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM) != 0
+            }
     }
 }
 
