@@ -2,18 +2,17 @@ package com.core.fy.android.main.fragment.code;
 
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.view.View;
 
 import androidx.annotation.NonNull;
 
 import com.blankj.utilcode.util.GsonUtils;
+import com.core.fy.android.R;
 import com.core.fy.android.databinding.FragmentJavaBinding;
 import com.core.fy.android.function.TestPageActivity;
 import com.core.fy.android.help.ProgressNotifier;
 import com.core.fy.android.util.SafeJson;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -38,6 +37,7 @@ import io.core.common.util.log.LogPure;
 import io.core.common.util.tools.CollectionTools;
 import io.core.common.util.tools.ThreadUltra;
 import io.core.common.util.tools.UriTools;
+import io.core.engine.img.ImageLoader;
 import io.core.other.LiveDataPro;
 
 public class JavaFragment extends ReflectBindingFragmentV2<FragmentJavaBinding> {
@@ -51,8 +51,12 @@ public class JavaFragment extends ReflectBindingFragmentV2<FragmentJavaBinding> 
     protected void initView() {
         super.initView();
 
+        ImageLoader.with(requireContext())
+                .load(R.drawable.home_me_on_ic)
+                .into(getBinding().javaImage);
+
         AppTrackV2.executeUISafely(requireActivity(), activity -> {
-            ToastGT.Companion.show(activity,"初始化",3000);
+            ToastGT.Companion.show(activity, "初始化", 3000);
             return true;
         });
 
