@@ -20,7 +20,7 @@ import io.core.common.util.extensions.ui.inflateBindingWithGeneric
  */
 abstract class ReflectBindingFragmentV2<VB : ViewBinding> : BaseFragmentV2() {
 
-    private var _binding: VB? = null
+    protected var _binding: VB? = null
     val binding: VB get() = _binding!!
 
     override fun contentViewBind(): View? {

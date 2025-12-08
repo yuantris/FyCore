@@ -194,7 +194,7 @@ fun AppCompatActivity.onLifecycleEvent(
  * @param default 默认值
  * @return 数据
  */
-inline fun <reified T> Activity.getExtra(key: String, default: T? = null): T? {
+inline fun <reified T> Activity.getExtra(key: String, default: T): T {
     return when (T::class) {
         String::class -> intent.getStringExtra(key) as? T ?: default
         Int::class -> intent.getIntExtra(key, default as? Int ?: 0) as? T ?: default

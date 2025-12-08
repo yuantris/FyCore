@@ -2,6 +2,7 @@ package com.core.fy.android.main.fragment.code;
 
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 
@@ -12,6 +13,7 @@ import com.core.fy.android.help.ProgressNotifier;
 import com.core.fy.android.util.SafeJson;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.Collections;

@@ -17,6 +17,7 @@ import java.lang.Character.codePointCount
 import java.lang.Character.offsetByCodePoints
 import java.util.Locale
 import java.util.regex.Pattern
+import androidx.core.net.toUri
 
 // ========================================
 // 字符串验证与转换扩展
@@ -52,7 +53,7 @@ fun String.toEditable(): Editable = Editable.Factory.getInstance().newEditable(t
  * @return Uri对象
  */
 fun String.parseToUri(): Uri {
-    return if (isUri()) Uri.parse(this) else {
+    return if (isUri()) this.toUri() else {
         Uri.fromFile(File(this))
     }
 }
