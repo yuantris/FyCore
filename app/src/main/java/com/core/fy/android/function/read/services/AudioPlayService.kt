@@ -22,6 +22,7 @@ import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
 import com.blankj.utilcode.util.ImageUtils
+import com.bumptech.glide.Glide
 import com.core.fy.android.R
 import com.core.fy.android.constants.AppConst
 import com.core.fy.android.constants.EventKey
@@ -123,8 +124,9 @@ class AudioPlayService : BaseService(),
         doDs()
         execute {
             @Suppress("BlockingMethodInNonBlockingContext")
-            ImageLoader
-                .loadBitmap(this@AudioPlayService, AudioPlay.book?.getDisplayCover())
+            Glide.with(this@AudioPlayService)
+                .asBitmap()
+                .load(AudioPlay.book?.getDisplayCover())
                 .submit()
                 .get()
         }.onSuccess {

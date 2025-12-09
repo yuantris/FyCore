@@ -23,6 +23,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.media.AudioFocusRequestCompat
 import androidx.media.AudioManagerCompat
 import com.blankj.utilcode.util.RomUtils
+import com.bumptech.glide.Glide
 import com.core.fy.android.R
 import com.core.fy.android.constants.IntentAction
 import com.core.fy.android.constants.PreferKey
@@ -143,8 +144,9 @@ abstract class BaseReadAloudService : BaseService(),
         }
         execute {
             @Suppress("BlockingMethodInNonBlockingContext")
-            ImageLoader
-                .loadBitmap(this@BaseReadAloudService, ReadBook.book?.getDisplayCover())
+            Glide.with(this@BaseReadAloudService)
+                .asBitmap()
+                .load(ReadBook.book?.getDisplayCover())
                 .submit()
                 .get()
         }.onSuccess {

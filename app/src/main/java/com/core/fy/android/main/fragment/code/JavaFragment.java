@@ -1,11 +1,14 @@
 package com.core.fy.android.main.fragment.code;
 
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 
 import androidx.annotation.NonNull;
 
 import com.blankj.utilcode.util.GsonUtils;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestBuilder;
 import com.core.fy.android.R;
 import com.core.fy.android.databinding.FragmentJavaBinding;
 import com.core.fy.android.function.TestPageActivity;
@@ -20,7 +23,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
+import java.util.concurrent.ExecutionException;
 
+import io.core.Android;
 import io.core.common.base.component.custom.ToastGT;
 import io.core.common.base.component.fragment.ReflectBindingFragmentV2;
 import io.core.common.helper.JsonUltra;
@@ -37,7 +42,9 @@ import io.core.common.util.log.LogPure;
 import io.core.common.util.tools.CollectionTools;
 import io.core.common.util.tools.ThreadUltra;
 import io.core.common.util.tools.UriTools;
+import io.core.engine.img.CustomRequestConfig;
 import io.core.engine.img.ImageLoader;
+import io.core.engine.img.ImageOptions;
 import io.core.other.LiveDataPro;
 
 public class JavaFragment extends ReflectBindingFragmentV2<FragmentJavaBinding> {
@@ -53,7 +60,27 @@ public class JavaFragment extends ReflectBindingFragmentV2<FragmentJavaBinding> 
 
         ImageLoader.with(requireContext())
                 .load(R.drawable.home_me_on_ic)
+                .resize(100, 100)
+                .scaleType(ImageOptions.ScaleType.CENTER_CROP)
+                .corner(10)
                 .into(getBinding().javaImage);
+
+        ThreadUltra.executeWithLifecycle(this, new ThreadUltra.Task<Bitmap>() {
+            @Override
+            public Bitmap doInBackground() throws Throwable {
+                return Glide.with(requireContext())
+                        .asBitmap()
+                        .load(R.drawable.home_me_on_ic)
+                        .submit().get();
+            }
+
+            @Override
+            public void onSuccess(Bitmap result) {
+                getBinding().javaImage1.setImageBitmap(result);
+            }
+        });
+        
+
 
         AppTrackV2.executeUISafely(requireActivity(), activity -> {
             ToastGT.Companion.show(activity, "初始化", 3000);

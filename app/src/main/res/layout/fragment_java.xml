@@ -19,4 +19,11 @@
         android:layout_gravity="center"
         android:src="@drawable/ic_launcher_background" />
 
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/java_image_1"
+        android:layout_gravity="center_vertical|end"
+        android:src="@drawable/ic_launcher_background" />
+
 </FrameLayout>

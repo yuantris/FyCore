@@ -1,6 +1,5 @@
 package io.core.engine.img
 
-import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.widget.ImageView
 import androidx.annotation.DrawableRes
@@ -47,6 +46,19 @@ object ImageOptionsDefaults {
     var scaleType: ImageOptions.ScaleType = ImageOptions.ScaleType.CENTER_CROP
 }
 
+
+/**
+ * 自定义请求配置接口
+ * 允许直接访问底层图片库的请求构建器
+ */
+interface CustomRequestConfig<T> {
+    /**
+     * 配置底层请求构建器
+     * @param requestBuilder 底层图片库的请求构建器实例
+     */
+    fun configure(requestBuilder: T)
+}
+
 /**
  * 统一的图片配置类
  * 包含所有通用的加载参数
@@ -54,8 +66,8 @@ object ImageOptionsDefaults {
 data class ImageOptions(
     var url: Any? = null,
     var imageView: ImageView? = null,
-    @DrawableRes var placeholderResId: Int = ImageOptionsDefaults.placeholderResId,
-    @DrawableRes var errorResId: Int = ImageOptionsDefaults.errorResId,
+    @param:DrawableRes var placeholderResId: Int = ImageOptionsDefaults.placeholderResId,
+    @param:DrawableRes var errorResId: Int = ImageOptionsDefaults.errorResId,
     var placeholderDrawable: Drawable? = null,
     var errorDrawable: Drawable? = null,
     var isCircle: Boolean = false,
@@ -72,7 +84,8 @@ data class ImageOptions(
     var resizeWidth: Int = 0,
     var resizeHeight: Int = 0,
     var scaleType: ScaleType = ImageOptionsDefaults.scaleType,
-    var listener: ImageLoaderListener? = null
+    var listener: ImageLoaderListener? = null,
+    var customConfig: CustomRequestConfig<*>? = null, // 自定义请求配置
 ) {
     /**
      * 图片缩放类型
@@ -86,7 +99,8 @@ data class ImageOptions(
         FIT_END,
         FIT_XY
     }
-    
+
+
     /**
      * 加载优先级
      */
@@ -118,6 +132,11 @@ data class ImageOptions(
         fun resize(width: Int, height: Int) = apply { options.resizeWidth = width; options.resizeHeight = height }
         fun scaleType(scaleType: ScaleType) = apply { options.scaleType = scaleType }
         fun listener(listener: ImageLoaderListener?) = apply { options.listener = listener }
+        /**
+         * 设置自定义请求配置
+         * 允许直接访问底层图片库的请求构建器
+         */
+        fun <T> customConfig(config: CustomRequestConfig<T>) = apply { options.customConfig = config as CustomRequestConfig<*> }
         
         fun build(): ImageOptions = options
     }

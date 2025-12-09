@@ -16,7 +16,7 @@ class FoldActivity: ReflectBindingActivity<ActivityFoldBinding>() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        "使用拓展函数获取参数：${getExtra<String>("param1")}".d()
+        "使用拓展函数获取参数：${getExtra<String>("param1","")}".d()
         "使用委托获取参数：$param1".d()
     }
 }

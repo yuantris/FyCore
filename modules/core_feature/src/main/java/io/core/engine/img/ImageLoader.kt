@@ -5,7 +5,7 @@ import android.widget.ImageView
 
 object ImageLoader {
     // 默认策略，可以在 Application 中初始化时替换
-    private var strategy: ILoaderStrategy = GlideStrategy() 
+    private var strategy: ILoaderStrategy = GlideStrategy()
 
     // 提供给 Application 初始化时替换策略（例如换成 Coil）
     fun setStrategy(newStrategy: ILoaderStrategy) {
@@ -17,7 +17,7 @@ object ImageLoader {
         val view = options.imageView ?: return
         strategy.loadImage(view.context, options)
     }
-    
+
     /**
      * 支持扩展函数配置的加载方法
      */
@@ -29,37 +29,37 @@ object ImageLoader {
         }
         load(options)
     }
-    
+
     // 预加载图片
     fun preload(options: ImageOptions) {
         strategy.preloadImage(options.imageView?.context ?: return, options)
     }
-    
+
     // 预加载图片，指定Context
     fun preload(context: Context, options: ImageOptions) {
         strategy.preloadImage(context, options)
     }
-    
+
     // 清除ImageView的图片加载请求
     fun clear(imageView: ImageView) {
         strategy.clear(imageView)
     }
-    
+
     // 清除内存缓存
     fun clearMemoryCache(context: Context) {
         strategy.clearMemoryCache(context)
     }
-    
+
     // 清除磁盘缓存
     fun clearDiskCache(context: Context) {
         strategy.clearDiskCache(context)
     }
-    
+
     // 暂停所有加载请求
     fun pauseRequests(context: Context) {
         strategy.pauseRequests(context)
     }
-    
+
     // 恢复所有加载请求
     fun resumeRequests(context: Context) {
         strategy.resumeRequests(context)
@@ -87,14 +87,34 @@ object ImageLoader {
         fun crossFade() = apply { builder.crossFade() }
         fun crossFade(duration: Int) = apply { builder.crossFade(duration) }
         fun thumbnail(scale: Float) = apply { builder.thumbnail(scale) }
-        
+
+        /**
+         * 设置图片宽高
+         * @param width 宽度
+         * @param height 高度
+         */
+        fun resize(width: Int, height: Int) = apply { builder.resize(width, height) }
+
+        /**
+         * 设置图片缩放类型
+         * @param scaleType 缩放类型
+         */
+        fun scaleType(scaleType: ImageOptions.ScaleType) = apply { builder.scaleType(scaleType) }
+
+        /**
+         * 设置自定义请求配置
+         * 允许直接访问底层图片库的请求构建器
+         */
+        fun <T> customConfig(config: CustomRequestConfig<T>) =
+            apply { builder.customConfig(config) }
+
         fun into(imageView: ImageView) {
             builder.into(imageView)
             ImageLoader.load(builder.build())
         }
-        
+
         fun preload() {
-            ImageLoader.preload(context, builder.build())
+            preload(context, builder.build())
         }
     }
 }

@@ -33,6 +33,13 @@ class GlideStrategy : ILoaderStrategy {
         options.imageView?.let { imageView ->
             val target = requestBuilder.apply(requestOptions)
             
+            // 应用自定义请求配置，允许直接修改底层RequestBuilder
+            options.customConfig?.let {
+                @Suppress("UNCHECKED_CAST")
+                it as CustomRequestConfig<com.bumptech.glide.RequestBuilder<Drawable>>
+                it.configure(target)
+            }
+            
             // 添加加载监听
             applyLoadListeners(target, options)
             
