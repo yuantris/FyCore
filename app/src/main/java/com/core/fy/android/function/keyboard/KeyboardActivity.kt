@@ -5,25 +5,25 @@ import android.os.Bundle
 import android.util.Log
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.core.fy.android.databinding.ActivityKeyboardBinding
-import io.core.common.base.component.activity.BaseInputActivity
-import io.core.common.helper.StatusBarManager
-import io.core.common.helper.track.AppTrackV2
-import io.core.common.util.DiveGestureLine
-import io.core.common.util.extensions.cool.launchAsync
-import io.core.common.util.extensions.ui.onDebouncedClick
-import io.core.common.util.log.d
-import io.core.common.util.tools.KeyboardTools
+import io.core.ui.base.component.activity.BaseInputActivity
+import io.core.ui.helper.StatusBarManager
+import io.core.ui.helper.track.AppTrackV2
+import io.core.utils.DiveGestureLine
+import io.core.utils.extensions.cool.launchAsync
+import io.core.utils.extensions.ui.onDebouncedClick
+import io.core.utils.log.d
+import io.core.utils.tools.KeyboardTools
 import kotlinx.coroutines.delay
 
 /**
 # ██████████
-# █▄█████▄█
+# █▄█████▄�?
 # █▼▼▼▼▼
-# █
+# �?
 # █▲▲▲▲▲
 # ██████████
 # ██ ██
-# 注释的艺术，正在加载……
+# 注释的艺术，正在加载…�?
  * 2024/12/24 10:57
  * @description
  * @author Yuan

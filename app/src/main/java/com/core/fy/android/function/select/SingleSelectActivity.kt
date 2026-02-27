@@ -10,18 +10,18 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.core.fy.android.R
 import com.core.fy.android.databinding.ActivitySingleSelectBinding
-import io.core.common.base.component.activity.ReflectBindingActivity
-import io.core.common.base.component.adapter.SelectableAdapter
-import io.core.common.base.component.adapter.SelectableItem
-import io.core.common.base.component.adapter.SelectionController
-import io.core.common.base.component.adapter.SingleTypeAdapter
-import io.core.common.util.Toaster
-import io.core.common.util.extensions.cool.findFirstByProperty
-import io.core.common.util.extensions.cool.removeWhitespace
-import io.core.common.util.extensions.ui.notifyAllDataChanged
-import io.core.common.util.extensions.ui.onClick
-import io.core.common.util.extensions.ui.toast
-import io.core.common.util.tools.GsonTools
+import io.core.ui.base.component.activity.ReflectBindingActivity
+import io.core.ui.base.component.adapter.SelectableAdapter
+import io.core.ui.base.component.adapter.SelectableItem
+import io.core.ui.base.component.adapter.SelectionController
+import io.core.ui.base.component.adapter.SingleTypeAdapter
+import io.core.utils.Toaster
+import io.core.utils.extensions.cool.findFirstByProperty
+import io.core.utils.extensions.cool.removeWhitespace
+import io.core.utils.extensions.ui.notifyAllDataChanged
+import io.core.utils.extensions.ui.onClick
+import io.core.utils.extensions.ui.toast
+import io.core.utils.tools.GsonTools
 
 class SingleSelectActivity : ReflectBindingActivity<ActivitySingleSelectBinding>(),
     SelectionController.SelectionStateListener {
@@ -51,7 +51,7 @@ class SingleSelectActivity : ReflectBindingActivity<ActivitySingleSelectBinding>
 
     private fun setupRecyclerView() {
 
-        // 适配器测试
+        // 适配器测�?
         val singleTypeAdapter = SingleTypeAdapter<SelectItem>(
             layoutRes = R.layout.item_select_data,
             bindFunction = { holder, item ->
@@ -92,7 +92,7 @@ class SingleSelectActivity : ReflectBindingActivity<ActivitySingleSelectBinding>
     override fun onSelectionChanged(selectedCount: Int) {
         val toJson = GsonTools.toJson(controller.getSelectedIds())
         toJson.removeWhitespace()
-        val text = "已选择 $selectedCount 项，\n：$toJson"
+        val text = "已选择 $selectedCount 项，\n�?toJson"
         binding.tip.text = text
         controller.getSelectedIds().apply {
             if (this.isEmpty()) {
@@ -108,7 +108,7 @@ class SingleSelectActivity : ReflectBindingActivity<ActivitySingleSelectBinding>
     }
 
     override fun onEditModeChanged(isEditMode: Boolean) {
-        toast(if (isEditMode) "进入编辑模式" else "退出编辑模式")
+        toast(if (isEditMode) "进入编辑模式" else "退出编辑模�?)
     }
 
     class SelectAdapter(
@@ -122,7 +122,7 @@ class SingleSelectActivity : ReflectBindingActivity<ActivitySingleSelectBinding>
         }
 
         override fun onNormalClick(item: SelectItem) {
-            Toaster.show("点击了${item.title}")
+            Toaster.show("点击�?{item.title}")
         }
 
         override fun onItemBind(holder: ViewHolder, item: SelectItem, isSelected: Boolean) {

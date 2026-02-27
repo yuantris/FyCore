@@ -6,7 +6,7 @@ import com.core.fy.android.room.repository.FunctionRepository
 import com.core.fy.android.room.repository.UserRepository
 import com.core.fy.android.viewmodel.FunctionVM
 import com.core.fy.android.viewmodel.UserVM
-import io.core.common.base.room.BaseRepository
+import io.core.ui.base.room.BaseRepository
 
 @Suppress("UNCHECKED_CAST")
 class VMFactory(private val repository: BaseRepository) : ViewModelProvider.Factory {

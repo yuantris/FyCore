@@ -51,7 +51,7 @@ class AnimationDsl(private val view: View) {
         animators += AnimatorSet().apply { playSequentially(child.animators) }
     }
 
-    // 构建最终动画
+    // 构建最终动�?
     internal fun build(): AnimatorSet = AnimatorSet().apply {
         playTogether(animators)
         interpolator = LinearInterpolator()

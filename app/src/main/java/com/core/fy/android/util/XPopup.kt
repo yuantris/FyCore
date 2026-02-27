@@ -8,7 +8,7 @@ import com.lxj.xpopup.interfaces.OnCancelListener
 import com.lxj.xpopup.interfaces.OnConfirmListener
 import com.lxj.xpopup.interfaces.OnInputConfirmListener
 
-// DSL 配置类
+// DSL 配置�?
 class XPopupConfig {
     var title: String = "温馨提示"
     var content: String = ""

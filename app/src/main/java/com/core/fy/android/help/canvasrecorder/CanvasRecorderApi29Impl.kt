@@ -7,7 +7,7 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import com.core.fy.android.help.canvasrecorder.pools.PicturePool
 import com.core.fy.android.help.canvasrecorder.pools.RenderNodePool
-import io.core.common.helper.pool.synchronized
+import io.core.utils.pool.synchronized
 
 @RequiresApi(Build.VERSION_CODES.Q)
 class CanvasRecorderApi29Impl : BaseCanvasRecorder() {

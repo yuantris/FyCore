@@ -27,8 +27,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import io.core.R
-import io.core.common.util.extensions.ui.getCompatColor
-import io.core.common.util.tools.ColorTools
+import io.core.utils.extensions.ui.getCompatColor
+import io.core.utils.tools.ColorTools
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt

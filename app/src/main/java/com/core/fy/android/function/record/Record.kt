@@ -11,7 +11,7 @@ import java.io.File
 import java.io.IOException
 import java.nio.file.Files
 
-// 增强录音状态密封类，提取公共文件属性
+// 增强录音状态密封类，提取公共文件属�?
 sealed class RecordingState {
     object Idle : RecordingState()
     data class Recording(val file: File, val duration: Long) : RecordingState()
@@ -23,7 +23,7 @@ enum class Format(
     val fileExtension: String,
     val mediaRecorderFormat: Int,
     val mediaRecorderEncoder: Int,
-    val sampleRate: Int = 44100 // 默认采样率
+    val sampleRate: Int = 44100 // 默认采样�?
 ) {
     M4A("m4a", MediaRecorder.OutputFormat.MPEG_4, MediaRecorder.AudioEncoder.AAC),
     OGG("ogg", MediaRecorder.OutputFormat.OGG, MediaRecorder.AudioEncoder.OPUS),
@@ -34,7 +34,7 @@ enum class Format(
 interface RecorderStrategy {
     val audioFormat: Format
 
-    // 新增文件名配置属性
+    // 新增文件名配置属�?
     var customFileName: String?
 
     @Throws(IOException::class, SecurityException::class)
@@ -50,7 +50,7 @@ interface RecorderStrategy {
     var onError: ((String) -> Unit)?
 
     fun generateOutputFile(outputDir: File, fileName: String? = null): File {
-        // 1. 兼容的目录创建方式（替换 NIO API）
+        // 1. 兼容的目录创建方式（替换 NIO API�?
         if (!outputDir.mkdirs() && !outputDir.isDirectory) {
             throw IOException("Cannot create directory: ${outputDir.absolutePath}")
         }
@@ -66,18 +66,18 @@ interface RecorderStrategy {
         // 3. 文件名安全处理（过滤非法字符并限制长度）
         val baseName = (fileName ?: "recording_${System.currentTimeMillis()}")
             .replace(Regex("[\\\\/:*?\"<>|]"), "_") // 过滤非法字符
-            .take(100) // 防止过长文件名
+            .take(100) // 防止过长文件�?
             .ifEmpty { "recording_${System.currentTimeMillis()}" }
 
         val extension = audioFormat.fileExtension
 
-        // 4. 使用序列生成避免竞态条件
+        // 4. 使用序列生成避免竞态条�?
         return generateSequence(0) { it + 1 }
             .map { if (it == 0) baseName else "${baseName}_$it" }
             .map { name -> File(outputDir, "$name.$extension") }
             .first { !it.exists() }
             .also { file ->
-                // 5. 使用原子性文件创建
+                // 5. 使用原子性文件创�?
                 if (!file.createNewFile()) {
                     throw IOException("File already exists: ${file.absolutePath}")
                 }
@@ -129,7 +129,7 @@ class MediaRecorderStrategy(
                 setAudioSource(MediaRecorder.AudioSource.MIC)
                 setOutputFormat(audioFormat.mediaRecorderFormat)
                 setAudioEncoder(audioFormat.mediaRecorderEncoder)
-                setAudioSamplingRate(audioFormat.sampleRate) // 设置采样率
+                setAudioSamplingRate(audioFormat.sampleRate) // 设置采样�?
                 setOutputFile(outputFile.absolutePath)
                 prepare()
                 start()

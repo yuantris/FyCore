@@ -3,8 +3,8 @@ package com.core.fy.android.help
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import io.core.appCtx
-import io.core.common.util.extensions.ui.toast
+import io.core.base.appCtx
+import io.core.utils.extensions.ui.toast
 
 @Suppress("unused")
 object IntentHelp {
@@ -18,7 +18,7 @@ object IntentHelp {
         intent.data = uri
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         if (intent.resolveActivity(appCtx.packageManager) == null) {
-            return Intent.createChooser(intent, "请选择浏览器")
+            return Intent.createChooser(intent, "请选择浏览�?)
         }
         return intent
     }

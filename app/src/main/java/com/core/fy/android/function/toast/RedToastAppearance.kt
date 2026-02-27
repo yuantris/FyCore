@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
 import com.core.fy.android.R
-import io.core.common.base.component.custom.strategy.ToastAppearanceStrategy
+import io.core.ui.base.component.custom.strategy.ToastAppearanceStrategy
 
 class RedToastAppearance : ToastAppearanceStrategy {
     override fun createToastView(context: Context, message: String): View {

@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 按照比例显示的 FrameLayout -->
+    <declare-styleable name="RatioFrameLayout">
+        <!-- 宽高比例 -->
+        <attr name="sizeRatio" format="string" />
+    </declare-styleable>
+
+    <!-- 支持限定 Drawable 大小的 TextView -->
+    <declare-styleable name="DrawableTextView">
+        <!-- Drawable 宽度 -->
+        <attr name="drawableWidth" format="dimension" />
+        <!-- Drawable 高度 -->
+        <attr name="drawableHeight" format="dimension" />
+    </declare-styleable>
+
+    <declare-styleable name="AppTitleBar">
+        <attr name="title" />
+        <attr name="subtitle" />
+        <attr name="titleTextAppearance" />
+        <attr name="titleTextColor" />
+        <attr name="subtitleTextAppearance" />
+        <attr name="subtitleTextColor" />
+        <attr name="contentInsetEnd" />
+        <attr name="contentInsetEndWithActions" />
+        <attr name="contentInsetStart" />
+        <attr name="contentInsetStartWithNavigation" />
+        <attr name="contentInsetLeft" />
+        <attr name="contentInsetRight" />
+        <attr name="contentLayout" format="reference" />
+        <attr name="attachToActivity" format="boolean" />
+        <attr name="displayHomeAsUp" format="boolean" />
+        <attr name="navigationIcon" format="reference" />
+        <attr name="fitStatusBar" format="boolean" />
+        <attr name="fitNavigationBar" format="boolean" />
+        <attr name="navigationContentDescription" format="reference|string" />
+        <attr name="navigationIconTint" format="color|reference" />
+        <attr name="themeMode" />
+<!--        <attr name="navigationIconTintMode" format="enum">-->
+<!--            <enum name="clear" value="0" />-->
+<!--            <enum name="src" value="1" />-->
+<!--            <enum name="dst" value="2" />-->
+<!--            <enum name="src_over" value="3" />-->
+<!--            <enum name="dst_over" value="4" />-->
+<!--            <enum name="src_in" value="5" />-->
+<!--            <enum name="dst_in" value="6" />-->
+<!--            <enum name="src_out" value="7" />-->
+<!--            <enum name="dst_out" value="8" />-->
+<!--            <enum name="src_atop" value="9" />-->
+<!--            <enum name="dst_atop" value="10" />-->
+<!--            <enum name="xor" value="11" />-->
+<!--            <enum name="darken" value="16" />-->
+<!--            <enum name="lighten" value="17" />-->
+<!--            <enum name="multiply" value="13" />-->
+<!--            <enum name="screen" value="14" />-->
+<!--            <enum name="add" value="12" />-->
+<!--            <enum name="overlay" value="15" />-->
+<!--        </attr>-->
+    </declare-styleable>
+
+    <attr name="AppTitleBarStyle" format="reference" />
+    <attr name="themeMode" format="enum">
+        <enum name="dark" value="1" />
+        <enum name="light" value="2" />
+        <enum name="auto" value="0" />
+    </attr>
+
+    <declare-styleable name="TitleBar">
+        <!-- 中间标题 -->
+        <attr name="titleText" format="string" />
+        <attr name="titleColor" format="reference|color" />
+        <attr name="titleSize" format="dimension" />
+        <attr name="titleLeftAlign" format="boolean" />
+        <!-- 背景色值 -->
+        <attr name="bgColor" format="color" />
+        <!-- 竖向 Padding -->
+        <attr name="verticalPadding" format="dimension" />
+        <!-- 左侧图标 -->
+        <attr name="leftIcon" format="reference" />
+        <!-- 右侧图标 -->
+        <attr name="rightIcon" format="reference" />
+        <!-- 右侧文字 -->
+        <attr name="rightText" format="string" />
+        <!-- 点击效果 -->
+        <attr name="clickEffect">
+            <enum name="rectangle" value="0" />
+            <enum name="roundedRectangle" value="1" />
+            <enum name="circleShape" value="2" />
+        </attr>
+
+    </declare-styleable>
+
+    <!-- 设置栏 -->
+    <declare-styleable name="SettingBar">
+        <!-- 左边 -->
+        <attr name="bar_leftText" format="string" />
+        <attr name="bar_leftTextColor" format="color" />
+        <attr name="bar_leftTextSize" format="dimension" />
+        <attr name="bar_leftTextHint" format="string" />
+        <attr name="bar_leftDrawable" format="reference" />
+        <attr name="bar_leftDrawablePadding" format="dimension" />
+        <attr name="bar_leftDrawableSize" format="dimension" />
+        <attr name="bar_leftDrawableTint" format="color" />
+        <!-- 右边 -->
+        <attr name="bar_rightText" format="string" />
+        <attr name="bar_rightTextColor" format="color" />
+        <attr name="bar_rightTextSize" format="dimension" />
+        <attr name="bar_rightTextHint" format="string" />
+        <attr name="bar_rightDrawable" format="reference" />
+        <attr name="bar_rightDrawablePadding" format="dimension" />
+        <attr name="bar_rightDrawableSize" format="dimension" />
+        <attr name="bar_rightDrawableTint" format="color" />
+        <!-- 分割线 -->
+        <attr name="bar_lineVisible" format="boolean" />
+        <attr name="bar_lineDrawable" format="reference|color" />
+        <attr name="bar_lineSize" format="dimension" />
+        <attr name="bar_lineMargin" format="dimension" />
+    </declare-styleable>
+
+
+    <declare-styleable name="LoadingView">
+        <attr name="core_view_size" format="dimension" />
+        <attr name="core_view_color" format="color" />
+    </declare-styleable>
+
+    <declare-styleable name="StatusView">
+        <attr name="core_status_size" format="dimension"/>
+        <attr name="core_status_color" format="color"/>
+        <attr name="core_status_type" format="enum">
+            <enum name="success" value="0"/>
+            <enum name="failure" value="1"/>
+            <enum name="warning" value="2"/>
+        </attr>
+    </declare-styleable>
+
+    <declare-styleable name="PressEffectImageView">
+        <attr name="defaultPadding" format="dimension" />
+        <attr name="effectType" format="enum">
+            <enum name="overlay" value="0" />
+            <enum name="scale" value="1" />
+            <enum name="none" value="2" />
+        </attr>
+    </declare-styleable>
+
+    <declare-styleable name="CollapsingHeaderLayout">
+        <attr name="headerHeight" format="dimension" />
+        <attr name="headerTitle" format="string" />
+        <attr name="headerImageSrc" format="reference" />
+        <attr name="headerTitleColor" format="color" />
+        <attr name="scrimColor" format="color" />
+        <attr name="scrimAnimationDuration" format="integer" />
+        <attr name="isBackShow" format="boolean" />
+    </declare-styleable>
+
+    <attr name="empty_layout" format="reference" />
+    <attr name="error_layout" format="reference" />
+    <attr name="loading_layout" format="reference" />
+
+    <declare-styleable name="StateLayout">
+        <attr name="empty_layout" />
+        <attr name="error_layout" />
+        <attr name="loading_layout" />
+    </declare-styleable>
+
+    <declare-styleable name="CustomImageView">
+        <attr name="backgroundImage" format="reference" />
+        <attr name="text" format="string" />
+        <attr name="layout_topToTop" format="boolean" />
+        <attr name="layout_bottomToBottom" format="boolean" />
+        <attr name="layout_startToStart" format="boolean" />
+        <attr name="layout_endToEnd" format="boolean" />
+        <attr name="layout_marginTop" format="dimension" />
+        <attr name="layout_marginBottom" format="dimension" />
+        <attr name="layout_marginStart" format="dimension" />
+        <attr name="layout_marginEnd" format="dimension" />
+        <attr name="textSize" format="dimension" />
+        <attr name="textColor" format="color" />
+    </declare-styleable>
+
+    <declare-styleable name="FastScroller">
+        <attr name="fadeScrollbar" format="boolean" />
+        <attr name="showBubble" format="boolean" />
+        <attr name="showTrack" format="boolean" />
+        <attr name="trackColor" format="color" />
+        <attr name="handleColor" format="color" />
+        <attr name="bubbleColor" format="color" />
+        <attr name="bubbleTextColor" format="color" />
+    </declare-styleable>
+
+    <declare-styleable name="RotateLoading">
+        <attr name="loading_width" format="dimension" />
+        <attr name="loading_color" format="color" />
+        <attr name="shadow_position" format="integer" />
+        <attr name="loading_speed" format="integer" />
+    </declare-styleable>
+
+    <attr name="core_radius" format="dimension" />
+    <declare-styleable name="BadgeView">
+        <attr name="core_radius" />
+        <attr name="up_flat_angle" format="boolean" />
+    </declare-styleable>
+
+    <!--实现BottomSheetDialog圆角效果-->
+    <style name="BottomSheetDialog" parent="Theme.Design.Light.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/bottomSheetStyleWrapper</item>
+    </style>
+
+    <style name="bottomSheetStyleWrapper" parent="Widget.Design.BottomSheet.Modal">
+        <item name="android:background">@android:color/transparent</item>
+    </style>
+
+
+    <!--下拉刷新上拉加载布局-->
+    <declare-styleable name="PageRefreshLayout">
+        <attr name="empty_layout" />
+        <attr name="error_layout" />
+        <attr name="loading_layout" />
+        <!--启用缺省页-->
+        <attr name="stateEnabled" format="boolean" />
+        <!--启用拉取更多-->
+        <attr name="page_upFetchEnabled" format="boolean" />
+        <!--指定嵌套布局中的缺省页-->
+        <attr name="page_state" format="reference" />
+        <!--指定嵌套布局中的RecyclerView-->
+        <attr name="page_rv" format="reference" />
+    </declare-styleable>
+
+    <declare-styleable name="OrbitLoadingView">
+        <attr name="bigCircleColor" format="color" />
+        <attr name="smallCircleColor" format="color" />
+    </declare-styleable>
+
+    <!-- 共享的图片属性 -->
+    <attr name="defaultImage" format="reference" />
+    <attr name="selectedImage" format="reference" />
+    <attr name="loadingImage" format="reference" />
+    <attr name="errorImage" format="reference" />
+    <attr name="animationEnabled" format="boolean" />
+    <attr name="animationDuration" format="integer" />
+
+    <declare-styleable name="StatefulImageView">
+        <!-- 默认状态图片 -->
+        <attr name="defaultImage" />
+        <!-- 选中状态图片 -->
+        <attr name="selectedImage" />
+        <!-- 初始状态（false=默认，true=选中） -->
+        <attr name="initialState" format="boolean" />
+    </declare-styleable>
+
+    <declare-styleable name="StatefulImageViewV2">
+        <!-- 默认状态图片 -->
+        <attr name="defaultImage" />
+        <!-- 加载中状态图片 -->
+        <attr name="loadingImage" />
+        <!-- 选中状态图片 -->
+        <attr name="selectedImage" />
+        <!-- 错误状态图片 -->
+        <attr name="errorImage" />
+        <!-- 初始状态 -->
+        <attr name="initialViewState" format="enum">
+            <enum name="state_default" value="0" />
+            <enum name="state_loading" value="1" />
+            <enum name="state_selected" value="2" />
+            <enum name="state_error" value="3" />
+        </attr>
+        <!-- 是否启用动画 -->
+        <attr name="animationEnabled" />
+        <!-- 动画时长（毫秒） -->
+        <attr name="animationDuration" />
+    </declare-styleable>
+
+    <declare-styleable name="PressToggleImageView">
+        <attr name="defaultImage" />
+        <attr name="pressedImage" format="reference" />
+    </declare-styleable>
+</resources>

@@ -6,7 +6,7 @@ import kotlin.reflect.KProperty
 
 class MMKVDelegate<T>(
     private val key: String? = null,          // null 时使用属性名作为 key
-    private val default: T                    // 默认值
+    private val default: T                    // 默认�?
 ) : ReadWriteProperty<MMKVProvider, T> {
 
     @Suppress("UNCHECKED_CAST", "IMPLICIT_CAST_TO_ANY")

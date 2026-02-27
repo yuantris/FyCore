@@ -3,7 +3,7 @@ package com.core.fy.android.help.canvasrecorder.pools
 import android.graphics.RenderNode
 import android.os.Build
 import androidx.annotation.RequiresApi
-import io.core.common.helper.pool.BaseObjectPool
+import io.core.utils.pool.BaseObjectPool
 
 @RequiresApi(Build.VERSION_CODES.Q)
 class RenderNodePool : BaseObjectPool<RenderNode>(64) {

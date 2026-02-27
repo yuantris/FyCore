@@ -8,8 +8,8 @@ import android.view.animation.OvershootInterpolator
 import android.widget.TextView
 import androidx.annotation.StringRes
 import com.core.fy.android.R
-import io.core.common.base.action.AnimAction
-import io.core.common.base.component.dialog.BaseDialog
+import io.core.ui.base.action.AnimAction
+import io.core.ui.base.component.dialog.BaseDialog
 
 
 class WaitDialog {
@@ -43,7 +43,7 @@ class WaitDialog {
         private fun animateRootViewAppearing() {
             val rootView = getContentView() ?: return
 
-            // 设置初始状态：缩小到 0
+            // 设置初始状态：缩小�?0
             rootView.scaleX = 0.8f
             rootView.scaleY = 0.8f
             rootView.alpha = 0f

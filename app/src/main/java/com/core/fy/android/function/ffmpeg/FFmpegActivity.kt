@@ -6,11 +6,11 @@ import androidx.lifecycle.lifecycleScope
 import com.core.fy.android.constants.EventKey
 import com.core.fy.android.databinding.ActivityFfmpegBinding
 import com.core.fy.android.ui.service.FFmpegService
-import io.core.common.base.component.activity.ReflectBindingActivity
-import io.core.common.util.MediaScanner
-import io.core.common.util.extensions.cool.postEvent
-import io.core.common.util.extensions.ui.onClick
-import io.core.common.util.extensions.ui.startService
+import io.core.ui.base.component.activity.ReflectBindingActivity
+import io.core.utils.MediaScanner
+import io.core.utils.extensions.cool.postEvent
+import io.core.utils.extensions.ui.onClick
+import io.core.utils.extensions.ui.startService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext

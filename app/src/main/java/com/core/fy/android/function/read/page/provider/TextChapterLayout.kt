@@ -18,11 +18,11 @@ import com.core.fy.android.help.config.AppConfig
 import com.core.fy.android.help.config.ReadBookConfig
 import com.core.fy.android.room.entity.Book
 import com.core.fy.android.room.entity.BookChapter
-import io.core.common.util.extensions.cool.dpToPx
-import io.core.common.util.extensions.cool.fastSum
-import io.core.common.util.extensions.cool.splitNotBlank
-import io.core.common.helper.coroutine.Coroutine
-import io.core.common.util.log.LogCat
+import io.core.utils.extensions.cool.dpToPx
+import io.core.utils.extensions.cool.fastSum
+import io.core.utils.extensions.cool.splitNotBlank
+import io.core.utils.coroutine.Coroutine
+import io.core.utils.log.LogCat
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
@@ -178,7 +178,7 @@ class TextChapterLayout(
         var absStartX = paddingLeft
         var durY = 0f
         if (ReadBookConfig.titleMode != 2 || bookChapter.isVolume || contents.isEmpty()) {
-            //标题非隐藏
+            //标题非隐�?
             displayTitle.splitNotBlank("\n").forEach { text ->
                 setTypeText(
                     book, absStartX, durY,
@@ -203,8 +203,8 @@ class TextChapterLayout(
         contents.forEach { content ->
             coroutineContext.ensureActive()
             if (book.getImageStyle().equals(Book.imgStyleText, true)) {
-                //图片样式为文字嵌入类型
-                var text = content.replace(ChapterProvider.srcReplaceChar, "▣")
+                //图片样式为文字嵌入类�?
+                var text = content.replace(ChapterProvider.srcReplaceChar, "�?)
                 val srcList = LinkedList<String>()
                 sb.setLength(0)
                 val matcher = AppPattern.imgPattern.matcher(text)
@@ -321,7 +321,7 @@ class TextChapterLayout(
                 if (textPage.height < durY) {
                     textPage.height = durY
                 }
-                textPage.text = stringBuilder.toString().ifEmpty { "本页无文字内容" }
+                textPage.text = stringBuilder.toString().ifEmpty { "本页无文字内�? }
                 stringBuilder.clear()
                 textPages.add(textPage)
                 coroutineContext.ensureActive()
@@ -349,7 +349,7 @@ class TextChapterLayout(
                         if (textPage.height < durY) {
                             textPage.height = durY
                         }
-                        textPage.text = stringBuilder.toString().ifEmpty { "本页无文字内容" }
+                        textPage.text = stringBuilder.toString().ifEmpty { "本页无文字内�? }
                         stringBuilder.clear()
                         textPages.add(textPage)
                         coroutineContext.ensureActive()
@@ -358,10 +358,10 @@ class TextChapterLayout(
                         durY = 0f
                     }
 
-                    // 图片竖直方向居中：调整 Y 坐标
+                    // 图片竖直方向居中：调�?Y 坐标
                     if (height < visibleHeight) {
                         val adjustHeight = (visibleHeight - height) / 2f
-                        durY = adjustHeight // 将 Y 坐标设置为居中位置
+                        durY = adjustHeight // �?Y 坐标设置为居中位�?
                     }
                 }
 
@@ -376,7 +376,7 @@ class TextChapterLayout(
                     }
                     if (durY + height > visibleHeight) {
                         val textPage = pendingTextPage
-                        // 双页的 durY 不正确，可能会小于实际高度
+                        // 双页�?durY 不正确，可能会小于实际高�?
                         if (textPage.height < durY) {
                             textPage.height = durY
                         }
@@ -389,7 +389,7 @@ class TextChapterLayout(
                             if (textPage.leftLineSize == 0) {
                                 textPage.leftLineSize = textPage.lineSize
                             }
-                            textPage.text = stringBuilder.toString().ifEmpty { "本页无文字内容" }
+                            textPage.text = stringBuilder.toString().ifEmpty { "本页无文字内�? }
                             stringBuilder.clear()
                             textPages.add(textPage)
                             coroutineContext.ensureActive()
@@ -415,7 +415,7 @@ class TextChapterLayout(
                 ImageColumn(start = x + start, end = x + end, src = src)
             )
             calcTextLinePosition(textPages, textLine, stringBuilder.length)
-            stringBuilder.append(" ") // 确保翻页时索引计算正确
+            stringBuilder.append(" ") // 确保翻页时索引计算正�?
             pendingTextPage.addLine(textLine)
         }
         return absStartX to durY + textHeight * paragraphSpacing / 10f
@@ -457,7 +457,7 @@ class TextChapterLayout(
             StaticLayout(text, textPaint, visibleWidth, Layout.Alignment.ALIGN_NORMAL, 0f, 0f, true)
         }
         var durY = when {
-            //标题y轴居中
+            //标题y轴居�?
             emptyContent && textPages.isEmpty() -> {
                 val textPage = pendingTextPage
                 if (textPage.lineSize == 0) {
@@ -503,7 +503,7 @@ class TextChapterLayout(
                     textPage.leftLineSize = textPage.lineSize
                     absStartX = viewWidth / 2 + paddingLeft
                 } else {
-                    //当前页面结束,设置各种值
+                    //当前页面结束,设置各种�?
                     if (textPage.leftLineSize == 0) {
                         textPage.leftLineSize = textPage.lineSize
                     }
@@ -526,7 +526,7 @@ class TextChapterLayout(
             textLine.text = lineText
             when {
                 lineIndex == 0 && layout.lineCount > 1 && !isTitle -> {
-                    //多行的第一行 非标题
+                    //多行的第一�?非标�?
                     addCharsToLineFirst(
                         book, absStartX, textLine, words, textPaint,
                         desiredWidth, widths, srcList
@@ -534,8 +534,8 @@ class TextChapterLayout(
                 }
 
                 lineIndex == layout.lineCount - 1 -> {
-                    //最后一行、单行
-                    //标题x轴居中
+                    //最后一行、单�?
+                    //标题x轴居�?
                     val startX = if (
                         isTitle &&
                         (ReadBookConfig.isMiddleTitle || emptyContent || isVolumeTitle
@@ -564,7 +564,7 @@ class TextChapterLayout(
                             startX, false, widths, srcList
                         )
                     } else {
-                        //中间行
+                        //中间�?
                         addCharsToLineMiddle(
                             book, absStartX, textLine, words, textPaint,
                             desiredWidth, 0f, widths, srcList
@@ -610,7 +610,7 @@ class TextChapterLayout(
     }
 
     /**
-     * 有缩进,两端对齐
+     * 有缩�?两端对齐
      */
     private suspend fun addCharsToLineFirst(
         book: Book,
@@ -656,7 +656,7 @@ class TextChapterLayout(
     }
 
     /**
-     * 无缩进,两端对齐
+     * 无缩�?两端对齐
      */
     private suspend fun addCharsToLineMiddle(
         book: Book,

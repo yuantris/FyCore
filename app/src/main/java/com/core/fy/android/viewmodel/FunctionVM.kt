@@ -3,18 +3,18 @@ package com.core.fy.android.viewmodel
 import androidx.lifecycle.MutableLiveData
 import com.core.fy.android.room.entity.Function
 import com.core.fy.android.room.repository.FunctionRepository
-import io.core.common.base.vm.BaseViewModel
-import io.core.common.util.extensions.logD
+import io.core.ui.base.vm.BaseViewModel
+import io.core.utils.extensions.logD
 
 /**
 # ██████████
-# █▄█████▄█
+# █▄█████▄�?
 # █▼▼▼▼▼
-# █
+# �?
 # █▲▲▲▲▲
 # ██████████
 # ██ ██
-# 注释的艺术，正在加载……
+# 注释的艺术，正在加载…�?
  * 2025/1/6 18:03
  * @description
  * @author Yuan
@@ -27,7 +27,7 @@ class FunctionVM(var repository: FunctionRepository) : BaseViewModel() {
         KEYBOARD("键盘"),
         云创控件("云创控件"),
         单文字点击的TextView("单文字点击的TextView"),
-        READ("开源阅读控件"),
+        READ("开源阅读控�?),
         TTS("TTS"),
         ROOM("room"),
         DIALOG("dialog"),
@@ -35,7 +35,7 @@ class FunctionVM(var repository: FunctionRepository) : BaseViewModel() {
         VIEW_VISIBILITY("viewVisibility"),
         EVENT("event"),
         相机("相机"),
-        单选多选("单选多选"),
+        单选多�?"单选多�?),
         Brv("brv"),
         录音("录音"),
         Media("Media"),
@@ -67,7 +67,7 @@ class FunctionVM(var repository: FunctionRepository) : BaseViewModel() {
             Function(Design.VIEW_VISIBILITY),
             Function(Design.EVENT),
             Function(Design.相机),
-            Function(Design.单选多选),
+            Function(Design.单选多�?,
             Function(Design.Brv),
             Function(Design.录音),
             Function(Design.Media),

@@ -9,7 +9,7 @@ import java.util.WeakHashMap
 import kotlin.math.max
 
 /**
- * 针对中文的断行排版处理-by hoodie13
+ * 针对中文的断行排版处�?by hoodie13
  * 因为StaticLayout对标点处理不符合国人习惯，继承Layout
  * */
 @Suppress("MemberVisibilityCanBePrivate", "unused")
@@ -22,10 +22,10 @@ class ZhLayout(
 ) : Layout(text, textPaint, width, Alignment.ALIGN_NORMAL, 0f, 0f) {
     companion object {
         private val postPanc = hashSetOf(
-            "，", "。", "：", "？", "！", "、", "”", "’", "）", "》", "}",
-            "】", ")", ">", "]", "}", ",", ".", "?", "!", ":", "」", "；", ";"
+            "�?, "�?, "�?, "�?, "�?, "�?, "�?, "�?, "�?, "�?, "}",
+            "�?, ")", ">", "]", "}", ",", ".", "?", "!", ":", "�?, "�?, ";"
         )
-        private val prePanc = hashSetOf("“", "（", "《", "【", "‘", "‘", "(", "<", "[", "{", "「")
+        private val prePanc = hashSetOf("�?, "�?, "�?, "�?, "�?, "�?, "(", "<", "[", "{", "�?)
         private val cnCharWidthCache = WeakHashMap<Paint, Float>()
     }
 
@@ -35,7 +35,7 @@ class ZhLayout(
     private var lineCount = 0
     private val curPaint = textPaint
     private val cnCharWidth = cnCharWidthCache[textPaint]
-        ?: getDesiredWidth("我", textPaint).also {
+        ?: getDesiredWidth("�?, textPaint).also {
             cnCharWidthCache[textPaint] = it
         }
 
@@ -67,18 +67,18 @@ class ZhLayout(
                 /*禁止在行尾的标点处理*/
                 breakMod = if (index >= 1 && isPrePanc(words[index - 1])) {
                     if (index >= 2 && isPrePanc(words[index - 2])) BreakMod.CPS_2//如果后面还有一个禁首标点则异常
-                    else BreakMod.BREAK_ONE_CHAR //无异常场景
+                    else BreakMod.BREAK_ONE_CHAR //无异常场�?
                 }
                 /*禁止在行首的标点处理*/
                 else if (isPostPanc(words[index])) {
                     if (index >= 1 && isPostPanc(words[index - 1])) BreakMod.CPS_1//如果后面还有一个禁首标点则异常，不过三个连续行尾标点的用法不通用
                     else if (index >= 2 && isPrePanc(words[index - 2])) BreakMod.CPS_3//如果后面还有一个禁首标点则异常
-                    else BreakMod.BREAK_ONE_CHAR //无异常场景
+                    else BreakMod.BREAK_ONE_CHAR //无异常场�?
                 } else {
-                    BreakMod.NORMAL //无异常场景
+                    BreakMod.NORMAL //无异常场�?
                 }
 
-                /*判断上述逻辑解决不了的特殊情况*/
+                /*判断上述逻辑解决不了的特殊情�?/
                 var reCheck = false
                 var breakIndex = 0
                 if (breakMod == BreakMod.CPS_1 &&
@@ -94,7 +94,7 @@ class ZhLayout(
                     && index < words.lastIndex && isPostPanc(words[index + 1])
                 ) reCheck = true
 
-                /*特殊标点使用难保证显示效果，所以不考虑间隔，直接查找到能满足条件的分割字*/
+                /*特殊标点使用难保证显示效果，所以不考虑间隔，直接查找到能满足条件的分割�?/
                 var breakLength = 0
                 if (reCheck && index > 2) {
                     breakMod = BreakMod.NORMAL
@@ -139,13 +139,13 @@ class ZhLayout(
                         breakCharCnt = 0
                     }
 
-                    BreakMod.CPS_2 -> { //模式4 前置标点压缩+前置标点压缩+字
+                    BreakMod.CPS_2 -> { //模式4 前置标点压缩+前置标点压缩+�?
                         offset = 0f
                         lineStart[line + 1] = length + s.length
                         breakCharCnt = 0
                     }
 
-                    BreakMod.CPS_3 -> {//模式5 前置标点压缩+字+后置标点压缩
+                    BreakMod.CPS_3 -> {//模式5 前置标点压缩+�?后置标点压缩
                         offset = 0f
                         lineStart[line + 1] = length + s.length
                         breakCharCnt = 0
@@ -154,13 +154,13 @@ class ZhLayout(
                 breakLine = true
             }
 
-            /*当前行写满情况下的断行*/
+            /*当前行写满情况下的断�?/
             if (breakLine) {
                 lineWidth[line] = lineW - offset
                 lineW = offset
                 addLineArray(++line)
             }
-            /*已到最后一个字符*/
+            /*已到最后一个字�?/
             if ((words.lastIndex) == index) {
                 if (!breakLine) {
                     offset = 0f
@@ -169,7 +169,7 @@ class ZhLayout(
                     lineW = offset
                     addLineArray(++line)
                 }
-                /*写满断行、段落末尾、且需要下移字符，这种特殊情况下要额外多一行*/
+                /*写满断行、段落末尾、且需要下移字符，这种特殊情况下要额外多一�?/
                 else if (breakCharCnt > 0) {
                     lineStart[line + 1] = lineStart[line] + breakCharCnt
                     lineWidth[line] = lineW

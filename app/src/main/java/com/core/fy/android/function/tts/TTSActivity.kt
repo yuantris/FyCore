@@ -8,20 +8,20 @@ import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
 import com.core.fy.android.databinding.ActivityTtsBinding
-import io.core.common.base.component.activity.ReflectBindingActivity
-import io.core.common.util.extensions.logD
-import io.core.common.util.extensions.logE
+import io.core.ui.base.component.activity.ReflectBindingActivity
+import io.core.utils.extensions.logD
+import io.core.utils.extensions.logE
 import java.util.Locale
 
 /**
 # ██████████
-# █▄█████▄█
+# █▄█████▄�?
 # █▼▼▼▼▼
-# █
+# �?
 # █▲▲▲▲▲
 # ██████████
 # ██ ██
-# 注释的艺术，正在加载……
+# 注释的艺术，正在加载…�?
  * 2025/1/10 11:45
  * @description
  * @author Yuan
@@ -29,7 +29,7 @@ import java.util.Locale
 class TTSActivity : ReflectBindingActivity<ActivityTtsBinding>(), TextToSpeech.OnInitListener {
 
     private lateinit var tts: TextToSpeech
-    private var textToRead = "这是一个测试文本。这是两个测试文本,这是三个测试文本,这是四个测试文本"
+    private var textToRead = "这是一个测试文本。这是两个测试文�?这是三个测试文本,这是四个测试文本"
     private var sentenceList = listOf<String>()
     private var currentSentenceIndex = 0
     private val utteranceIds = mutableListOf<String>()
@@ -38,8 +38,8 @@ class TTSActivity : ReflectBindingActivity<ActivityTtsBinding>(), TextToSpeech.O
         super.initial(savedInstanceState)
         tts = TextToSpeech(this, this)
 
-        // 分割文本为句子
-        sentenceList = textToRead.split(Regex("[。,.，]")).filter { it.isNotBlank() }
+        // 分割文本为句�?
+        sentenceList = textToRead.split(Regex("[�?.，]")).filter { it.isNotBlank() }
         binding.text.text = textToRead
     }
 
@@ -105,7 +105,7 @@ class TTSActivity : ReflectBindingActivity<ActivityTtsBinding>(), TextToSpeech.O
     override fun onInit(status: Int) {
         when (status) {
             TextToSpeech.SUCCESS -> {
-                // 初始化成功
+                // 初始化成�?
                 val result = tts.setLanguage(Locale.CHINA)
                 if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
                     "This Language is not supported".logE()
@@ -113,16 +113,16 @@ class TTSActivity : ReflectBindingActivity<ActivityTtsBinding>(), TextToSpeech.O
                     "Initialization Succeed!".logD()
                     tts.apply {
                         // 设置语速（1.0 是默认语速，0.5 是慢速，2.0 是快速）
-                        setSpeechRate(0.2f) // 设置为 1.2 倍速
-                        // 设置音调（1.0 是默认音调，0.5 是低音调，2.0 是高音调）
-                        setPitch(0.5f) // 设置为 1.1 倍音调
+                        setSpeechRate(0.2f) // 设置�?1.2 倍�?
+                        // 设置音调�?.0 是默认音调，0.5 是低音调�?.0 是高音调�?
+                        setPitch(0.5f) // 设置�?1.1 倍音�?
                     }
                     readNextSentence()
                 }
             }
 
             TextToSpeech.ERROR -> {
-                // 初始化失败
+                // 初始化失�?
                 "Initialization Failed!".logE()
             }
 

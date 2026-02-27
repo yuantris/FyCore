@@ -11,7 +11,7 @@ import java.util.concurrent.TimeUnit
 
 object HttpClient {
 
-    /* ======================== 配置区 ======================== */
+    /* ======================== 配置�?======================== */
     private object Config {
         const val BASE_URL = "https://majestic-cuchufli-2d0dc9.netlify.app"
         const val CONFIG_PATH = "/config.json"
@@ -33,7 +33,7 @@ object HttpClient {
     /**
      * 获取远端配置
      * @param client 允许外部注入，单测可 mock
-     * @return Result<String> 成功返回 JSON；失败携带 NetworkException
+     * @return Result<String> 成功返回 JSON；失败携�?NetworkException
      */
     suspend fun getConfig(client: OkHttpClient = defaultOkHttp): Result<String> =
         withContext(Dispatchers.IO) {
@@ -57,7 +57,7 @@ object HttpClient {
                         }
                     }
 
-                // 指数退避
+                // 指数退�?
                 delay((1 shl attempt) * 500L)
             }
 

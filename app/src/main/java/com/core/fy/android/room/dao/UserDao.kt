@@ -3,7 +3,7 @@ package com.core.fy.android.room.dao
 import androidx.room.Dao
 import androidx.room.Query
 import com.core.fy.android.room.entity.User
-import io.core.common.base.room.BaseDao
+import io.core.ui.base.room.BaseDao
 
 @Dao
 interface UserDao : BaseDao<User> {

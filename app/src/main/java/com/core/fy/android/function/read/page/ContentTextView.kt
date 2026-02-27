@@ -21,9 +21,9 @@ import com.core.fy.android.function.read.page.provider.ChapterProvider
 import com.core.fy.android.function.read.page.provider.TextPageFactory
 import com.core.fy.android.help.config.AppConfig
 import com.core.fy.android.room.entity.Bookmark
-import io.core.common.util.extensions.cool.dpToPx
-import io.core.common.util.extensions.cool.toastOnUI
-import io.core.common.util.extensions.ui.activity
+import io.core.utils.extensions.cool.dpToPx
+import io.core.utils.extensions.cool.toastOnUI
+import io.core.utils.extensions.ui.activity
 import java.util.concurrent.Executors
 import kotlin.math.max
 import kotlin.math.min
@@ -74,7 +74,7 @@ class ContentTextView(context: Context, attrs: AttributeSet?) : View(context, at
      */
     fun setContent(textPage: TextPage) {
         this.textPage = textPage
-        // 非滑动翻页动画需要同步重绘，不然翻页可能会出现闪烁
+        // 非滑动翻页动画需要同步重绘，不然翻页可能会出现闪�?
         if (isScroll) {
             postInvalidate()
         } else {
@@ -128,9 +128,9 @@ class ContentTextView(context: Context, attrs: AttributeSet?) : View(context, at
     /**
      * 滚动事件
      * pageOffset 向上滚动 减小 向下滚动 增大
-     * pageOffset 范围 0 ~ -textPage.height 大于0为上一页，小于-textPage.height为下一页
-     * 以内容显示区域顶端为界，pageOffset的绝对值为textPage上方的高度
-     * pageOffset + textPage.height 为 textPage 下方的高度
+     * pageOffset 范围 0 ~ -textPage.height 大于0为上一页，小于-textPage.height为下一�?
+     * 以内容显示区域顶端为界，pageOffset的绝对值为textPage上方的高�?
+     * pageOffset + textPage.height �?textPage 下方的高�?
      */
     fun scroll(mOffset: Int) {
         pageOffset += mOffset
@@ -224,7 +224,7 @@ class ContentTextView(context: Context, attrs: AttributeSet?) : View(context, at
 
     /**
      * 单击
-     * @return true:已处理, false:未处理
+     * @return true:已处�? false:未处�?
      */
     @Suppress("UNUSED_ANONYMOUS_PARAMETER")
     fun click(x: Float, y: Float): Boolean {
@@ -267,7 +267,7 @@ class ContentTextView(context: Context, attrs: AttributeSet?) : View(context, at
     }
 
     /**
-     * 开始选择符移动
+     * 开始选择符移�?
      */
     fun selectStartMove(x: Float, y: Float) {
         touchRough(x, y) { _, textPos, _, _, _ ->
@@ -291,7 +291,7 @@ class ContentTextView(context: Context, attrs: AttributeSet?) : View(context, at
     }
 
     /**
-     * 结束选择符移动
+     * 结束选择符移�?
      */
     fun selectEndMove(x: Float, y: Float) {
         touchRough(x, y) { _, textPos, _, _, _ ->
@@ -472,7 +472,7 @@ class ContentTextView(context: Context, attrs: AttributeSet?) : View(context, at
     }
 
     /**
-     * 选择开始文字
+     * 选择开始文�?
      */
     fun selectStartMoveIndex(
         relativePagePos: Int,

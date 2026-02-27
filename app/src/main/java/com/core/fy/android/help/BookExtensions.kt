@@ -98,13 +98,13 @@ private val localUriCache by lazy {
 //    } else {
 //        Uri.fromFile(File(bookUrl))
 //    }
-//    //先检测uri是否有效,这个比较快
+//    //先检测uri是否有效,这个比较�?
 //    uri.inputStream(Android.context).getOrNull()?.use {
 //        localUriCache[bookUrl] = uri
 //    }?.let {
 //        return uri
 //    }
-//    //不同的设备书籍保存路径可能不一样, uri无效时尝试寻找当前保存路径下的文件
+//    //不同的设备书籍保存路径可能不一�? uri无效时尝试寻找当前保存路径下的文�?
 //    val defaultBookDir = AppConfig.defaultBookTreeUri
 //    val importBookDir = AppConfig.importBookPath
 //
@@ -113,12 +113,12 @@ private val localUriCache by lazy {
 //        val treeUri = Uri.parse(defaultBookDir)
 //        val treeFileDoc = FileDoc.fromUri(treeUri, true)
 //        if (!treeFileDoc.exists()) {
-//            Android.context.toastOnUI("书籍保存目录失效，请重新设置！")
+//            Android.context.toastOnUI("书籍保存目录失效，请重新设置�?)
 //        } else {
 //            val fileDoc = treeFileDoc.find(originName, 5)
 //            if (fileDoc != null) {
 //                localUriCache[bookUrl] = fileDoc.uri
-//                //更新bookUrl 重启不用再找一遍
+//                //更新bookUrl 重启不用再找一�?
 //                bookUrl = fileDoc.toString()
 //                save()
 //                return fileDoc.uri
@@ -126,7 +126,7 @@ private val localUriCache by lazy {
 //        }
 //    }
 //
-//    // 查找添加本地选择的目录
+//    // 查找添加本地选择的目�?
 //    if (!importBookDir.isNullOrBlank() && defaultBookDir != importBookDir) {
 //        val treeUri = if (importBookDir.isUri()) {
 //            Uri.parse(importBookDir)
@@ -267,7 +267,7 @@ fun Book.getExportFileName(suffix: String): String {
 //        return "$name 作者：${getRealAuthor()}.$suffix"
 //    }
 //    val bindings = buildScriptBindings { bindings ->
-//        bindings["epubIndex"] = ""// 兼容老版本,修复可能存在的错误
+//        bindings["epubIndex"] = ""// 兼容老版�?修复可能存在的错�?
 //        bindings["name"] = name
 //        bindings["author"] = getRealAuthor()
 //    }
@@ -280,7 +280,7 @@ fun Book.getExportFileName(suffix: String): String {
 }
 
 /**
- * 获取分割文件后的文件名
+ * 获取分割文件后的文件�?
  */
 //fun Book.getExportFileName(
 //    suffix: String,
@@ -311,7 +311,7 @@ fun Book.simulatedTotalChapterNum(): Int {
     return if (readSimulating()) {
         val currentDate = LocalDate.now()
         val daysPassed = between(this.config.startDate, currentDate).days + 1
-        // 计算当前应该解锁到哪一章
+        // 计算当前应该解锁到哪一�?
         val chaptersToUnlock =
             max(0, (config.startChapter ?: 0) + (daysPassed * config.dailyChapters))
         min(totalChapterNum, chaptersToUnlock)

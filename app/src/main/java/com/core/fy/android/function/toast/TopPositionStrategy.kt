@@ -5,8 +5,8 @@ import android.content.Context
 import android.graphics.PixelFormat
 import android.view.Gravity
 import android.view.WindowManager
-import io.core.common.base.component.custom.strategy.ToastPositionStrategy
-import io.core.common.util.tools.SizeTools
+import io.core.ui.base.component.custom.strategy.ToastPositionStrategy
+import io.core.utils.tools.SizeTools
 
 class TopPositionStrategy : ToastPositionStrategy {
     override fun createLayoutParams(context: Context): WindowManager.LayoutParams {
@@ -20,7 +20,7 @@ class TopPositionStrategy : ToastPositionStrategy {
         ).apply {
             gravity = getDefaultGravity()
             x = 0
-            y = -getStatusBarHeight(context) // 负值使其从屏幕顶部开始
+            y = -getStatusBarHeight(context) // 负值使其从屏幕顶部开�?
         }
     }
 

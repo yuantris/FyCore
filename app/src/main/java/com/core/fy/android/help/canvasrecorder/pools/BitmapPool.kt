@@ -1,7 +1,7 @@
 package com.core.fy.android.help.canvasrecorder.pools
 
 import android.graphics.Bitmap
-import io.core.common.util.tools.globalExecutor
+import io.core.utils.tools.globalExecutor
 import java.util.concurrent.ConcurrentHashMap
 
 object BitmapPool {

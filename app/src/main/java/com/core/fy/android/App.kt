@@ -13,19 +13,19 @@ import com.core.fy.android.util.HttpClient
 import com.core.fy.android.util.NetworkException
 import com.core.fy.android.util.initDialogX
 import com.tencent.mmkv.MMKV
-import io.core.Android
+import io.core.base.Android
 import io.core.BR
-import io.core.common.CoreConfig
-import io.core.common.helper.coroutine.info.GlobalCoroutine
-import io.core.common.helper.net.NetworkMonitor
-import io.core.common.helper.track.AppTrackV2
-import io.core.common.helper.track.TurboTracker
-import io.core.common.util.CoreUtil.Companion.toast
-import io.core.common.util.extensions.notificationManager
-import io.core.common.util.extensions.simpleName
-import io.core.common.util.log.LogPure
-import io.core.common.util.tools.OSAir
-import io.core.constant.ANDROID_8
+import io.core.base.CoreConfig
+import io.core.utils.coroutine.info.GlobalCoroutine
+import io.core.utils.net.NetworkMonitor
+import io.core.ui.helper.track.AppTrackV2
+import io.core.ui.helper.track.TurboTracker
+import io.core.utils.CoreUtil.Companion.toast
+import io.core.utils.extensions.notificationManager
+import io.core.utils.extensions.simpleName
+import io.core.utils.log.LogPure
+import io.core.utils.tools.OSAir
+import io.core.base.constant.ANDROID_8
 import io.core.engine.brv.utils.BRV
 import io.core.engine.storage.StorageFactory
 import io.core.engine.storage.StorageType
@@ -36,18 +36,18 @@ import io.core.nav.NavigationListener
 import io.core.nav.NavigationManager
 import io.core.nav.NavigationRequest
 import io.core.nav.NavigationResult
-import io.core.other.CrashHandler
+import io.core.nav.other.CrashHandler
 
 
 /**
 # ██████████
-# █▄█████▄█
+# █▄█████▄�?
 # █▼▼▼▼▼
-# █
+# �?
 # █▲▲▲▲▲
 # ██████████
 # ██ ██
-# 注释的艺术，正在加载……
+# 注释的艺术，正在加载…�?
  * 2024/12/24 8:54
  * @description
  * @author Yuan
@@ -70,7 +70,7 @@ class App : Application() {
 
         initDialogX()
 
-//        // 添加日志全局拦截器
+//        // 添加日志全局拦截�?
 //        LogCat.addHook(object : LogHook {
 //            override fun hook(info: LogInfo) {
 //                GSON.toJson(info).logV("LogHook_")
@@ -83,7 +83,7 @@ class App : Application() {
 
         /**
          * 如果BRV使用DataBinding，需要初始化
-         * 在Application中初始化, DataBinding会根据modelId自动绑定models到xml中
+         * 在Application中初始化, DataBinding会根据modelId自动绑定models到xml�?
          */
         BRV.modelId = BR.m
 
@@ -97,14 +97,14 @@ class App : Application() {
             }
         }
 
-        // 初始化导航
+        // 初始化导�?
         NavigationManager.configure {
             setListener(object : NavigationListener {
 
                 override fun onNavigationStart(request: NavigationRequest) {
                     super.onNavigationStart(request)
                     LogPure.v {
-                        "开始导航: ${request.targetClass<Activity>()?.simpleName}"
+                        "开始导�? ${request.targetClass<Activity>()?.simpleName}"
                     }
                 }
 
@@ -116,7 +116,7 @@ class App : Application() {
                     super.onInterceptorExecute(interceptor, request, result)
                     val action = when (result) {
                         is NavigationResult.Proceed -> "放行"
-                        is NavigationResult.Redirect -> "重定向"
+                        is NavigationResult.Redirect -> "重定�?
                         is NavigationResult.Abort -> "拦截"
                         is NavigationResult.Error -> "错误"
                     }
@@ -128,11 +128,11 @@ class App : Application() {
                     }
 
                     LogPure.v {
-                        "拦截器: ${interceptor.name} $action 了请求, 目标: ${request.originalTargetClass<Activity>()?.simpleName}, 当前: $currentName"
+                        "拦截�? ${interceptor.name} $action 了请�? 目标: ${request.originalTargetClass<Activity>()?.simpleName}, 当前: $currentName"
                     }
                 }
             })
-            // 登录拦截器
+            // 登录拦截�?
             addInterceptor(
                 LoginInterceptor(
                     authProvider = object : AuthProvider {
@@ -155,8 +155,8 @@ class App : Application() {
                 },
                 onFailure = { ex ->
                     val msg = when (ex) {
-                        is NetworkException.IO -> "网络不给力，请稍后再试"
-                        is NetworkException.Http -> "服务器开小差了(${ex.code})"
+                        is NetworkException.IO -> "网络不给力，请稍后再�?
+                        is NetworkException.Http -> "服务器开小差�?${ex.code})"
                         else -> "获取配置失败"
                     }
                     toast(msg)

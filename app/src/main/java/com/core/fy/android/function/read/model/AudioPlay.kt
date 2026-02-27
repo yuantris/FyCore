@@ -10,10 +10,10 @@ import com.core.fy.android.constants.Status
 import com.core.fy.android.room.entity.Book
 import com.core.fy.android.room.entity.BookChapter
 import com.core.fy.android.function.read.services.AudioPlayService
-import io.core.common.helper.coroutine.Coroutine
-import io.core.appCtx
-import io.core.common.util.extensions.cool.postEvent
-import io.core.common.util.extensions.ui.startService
+import io.core.utils.coroutine.Coroutine
+import io.core.base.appCtx
+import io.core.utils.extensions.cool.postEvent
+import io.core.utils.extensions.ui.startService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancelChildren
@@ -160,7 +160,7 @@ object AudioPlay : CoroutineScope by MainScope() {
     }
 
     /**
-     * 从头播放新章节
+     * 从头播放新章�?
      */
     private fun playNew() {
         context.startService<AudioPlayService> {

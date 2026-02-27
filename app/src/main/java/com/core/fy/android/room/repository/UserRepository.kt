@@ -3,7 +3,7 @@ package com.core.fy.android.room.repository
 import com.core.fy.android.room.appDb
 import com.core.fy.android.room.dao.UserDao
 import com.core.fy.android.room.entity.User
-import io.core.common.base.room.RoomRepository
+import io.core.ui.base.room.RoomRepository
 
 object UserRepository : RoomRepository<User, UserDao>(appDb.userDao()) {
 

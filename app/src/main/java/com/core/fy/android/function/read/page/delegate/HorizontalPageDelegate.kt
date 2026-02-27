@@ -5,7 +5,7 @@ import com.core.fy.android.function.read.page.ReadView
 import com.core.fy.android.function.read.page.entities.PageDirection
 import com.core.fy.android.help.CanvasRecorderFactory
 import com.core.fy.android.help.canvasrecorder.screenshot
-import io.core.common.util.extensions.ui.screenshot
+import io.core.utils.extensions.ui.screenshot
 
 abstract class HorizontalPageDelegate(readView: ReadView) : PageDelegate(readView) {
 
@@ -77,7 +77,7 @@ abstract class HorizontalPageDelegate(readView: ReadView) : PageDelegate(readVie
         val div = if (pointerUp) count - 1 else count
         val focusX = sumX / div
         val focusY = sumY / div
-        //判断是否移动了
+        //判断是否移动�?
         if (!isMoved) {
             val deltaX = (focusX - startX).toInt()
             val deltaY = (focusY - startY).toInt()
@@ -105,7 +105,7 @@ abstract class HorizontalPageDelegate(readView: ReadView) : PageDelegate(readVie
         if (isMoved) {
             isCancel = if (mDirection == PageDirection.NEXT) sumX > lastX else sumX < lastX
             isRunning = true
-            //设置触摸点
+            //设置触摸�?
             readView.setTouchPoint(sumX, sumY)
         }
     }

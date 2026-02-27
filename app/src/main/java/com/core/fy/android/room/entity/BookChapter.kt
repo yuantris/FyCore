@@ -8,8 +8,8 @@ import androidx.room.Ignore
 import androidx.room.Index
 import com.core.fy.android.help.RuleBigDataHelp
 import com.core.fy.android.model.RuleDataInterface
-import io.core.common.util.extensions.cool.GSON
-import io.core.common.util.extensions.cool.fromJsonObject
+import io.core.utils.extensions.cool.GSON
+import io.core.utils.extensions.cool.fromJsonObject
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 
@@ -25,19 +25,19 @@ import kotlinx.parcelize.Parcelize
         childColumns = ["bookUrl"],
         onDelete = ForeignKey.CASCADE
     ))]
-)    // 删除书籍时自动删除章节
+)    // 删除书籍时自动删除章�?
 data class BookChapter(
     var url: String = "",               // 章节地址
     var title: String = "",             // 章节标题
-    var isVolume: Boolean = false,      // 是否是卷名
+    var isVolume: Boolean = false,      // 是否是卷�?
     var baseUrl: String = "",           // 用来拼接相对url
     var bookUrl: String = "",           // 书籍地址
     var index: Int = 0,                 // 章节序号
     var isVip: Boolean = false,         // 是否VIP
-    var isPay: Boolean = false,         // 是否已购买
+    var isPay: Boolean = false,         // 是否已购�?
     var resourceUrl: String? = null,    // 音频真实URL
-    var tag: String? = null,            // 更新时间或其他章节附加信息
-    var wordCount: String? = null,      // 本章节字数
+    var tag: String? = null,            // 更新时间或其他章节附加信�?
+    var wordCount: String? = null,      // 本章节字�?
     var start: Long? = null,            // 章节起始位置
     var end: Long? = null,              // 章节终止位置
     var startFragmentId: String? = null,  //EPUB书籍当前章节的fragmentId

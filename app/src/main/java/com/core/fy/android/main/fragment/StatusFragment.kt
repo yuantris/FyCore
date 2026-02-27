@@ -32,16 +32,16 @@ import com.core.fy.android.room.VMFactory
 import com.core.fy.android.room.entity.Function
 import com.core.fy.android.room.repository.FunctionRepository
 import com.core.fy.android.viewmodel.FunctionVM
-import io.core.common.base.component.custom.ToastGT
-import io.core.common.base.component.fragment.ReflectBindingFragment
-import io.core.common.helper.track.AppTrackV2
-import io.core.common.util.extensions.cool.launch
-import io.core.common.util.extensions.cool.runDelayedMain
-import io.core.common.util.extensions.ui.onClick
-import io.core.common.util.extensions.ui.startActivity
-import io.core.common.util.log.e
-import io.core.common.util.log.v
-import io.core.common.util.tools.TimeTools
+import io.core.ui.base.component.custom.ToastGT
+import io.core.ui.base.component.fragment.ReflectBindingFragment
+import io.core.ui.helper.track.AppTrackV2
+import io.core.utils.extensions.cool.launch
+import io.core.utils.extensions.cool.runDelayedMain
+import io.core.utils.extensions.ui.onClick
+import io.core.utils.extensions.ui.startActivity
+import io.core.utils.log.e
+import io.core.utils.log.v
+import io.core.utils.tools.TimeTools
 import io.core.engine.brv.BindingAdapter
 import io.core.engine.brv.listener.DefaultItemTouchCallback
 import io.core.engine.brv.utils.grid
@@ -50,13 +50,13 @@ import io.core.nav.routerTo
 
 /**
 # ██████████
-# █▄█████▄█
+# █▄█████▄�?
 # █▼▼▼▼▼
-# █
+# �?
 # █▲▲▲▲▲
 # ██████████
 # ██ ██
-# 注释的艺术，正在加载……
+# 注释的艺术，正在加载…�?
  * 2025/2/13 8:22
  * @description
  * @author Yuan
@@ -81,7 +81,7 @@ class StatusFragment : ReflectBindingFragment<FragmentStatusBinding, MainActivit
     }
 
     override fun initData() {
-        "当前季节：${TimeTools.getSeason().name}".e()
+        "当前季节�?{TimeTools.getSeason().name}".e()
         functionVM.data.observe(this) {
             binding.rv.apply {
                 grid(2).setup {
@@ -126,7 +126,7 @@ class StatusFragment : ReflectBindingFragment<FragmentStatusBinding, MainActivit
                                 FunctionVM.Design.TTS -> startActivity<TTSActivity>()
                                 FunctionVM.Design.READ -> startActivity<ReadBookActivity>()
                                 FunctionVM.Design.相机 -> startActivity<CameraXActivity>()
-                                FunctionVM.Design.单选多选 -> startActivity<SingleSelectActivity>()
+                                FunctionVM.Design.单选多�?-> startActivity<SingleSelectActivity>()
                                 FunctionVM.Design.Brv -> startActivity<BrvActivity>()
                                 FunctionVM.Design.录音 -> startActivity<AudioRecordActivity>()
                                 FunctionVM.Design.Media -> startActivity<MediaPlayerActivity>()

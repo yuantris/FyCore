@@ -5,7 +5,7 @@ import com.core.fy.android.function.read.page.ContentTextView
 import com.core.fy.android.function.read.page.entities.TextLine
 
 /**
- * 列基类
+ * 列基�?
  */
 interface BaseColumn {
     var start: Float

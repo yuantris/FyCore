@@ -8,7 +8,7 @@ import com.blankj.utilcode.util.ImageUtils
 import com.core.fy.android.R
 import com.core.fy.android.help.config.AppConfig
 import com.core.fy.android.room.entity.Book
-import io.core.appCtx
+import io.core.base.appCtx
 
 object ImageProvider {
 
@@ -40,7 +40,7 @@ object ImageProvider {
             oldBitmap: Bitmap,
             newBitmap: Bitmap?
         ) {
-            //错误图片不能释放,占位用,防止一直重复获取图片
+            //错误图片不能释放,占位�?防止一直重复获取图�?
             if (oldBitmap != errorBitmap) {
                 oldBitmap.recycle()
                 //putDebug("ImageProvider: trigger bitmap recycle. URI: $filePath")
@@ -100,15 +100,15 @@ object ImageProvider {
         width: Int,
         height: Int? = null
     ): Bitmap {
-//        //src为空白时 可能被净化替换掉了 或者规则失效
+//        //src为空白时 可能被净化替换掉�?或者规则失�?
 //        if (book.getUseReplaceRule() && src.isBlank()) {
 //            book.setUseReplaceRule(false)
 //            appCtx.toastOnUI(R.string.error_image_url_empty)
 //        }
 //        val vFile = BookHelp.getImage(book, src)
 //        if (!vFile.exists()) return errorBitmap
-//        //epub文件提供图片链接是相对链接，同时阅读多个epub文件，缓存命中错误
-//        //bitmapLruCache的key同一改成缓存文件的路径
+//        //epub文件提供图片链接是相对链接，同时阅读多个epub文件，缓存命中错�?
+//        //bitmapLruCache的key同一改成缓存文件的路�?
 //        val cacheBitmap = getNotRecycled(vFile.absolutePath)
 //        if (cacheBitmap != null) return cacheBitmap
 //        return kotlin.runCatching {

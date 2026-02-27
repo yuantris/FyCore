@@ -4,9 +4,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.core.fy.android.room.entity.User
 import com.core.fy.android.room.repository.UserRepository
-import io.core.common.base.vm.BaseViewModel
-import io.core.common.util.extensions.logD
-import io.core.common.util.extensions.logE
+import io.core.ui.base.vm.BaseViewModel
+import io.core.utils.extensions.logD
+import io.core.utils.extensions.logE
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
@@ -37,7 +37,7 @@ class UserVM(private var repository: UserRepository) : BaseViewModel() {
         return flow {
             // 使用挂起函数获取用户
             val result = repository.getUserByName(name)
-            // 通过 emit 发送数据到观察者
+            // 通过 emit 发送数据到观察�?
             emit(result)
         }
     }
@@ -51,7 +51,7 @@ class UserVM(private var repository: UserRepository) : BaseViewModel() {
             },
             onSuccess = onSuccess,
             onError = { error ->
-                "获取用户失败：${error.message}".logE()
+                "获取用户失败�?{error.message}".logE()
             }
         )
     }

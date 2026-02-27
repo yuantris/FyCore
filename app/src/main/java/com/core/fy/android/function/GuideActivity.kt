@@ -2,19 +2,19 @@ package com.core.fy.android.function
 
 import com.core.fy.android.MainActivity
 import com.core.fy.android.R
-import io.core.common.base.component.activity.BaseGuideActivity
-import io.core.common.base.component.activity.GuideConfig
-import io.core.common.util.extensions.ui.startNoTransition
+import io.core.ui.base.component.activity.BaseGuideActivity
+import io.core.ui.base.component.activity.GuideConfig
+import io.core.utils.extensions.ui.startNoTransition
 
 /**
 # ██████████
-# █▄█████▄█
+# █▄█████▄�?
 # █▼▼▼▼▼
-# █
+# �?
 # █▲▲▲▲▲
 # ██████████
 # ██ ██
-# 注释的艺术，正在加载……
+# 注释的艺术，正在加载…�?
  * 2025/2/10 8:38
  * @description
  * @author Yuan

@@ -32,18 +32,18 @@ import com.core.fy.android.function.read.page.entities.TextChapter
 import com.core.fy.android.function.read.receiver.MediaButtonReceiver
 import com.core.fy.android.help.MediaHelp
 import com.core.fy.android.help.config.AppConfig
-import io.core.common.base.component.service.BaseService
-import io.core.common.helper.coroutine.Coroutine
-import io.core.common.helper.glide.ImageLoader
-import io.core.appCtx
-import io.core.common.util.extensions.audioManager
-import io.core.common.util.extensions.cool.toastOnUI
-import io.core.common.util.extensions.powerManager
-import io.core.common.util.extensions.telephonyManager
-import io.core.common.util.extensions.ui.broadcastPendingIntent
-import io.core.common.util.extensions.ui.getPrefBoolean
-import io.core.common.util.extensions.wifiManager
-import io.core.common.util.log.LogCat
+import io.core.ui.base.component.service.BaseService
+import io.core.utils.coroutine.Coroutine
+import io.core.utils.glide.ImageLoader
+import io.core.base.appCtx
+import io.core.utils.extensions.audioManager
+import io.core.utils.extensions.cool.toastOnUI
+import io.core.utils.extensions.powerManager
+import io.core.utils.extensions.telephonyManager
+import io.core.utils.extensions.ui.broadcastPendingIntent
+import io.core.utils.extensions.ui.getPrefBoolean
+import io.core.utils.extensions.wifiManager
+import io.core.utils.log.LogCat
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.Job
@@ -421,7 +421,7 @@ abstract class BaseReadAloudService : BaseService(),
     }
 
     /**
-     * 更新媒体状态
+     * 更新媒体状�?
      */
     private fun upMediaSessionPlaybackState(state: Int) {
         mediaSessionCompat.setPlaybackState(
@@ -433,7 +433,7 @@ abstract class BaseReadAloudService : BaseService(),
     }
 
     /**
-     * 初始化MediaSession, 注册多媒体按钮
+     * 初始化MediaSession, 注册多媒体按�?
      */
     @SuppressLint("UnspecifiedImmutableFlag")
     private fun initMediaSession() {
@@ -449,7 +449,7 @@ abstract class BaseReadAloudService : BaseService(),
     }
 
     /**
-     * 注册多媒体按钮监听
+     * 注册多媒体按钮监�?
      */
     private fun initBroadcastReceiver() {
         val intentFilter = IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY)
@@ -546,7 +546,7 @@ abstract class BaseReadAloudService : BaseService(),
 //            .setSound(null)
 //            .setLights(0, 0, 0)
 //        builder.setLargeIcon(cover)
-//        // 按钮定义：上一章、播放、停止、下一章、定时
+//        // 按钮定义：上一章、播放、停止、下一章、定�?
 //        builder.addAction(
 //            R.drawable.ic_skip_previous,
 //            getString(R.string.previous_chapter),
@@ -595,7 +595,7 @@ abstract class BaseReadAloudService : BaseService(),
                 // startForeground(NotificationId.ReadAloudService, notification.build())
             } catch (e: Exception) {
                 LogCat.e(e, msg = "创建朗读通知出错,${e.localizedMessage}")
-                //创建通知出错不结束服务就会崩溃,服务必须绑定通知
+                //创建通知出错不结束服务就会崩�?服务必须绑定通知
                 stopSelf()
             }
         }

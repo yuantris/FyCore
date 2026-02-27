@@ -19,8 +19,8 @@ import kotlinx.coroutines.withContext
 object MediaRefreshHelper {
 
     /**
-     * 刷新指定文件或目录的媒体库记录
-     * @param context 上下文对象
+     * 刷新指定文件或目录的媒体库记�?
+     * @param context 上下文对�?
      * @param filePaths 需要刷新的文件路径列表
      */
     suspend fun refreshMediaStore(
@@ -35,7 +35,7 @@ object MediaRefreshHelper {
                 }
             }
             else -> {
-                // 旧版本使用传统 MediaScanner
+                // 旧版本使用传�?MediaScanner
                 scanWithMediaScanner(context, filePaths)
             }
         }
@@ -54,7 +54,7 @@ object MediaRefreshHelper {
             val updated = updateExistingRecord(resolver, collection, file, values)
             
             if (!updated) {
-                // 插入新记录
+                // 插入新记�?
                 insertNewRecord(resolver, collection, values)
             }
         } catch (e: Exception) {
@@ -114,7 +114,7 @@ object MediaRefreshHelper {
     ) {
         try {
             resolver.insert(collection, values)?.also { uri ->
-                // 更新 IS_PENDING 状态（如果适用）
+                // 更新 IS_PENDING 状态（如果适用�?
                 values.put(MediaStore.MediaColumns.IS_PENDING, 0)
                 resolver.update(uri, values, null, null)
             }

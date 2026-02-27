@@ -3,15 +3,15 @@ package com.core.fy.android.function.yunchuang
 import android.os.Bundle
 import androidx.core.view.isVisible
 import com.core.fy.android.databinding.ActivityVisibilityBinding
-import io.core.common.base.component.activity.ReflectBindingActivity
-import io.core.common.util.extensions.cool.launch
-import io.core.common.util.extensions.cool.runDelayedMain
-import io.core.common.util.extensions.ui.hide
-import io.core.common.util.extensions.ui.onDebouncedClick
-import io.core.common.util.extensions.ui.onVisibilityChange
-import io.core.common.util.extensions.ui.setVisible
-import io.core.common.util.extensions.ui.show
-import io.core.common.util.extensions.ui.toast
+import io.core.ui.base.component.activity.ReflectBindingActivity
+import io.core.utils.extensions.cool.launch
+import io.core.utils.extensions.cool.runDelayedMain
+import io.core.utils.extensions.ui.hide
+import io.core.utils.extensions.ui.onDebouncedClick
+import io.core.utils.extensions.ui.onVisibilityChange
+import io.core.utils.extensions.ui.setVisible
+import io.core.utils.extensions.ui.show
+import io.core.utils.extensions.ui.toast
 import kotlinx.coroutines.delay
 
 class VisibilityActivity : ReflectBindingActivity<ActivityVisibilityBinding>() {

@@ -9,8 +9,8 @@ import android.view.View
 import android.view.WindowManager
 import android.widget.TextView
 import io.core.R
-import io.core.common.util.extensions.cool.dpToPx
-import io.core.common.util.extensions.windowManager
+import io.core.utils.extensions.cool.dpToPx
+import io.core.utils.extensions.windowManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob

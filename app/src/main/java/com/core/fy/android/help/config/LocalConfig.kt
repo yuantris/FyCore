@@ -3,12 +3,12 @@ package com.core.fy.android.help.config
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.core.content.edit
-import io.core.appCtx
-import io.core.common.util.extensions.cool.getBoolean
-import io.core.common.util.extensions.cool.putBoolean
-import io.core.common.util.extensions.cool.putLong
-import io.core.common.util.extensions.cool.putString
-import io.core.common.util.extensions.cool.remove
+import io.core.base.appCtx
+import io.core.utils.extensions.cool.getBoolean
+import io.core.utils.extensions.cool.putBoolean
+import io.core.utils.extensions.cool.putLong
+import io.core.utils.extensions.cool.putString
+import io.core.utils.extensions.cool.remove
 
 @Suppress("ConstPropertyName")
 object LocalConfig : SharedPreferences
@@ -17,7 +17,7 @@ by appCtx.getSharedPreferences("local", Context.MODE_PRIVATE) {
     private const val versionCodeKey = "appVersionCode"
 
     /**
-     * 本地密码,用来对需要备份的敏感信息加密,如 webdav 配置等
+     * 本地密码,用来对需要备份的敏感信息加密,�?webdav 配置�?
      */
     var password: String?
         get() = getString("password", null)

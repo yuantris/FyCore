@@ -3,20 +3,20 @@ package com.core.fy.android.function.toast
 import android.os.Bundle
 import android.view.Gravity
 import com.core.fy.android.databinding.ActivityCustomToastBinding
-import io.core.common.base.component.activity.ReflectBindingActivity
-import io.core.common.base.component.custom.ToastGT
-import io.core.common.util.extensions.ui.toast
+import io.core.ui.base.component.activity.ReflectBindingActivity
+import io.core.ui.base.component.custom.ToastGT
+import io.core.utils.extensions.ui.toast
 import com.core.fy.android.ui.CustomToast
 
 /**
 # ██████████
-# █▄█████▄█
+# █▄█████▄�?
 # █▼▼▼▼▼
-# █
+# �?
 # █▲▲▲▲▲
 # ██████████
 # ██ ██
-# 注释的艺术，正在加载……
+# 注释的艺术，正在加载…�?
  * 2024/12/27 11:09
  * @description
  * @author Yuan
@@ -33,7 +33,7 @@ class CustomToastActivity : ReflectBindingActivity<ActivityCustomToastBinding>()
         binding.apply {
             showTop.setOnClickListener {
                 ToastGT.Builder(this@CustomToastActivity)
-                    .setMessage("自定义消息")
+                    .setMessage("自定义消�?)
                     .setDuration(3000)
                     .setAppearance(RedToastAppearance())
                     .setAnimation(SlideAnimationStrategy())
@@ -43,9 +43,9 @@ class CustomToastActivity : ReflectBindingActivity<ActivityCustomToastBinding>()
             showCenter.setOnClickListener {
 
 
-                ToastGT.showWithQueue(this@CustomToastActivity, "第一条消息")
-                ToastGT.showWithQueue(this@CustomToastActivity, "第二条消息")
-                ToastGT.showWithQueue(this@CustomToastActivity, "第三条消息")
+                ToastGT.showWithQueue(this@CustomToastActivity, "第一条消�?)
+                ToastGT.showWithQueue(this@CustomToastActivity, "第二条消�?)
+                ToastGT.showWithQueue(this@CustomToastActivity, "第三条消�?)
             }
             showBottom.setOnClickListener {
                 toast("自定义Toast")

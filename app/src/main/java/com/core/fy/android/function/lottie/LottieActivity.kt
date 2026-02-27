@@ -2,9 +2,9 @@ package com.core.fy.android.function.lottie
 
 import android.os.Bundle
 import com.core.fy.android.databinding.ActivityLottieBinding
-import io.core.common.base.component.activity.ReflectBindingActivity
-import io.core.common.util.tools.TimeTools
-import io.core.common.util.tools.TimeTools.convertDateFormat
+import io.core.ui.base.component.activity.ReflectBindingActivity
+import io.core.utils.tools.TimeTools
+import io.core.utils.tools.TimeTools.convertDateFormat
 
 class LottieActivity : ReflectBindingActivity<ActivityLottieBinding>() {
     override fun initial(savedInstanceState: Bundle?) {

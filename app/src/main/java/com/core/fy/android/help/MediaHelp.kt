@@ -8,7 +8,7 @@ import androidx.media.AudioAttributesCompat
 import androidx.media.AudioFocusRequestCompat
 import androidx.media.AudioManagerCompat
 import com.core.fy.android.R
-import io.core.common.util.extensions.audioManager
+import io.core.utils.extensions.audioManager
 
 object MediaHelp {
 

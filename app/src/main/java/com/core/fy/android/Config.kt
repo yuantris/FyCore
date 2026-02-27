@@ -1,22 +1,22 @@
 package com.core.fy.android
 
 import com.core.fy.android.constants.PreferKey
-import io.core.appCtx
-import io.core.common.CoreConfig
+import io.core.base.appCtx
+import io.core.base.CoreConfig
 import io.core.engine.storage.getWithAnnotation
 import io.core.engine.storage.put
 import io.core.engine.storage.storage
 
 /**
- * ██╗  ██╗███████╗██╗   ██╗    ┌──────────┐
- * ╚██╗██╔╝██╔════╝╚██╗ ██╔╝    │ 加载进度 │▰▰▰▰▰▰▰▰◯ 87%
- *  ╚███╔╝ █████╗   ╚████╔╝     └──────────┘
- *  ██╔██╗ ██╔══╝    ╚██╔╝      ╱╲▲△△△△△△△△
- * ██╔╝ ██╗██╗        ██║       ▉ ▏正在渲染配置矩阵...
- * ╚═╝  ╚═╝╚═╝        ╚═╝       ╲╱▼▽▽▽▽▽▽▽▽
+ * ██�? ██╗███████╗██╗   ██�?   ┌──────────�?
+ * ╚██╗██╔╝██╔════╝╚██╗ ██╔╝    �?加载进度 │▰▰▰▰▰▰▰▰◯ 87%
+ *  ╚███╔╝ █████╗   ╚████╔�?    └──────────�?
+ *  ██╔██╗ ██╔══╝    ╚██╔�?     ╱╲▲△△△△△△△�?
+ * ██╔╝ ██╗██╗        ██�?      �?▏正在渲染配置矩�?..
+ * ╚═�? ╚═╝╚═╝        ╚═�?      ╲╱▼▽▽▽▽▽▽▽�?
  * 注释的艺术，正在生成......
  * 模块加载阶段 ████████████ 100%
- * 最后编译阶段 ████████░░░░ 65% (按 F12 解锁彩蛋)
+ * 最后编译阶�?████████░░░░ 65% (�?F12 解锁彩蛋)
  *
  * @Author [Yuan]
  * 2025/3/13 14:49

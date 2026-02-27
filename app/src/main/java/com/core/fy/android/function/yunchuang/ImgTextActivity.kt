@@ -3,19 +3,19 @@ package com.core.fy.android.function.yunchuang
 import android.os.Bundle
 import com.core.fy.android.R
 import com.core.fy.android.databinding.ActivityImgTextBinding
-import io.core.common.base.component.activity.ReflectBindingActivity
-import io.core.common.util.extensions.ui.getCompatDrawable
-import io.core.common.util.extensions.ui.toast
+import io.core.ui.base.component.activity.ReflectBindingActivity
+import io.core.utils.extensions.ui.getCompatDrawable
+import io.core.utils.extensions.ui.toast
 
 /**
 # ██████████
-# █▄█████▄█
+# █▄█████▄�?
 # █▼▼▼▼▼
-# █
+# �?
 # █▲▲▲▲▲
 # ██████████
 # ██ ██
-# 注释的艺术，正在加载……
+# 注释的艺术，正在加载…�?
  * 2025/1/9 11:38
  * @description
  * @author Yuan
@@ -37,7 +37,7 @@ class ImgTextActivity : ReflectBindingActivity<ActivityImgTextBinding>() {
                 civImg.setActiveBackground(it)
             }
             civImg.setOnClickListener {
-                toast("点击了")
+                toast("点击�?)
             }
         }
     }

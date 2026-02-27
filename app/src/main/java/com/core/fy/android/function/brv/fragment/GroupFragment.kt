@@ -10,21 +10,21 @@ import com.core.fy.android.function.brv.model.Group2Model
 import com.core.fy.android.function.brv.model.Group3Model
 import com.core.fy.android.function.brv.model.GroupDrag1Model
 import com.core.fy.android.function.brv.model.GroupDrag2Model
-import io.core.common.base.component.fragment.ReflectBindingFragment
-import io.core.common.util.CoreUtil.Companion.toast
+import io.core.ui.base.component.fragment.ReflectBindingFragment
+import io.core.utils.CoreUtil.Companion.toast
 import io.core.engine.brv.item.ItemExpand
 import io.core.engine.brv.utils.linear
 import io.core.engine.brv.utils.setup
 
 /**
 # ██████████
-# █▄█████▄█
+# █▄█████▄�?
 # █▼▼▼▼▼
-# █
+# �?
 # █▲▲▲▲▲
 # ██████████
 # ██ ██
-# 注释的艺术，正在加载……
+# 注释的艺术，正在加载…�?
  * 2025/2/17 10:43
  * @description
  * @author Yuan
@@ -34,7 +34,7 @@ class GroupFragment : ReflectBindingFragment<FragmentBrvGroupdragBinding, BrvAct
     override fun initView() {
         binding.rv.linear().setup {
 
-            // 任何条目都需要添加类型到BindingAdapter中
+            // 任何条目都需要添加类型到BindingAdapter�?
             addType<Group1Model>(R.layout.item_group_1)
             addType<Group2Model>(R.layout.item_group_2)
             addType<Group3Model>(R.layout.item_group_3)
@@ -55,11 +55,11 @@ class GroupFragment : ReflectBindingFragment<FragmentBrvGroupdragBinding, BrvAct
 
             R.id.item.onFastClick {
                 when (itemViewType) {
-                    // 点击展开或折叠
+                    // 点击展开或折�?
                     R.layout.item_group_2, R.layout.item_group_1 -> {
 
                         val changeCount =
-                            if (getModel<ItemExpand>().itemExpand) "折叠 ${expandOrCollapse()} 条" else "展开 ${expandOrCollapse()} 条"
+                            if (getModel<ItemExpand>().itemExpand) "折叠 ${expandOrCollapse()} �? else "展开 ${expandOrCollapse()} �?
 
                         toast(changeCount)
                     }
@@ -85,7 +85,7 @@ class GroupFragment : ReflectBindingFragment<FragmentBrvGroupdragBinding, BrvAct
         return mutableListOf<Group1Model>().apply {
             for (i in 0..4) {
 
-                // 第二个分组存在嵌套分组
+                // 第二个分组存在嵌套分�?
                 if (i == 0) {
                     val nestedGroupModel = Group1Model().apply {
                         sublist = MutableList(3) { Group2Model() }

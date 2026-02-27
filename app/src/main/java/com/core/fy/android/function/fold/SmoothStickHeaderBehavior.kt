@@ -7,7 +7,7 @@ import android.view.View
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.ViewCompat
 import com.core.fy.android.R
-import io.core.common.util.log.LogPure
+import io.core.utils.log.LogPure
 import kotlin.math.abs
 
 class SmoothStickHeaderBehavior(context: Context, attrs: AttributeSet) :
@@ -94,11 +94,11 @@ class SmoothStickHeaderBehavior(context: Context, attrs: AttributeSet) :
                 val moveDistance = if (newTop >= mStickyTop) {
                     dy // 正常移动
                 } else {
-                    currentTop - mStickyTop // 移动到吸顶位置
+                    currentTop - mStickyTop // 移动到吸顶位�?
                 }
                 ViewCompat.offsetTopAndBottom(child, -moveDistance)
 
-                // 关键修改：根据剩余距离动态调整消费比例，让内容也能同时滚动
+                // 关键修改：根据剩余距离动态调整消费比例，让内容也能同时滚�?
                 val remainingDistance = currentTop - mStickyTop
                 val totalDistance = mOriginalTop - mStickyTop
                 val headerRatio = if (totalDistance > 0) {
@@ -110,11 +110,11 @@ class SmoothStickHeaderBehavior(context: Context, attrs: AttributeSet) :
                 // 只消费部分事件，剩余的让NestedScrollView处理
                 consumed[1] = (moveDistance * 0.2f).toInt()
 
-                // 计算变换进度 (0.0 到 1.0)
+                // 计算变换进度 (0.0 �?1.0)
                 val progress = 1f - (child.top.toFloat() / mOriginalTop.toFloat())
                 updateViewTransition(progress)
 
-                // 检查是否刚好到达吸顶位置
+                // 检查是否刚好到达吸顶位�?
                 if (child.top <= mStickyTop) {
                     mIsSticky = true
                 }
@@ -158,7 +158,7 @@ class SmoothStickHeaderBehavior(context: Context, attrs: AttributeSet) :
                 updateViewTransition(progress)
 
                 // 关键修改：使用固定的较小消费比例，确保内容能持续滚动
-                // 不管内容是否还能滚动，都只消费一小部分事件
+                // 不管内容是否还能滚动，都只消费一小部分事�?
                 val headerRatio = 0.3f  // 固定使用较小比例
                 consumed[1] = (abs(dy) * headerRatio).toInt()
 
@@ -174,14 +174,14 @@ class SmoothStickHeaderBehavior(context: Context, attrs: AttributeSet) :
                             "Final adjust: $finalAdjust, final top: ${child.top}"
                         )
                     }
-                    // 确保完全恢复到展开状态
+                    // 确保完全恢复到展开状�?
                     updateViewTransition(0f)
                 }
             }
 
             currentTop < mOriginalTop -> {
                 Log.d("StickyBehavior", "Non-sticky state, restoring position")
-                // 非吸顶状态但位置不在原始位置，需要恢复
+                // 非吸顶状态但位置不在原始位置，需要恢�?
                 val moveDistance = if (newTop <= mOriginalTop) {
                     -dy
                 } else {
@@ -193,7 +193,7 @@ class SmoothStickHeaderBehavior(context: Context, attrs: AttributeSet) :
                 val progress = 1f - (child.top.toFloat() / mOriginalTop.toFloat())
                 updateViewTransition(progress)
 
-                // 向下恢复时也使用动态消费比例
+                // 向下恢复时也使用动态消费比�?
                 val remainingDistance = mOriginalTop - currentTop
                 val totalDistance = mOriginalTop - mStickyTop
                 val headerRatio = if (totalDistance > 0) {
@@ -211,7 +211,7 @@ class SmoothStickHeaderBehavior(context: Context, attrs: AttributeSet) :
     private fun updateViewTransition(progress: Float) {
         val clampedProgress = progress.coerceIn(0f, 1f)
 
-        // 透明度变化
+        // 透明度变�?
         expandedView?.alpha = 1f - clampedProgress
         collapsedView?.alpha = clampedProgress
 

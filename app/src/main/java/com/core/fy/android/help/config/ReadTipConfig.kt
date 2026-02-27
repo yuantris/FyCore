@@ -2,8 +2,8 @@ package com.core.fy.android.help.config
 
 import android.content.Context
 import com.core.fy.android.R
-import io.core.Android
-import io.core.appCtx
+import io.core.base.Android
+import io.core.base.appCtx
 
 @Suppress("ConstPropertyName")
 object ReadTipConfig {

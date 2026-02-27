@@ -20,7 +20,7 @@ class StickyScrollView @JvmOverloads constructor(
     // 标记是否已经吸顶
     private var isSticky = false
     
-    // 吸顶View的原始位置
+    // 吸顶View的原始位�?
     private var originalPosition = 0
 
     override fun onFinishInflate() {
@@ -72,7 +72,7 @@ class StickyScrollView @JvmOverloads constructor(
     override fun onScrollChanged(l: Int, t: Int, oldl: Int, oldt: Int) {
         super.onScrollChanged(l, t, oldl, oldt)
         if (mStickyView != null) {
-            // 计算吸顶View的位置
+            // 计算吸顶View的位�?
             val stickyViewTop = mStickyView!!.top - scrollY
             
             // 当吸顶View滚动到顶部时

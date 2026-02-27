@@ -18,10 +18,10 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.children
 import com.core.fy.android.R
-import io.core.common.util.extensions.cool.dpToPx
-import io.core.common.util.extensions.ui.bottomPadding
-import io.core.common.util.extensions.ui.getCompatColor
-import io.core.common.util.extensions.ui.topPadding
+import io.core.utils.extensions.cool.dpToPx
+import io.core.utils.extensions.ui.bottomPadding
+import io.core.utils.extensions.ui.getCompatColor
+import io.core.utils.extensions.ui.topPadding
 import com.google.android.material.appbar.AppBarLayout
 
 @Suppress("unused", "MemberVisibilityCanBePrivate")
@@ -224,7 +224,7 @@ class TitleBar @JvmOverloads constructor(
 
     override fun setBackgroundColor(color: Int) {
         if (color.alpha < 255) {
-            //这里不能改为0f,改为0f在横屏模式下文字和图标颜色会变
+            //这里不能改为0f,改为0f在横屏模式下文字和图标颜色会�?
             elevation = 0.1f
         }
         super.setBackgroundColor(color)
@@ -233,7 +233,7 @@ class TitleBar @JvmOverloads constructor(
     override fun setBackground(background: Drawable?) {
         if (background is ColorDrawable) {
             if (background.alpha < 255) {
-                //这里不能改为0f,改为0f在横屏模式下文字和图标颜色会变
+                //这里不能改为0f,改为0f在横屏模式下文字和图标颜色会�?
                 elevation = 0.1f
             }
         }

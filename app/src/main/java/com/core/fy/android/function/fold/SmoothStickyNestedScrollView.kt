@@ -44,7 +44,7 @@ class SmoothStickyNestedScrollView @JvmOverloads constructor(
         if (childCount > 0) {
             val mainChild = getChildAt(0) as? ViewGroup
             mainChild?.let { container ->
-                // 查找吸顶View（通过id查找）
+                // 查找吸顶View（通过id查找�?
                 for (i in 0 until container.childCount) {
                     val child = container.getChildAt(i)
                     if (child.id == R.id.sticky_header_container) {
@@ -52,7 +52,7 @@ class SmoothStickyNestedScrollView @JvmOverloads constructor(
                         expandedView = child.findViewById(R.id.expanded_view)
                         collapsedView = child.findViewById(R.id.collapsed_view)
 
-                        // 初始化状态
+                        // 初始化状�?
                         expandedView?.alpha = 1f
                         collapsedView?.alpha = 0f
 
@@ -65,7 +65,7 @@ class SmoothStickyNestedScrollView @JvmOverloads constructor(
                     }
                 }
 
-                // 查找内容View（吸顶View后面的View）
+                // 查找内容View（吸顶View后面的View�?
                 stickyView?.let { sticky ->
                     val stickyIndex = container.indexOfChild(sticky)
                     if (stickyIndex >= 0 && stickyIndex + 1 < container.childCount) {
@@ -94,22 +94,22 @@ class SmoothStickyNestedScrollView @JvmOverloads constructor(
 
         when {
             stickyTop <= 0 -> {
-                // 需要吸顶
+                // 需要吸�?
                 if (!isSticky) {
                     isSticky = true
-                    // 吸顶时隐藏原始View，避免重复显示
+                    // 吸顶时隐藏原始View，避免重复显�?
                     sticky.visibility = View.INVISIBLE
                 }
 
-                // 完全变换到折叠状态
+                // 完全变换到折叠状�?
                 updateStickyTransition(1f)
             }
 
             stickyTop > 0 -> {
-                // 不需要吸顶
+                // 不需要吸�?
                 if (isSticky) {
                     isSticky = false
-                    // 恢复原始View的可见性
+                    // 恢复原始View的可见�?
                     sticky.visibility = View.VISIBLE
                 }
 
@@ -129,7 +129,7 @@ class SmoothStickyNestedScrollView @JvmOverloads constructor(
     private fun updateStickyTransition(progress: Float) {
         val clampedProgress = progress.coerceIn(0f, 1f)
 
-        // 透明度变化
+        // 透明度变�?
         expandedView?.alpha = 1f - clampedProgress
         collapsedView?.alpha = clampedProgress
 
@@ -139,7 +139,7 @@ class SmoothStickyNestedScrollView @JvmOverloads constructor(
     }
 
     override fun onInterceptTouchEvent(ev: MotionEvent): Boolean {
-        // 确保触摸事件能正确处理
+        // 确保触摸事件能正确处�?
         return super.onInterceptTouchEvent(ev)
     }
 
@@ -148,15 +148,15 @@ class SmoothStickyNestedScrollView @JvmOverloads constructor(
         return super.onTouchEvent(ev)
     }
 
-    // 重写fling方法以确保平滑滚动
+    // 重写fling方法以确保平滑滚�?
     override fun fling(velocityY: Int) {
         super.fling(velocityY)
     }
 
-    // 重写滚动方法以确保平滑体验
+    // 重写滚动方法以确保平滑体�?
     override fun scrollTo(x: Int, y: Int) {
         super.scrollTo(x, y)
-        // 滚动时立即更新吸顶状态
+        // 滚动时立即更新吸顶状�?
         post {
             stickyView?.let { handleStickyScroll(scrollY) }
         }
@@ -186,7 +186,7 @@ class SmoothStickyNestedScrollView @JvmOverloads constructor(
                 // 设置裁剪区域，确保只在NestedScrollView的可视区域内绘制
                 canvas.clipRect(0, scrollY, width, scrollY + height)
 
-                // 将画布移动到NestedScrollView的顶部位置
+                // 将画布移动到NestedScrollView的顶部位�?
                 canvas.translate(0f, scrollY.toFloat())
 
                 // 绘制吸顶View
@@ -197,7 +197,7 @@ class SmoothStickyNestedScrollView @JvmOverloads constructor(
         }
     }
 
-    // 添加公共方法供外部调用
+    // 添加公共方法供外部调�?
     fun getStickyView(): View? = stickyView
 
     fun isInStickyMode(): Boolean = isSticky

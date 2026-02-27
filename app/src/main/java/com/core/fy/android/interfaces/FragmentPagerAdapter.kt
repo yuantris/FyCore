@@ -82,7 +82,7 @@ open class FragmentPagerAdapter<F : Fragment>(manager: FragmentManager) :
     }
 
     /**
-     * 获取某个 Fragment 的索引（没有就返回 -1）
+     * 获取某个 Fragment 的索引（没有就返�?-1�?
      */
     open fun getFragmentIndex(clazz: Class<out Fragment?>?): Int {
         if (clazz == null) {
@@ -106,7 +106,7 @@ open class FragmentPagerAdapter<F : Fragment>(manager: FragmentManager) :
     }
 
     /**
-     * 设置懒加载模式
+     * 设置懒加载模�?
      */
     open fun setLazyMode(lazy: Boolean) {
         lazyMode = lazy
@@ -120,7 +120,7 @@ open class FragmentPagerAdapter<F : Fragment>(manager: FragmentManager) :
         if (viewPager == null) {
             return
         }
-        // 设置成懒加载模式（也就是不限制 Fragment 展示的数量）
+        // 设置成懒加载模式（也就是不限�?Fragment 展示的数量）
         viewPager?.offscreenPageLimit = if (lazyMode) count else 1
     }
 }

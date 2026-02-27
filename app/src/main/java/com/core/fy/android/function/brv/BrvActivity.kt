@@ -13,14 +13,14 @@ import com.core.fy.android.function.brv.fragment.HoverLinearFragment
 import com.core.fy.android.function.brv.fragment.MultiTypeFragment
 import com.core.fy.android.interfaces.FragmentPagerAdapter
 import com.core.fy.android.model.Tab
-import io.core.common.base.component.activity.ReflectBindingActivity
-import io.core.common.base.component.fragment.BaseFragment
-import io.core.common.util.extensions.ui.notifyAllDataChanged
-import io.core.common.util.extensions.ui.disableEdgeEffect
-import io.core.common.util.extensions.ui.getCompatColor
-import io.core.common.util.extensions.ui.hide
-import io.core.common.util.extensions.ui.screenWidthPx
-import io.core.common.util.extensions.ui.show
+import io.core.ui.base.component.activity.ReflectBindingActivity
+import io.core.ui.base.component.fragment.BaseFragment
+import io.core.utils.extensions.ui.notifyAllDataChanged
+import io.core.utils.extensions.ui.disableEdgeEffect
+import io.core.utils.extensions.ui.getCompatColor
+import io.core.utils.extensions.ui.hide
+import io.core.utils.extensions.ui.screenWidthPx
+import io.core.utils.extensions.ui.show
 import io.core.engine.brv.utils.bindingAdapter
 import io.core.engine.brv.utils.linear
 import io.core.engine.brv.utils.setup
@@ -29,7 +29,7 @@ class BrvActivity : ReflectBindingActivity<ActivityBrvBinding>() {
 
     private val list: List<Tab> = listOf(
         Tab("选择模式"),
-        Tab("多类型"),
+        Tab("多类�?),
         Tab("拖拽分组"),
         Tab("分组"),
         Tab("悬停"),

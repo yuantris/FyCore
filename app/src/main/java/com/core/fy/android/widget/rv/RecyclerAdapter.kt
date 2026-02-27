@@ -9,10 +9,10 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
-import io.core.common.helper.coroutine.Coroutine
-import io.core.common.util.extensions.cool.withTimeoutOrNullAsync
-import io.core.common.util.extensions.ui.onLongClick
-import io.core.common.util.tools.buildMainHandler
+import io.core.utils.coroutine.Coroutine
+import io.core.utils.extensions.cool.withTimeoutOrNullAsync
+import io.core.utils.extensions.ui.onLongClick
+import io.core.utils.tools.buildMainHandler
 import kotlinx.coroutines.ensureActive
 import java.util.Collections
 
@@ -343,7 +343,7 @@ abstract class RecyclerAdapter<ITEM, VB : ViewBinding>(protected val context: Co
     protected open fun getItemViewType(item: ITEM, position: Int) = 0
 
     /**
-     * grid 模式下使用
+     * grid 模式下使�?
      */
     protected open fun getSpanSize(viewType: Int, position: Int) = 1
 
@@ -458,7 +458,7 @@ abstract class RecyclerAdapter<ITEM, VB : ViewBinding>(protected val context: Co
     }
 
     /**
-     * 如果使用了事件回调,回调里不要直接使用item,会出现不更新的问题,
+     * 如果使用了事件回�?回调里不要直接使用item,会出现不更新的问�?
      * 使用getItem(holder.layoutPosition)来获取item
      */
     abstract fun convert(

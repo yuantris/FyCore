@@ -26,20 +26,20 @@ import com.core.fy.android.help.config.ReadBookConfig
 import com.core.fy.android.help.getPrimaryTextColor
 import com.core.fy.android.util.loadAnimation
 import com.core.fy.android.widget.seekbar.SeekBarChangeListener
-import io.core.common.util.extensions.cool.dpToPx
-import io.core.common.util.extensions.ui.activity
-import io.core.common.util.extensions.ui.applyNavigationBarPadding
-import io.core.common.util.extensions.ui.getCompatColor
-import io.core.common.util.extensions.ui.getPrefBoolean
-import io.core.common.util.extensions.ui.gone
-import io.core.common.util.extensions.ui.invisible
-import io.core.common.util.extensions.ui.onClick
-import io.core.common.util.extensions.ui.onLongClick
-import io.core.common.util.extensions.ui.putPrefBoolean
-import io.core.common.util.extensions.ui.visible
-import io.core.common.util.tools.ColorTools
-import io.core.common.util.layout.ConstraintModify
-import io.core.common.util.layout.modifyBegin
+import io.core.utils.extensions.cool.dpToPx
+import io.core.utils.extensions.ui.activity
+import io.core.utils.extensions.ui.applyNavigationBarPadding
+import io.core.utils.extensions.ui.getCompatColor
+import io.core.utils.extensions.ui.getPrefBoolean
+import io.core.utils.extensions.ui.gone
+import io.core.utils.extensions.ui.invisible
+import io.core.utils.extensions.ui.onClick
+import io.core.utils.extensions.ui.onLongClick
+import io.core.utils.extensions.ui.putPrefBoolean
+import io.core.utils.extensions.ui.visible
+import io.core.utils.tools.ColorTools
+import io.core.utils.layout.ConstraintModify
+import io.core.utils.layout.modifyBegin
 
 /**
  * 阅读界面菜单
@@ -214,7 +214,7 @@ class ReadMenu @JvmOverloads constructor(
         }
         upBrightnessVwPos()
         /**
-         * 确保视图不被导航栏遮挡
+         * 确保视图不被导航栏遮�?
          */
         applyNavigationBarPadding()
     }
@@ -397,7 +397,7 @@ class ReadMenu @JvmOverloads constructor(
 //                        if (confirmSkipToChapter) {
 //                            callBack.skipToChapter(seekBar.progress)
 //                        } else {
-//                            context.alert("章节跳转确认", "确定要跳转章节吗？") {
+//                            context.alert("章节跳转确认", "确定要跳转章节吗�?) {
 //                                yesButton {
 //                                    confirmSkipToChapter = true
 //                                    callBack.skipToChapter(seekBar.progress)
@@ -439,10 +439,10 @@ class ReadMenu @JvmOverloads constructor(
             //ThemeConfig.applyDayNight(context)
         }
 
-        //上一章
+        //上一�?
         tvPre.setOnClickListener { ReadBook.moveToPrevChapter(upContent = true, toLast = false) }
 
-        //下一章
+        //下一�?
         tvNext.setOnClickListener { ReadBook.moveToNextChapter(true) }
 
         //目录

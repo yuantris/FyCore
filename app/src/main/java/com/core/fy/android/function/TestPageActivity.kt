@@ -10,25 +10,25 @@ import com.core.fy.android.databinding.ActivityTestPageBinding
 import com.core.fy.android.main.fragment.code.JavaFragment
 import com.core.fy.android.main.fragment.code.KotlinFragment
 import com.google.android.material.tabs.TabLayoutMediator
-import io.core.common.base.component.activity.ReflectBindingActivity
-import io.core.common.helper.pool.ObjectPoolBuilder
-import io.core.common.helper.track.AppTrackV2
-import io.core.common.util.Preferences
-import io.core.common.util.Toaster
-import io.core.common.util.extensions.logD
-import io.core.common.util.extensions.logW
-import io.core.other.IntentData
+import io.core.ui.base.component.activity.ReflectBindingActivity
+import io.core.utils.pool.ObjectPoolBuilder
+import io.core.ui.helper.track.AppTrackV2
+import io.core.utils.Preferences
+import io.core.utils.Toaster
+import io.core.utils.extensions.logD
+import io.core.utils.extensions.logW
+import io.core.nav.other.IntentData
 import kotlinx.coroutines.launch
 
 /**
 # ██████████
-# █▄█████▄█
+# █▄█████▄�?
 # █▼▼▼▼▼
-# █
+# �?
 # █▲▲▲▲▲
 # ██████████
 # ██ ██
-# 注释的艺术，正在加载……
+# 注释的艺术，正在加载…�?
  * 2025/1/13 16:43
  * @description
  * @author Yuan
@@ -44,12 +44,12 @@ class TestPageActivity : ReflectBindingActivity<ActivityTestPageBinding>() {
             "topActivity2: ${it.javaClass.simpleName}".logD()
         }
 
-        // 初始化 ViewPager2
+        // 初始�?ViewPager2
         val viewPager = binding.vp.apply {
             adapter = TabPagerAdapter(this@TestPageActivity)
             offscreenPageLimit = 1
         }
-        // 绑定 TabLayout 和 ViewPager2
+        // 绑定 TabLayout �?ViewPager2
         TabLayoutMediator(binding.tab, viewPager) { tab, position ->
             tab.text = when (position) {
                 0 -> "Kotlin"

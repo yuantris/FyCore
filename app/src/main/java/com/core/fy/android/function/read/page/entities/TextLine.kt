@@ -16,12 +16,12 @@ import com.core.fy.android.help.PaintPool
 import com.core.fy.android.help.canvasrecorder.recordIfNeededThenDraw
 import com.core.fy.android.help.config.AppConfig
 import com.core.fy.android.help.config.ReadBookConfig
-import io.core.common.util.extensions.cool.dpToPx
-import io.core.common.util.extensions.ui.getCompatColor
-import io.core.appCtx
+import io.core.utils.extensions.cool.dpToPx
+import io.core.utils.extensions.ui.getCompatColor
+import io.core.base.appCtx
 
 /**
- * 行信息
+ * 行信�?
  */
 @Keep
 @Suppress("unused", "MemberVisibilityCanBePrivate")
@@ -118,7 +118,7 @@ data class TextLine(
             // 完全可视
             top >= visibleTop && bottom <= visibleBottom -> true
             top <= visibleTop && bottom >= visibleBottom -> true
-            // 上方第一行部分可视
+            // 上方第一行部分可�?
             top < visibleTop && bottom > visibleTop && bottom < visibleBottom -> {
                 if (isImage) {
                     true
@@ -127,7 +127,7 @@ data class TextLine(
                     visibleRate > 0.6
                 }
             }
-            // 下方第一行部分可视
+            // 下方第一行部分可�?
             top > visibleTop && top < visibleBottom && bottom > visibleBottom -> {
                 if (isImage) {
                     true
@@ -136,7 +136,7 @@ data class TextLine(
                     visibleRate > 0.6
                 }
             }
-            // 不可视
+            // 不可�?
             else -> false
         }
         return visible
@@ -203,7 +203,7 @@ data class TextLine(
     }
 
     /**
-     * 绘制下划线
+     * 绘制下划�?
      */
     private fun drawUnderline(canvas: Canvas) {
         val lineY = height - 1.dpToPx()
@@ -247,7 +247,7 @@ data class TextLine(
         private val wordSpacingWorking by lazy {
             // issue 3785 3846
             val paint = PaintPool.obtain()
-            val text = "一二 三"
+            val text = "一�?�?
             val width1 = paint.measureText(text)
             try {
                 paint.wordSpacing = 10f

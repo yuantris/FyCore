@@ -25,7 +25,7 @@ import androidx.camera.video.VideoRecordEvent
 import androidx.camera.view.PreviewView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
-import io.core.common.util.extensions.cool.runMain
+import io.core.utils.extensions.cool.runMain
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -50,7 +50,7 @@ class CameraHelper private constructor(
     private var videoCapture: VideoCapture<Recorder>? = null
     private var recording: Recording? = null
 
-    // 初始化相机
+    // 初始化相�?
     fun initializeCamera() {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(context)
         cameraProviderFuture.addListener({
@@ -63,7 +63,7 @@ class CameraHelper private constructor(
     private fun bindCameraUseCases() {
         val cameraProvider = cameraProvider ?: return
 
-        // 创建用例构建器
+        // 创建用例构建�?
         val useCaseGroupBuilder = UseCaseGroup.Builder().apply {
             // 预览用例
             if (builder.enablePreview) {
@@ -171,7 +171,7 @@ class CameraHelper private constructor(
             })
     }
 
-    // 开始录像
+    // 开始录�?
     @SuppressLint("MissingPermission")
     fun startRecording(callback: (File?, Exception?) -> Unit) {
         val videoCapture = videoCapture ?: run {
@@ -191,7 +191,7 @@ class CameraHelper private constructor(
             .start(cameraExecutor) { event ->
                 when (event) {
                     is VideoRecordEvent.Start -> {
-                        // 录制开始
+                        // 录制开�?
                     }
 
                     is VideoRecordEvent.Finalize -> {
@@ -211,7 +211,7 @@ class CameraHelper private constructor(
         recording = null
     }
 
-    // 切换摄像头
+    // 切换摄像�?
     fun switchCamera() {
         builder.lensFacing = when (builder.lensFacing) {
             CameraSelector.LENS_FACING_BACK -> CameraSelector.LENS_FACING_FRONT
@@ -243,7 +243,7 @@ class CameraHelper private constructor(
         val lifecycleOwner: LifecycleOwner,
         val previewView: PreviewView
     ) {
-        // 功能开关
+        // 功能开�?
         var enablePreview = true
         var enableImageCapture = false
         var enableImageAnalysis = false

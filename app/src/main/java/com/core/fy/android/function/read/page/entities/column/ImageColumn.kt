@@ -8,11 +8,11 @@ import com.core.fy.android.function.read.model.ReadBook
 import com.core.fy.android.function.read.page.ContentTextView
 import com.core.fy.android.function.read.page.entities.TextLine
 import com.core.fy.android.function.read.page.entities.TextLine.Companion.emptyTextLine
-import io.core.appCtx
-import io.core.common.util.extensions.cool.toastOnUI
+import io.core.base.appCtx
+import io.core.utils.extensions.cool.toastOnUI
 
 /**
- * 图片列
+ * 图片�?
  */
 @Keep
 data class ImageColumn(

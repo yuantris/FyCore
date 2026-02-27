@@ -10,13 +10,13 @@ import com.core.fy.android.function.read.model.ReadAloud
 import com.core.fy.android.function.read.model.ReadBook
 import com.core.fy.android.help.MediaHelp
 import com.core.fy.android.help.config.AppConfig
-import io.core.common.helper.coroutine.Coroutine
-import io.core.common.util.extensions.cool.GSON
-import io.core.common.util.extensions.cool.fromJsonObject
-import io.core.common.util.extensions.cool.toastOnUI
-import io.core.common.util.extensions.ui.servicePendingIntent
-import io.core.common.util.log.LogCat
-import io.core.common.util.log.LogPure
+import io.core.utils.coroutine.Coroutine
+import io.core.utils.extensions.cool.GSON
+import io.core.utils.extensions.cool.fromJsonObject
+import io.core.utils.extensions.cool.toastOnUI
+import io.core.utils.extensions.ui.servicePendingIntent
+import io.core.utils.log.LogCat
+import io.core.utils.log.LogPure
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.ensureActive
 
@@ -111,7 +111,7 @@ class TTSReadAloudService : BaseReadAloudService(), TextToSpeech.OnInitListener 
                         TextToSpeech.ERROR
                     }
                     if (result == TextToSpeech.ERROR) {
-                        LogCat.e("tts出错 尝试重新初始化")
+                        LogCat.e("tts出错 尝试重新初始�?)
                         clearTTS()
                         initTts()
                         return@execute
@@ -229,7 +229,7 @@ class TTSReadAloudService : BaseReadAloudService(), TextToSpeech.OnInitListener 
         }
 
         private fun nextParagraph() {
-            //跳过全标点段落
+            //跳过全标点段�?
             do {
                 readAloudNumber += contentList[nowSpeak].length + 1 - paragraphStartPos
                 paragraphStartPos = 0

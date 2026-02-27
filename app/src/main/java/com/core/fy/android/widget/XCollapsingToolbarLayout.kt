@@ -11,7 +11,7 @@ class XCollapsingToolbarLayout @JvmOverloads constructor(
     /** 渐变监听 */
     private var listener: OnScrimsListener? = null
 
-    /** 当前渐变状态 */
+    /** 当前渐变状�?*/
     private var scrimsShownStatus: Boolean = false
 
     override fun setScrimsShown(shown: Boolean, animate: Boolean) {
@@ -20,13 +20,13 @@ class XCollapsingToolbarLayout @JvmOverloads constructor(
         if (scrimsShownStatus == shown) {
             return
         }
-        // 如果是就记录并且回调监听器
+        // 如果是就记录并且回调监听�?
         scrimsShownStatus = shown
         listener?.onScrimsStateChange(this, scrimsShownStatus)
     }
 
     /**
-     * 获取当前的渐变状态
+     * 获取当前的渐变状�?
      */
     fun isScrimsShown(): Boolean {
         return scrimsShownStatus
@@ -40,14 +40,14 @@ class XCollapsingToolbarLayout @JvmOverloads constructor(
     }
 
     /**
-     * CollapsingToolbarLayout渐变监听器
+     * CollapsingToolbarLayout渐变监听�?
      */
     interface OnScrimsListener {
 
         /**
-         * 渐变状态变化
+         * 渐变状态变�?
          *
-         * @param shown         渐变开关
+         * @param shown         渐变开�?
          */
         fun onScrimsStateChange(layout: XCollapsingToolbarLayout?, shown: Boolean)
     }

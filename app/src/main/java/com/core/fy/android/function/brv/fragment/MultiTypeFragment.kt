@@ -5,8 +5,8 @@ import com.core.fy.android.databinding.FragmentBrvMultitypeBinding
 import com.core.fy.android.function.brv.BrvActivity
 import com.core.fy.android.function.brv.model.FullSpanModel
 import com.core.fy.android.function.brv.model.SimpleModel
-import io.core.common.base.component.fragment.ReflectBindingFragment
-import io.core.common.util.extensions.ui.toast
+import io.core.ui.base.component.fragment.ReflectBindingFragment
+import io.core.utils.extensions.ui.toast
 import io.core.engine.brv.annotaion.AnimationType
 import io.core.engine.brv.utils.bindingAdapter
 import io.core.engine.brv.utils.linear
@@ -14,13 +14,13 @@ import io.core.engine.brv.utils.setup
 
 /**
 # ██████████
-# █▄█████▄█
+# █▄█████▄�?
 # █▼▼▼▼▼
-# █
+# �?
 # █▲▲▲▲▲
 # ██████████
 # ██ ██
-# 注释的艺术，正在加载……
+# 注释的艺术，正在加载…�?
  * 2025/2/17 10:06
  * @description
  * @author Yuan

@@ -33,19 +33,19 @@ import com.core.fy.android.function.read.receiver.MediaButtonReceiver
 import com.core.fy.android.help.ExoPlayerHelper
 import com.core.fy.android.help.MediaHelp
 import com.core.fy.android.help.config.AppConfig
-import io.core.common.base.component.service.BaseService
-import io.core.common.helper.coroutine.Coroutine
-import io.core.common.helper.glide.ImageLoader
-import io.core.common.util.extensions.audioManager
-import io.core.common.util.extensions.cool.postEvent
-import io.core.common.util.extensions.cool.printOnDebug
-import io.core.common.util.extensions.cool.toastOnUI
-import io.core.common.util.extensions.notificationManager
-import io.core.common.util.extensions.powerManager
-import io.core.common.util.extensions.ui.broadcastPendingIntent
-import io.core.common.util.extensions.ui.servicePendingIntent
-import io.core.common.util.extensions.wifiManager
-import io.core.common.util.log.LogCat
+import io.core.ui.base.component.service.BaseService
+import io.core.utils.coroutine.Coroutine
+import io.core.utils.glide.ImageLoader
+import io.core.utils.extensions.audioManager
+import io.core.utils.extensions.cool.postEvent
+import io.core.utils.extensions.cool.printOnDebug
+import io.core.utils.extensions.cool.toastOnUI
+import io.core.utils.extensions.notificationManager
+import io.core.utils.extensions.powerManager
+import io.core.utils.extensions.ui.broadcastPendingIntent
+import io.core.utils.extensions.ui.servicePendingIntent
+import io.core.utils.extensions.wifiManager
+import io.core.utils.log.LogCat
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -317,7 +317,7 @@ class AudioPlayService : BaseService(),
     }
 
     /**
-     * 播放状态监控
+     * 播放状态监�?
      */
     override fun onPlaybackStateChanged(playbackState: Int) {
         super.onPlaybackStateChanged(playbackState)
@@ -327,11 +327,11 @@ class AudioPlayService : BaseService(),
             }
 
             Player.STATE_BUFFERING -> {
-                // 缓冲中
+                // 缓冲�?
             }
 
             Player.STATE_READY -> {
-                // 准备好
+                // 准备�?
                 AudioPlay.upLoading(false)
                 if (exoPlayer.playWhenReady) {
                     AudioPlay.status = Status.PLAY
@@ -422,7 +422,7 @@ class AudioPlayService : BaseService(),
     }
 
     /**
-     * 每隔1秒发送播放进度
+     * 每隔1秒发送播放进�?
      */
     private fun upPlayProgress() {
         upPlayProgressJob?.cancel()
@@ -440,7 +440,7 @@ class AudioPlayService : BaseService(),
     }
 
     /**
-     * 更新媒体状态
+     * 更新媒体状�?
      */
     private fun upMediaSessionPlaybackState(state: Int) {
         mediaSessionCompat?.setPlaybackState(
@@ -463,7 +463,7 @@ class AudioPlayService : BaseService(),
     }
 
     /**
-     * 初始化MediaSession, 注册多媒体按钮
+     * 初始化MediaSession, 注册多媒体按�?
      */
     @SuppressLint("UnspecifiedImmutableFlag")
     private fun initMediaSession() {
@@ -627,7 +627,7 @@ class AudioPlayService : BaseService(),
                 startForeground(NotificationId.AudioPlayService, notification.build())
             } catch (e: Exception) {
                 LogCat.e(e, msg = "创建音频播放通知出错,${e.localizedMessage}")
-                //创建通知出错不结束服务就会崩溃,服务必须绑定通知
+                //创建通知出错不结束服务就会崩�?服务必须绑定通知
                 stopSelf()
             }
         }

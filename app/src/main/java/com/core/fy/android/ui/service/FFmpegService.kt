@@ -4,19 +4,19 @@ import androidx.lifecycle.lifecycleScope
 import com.arthenica.ffmpegkit.FFmpegKitConfig
 import com.core.fy.android.constants.EventKey
 import com.core.fy.android.util.FFmpegTool
-import io.core.common.base.component.service.BaseService
-import io.core.common.util.MediaScanner
-import io.core.common.util.extensions.cool.PathType
-import io.core.common.util.extensions.cool.formatToFixedDecimal
-import io.core.common.util.extensions.cool.getFileName
-import io.core.common.util.extensions.cool.getSettingsPathV2
-import io.core.common.util.extensions.cool.isFilePath
-import io.core.common.util.extensions.cool.observeEvent
-import io.core.common.util.extensions.logE
-import io.core.common.util.extensions.logI
-import io.core.common.util.log.LogPure
-import io.core.common.util.tools.FileTools
-import io.core.common.helper.media.MediaHelper
+import io.core.ui.base.component.service.BaseService
+import io.core.utils.MediaScanner
+import io.core.utils.extensions.cool.PathType
+import io.core.utils.extensions.cool.formatToFixedDecimal
+import io.core.utils.extensions.cool.getFileName
+import io.core.utils.extensions.cool.getSettingsPathV2
+import io.core.utils.extensions.cool.isFilePath
+import io.core.utils.extensions.cool.observeEvent
+import io.core.utils.extensions.logE
+import io.core.utils.extensions.logI
+import io.core.utils.log.LogPure
+import io.core.utils.tools.FileTools
+import io.core.utils.media.MediaHelper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -28,7 +28,7 @@ class FFmpegService : BaseService() {
 
         observeEvent<List<MediaScanner.FileInfo>?>(EventKey.FFmpeg) {
 
-            val testPath = "/storage/emulated/0/Airdrop/Video/很可能.mp4"
+            val testPath = "/storage/emulated/0/Airdrop/Video/很可�?mp4"
             testPath.isFilePath().logI()
             if (!FileTools.exist(testPath)) return@observeEvent
             val settingsPathV2 = getSettingsPathV2(
@@ -75,7 +75,7 @@ class FFmpegService : BaseService() {
                                 val totalTime = duration.toDouble()
                                 val progress = time / totalTime * 100
 
-                                LogPure.d { "${result.id}_${result.task}压缩中...${progress.formatToFixedDecimal()}" }
+                                LogPure.d { "${result.id}_${result.task}压缩�?..${progress.formatToFixedDecimal()}" }
                             }
                         }
                     })

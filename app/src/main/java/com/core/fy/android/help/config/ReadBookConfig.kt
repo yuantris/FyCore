@@ -9,25 +9,25 @@ import androidx.core.graphics.toColorInt
 import com.core.fy.android.R
 import com.core.fy.android.constants.PageAnim
 import com.core.fy.android.constants.PreferKey
-import io.core.appCtx
-import io.core.common.helper.coroutine.Coroutine
-import io.core.common.util.extensions.cool.GSON
-import io.core.common.util.extensions.cool.PathType
-import io.core.common.util.extensions.cool.fromJsonArray
-import io.core.common.util.extensions.cool.fromJsonObject
-import io.core.common.util.extensions.cool.getBasePath
-import io.core.common.util.extensions.cool.getMeanColor
-import io.core.common.util.extensions.cool.hexString
-import io.core.common.util.extensions.cool.printOnDebug
-import io.core.common.util.extensions.cool.resizeAndRecycle
-import io.core.common.util.extensions.ui.getCompatColor
-import io.core.common.util.extensions.ui.getPrefBoolean
-import io.core.common.util.extensions.ui.getPrefInt
-import io.core.common.util.extensions.ui.putPrefBoolean
-import io.core.common.util.extensions.ui.putPrefInt
-import io.core.common.util.log.LogCat
-import io.core.common.util.tools.BitmapTools
-import io.core.common.util.tools.FileTools
+import io.core.base.appCtx
+import io.core.utils.coroutine.Coroutine
+import io.core.utils.extensions.cool.GSON
+import io.core.utils.extensions.cool.PathType
+import io.core.utils.extensions.cool.fromJsonArray
+import io.core.utils.extensions.cool.fromJsonObject
+import io.core.utils.extensions.cool.getBasePath
+import io.core.utils.extensions.cool.getMeanColor
+import io.core.utils.extensions.cool.hexString
+import io.core.utils.extensions.cool.printOnDebug
+import io.core.utils.extensions.cool.resizeAndRecycle
+import io.core.utils.extensions.ui.getCompatColor
+import io.core.utils.extensions.ui.getPrefBoolean
+import io.core.utils.extensions.ui.getPrefInt
+import io.core.utils.extensions.ui.putPrefBoolean
+import io.core.utils.extensions.ui.putPrefInt
+import io.core.utils.log.LogCat
+import io.core.utils.tools.BitmapTools
+import io.core.utils.tools.FileTools
 import java.io.File
 
 /**
@@ -440,7 +440,7 @@ object ReadBookConfig {
         var bgStr: String = "#EEEEEE",//白天背景
         var bgStrNight: String = "#000000",//夜间背景
         var bgStrEInk: String = "#FFFFFF",//EInk背景
-        var bgAlpha: Int = 100,//背景透明度
+        var bgAlpha: Int = 100,//背景透明�?
         var bgType: Int = 0,//白天背景类型 0:颜色, 1:assets图片, 2其它图片
         var bgTypeNight: Int = 0,//夜间背景类型
         var bgTypeEInk: Int = 0,//EInk背景类型
@@ -453,17 +453,17 @@ object ReadBookConfig {
         private var pageAnim: Int = 0,//翻页动画
         private var pageAnimEInk: Int = 4,
         var textFont: String = "",//字体
-        var textBold: Int = 0,//是否粗体字 0:正常, 1:粗体, 2:细体
+        var textBold: Int = 0,//是否粗体�?0:正常, 1:粗体, 2:细体
         var textSize: Int = 20,//文字大小
-        var letterSpacing: Float = 0.1f,//字间距
-        var lineSpacingExtra: Int = 12,//行间距
+        var letterSpacing: Float = 0.1f,//字间�?
+        var lineSpacingExtra: Int = 12,//行间�?
         var paragraphSpacing: Int = 2,//段距
         var titleMode: Int = 0,//标题位置 0:居左 1:居中 2:隐藏
         var titleSize: Int = 0,
         var titleTopSpacing: Int = 0,
         var titleBottomSpacing: Int = 0,
         var paragraphIndent: String = "　　",//段落缩进
-        var underline: Boolean = false, //下划线
+        var underline: Boolean = false, //下划�?
         var paddingBottom: Int = 6,
         var paddingLeft: Int = 16,
         var paddingRight: Int = 16,

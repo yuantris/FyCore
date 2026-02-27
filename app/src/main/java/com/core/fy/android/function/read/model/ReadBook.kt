@@ -12,11 +12,11 @@ import com.core.fy.android.function.read.bean.BookProgress
 import com.core.fy.android.room.entity.BookChapter
 import com.core.fy.android.room.entity.ReadRecord
 import com.core.fy.android.function.read.services.BaseReadAloudService
-import io.core.common.helper.coroutine.Coroutine
-import io.core.appCtx
-import io.core.common.util.log.LogCat
-import io.core.common.util.log.LogPure
-import io.core.common.util.tools.globalExecutor
+import io.core.utils.coroutine.Coroutine
+import io.core.base.appCtx
+import io.core.utils.log.LogCat
+import io.core.utils.log.LogPure
+import io.core.utils.tools.globalExecutor
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Job
@@ -61,10 +61,10 @@ object ReadBook : CoroutineScope by MainScope() {
     private val readRecord = ReadRecord()
     var readStartTime: Long = System.currentTimeMillis()
 
-    /* 跳转进度前进度记录 */
+    /* 跳转进度前进度记�?*/
     var lastBookPress: BookProgress? = null
 
-    /* web端阅读进度记录 */
+    /* web端阅读进度记�?*/
     var webBookProgress: BookProgress? = null
 
     var preDownloadTask: Job? = null
@@ -75,13 +75,13 @@ object ReadBook : CoroutineScope by MainScope() {
     val downloadScope = CoroutineScope(SupervisorJob() + IO)
     val executor = globalExecutor
 
-    //暂时保存跳转前进度
+    //暂时保存跳转前进�?
     fun saveCurrentBookProcess() {
         if (lastBookPress != null) return //避免进度条连续跳转不能覆盖最初的进度记录
         lastBookPress = book?.let { BookProgress(it) }
     }
 
-    //恢复跳转前进度
+    //恢复跳转前进�?
     fun restoreLastBookProcess() {
         lastBookPress?.let {
             setProgress(it)
@@ -224,7 +224,7 @@ object ReadBook : CoroutineScope by MainScope() {
 //                    (progress.durChapterIndex == it.durChapterIndex
 //                            && progress.durChapterPos < it.durChapterPos)
 //                ) {
-//                    // 服务器没有进度或者进度比服务器快，上传现有进度
+//                    // 服务器没有进度或者进度比服务器快，上传现有进�?
 //                    Coroutine.async {
 //                        AppWebDav.uploadBookProgress(BookProgress(it), uploadSuccessAction)
 //                        it.update()
@@ -298,11 +298,11 @@ object ReadBook : CoroutineScope by MainScope() {
             curTextChapter = nextTextChapter
             nextTextChapter = null
             if (curTextChapter == null) {
-                LogPure.d(message = "moveToNextChapter-章节未加载,开始加载")
+                LogPure.d(message = "moveToNextChapter-章节未加�?开始加�?)
                 if (upContentInPlace) callBack?.upContent()
                 loadContent(durChapterIndex, upContent, resetPageOffset = false)
             } else if (upContent && upContentInPlace) {
-                LogPure.d(message = "moveToNextChapter-章节已加载,刷新视图")
+                LogPure.d(message = "moveToNextChapter-章节已加�?刷新视图")
                 callBack?.upContent()
             }
             loadContent(durChapterIndex.plus(1), upContent, false)
@@ -312,7 +312,7 @@ object ReadBook : CoroutineScope by MainScope() {
             curPageChanged()
             return true
         } else {
-            LogPure.d(message = "跳转下一章失败,没有下一章")
+            LogPure.d(message = "跳转下一章失�?没有下一�?)
             return false
         }
     }
@@ -328,11 +328,11 @@ object ReadBook : CoroutineScope by MainScope() {
             curTextChapter = nextTextChapter
             nextTextChapter = null
             if (curTextChapter == null) {
-                LogPure.d(message = "moveToNextChapter-章节未加载,开始加载")
+                LogPure.d(message = "moveToNextChapter-章节未加�?开始加�?)
                 if (upContentInPlace) callBack?.upContentAwait()
                 loadContentAwait(durChapterIndex, upContent, resetPageOffset = false)
             } else if (upContent && upContentInPlace) {
-                LogPure.d(message = "moveToNextChapter-章节已加载,刷新视图")
+                LogPure.d(message = "moveToNextChapter-章节已加�?刷新视图")
                 callBack?.upContentAwait()
             }
             loadContent(durChapterIndex.plus(1), upContent, false)
@@ -342,7 +342,7 @@ object ReadBook : CoroutineScope by MainScope() {
             curPageChanged()
             return true
         } else {
-            LogPure.d(message = "跳转下一章失败,没有下一章")
+            LogPure.d(message = "跳转下一章失�?没有下一�?)
 
             return false
         }
@@ -465,7 +465,7 @@ object ReadBook : CoroutineScope by MainScope() {
     val isScroll inline get() = pageAnim() == scrollPageAnim
 
     /**
-     * chapterOnDur: 0为当前页,1为下一页,-1为上一页
+     * chapterOnDur: 0为当前页,1为下一�?-1为上一�?
      */
     fun textChapter(chapterOnDur: Int = 0): TextChapter? {
         return when (chapterOnDur) {
@@ -477,7 +477,7 @@ object ReadBook : CoroutineScope by MainScope() {
     }
 
     /**
-     * 加载当前章节和前后一章内容
+     * 加载当前章节和前后一章内�?
      * @param resetPageOffset 滚动阅读是否重置滚动位置
      * @param success 当前章节加载完成回调
      */
@@ -607,7 +607,7 @@ object ReadBook : CoroutineScope by MainScope() {
 //        if (bookSource != null) {
 //            CacheBook.getOrCreate(bookSource, book).download(scope, chapter)
 //        } else {
-//            val msg = if (book.isLocal) "无内容" else "没有书源"
+//            val msg = if (book.isLocal) "无内�? else "没有书源"
 //            contentLoadFinish(
 //                book,
 //                chapter,
@@ -624,7 +624,7 @@ object ReadBook : CoroutineScope by MainScope() {
 //        if (bookSource != null) {
 //            return CacheBook.getOrCreate(bookSource, book).downloadAwait(chapter)
 //        } else {
-//            val msg = if (book.isLocal) "无内容" else "没有书源"
+//            val msg = if (book.isLocal) "无内�? else "没有书源"
         return "加载正文失败\n$msg"
 //        }
     }
@@ -845,7 +845,7 @@ object ReadBook : CoroutineScope by MainScope() {
     }
 
     /**
-     * 预下载
+     * 预下�?
      */
     private fun preDownload() {
         if (book?.isLocal == true) return
@@ -855,7 +855,7 @@ object ReadBook : CoroutineScope by MainScope() {
 //            }
 //            preDownloadTask?.cancel()
 //            preDownloadTask = launch(IO) {
-//                //预下载
+//                //预下�?
 //                launch {
 //                    val maxChapterIndex =
 //                        min(durChapterIndex + AppConfig.preDownloadNum, chapterSize)

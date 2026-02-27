@@ -6,9 +6,9 @@ import androidx.annotation.WorkerThread
 import androidx.core.util.Pools
 import com.core.fy.android.help.ProgressNotifier.ProgressCallback
 import com.core.fy.android.help.ProgressNotifier.TimeoutCallback
-import io.core.common.util.extensions.cool.withMain
-import io.core.common.util.extensions.currentTimeMillis
-import io.core.common.util.tools.buildMainHandler
+import io.core.utils.extensions.cool.withMain
+import io.core.utils.extensions.currentTimeMillis
+import io.core.utils.tools.buildMainHandler
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -23,13 +23,13 @@ import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicLong
 
 /**
- * 进度通知器，用于通知进度变化和超时
+ * 进度通知器，用于通知进度变化和超�?
  */
 object ProgressNotifier {
     // 主线程Handler，用于回调到UI线程
     private val mainHandler = Handler(Looper.getMainLooper())
 
-    // 自动清理配置（10分钟未更新的任务视为闲置）
+    // 自动清理配置�?0分钟未更新的任务视为闲置�?
     private const val MAX_IDLE_TIME_MS = 10 * 60 * 1000L
 
     // 默认线程池（用于异步通知监听器）
@@ -38,7 +38,7 @@ object ProgressNotifier {
     private val timeoutScope =
         CoroutineScope(Dispatchers.Default + SupervisorJob() + CoroutineName("timeoutScope"))
 
-    // 添加对象池
+    // 添加对象�?
     private val dataPool = Pools.SynchronizedPool<ProgressData>(10)
 
     init {
@@ -51,14 +51,14 @@ object ProgressNotifier {
     }
 
     /**
-     * 进度回调接口（兼容Java调用）
+     * 进度回调接口（兼容Java调用�?
      */
     fun interface ProgressCallback {
         fun onProgress(taskId: String, percent: Int)
     }
 
     /**
-     * 超时回调接口（兼容Java调用）
+     * 超时回调接口（兼容Java调用�?
      */
     fun interface TimeoutCallback {
         @WorkerThread
@@ -67,7 +67,7 @@ object ProgressNotifier {
 
     // 注册默认超时监听（可选）
     var defaultTimeoutHandler = TimeoutCallback {
-        // 默认处理：取消任务
+        // 默认处理：取消任�?
     }
 
     // 使用弱引用存储监听器
@@ -87,7 +87,7 @@ object ProgressNotifier {
         return id
     }
 
-    // 启动新任务（增加超时参数）
+    // 启动新任务（增加超时参数�?
     @JvmStatic
     fun startTask(
         totalSteps: Int,
@@ -145,7 +145,7 @@ object ProgressNotifier {
         }
     }
 
-    // 内部数据类（使用AtomicLong优化并发读取）
+    // 内部数据类（使用AtomicLong优化并发读取�?
     private data class ProgressData(
         val total: Int,
         var current: Int = 0,
@@ -164,7 +164,7 @@ object ProgressNotifier {
             lastUpdate.set(currentTimeMillis)
         }
 
-        // 对象池重置方法
+        // 对象池重置方�?
         fun reset() {
             current = 0
             lastPercent = -1
@@ -203,10 +203,10 @@ object ProgressNotifier {
         }
     }
 
-    // 异步通知所有监听器（自动清理无效监听器）
+    // 异步通知所有监听器（自动清理无效监听器�?
     private fun notifyListeners(taskId: String, percent: Int) {
         notificationScope.launch {
-            // 使用缓存有效监听器
+            // 使用缓存有效监听�?
             val validListeners = listeners.values
                 .mapNotNull { it.get() }
                 .takeIf { it.isNotEmpty() } ?: return@launch

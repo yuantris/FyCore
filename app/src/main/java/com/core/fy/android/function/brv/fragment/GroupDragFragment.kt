@@ -9,8 +9,8 @@ import com.core.fy.android.databinding.ItemGroup1Binding
 import com.core.fy.android.function.brv.BrvActivity
 import com.core.fy.android.function.brv.model.GroupDrag1Model
 import com.core.fy.android.function.brv.model.GroupDrag2Model
-import io.core.common.base.component.fragment.ReflectBindingFragment
-import io.core.common.util.CoreUtil.Companion.toast
+import io.core.ui.base.component.fragment.ReflectBindingFragment
+import io.core.utils.CoreUtil.Companion.toast
 import io.core.engine.brv.BindingAdapter
 import io.core.engine.brv.item.ItemExpand
 import io.core.engine.brv.listener.DefaultItemTouchCallback
@@ -19,13 +19,13 @@ import io.core.engine.brv.utils.setup
 
 /**
 # ██████████
-# █▄█████▄█
+# █▄█████▄�?
 # █▼▼▼▼▼
-# █
+# �?
 # █▲▲▲▲▲
 # ██████████
 # ██ ██
-# 注释的艺术，正在加载……
+# 注释的艺术，正在加载…�?
  * 2025/2/17 10:36
  * @description
  * @author Yuan
@@ -47,15 +47,15 @@ class GroupDragFragment:ReflectBindingFragment<FragmentBrvGroupdragBinding,BrvAc
                 }
             }
 
-            // 自定义部分实现
+            // 自定义部分实�?
             itemTouchHelper = ItemTouchHelper(object : DefaultItemTouchCallback() {
 
                 override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                     val vh = viewHolder as BindingAdapter.BindingViewHolder
-                    vh.collapse() // 侧滑删除分组前先折叠子列表
+                    vh.collapse() // 侧滑删除分组前先折叠子列�?
                     super.onSwiped(viewHolder, direction)
 
-                    // 如果侧滑删除的是子列表, 要删除对应分组的getItemSublist, 避免刷新再次被加载出来
+                    // 如果侧滑删除的是子列�? 要删除对应分组的getItemSublist, 避免刷新再次被加载出�?
                     // getItemSublist必须发挥可变集合, 否则无法删除
                     (vh.findParentViewHolder()?.getModelOrNull<ItemExpand>()?.getItemSublist() as? MutableList)?.remove(vh.getModelOrNull())
                 }
@@ -65,7 +65,7 @@ class GroupDragFragment:ReflectBindingFragment<FragmentBrvGroupdragBinding,BrvAc
                     source: RecyclerView.ViewHolder,
                     target: RecyclerView.ViewHolder
                 ): Boolean {
-                    // 拖拽分组前先折叠子列表
+                    // 拖拽分组前先折叠子列�?
                     (source as BindingAdapter.BindingViewHolder).collapse()
                     (target as BindingAdapter.BindingViewHolder).collapse()
                     return super.onMove(recyclerView, source, target)
@@ -77,7 +77,7 @@ class GroupDragFragment:ReflectBindingFragment<FragmentBrvGroupdragBinding,BrvAc
                     R.layout.item_group_2, R.layout.item_group_1 -> {
 
                         val changeCount =
-                            if (getModel<ItemExpand>().itemExpand) "折叠 ${expandOrCollapse()} 条" else "展开 ${expandOrCollapse()} 条"
+                            if (getModel<ItemExpand>().itemExpand) "折叠 ${expandOrCollapse()} �? else "展开 ${expandOrCollapse()} �?
 
                         toast(changeCount)
                     }

@@ -8,7 +8,7 @@ import io.core.engine.highlight_guide.controller.HighlightGuideManager
 import io.core.engine.highlight_guide.layer.CommonLayer
 
 /**
- * Desc: 高亮引导帮助类
+ * Desc: 高亮引导帮助�?
  * <p>
  * Date: 2025/1/23 16:52
  */

@@ -5,23 +5,23 @@ import androidx.lifecycle.lifecycleScope
 import com.core.fy.android.databinding.ActivityMediaPlayerBinding
 import com.hjq.permissions.Permission
 import com.hjq.permissions.XXPermissions
-import io.core.common.base.component.activity.ReflectBindingActivity
-import io.core.common.helper.media.MediaHelper
-import io.core.common.helper.coroutine.Coroutine
-import io.core.common.helper.media.FlowMediaPlayer
-import io.core.common.helper.media.PlayerState
-import io.core.common.util.MediaScanner
-import io.core.common.util.extensions.cool.GSON
-import io.core.common.util.extensions.cool.runMain
-import io.core.common.util.extensions.cool.toastOnUI
-import io.core.common.util.extensions.logE
-import io.core.common.util.extensions.ui.onClick
-import io.core.common.util.extensions.ui.onTrackingTouch
-import io.core.common.util.log.LogCat
-import io.core.common.util.tools.UriTools
-import io.core.constant.FileSize
-import io.core.constant.FileSize.toFormattedPattern
-import io.core.other.TimeMeasurer
+import io.core.ui.base.component.activity.ReflectBindingActivity
+import io.core.utils.media.MediaHelper
+import io.core.utils.coroutine.Coroutine
+import io.core.utils.media.FlowMediaPlayer
+import io.core.utils.media.PlayerState
+import io.core.utils.MediaScanner
+import io.core.utils.extensions.cool.GSON
+import io.core.utils.extensions.cool.runMain
+import io.core.utils.extensions.cool.toastOnUI
+import io.core.utils.extensions.logE
+import io.core.utils.extensions.ui.onClick
+import io.core.utils.extensions.ui.onTrackingTouch
+import io.core.utils.log.LogCat
+import io.core.utils.tools.UriTools
+import io.core.base.constant.FileSize
+import io.core.base.constant.FileSize.toFormattedPattern
+import io.core.nav.other.TimeMeasurer
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.File
@@ -29,13 +29,13 @@ import java.util.concurrent.atomic.AtomicBoolean
 
 /**
 # ██████████
-# █▄█████▄█
+# █▄█████▄�?
 # █▼▼▼▼▼
-# █
+# �?
 # █▲▲▲▲▲
 # ██████████
 # ██ ██
-# 注释的艺术，正在加载……
+# 注释的艺术，正在加载…�?
  * 2025/2/18 15:36
  * @description
  * @author Yuan
@@ -84,13 +84,13 @@ class MediaPlayerActivity : ReflectBindingActivity<ActivityMediaPlayerBinding>()
                                         val errorFiles = validateMediaFiles.filter { !it.value }
                                         if (errorFiles.isNotEmpty()) {
                                             errorFiles.forEach {
-                                                LogCat.e("文件：${it.key}，校验失败")
+                                                LogCat.e("文件�?{it.key}，校验失�?)
                                             }
                                         }
                                     }
-                                    LogCat.v("文件校验：${GSON.toJson(validateMediaFiles)}")
+                                    LogCat.v("文件校验�?{GSON.toJson(validateMediaFiles)}")
                                 }
-                                "validateMediaFiles_校验耗时：${timeSilent}ms".logE()
+                                "validateMediaFiles_校验耗时�?{timeSilent}ms".logE()
                             }
 
                             lifecycleScope.launch(Dispatchers.IO) {
@@ -99,9 +99,9 @@ class MediaPlayerActivity : ReflectBindingActivity<ActivityMediaPlayerBinding>()
                                         val valid = MediaHelper.isMediaFileValid(it.path)
                                         map[it.path] = valid
                                     }
-                                    LogCat.v("文件校验：${GSON.toJson(map)}")
+                                    LogCat.v("文件校验�?{GSON.toJson(map)}")
                                 }
-                                "isMediaFileValid_校验耗时：${timeSilent}ms".logE()
+                                "isMediaFileValid_校验耗时�?{timeSilent}ms".logE()
                             }
 
                             val file = File(result[0].path)
@@ -109,7 +109,7 @@ class MediaPlayerActivity : ReflectBindingActivity<ActivityMediaPlayerBinding>()
 
                             FileSize.format(result[0].size).logE()
 
-                            tip.text = "文件路径：${file.path}"
+                            tip.text = "文件路径�?{file.path}"
                             player.prepare(uri)
                         }
                     }

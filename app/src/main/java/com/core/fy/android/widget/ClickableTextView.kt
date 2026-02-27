@@ -27,19 +27,19 @@ class ClickableTextView @JvmOverloads constructor(
     private var clickedSpans: MutableList<BackgroundColorSpan>? = null
 
     init {
-        clickedSpans = mutableListOf() // 确保初始化
+        clickedSpans = mutableListOf() // 确保初始�?
         movementMethod = EnlargedLinkMovementMethod()
         highlightColor = ContextCompat.getColor(context, android.R.color.transparent)
     }
 
     /**
-     * 格式化文本，在标点符号后加入换行符，并去掉其他位置的换行符
+     * 格式化文本，在标点符号后加入换行符，并去掉其他位置的换行�?
      */
     private fun formatTextWithNewLines(text: String?): String {
         // 去除所有换行符
         val noNewLines = text?.replace("\\n".toRegex(), "") ?: ""
 
-        // 在标点符号后加入换行符
+        // 在标点符号后加入换行�?
         val punctuationPattern = Pattern.compile("[.,!?;:。！？，；：]")
         val matcher = punctuationPattern.matcher(noNewLines)
         val formattedText = matcher.replaceAll("$0\n")
@@ -69,7 +69,7 @@ class ClickableTextView @JvmOverloads constructor(
         val spannableBuilder = SpannableStringBuilder(formattedText)
         clickedSpans?.clear()
 
-        // 创建原始文本索引映射表
+        // 创建原始文本索引映射�?
         val indexMap = mutableMapOf<Int, Int>()
         var originalIndex = 0
 
@@ -78,7 +78,7 @@ class ClickableTextView @JvmOverloads constructor(
                 indexMap[index] = originalIndex
                 originalIndex++
             }
-            if (char.isLetterOrDigit()) { // 仅为字母和数字设置点击事件
+            if (char.isLetterOrDigit()) { // 仅为字母和数字设置点击事�?
                 spannableBuilder.setSpan(object : ClickableSpan() {
                     override fun onClick(widget: View) {
                         removeHighlight() // 移除之前高亮
@@ -93,7 +93,7 @@ class ClickableTextView @JvmOverloads constructor(
                             index + 1,
                             Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
                         )
-                        text = spannableBuilder // 更新背景色
+                        text = spannableBuilder // 更新背景�?
                         onLetterClickListener?.invoke(char.toString(), originalPos)
                     }
 
@@ -113,7 +113,7 @@ class ClickableTextView @JvmOverloads constructor(
     fun removeHighlight() {
         val textContent = text as? SpannableStringBuilder ?: SpannableStringBuilder(text)
 
-        // 获取所有类型的Span并移除
+        // 获取所有类型的Span并移�?
         val spans = textContent.getSpans(0, textContent.length, Any::class.java)
         spans.forEach { span ->
             textContent.removeSpan(span)

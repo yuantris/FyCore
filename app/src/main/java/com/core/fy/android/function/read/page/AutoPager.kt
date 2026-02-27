@@ -10,7 +10,7 @@ import com.core.fy.android.help.CanvasRecorderFactory
 import com.core.fy.android.help.canvasrecorder.recordIfNeeded
 import com.core.fy.android.help.config.AppConfig
 import com.core.fy.android.help.config.ReadBookConfig
-import io.core.appCtx
+import io.core.base.appCtx
 
 /**
  * 自动翻页

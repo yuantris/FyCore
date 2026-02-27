@@ -9,11 +9,11 @@ import com.core.fy.android.function.read.page.entities.TextLine
 import com.core.fy.android.function.read.page.entities.TextLine.Companion.emptyTextLine
 import com.core.fy.android.function.read.page.provider.ChapterProvider
 import com.core.fy.android.help.config.ReadBookConfig
-import io.core.appCtx
-import io.core.common.util.extensions.ui.getCompatColor
+import io.core.base.appCtx
+import io.core.utils.extensions.ui.getCompatColor
 
 /**
- * 文字列
+ * 文字�?
  */
 @Keep
 data class TextColumn(

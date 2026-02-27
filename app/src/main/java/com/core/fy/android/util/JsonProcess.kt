@@ -182,11 +182,11 @@ class JsonPathException(message: String) : Exception(message)
  *
  * val safeJson = SafeJson.parse(json)
  *
- * // 获取简单值
+ * // 获取简单�?
  * val name = safeJson.getString("user.name") // "John"
  * val age = safeJson.getInt("user.age") // 30
  *
- * // 处理大数字
+ * // 处理大数�?
  * val balance = safeJson.getBigDecimal("user.balance") // BigDecimal("12345678901234567890.12345")
  *
  * // 处理数组

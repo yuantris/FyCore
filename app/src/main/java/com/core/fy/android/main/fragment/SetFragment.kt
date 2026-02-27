@@ -6,39 +6,39 @@ import com.core.fy.android.databinding.FragmentSetBinding
 import com.core.fy.android.function.TestPageActivity
 import com.core.fy.android.function.read.ReadBookActivity
 import com.core.fy.android.help.HighLightHelper
-import io.core.common.base.component.custom.ToastGT
-import io.core.common.base.component.fragment.ReflectBindingFragment
-import io.core.common.helper.JsonUltra
-import io.core.common.helper.net.NetworkMonitor
-import io.core.common.helper.net.NetworkState
-import io.core.common.helper.net.awaitNetwork
-import io.core.common.helper.track.AppTrackV2
-import io.core.common.helper.track.activity.TimeTracker
-import io.core.common.util.extensions.cool.coolThread
-import io.core.common.util.extensions.cool.launch
-import io.core.common.util.extensions.cool.timeFormat
-import io.core.common.util.extensions.currentTimeMillis
-import io.core.common.util.extensions.logD
-import io.core.common.util.extensions.logE
-import io.core.common.util.extensions.logI
-import io.core.common.util.extensions.logV
-import io.core.common.util.extensions.ui.appVersionName
-import io.core.common.util.extensions.ui.onClick
-import io.core.common.util.extensions.ui.onDebouncedClick
-import io.core.common.util.extensions.ui.postDelayed
-import io.core.common.util.log.LogCat
-import io.core.common.util.log.LogPure
-import io.core.common.util.log.bury.AppLog
-import io.core.common.util.tools.ThreadUltra
-import io.core.common.util.tools.TimeTools
-import io.core.common.util.tools.androidApiVersion
-import io.core.common.util.tools.androidVersion
-import io.core.common.util.tools.buildMultiLine
-import io.core.constant.DeviceOS
-import io.core.constant.FileSize
-import io.core.constant.FileSize.TimeUnitStyle.English
-import io.core.constant.FileType
-import io.core.constant.TimePatterns
+import io.core.ui.base.component.custom.ToastGT
+import io.core.ui.base.component.fragment.ReflectBindingFragment
+import io.core.utils.JsonUltra
+import io.core.utils.net.NetworkMonitor
+import io.core.utils.net.NetworkState
+import io.core.utils.net.awaitNetwork
+import io.core.ui.helper.track.AppTrackV2
+import io.core.ui.helper.track.activity.TimeTracker
+import io.core.utils.extensions.cool.coolThread
+import io.core.utils.extensions.cool.launch
+import io.core.utils.extensions.cool.timeFormat
+import io.core.utils.extensions.currentTimeMillis
+import io.core.utils.extensions.logD
+import io.core.utils.extensions.logE
+import io.core.utils.extensions.logI
+import io.core.utils.extensions.logV
+import io.core.utils.extensions.ui.appVersionName
+import io.core.utils.extensions.ui.onClick
+import io.core.utils.extensions.ui.onDebouncedClick
+import io.core.utils.extensions.ui.postDelayed
+import io.core.utils.log.LogCat
+import io.core.utils.log.LogPure
+import io.core.utils.log.bury.AppLog
+import io.core.utils.tools.ThreadUltra
+import io.core.utils.tools.TimeTools
+import io.core.utils.tools.androidApiVersion
+import io.core.utils.tools.androidVersion
+import io.core.utils.tools.buildMultiLine
+import io.core.base.constant.DeviceOS
+import io.core.base.constant.FileSize
+import io.core.base.constant.FileSize.TimeUnitStyle.English
+import io.core.base.constant.FileType
+import io.core.base.constant.TimePatterns
 import io.core.engine.storage.getWithAnnotation
 import io.core.engine.storage.put
 import io.core.engine.storage.storage
@@ -48,13 +48,13 @@ import java.util.function.Predicate
 
 /**
 # ██████████
-# █▄█████▄█
+# █▄█████▄�?
 # █▼▼▼▼▼
-# █
+# �?
 # █▲▲▲▲▲
 # ██████████
 # ██ ██
-# 注释的艺术，正在加载……
+# 注释的艺术，正在加载…�?
  * 2025/2/13 9:01
  * @description
  * @author Yuan
@@ -194,12 +194,12 @@ class SetFragment : ReflectBindingFragment<FragmentSetBinding, MainActivity>() {
         LogPure.d {
             """
             |页面停留统计:
-            |总时长: ${TimeTools.convertMillis(stats.totalDuration)}秒
-            |今日: ${TimeTools.convertMillis(stats.todayDuration)}秒
-            |本周: ${TimeTools.convertMillis(stats.weekDuration)}秒
-            |本月: ${TimeTools.convertMillis(stats.monthDuration)}秒
+            |总时�? ${TimeTools.convertMillis(stats.totalDuration)}�?
+            |今日: ${TimeTools.convertMillis(stats.todayDuration)}�?
+            |本周: ${TimeTools.convertMillis(stats.weekDuration)}�?
+            |本月: ${TimeTools.convertMillis(stats.monthDuration)}�?
             |首次访问: ${TimeTools.millis2String(stats.firstVisitTime, "yyyy-MM-dd HH:mm")}
-            |最后访问: ${TimeTools.millis2String(stats.lastVisitTime, "yyyy-MM-dd HH:mm")}
+            |最后访�? ${TimeTools.millis2String(stats.lastVisitTime, "yyyy-MM-dd HH:mm")}
             |访问次数: ${stats.visitCount}
         """.trimMargin()
         }

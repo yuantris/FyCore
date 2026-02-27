@@ -19,11 +19,11 @@ import com.core.fy.android.function.read.page.provider.ChapterProvider
 import com.core.fy.android.help.config.ReadBookConfig
 import com.core.fy.android.help.config.ReadTipConfig
 import com.core.fy.android.room.entity.Bookmark
-import io.core.common.util.extensions.cool.dpToPx
-import io.core.common.util.extensions.ui.activity
-import io.core.common.util.extensions.ui.applyStatusBarPadding
-import io.core.common.util.extensions.ui.gone
-import io.core.common.util.extensions.ui.setTextIfNotEqual
+import io.core.utils.extensions.cool.dpToPx
+import io.core.utils.extensions.ui.activity
+import io.core.utils.extensions.ui.applyStatusBarPadding
+import io.core.utils.extensions.ui.gone
+import io.core.utils.extensions.ui.setTextIfNotEqual
 import java.util.Date
 
 /**
@@ -236,7 +236,7 @@ class PageView(context: Context) : FrameLayout(context) {
     }
 
     /**
-     * 更新背景透明度
+     * 更新背景透明�?
      */
     fun upBgAlpha() {
         binding.vwBg.alpha = ReadBookConfig.bgAlpha / 100f
@@ -292,7 +292,7 @@ class PageView(context: Context) : FrameLayout(context) {
     }
 
     /**
-     * 设置无障碍文本
+     * 设置无障碍文�?
      */
     fun setContentDescription(content: String) {
         binding.contentTextView.contentDescription = content
@@ -354,8 +354,8 @@ class PageView(context: Context) : FrameLayout(context) {
     }
 
     /**
-     * 优先处理页面内单击
-     * @return true:已处理, false:未处理
+     * 优先处理页面内单�?
+     * @return true:已处�? false:未处�?
      */
     fun onClick(x: Float, y: Float): Boolean {
         return binding.contentTextView.click(x, y - headerHeight)

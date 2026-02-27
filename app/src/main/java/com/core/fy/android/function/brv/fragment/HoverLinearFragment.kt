@@ -7,21 +7,21 @@ import com.core.fy.android.databinding.FragmentBrvMultitypeBinding
 import com.core.fy.android.function.brv.BrvActivity
 import com.core.fy.android.function.brv.model.HoverHeaderModel
 import com.core.fy.android.function.brv.model.SimpleModel
-import io.core.common.base.component.fragment.ReflectBindingFragment
-import io.core.common.util.CoreUtil.Companion.toast
+import io.core.ui.base.component.fragment.ReflectBindingFragment
+import io.core.utils.CoreUtil.Companion.toast
 import io.core.engine.brv.listener.OnHoverAttachListener
 import io.core.engine.brv.utils.linear
 import io.core.engine.brv.utils.setup
 
 /**
 # ██████████
-# █▄█████▄█
+# █▄█████▄�?
 # █▼▼▼▼▼
-# █
+# �?
 # █▲▲▲▲▲
 # ██████████
 # ██ ██
-# 注释的艺术，正在加载……
+# 注释的艺术，正在加载…�?
  * 2025/2/17 10:27
  * @description
  * @author Yuan
@@ -39,14 +39,14 @@ class HoverLinearFragment:ReflectBindingFragment<FragmentBrvMultitypeBinding,Brv
             onClick(R.id.item) {
                 when (itemViewType) {
                     R.layout.item_hover_header -> toast("悬停条目")
-                    else -> toast("普通条目")
+                    else -> toast("普通条�?)
                 }
             }
 
             // 可选项, 粘性监听器
             onHoverAttachListener = object : OnHoverAttachListener {
                 override fun attachHover(v: View) {
-                    ViewCompat.setElevation(v, 10F) // 悬停时显示阴影
+                    ViewCompat.setElevation(v, 10F) // 悬停时显示阴�?
                 }
 
                 override fun detachHover(v: View) {

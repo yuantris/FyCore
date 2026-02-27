@@ -8,13 +8,13 @@ import com.core.fy.android.room.dao.FunctionDao
 import com.core.fy.android.room.dao.UserDao
 import com.core.fy.android.room.entity.Function
 import com.core.fy.android.room.entity.User
-import io.core.Android
-import io.core.appCtx
+import io.core.base.Android
+import io.core.base.appCtx
 
 val appDb by lazy {
     Room.databaseBuilder(appCtx, AppDatabase::class.java, AppDatabase.DATABASE_NAME)
-        .fallbackToDestructiveMigration() //如果数据库升级失败了，删除重新创建
-        .enableMultiInstanceInvalidation() //多进程查询支持
+        .fallbackToDestructiveMigration() //如果数据库升级失败了，删除重新创�?
+        .enableMultiInstanceInvalidation() //多进程查询支�?
         .build()
 }
 

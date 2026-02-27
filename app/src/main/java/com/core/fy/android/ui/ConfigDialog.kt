@@ -7,16 +7,16 @@ import com.core.fy.android.Config
 import com.core.fy.android.R
 import com.core.fy.android.constants.PreferKey
 import com.core.fy.android.databinding.DialogAppConfigBinding
-import io.core.common.base.component.dialog.BaseDialogFragment
-import io.core.common.base.component.dialog.specific.CrashLogsDialog
-import io.core.common.util.extensions.cool.spanForeColor
-import io.core.common.util.extensions.ui.applyTint
-import io.core.common.util.extensions.ui.ctx
-import io.core.common.util.extensions.ui.getCompatColor
-import io.core.common.util.extensions.ui.onClick
-import io.core.common.util.extensions.ui.setLayout
-import io.core.common.util.extensions.ui.showDialogFragment
-import io.core.common.util.extensions.ui.viewBinding
+import io.core.ui.base.component.dialog.BaseDialogFragment
+import io.core.ui.base.component.dialog.specific.CrashLogsDialog
+import io.core.utils.extensions.cool.spanForeColor
+import io.core.utils.extensions.ui.applyTint
+import io.core.utils.extensions.ui.ctx
+import io.core.utils.extensions.ui.getCompatColor
+import io.core.utils.extensions.ui.onClick
+import io.core.utils.extensions.ui.setLayout
+import io.core.utils.extensions.ui.showDialogFragment
+import io.core.utils.extensions.ui.viewBinding
 import io.core.engine.storage.getWithAnnotation
 import io.core.engine.storage.put
 import io.core.engine.storage.storage
@@ -24,13 +24,13 @@ import io.core.engine.storage.storage
 
 /**
 # ██████████
-# █▄█████▄█
+# █▄█████▄�?
 # █▼▼▼▼▼
-# █
+# �?
 # █▲▲▲▲▲
 # ██████████
 # ██ ██
-# 注释的艺术，正在加载……
+# 注释的艺术，正在加载…�?
  * 2025/2/5 17:23
  * @description
  * @author Yuan
@@ -50,7 +50,7 @@ class ConfigDialog : BaseDialogFragment(R.layout.dialog_app_config) {
         binding.toolBar.setTitleTextColor(getCompatColor(R.color.md_white_1000))
         binding.toolBar.menu.applyTint(ctx)
 
-        // 修改菜单项文字颜色
+        // 修改菜单项文字颜�?
         val whiteCloseString = "关闭".spanForeColor(getCompatColor(R.color.md_white_1000))
         binding.toolBar.menu.findItem(R.id.menu_close).setTitle(whiteCloseString)
         binding.toolBar.setOnMenuItemClickListener {

@@ -8,21 +8,21 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.lifecycleScope
 import com.core.fy.android.databinding.ActivitySplashBinding
 import com.core.fy.android.function.GuideActivity
-import io.core.common.base.component.activity.ReflectBindingActivity
-import io.core.common.util.extensions.ui.startNoTransition
+import io.core.ui.base.component.activity.ReflectBindingActivity
+import io.core.utils.extensions.ui.startNoTransition
 import com.gyf.immersionbar.BarHide
 import com.gyf.immersionbar.ImmersionBar
-import io.core.other.CrashHandler
+import io.core.nav.other.CrashHandler
 
 /**
 # ██████████
-# █▄█████▄█
+# █▄█████▄�?
 # █▼▼▼▼▼
-# █
+# �?
 # █▲▲▲▲▲
 # ██████████
 # ██ ██
-# 注释的艺术，正在加载……
+# 注释的艺术，正在加载…�?
  * 2024/12/24 18:05
  * @description
  * @author Yuan
@@ -41,14 +41,14 @@ class SplashActivity : ReflectBindingActivity<ActivitySplashBinding>() {
         setTakeOverBackPressed(true)
         super.initial(savedInstanceState)
         // 问题及方案：https://www.cnblogs.com/net168/p/5722752.html
-        // 如果当前 Activity 不是任务栈中的第一个 Activity
+        // 如果当前 Activity 不是任务栈中的第一�?Activity
         if (!isTaskRoot) {
             val intent: Intent? = intent
-            // 如果当前 Activity 是通过桌面图标启动进入的
+            // 如果当前 Activity 是通过桌面图标启动进入�?
             if (((intent != null) && intent.hasCategory(Intent.CATEGORY_LAUNCHER)
                         && (Intent.ACTION_MAIN == intent.action))
             ) {
-                // 对当前 Activity 执行销毁操作，避免重复实例化入口
+                // 对当�?Activity 执行销毁操作，避免重复实例化入�?
                 finish()
                 return
             }
@@ -91,7 +91,7 @@ class SplashActivity : ReflectBindingActivity<ActivitySplashBinding>() {
 
     override fun onBackPressedCall() {
         super.onBackPressedCall()
-        // 拦截返回键
+        // 拦截返回�?
     }
 
     override fun onDestroy() {

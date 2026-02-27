@@ -13,18 +13,18 @@ import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import androidx.core.net.toUri
-import io.core.appCtx
+import io.core.base.appCtx
 import java.io.File
 import java.util.concurrent.ConcurrentHashMap
 
 /**
- * AppLauncher 是一个用于启动应用的工具类。
- * 它提供了以下功能：
- * - 通过包名启动应用主界面。
- * - 启动指定应用的特定 Activity。
- * - 通过 URI Scheme 启动应用，支持 MIME 类型匹配。
- * - 智能启动：自动选择最佳匹配应用，支持多应用选择器。
- * - 缓存 Intent 解析结果以提高性能。
+ * AppLauncher 是一个用于启动应用的工具类�?
+ * 它提供了以下功能�?
+ * - 通过包名启动应用主界面�?
+ * - 启动指定应用的特�?Activity�?
+ * - 通过 URI Scheme 启动应用，支�?MIME 类型匹配�?
+ * - 智能启动：自动选择最佳匹配应用，支持多应用选择器�?
+ * - 缓存 Intent 解析结果以提高性能�?
  */
 object AppLauncher {
 
@@ -45,8 +45,8 @@ object AppLauncher {
     }
 
     /**
-     * 通过包名启动应用主界面
-     * @return 是否成功找到并尝试启动应用
+     * 通过包名启动应用主界�?
+     * @return 是否成功找到并尝试启动应�?
      */
     fun launchAppByPackage(packageName: String): Boolean {
         if (!isAppInstalled(packageName)) return false
@@ -64,7 +64,7 @@ object AppLauncher {
 
     /**
      * 启动指定应用的特定Activity
-     * @param activityClass 完整类名（如"com.example.MainActivity"）
+     * @param activityClass 完整类名（如"com.example.MainActivity"�?
      */
     fun launchSpecificActivity(
         packageName: String,
@@ -85,7 +85,7 @@ object AppLauncher {
 
     /**
      * 通过URI Scheme启动应用，支持MIME类型匹配
-     * @param uriString 完整的URI字符串（如"https://example.com"）
+     * @param uriString 完整的URI字符串（�?https://example.com"�?
      */
     fun launchByUri(
         uriString: String,
@@ -96,7 +96,7 @@ object AppLauncher {
             val normalizedUri = uriString.toUri().normalizeSchemeV2()
             Intent(Intent.ACTION_VIEW, normalizedUri).apply {
                 addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                // 修复顺序问题和类型设置方式
+                // 修复顺序问题和类型设置方�?
                 setDataAndType(normalizedUri, mimeType)  // 替换原来的分开设置方式
             }.takeIf { it.resolveActivity(packageManager) != null }
                 ?.let { smartLaunch(it, callback = callback) }
@@ -107,10 +107,10 @@ object AppLauncher {
     }
 
     /**
-     * 智能启动：自动选择最佳匹配应用，支持：
-     * - 多应用时显示选择器
+     * 智能启动：自动选择最佳匹配应用，支持�?
+     * - 多应用时显示选择�?
      * - 单应用时直接启动
-     * - 自定义过滤规则
+     * - 自定义过滤规�?
      */
     fun smartLaunch(
         baseIntent: Intent,
@@ -181,7 +181,7 @@ object AppLauncher {
         val initialIntents = resolved.map { info ->
             Intent(baseIntent).apply {
                 component = ComponentName(info.activityInfo.packageName, info.activityInfo.name)
-                // 添加以下两行确保data和type被正确设置
+                // 添加以下两行确保data和type被正确设�?
                 data = baseIntent.data
                 type = baseIntent.type
             }

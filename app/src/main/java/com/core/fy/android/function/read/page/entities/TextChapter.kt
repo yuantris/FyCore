@@ -6,7 +6,7 @@ import com.core.fy.android.function.read.page.provider.TextChapterLayout
 import com.core.fy.android.help.BookContent
 import com.core.fy.android.room.entity.Book
 import com.core.fy.android.room.entity.BookChapter
-import io.core.common.util.extensions.cool.fastBinarySearchBy
+import io.core.utils.extensions.cool.fastBinarySearchBy
 import kotlinx.coroutines.CoroutineScope
 import kotlin.math.abs
 import kotlin.math.min
@@ -24,7 +24,7 @@ data class TextChapter(
     val sameTitleRemoved: Boolean,
     val isVip: Boolean,
     val isPay: Boolean,
-    //起效的替换规则
+    //起效的替换规�?
     //val effectiveReplaceRules: List<ReplaceRule>?
 ) : LayoutProgressListener {
 
@@ -94,7 +94,7 @@ data class TextChapter(
 
     /**
      * @param index 页数
-     * @return 是否是最后一页
+     * @return 是否是最后一�?
      */
     fun isLastIndex(index: Int): Boolean {
         return isCompleted && index >= pages.size - 1
@@ -122,8 +122,8 @@ data class TextChapter(
     }
 
     /**
-     * @param length 当前页面文字在章节中的位置
-     * @return 下一页位置,如果没有下一页返回-1
+     * @param length 当前页面文字在章节中的位�?
+     * @return 下一页位�?如果没有下一页返�?1
      */
     fun getNextPageLength(length: Int): Int {
         val pageIndex = getPageIndexByCharIndex(length)
@@ -134,8 +134,8 @@ data class TextChapter(
     }
 
     /**
-     * @param length 当前页面文字在章节中的位置
-     * @return 上一页位置,如果没有上一页返回-1
+     * @param length 当前页面文字在章节中的位�?
+     * @return 上一页位�?如果没有上一页返�?1
      */
     fun getPrevPageLength(length: Int): Int {
         val pageIndex = getPageIndexByCharIndex(length)
@@ -171,9 +171,9 @@ data class TextChapter(
 
     /**
      * @return 需要朗读的文本列表
-     * @param pageIndex 起始页
+     * @param pageIndex 起始�?
      * @param pageSplit 是否分页
-     * @param startPos 从当前页什么地方开始朗读
+     * @param startPos 从当前页什么地方开始朗�?
      */
     fun getNeedReadAloud(
         pageIndex: Int,
@@ -230,7 +230,7 @@ data class TextChapter(
             it.chapterPosition
         }
         val index = abs(bIndex + 1) - 1
-        // 判断是否已经排版到 charIndex ，没有则返回 -1
+        // 判断是否已经排版�?charIndex ，没有则返回 -1
         if (!isCompleted && index == pageSize - 1) {
             val page = pages[index]
             val pageEndPos = page.chapterPosition + page.charSize

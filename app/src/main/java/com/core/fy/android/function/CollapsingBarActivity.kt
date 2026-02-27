@@ -2,8 +2,8 @@ package com.core.fy.android.function
 
 import android.os.Bundle
 import com.core.fy.android.databinding.ActivityCollapsingBarBinding
-import io.core.common.base.component.activity.ReflectBindingActivity
-import io.core.common.helper.StatusBarManager
+import io.core.ui.base.component.activity.ReflectBindingActivity
+import io.core.ui.helper.StatusBarManager
 
 class CollapsingBarActivity : ReflectBindingActivity<ActivityCollapsingBarBinding>() {
     override fun initial(savedInstanceState: Bundle?) {

@@ -15,7 +15,7 @@ import android.view.MotionEvent
 import com.core.fy.android.function.read.page.ReadView
 import com.core.fy.android.function.read.page.entities.PageDirection
 import com.core.fy.android.help.config.ReadBookConfig
-import io.core.common.util.extensions.ui.screenshot
+import io.core.utils.extensions.ui.screenshot
 import kotlin.math.abs
 import kotlin.math.atan2
 import kotlin.math.cos
@@ -25,7 +25,7 @@ import kotlin.math.sin
 
 @Suppress("DEPRECATION")
 class SimulationPageDelegate(readView: ReadView) : HorizontalPageDelegate(readView) {
-    //不让x,y为0,否则在点计算时会有问题
+    //不让x,y�?,否则在点计算时会有问�?
     private var mTouchX = 0.1f
     private var mTouchY = 0.1f
 
@@ -41,7 +41,7 @@ class SimulationPageDelegate(readView: ReadView) : HorizontalPageDelegate(readVi
     // 贝塞尔曲线控制点
     private val mBezierControl1 = PointF()
 
-    // 贝塞尔曲线顶点
+    // 贝塞尔曲线顶�?
     private val mBezierVertex1 = PointF()
 
     // 贝塞尔曲线结束点
@@ -54,7 +54,7 @@ class SimulationPageDelegate(readView: ReadView) : HorizontalPageDelegate(readVi
     // 贝塞尔曲线控制点
     private val mBezierControl2 = PointF()
 
-    // 贝塞尔曲线顶点
+    // 贝塞尔曲线顶�?
     private val mBezierVertex2 = PointF()
 
     // 贝塞尔曲线结束点
@@ -81,10 +81,10 @@ class SimulationPageDelegate(readView: ReadView) : HorizontalPageDelegate(readVi
     private var mIsRtOrLb = false
     private var mMaxLength = hypot(viewWidth.toDouble(), viewHeight.toDouble()).toFloat()
 
-    // 背面颜色组
+    // 背面颜色�?
     private var mBackShadowColors: IntArray
 
-    // 前面颜色组
+    // 前面颜色�?
     private var mFrontShadowColors: IntArray
 
     // 有阴影的GradientDrawable
@@ -208,7 +208,7 @@ class SimulationPageDelegate(readView: ReadView) : HorizontalPageDelegate(readVi
     override fun onAnimStart(animationSpeed: Int) {
         var dx: Float
         val dy: Float
-        // dy 垂直方向滑动的距离，负值会使滚动向上滚动
+        // dy 垂直方向滑动的距离，负值会使滚动向上滚�?
         if (isCancel) {
             dx = if (mCornerX > 0 && mDirection == PageDirection.NEXT) {
                 (viewWidth - touchX)
@@ -221,7 +221,7 @@ class SimulationPageDelegate(readView: ReadView) : HorizontalPageDelegate(readVi
             dy = if (mCornerY > 0) {
                 (viewHeight - touchY)
             } else {
-                -touchY // 防止mTouchY最终变为0
+                -touchY // 防止mTouchY最终变�?
             }
         } else {
             dx = if (mCornerX > 0 && mDirection == PageDirection.NEXT) {
@@ -232,7 +232,7 @@ class SimulationPageDelegate(readView: ReadView) : HorizontalPageDelegate(readVi
             dy = if (mCornerY > 0) {
                 (viewHeight - touchY)
             } else {
-                (1 - touchY) // 防止mTouchY最终变为0
+                (1 - touchY) // 防止mTouchY最终变�?
             }
         }
         startScroll(touchX.toInt(), touchY.toInt(), dx.toInt(), dy.toInt(), animationSpeed)
@@ -268,7 +268,7 @@ class SimulationPageDelegate(readView: ReadView) : HorizontalPageDelegate(readVi
     }
 
     /**
-     * 绘制翻起页背面
+     * 绘制翻起页背�?
      */
     private fun drawCurrentBackArea(
         canvas: Canvas,
@@ -456,7 +456,7 @@ class SimulationPageDelegate(readView: ReadView) : HorizontalPageDelegate(readVi
         val leftX: Int
         val rightX: Int
         val mBackShadowDrawable: GradientDrawable
-        if (mIsRtOrLb) { //左下及右上
+        if (mIsRtOrLb) { //左下及右�?
             leftX = mBezierStart1.x.toInt()
             rightX = (mBezierStart1.x + mTouchToCornerDis / 4).toInt()
             mBackShadowDrawable = mBackShadowDrawableLR
@@ -477,7 +477,7 @@ class SimulationPageDelegate(readView: ReadView) : HorizontalPageDelegate(readVi
         mBackShadowDrawable.setBounds(
             leftX, mBezierStart1.y.toInt(),
             rightX, (mMaxLength + mBezierStart1.y).toInt()
-        ) //左上及右下角的xy坐标值,构成一个矩形
+        ) //左上及右下角的xy坐标�?构成一个矩�?
         mBackShadowDrawable.draw(canvas)
         canvas.restore()
     }
@@ -508,7 +508,7 @@ class SimulationPageDelegate(readView: ReadView) : HorizontalPageDelegate(readVi
     }
 
     /**
-     * 计算拖拽点对应的拖拽脚
+     * 计算拖拽点对应的拖拽�?
      */
     private fun calcCornerXY(x: Float, y: Float) {
         mCornerX = if (x <= viewWidth / 2) 0 else viewWidth
@@ -539,7 +539,7 @@ class SimulationPageDelegate(readView: ReadView) : HorizontalPageDelegate(readVi
         mBezierStart1.x = mBezierControl1.x - (mCornerX - mBezierControl1.x) / 2
         mBezierStart1.y = mCornerY.toFloat()
 
-        // 固定左边上下两个点
+        // 固定左边上下两个�?
         if (mTouchX > 0 && mTouchX < viewWidth) {
             if (mBezierStart1.x < 0 || mBezierStart1.x > viewWidth) {
                 if (mBezierStart1.x < 0)
@@ -597,11 +597,11 @@ class SimulationPageDelegate(readView: ReadView) : HorizontalPageDelegate(readVi
     }
 
     /**
-     * 求解直线P1P2和直线P3P4的交点坐标
+     * 求解直线P1P2和直线P3P4的交点坐�?
      */
     private fun getCross(P1: PointF, P2: PointF, P3: PointF, P4: PointF): PointF {
         val crossP = PointF()
-        // 二元函数通式： y=ax+b
+        // 二元函数通式�?y=ax+b
         val a1 = (P2.y - P1.y) / (P2.x - P1.x)
         val b1 = (P1.x * P2.y - P2.x * P1.y) / (P1.x - P2.x)
         val a2 = (P4.y - P3.y) / (P4.x - P3.x)

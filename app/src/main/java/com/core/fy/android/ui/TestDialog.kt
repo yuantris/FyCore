@@ -9,7 +9,7 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import com.core.fy.android.R
 import com.core.fy.android.databinding.DialogTestBinding
-import io.core.common.base.component.dialog.BaseDialogFragmentV2
+import io.core.ui.base.component.dialog.BaseDialogFragmentV2
 
 class TestDialog: BaseDialogFragmentV2<DialogTestBinding>(R.layout.dialog_test) {
 

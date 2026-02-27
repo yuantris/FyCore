@@ -19,8 +19,8 @@ import com.core.fy.android.help.PaintPool
 import com.core.fy.android.help.canvasrecorder.recordIfNeeded
 import com.core.fy.android.help.config.AppConfig
 import com.core.fy.android.help.config.ReadBookConfig
-import io.core.appCtx
-import io.core.common.util.extensions.cool.dpToPx
+import io.core.base.appCtx
+import io.core.utils.extensions.cool.dpToPx
 import java.text.DecimalFormat
 import kotlin.math.min
 
@@ -91,7 +91,7 @@ data class TextPage(
     }
 
     /**
-     * 底部对齐更新行位置
+     * 底部对齐更新行位�?
      */
     fun upLinesPosition() {
         if (!ReadBookConfig.textBottomJustify) return
@@ -202,7 +202,7 @@ data class TextPage(
 
     /**
      * 更新朗读标志
-     * @param aloudSpanStart 朗读文字开始位置
+     * @param aloudSpanStart 朗读文字开始位�?
      */
     fun upPageAloudSpan(aloudSpanStart: Int) {
         removePageAloudSpan()
@@ -252,10 +252,10 @@ data class TextPage(
         }
 
     /**
-     * 根据行和列返回字符在本页的位置
+     * 根据行和列返回字符在本页的位�?
      * @param lineIndex 字符在第几行
      * @param columnIndex 字符在第几列
-     * @return 字符在本页位置
+     * @return 字符在本页位�?
      */
     fun getPosByLineColumn(lineIndex: Int, columnIndex: Int): Int {
         var length = 0
@@ -277,7 +277,7 @@ data class TextPage(
     }
 
     /**
-     * @return 页面所在章节
+     * @return 页面所在章�?
      */
     fun getTextChapter(): TextChapter {
         return textChapter

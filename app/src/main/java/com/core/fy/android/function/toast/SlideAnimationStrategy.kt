@@ -2,8 +2,8 @@ package com.core.fy.android.function.toast
 
 import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
-import io.core.Android.context
-import io.core.common.base.component.custom.strategy.ToastAnimationStrategy
+import io.core.base.Android.context
+import io.core.ui.base.component.custom.strategy.ToastAnimationStrategy
 
 class SlideAnimationStrategy : ToastAnimationStrategy {
 
@@ -12,10 +12,10 @@ class SlideAnimationStrategy : ToastAnimationStrategy {
     }
 
     override fun playShowAnimation(view: View, duration: Long, onComplete: (() -> Unit)?) {
-        // 从屏幕顶部外部开始（负的View高度）
+        // 从屏幕顶部外部开始（负的View高度�?
         val startY = -getSlideHeight().toFloat()
 
-        // 目标位置：距离屏幕顶部200dp（正值向下）
+        // 目标位置：距离屏幕顶�?00dp（正值向下）
         val targetY = getSlideHeight().toFloat()
 
         view.translationY = startY

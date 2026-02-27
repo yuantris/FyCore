@@ -1,8 +1,8 @@
 package com.core.fy.android.help.config
 
-import io.core.appCtx
-import io.core.common.util.extensions.cool.GSON
-import io.core.common.util.extensions.cool.fromJsonArray
+import io.core.base.appCtx
+import io.core.utils.extensions.cool.GSON
+import io.core.utils.extensions.cool.fromJsonArray
 import java.io.File
 
 object DefaultData {

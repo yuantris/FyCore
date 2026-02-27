@@ -1,0 +1,153 @@
+@file:Suppress("unused")
+
+package io.core.utils.extensions.ui
+
+import android.app.Activity
+import android.content.Intent
+import android.content.res.ColorStateList
+import android.graphics.drawable.Drawable
+import android.os.Bundle
+import android.view.View
+import android.widget.RelativeLayout
+import androidx.annotation.ColorRes
+import androidx.annotation.DrawableRes
+import androidx.annotation.LayoutRes
+import androidx.core.content.edit
+import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
+
+fun Fragment.isAlive(): Boolean {
+    return !(isRemoving || isDetached)
+}
+
+inline fun <reified T : DialogFragment> Fragment.showDialogFragment(
+    arguments: Bundle.() -> Unit = {}
+) {
+    @Suppress("DEPRECATION")
+    val dialog = T::class.java.newInstance()
+    val bundle = Bundle()
+    bundle.apply(arguments)
+    dialog.arguments = bundle
+    dialog.show(childFragmentManager, T::class.simpleName)
+}
+
+fun Fragment.showDialogFragment(dialogFragment: DialogFragment) {
+    dialogFragment.show(childFragmentManager, dialogFragment::class.simpleName)
+}
+
+fun Fragment.getPrefBoolean(key: String, defValue: Boolean = false) =
+    ctx.defaultSharedPreferences.getBoolean(key, defValue)
+
+fun Fragment.putPrefBoolean(key: String, value: Boolean = false) =
+    ctx.defaultSharedPreferences.edit { putBoolean(key, value) }
+
+fun Fragment.getPrefInt(key: String, defValue: Int = 0) =
+    ctx.defaultSharedPreferences.getInt(key, defValue)
+
+fun Fragment.putPrefInt(key: String, value: Int) =
+    ctx.defaultSharedPreferences.edit { putInt(key, value) }
+
+fun Fragment.getPrefLong(key: String, defValue: Long = 0L) =
+    ctx.defaultSharedPreferences.getLong(key, defValue)
+
+fun Fragment.putPrefLong(key: String, value: Long) =
+    ctx.defaultSharedPreferences.edit { putLong(key, value) }
+
+fun Fragment.getPrefString(key: String, defValue: String? = null) =
+    ctx.defaultSharedPreferences.getString(key, defValue)
+
+fun Fragment.putPrefString(key: String, value: String) =
+    ctx.defaultSharedPreferences.edit { putString(key, value) }
+
+fun Fragment.getPrefStringSet(
+    key: String,
+    defValue: MutableSet<String>? = null
+): MutableSet<String>? =
+    ctx.defaultSharedPreferences.getStringSet(key, defValue)
+
+fun Fragment.putPrefStringSet(key: String, value: MutableSet<String>) =
+    ctx.defaultSharedPreferences.edit { putStringSet(key, value) }
+
+fun Fragment.removePref(key: String) =
+    ctx.defaultSharedPreferences.edit { remove(key) }
+
+fun Fragment.getCompatColor(@ColorRes id: Int): Int = requireContext().getCompatColor(id)
+
+fun Fragment.getCompatDrawable(@DrawableRes id: Int): Drawable? =
+    requireContext().getCompatDrawable(id)
+
+fun Fragment.getCompatColorStateList(@ColorRes id: Int): ColorStateList? =
+    requireContext().getCompatColorStateList(id)
+
+inline fun <reified T : Activity> Fragment.startActivity(
+    configIntent: Intent.() -> Unit = {}
+) {
+    startActivity(Intent(requireContext(), T::class.java).apply(configIntent))
+}
+
+val Fragment.isCreated
+    get() = lifecycle.currentState.isAtLeast(Lifecycle.State.CREATED)
+
+/**
+ * 扩展函数：向RelativeLayout添加视图并支持动态设置布局规则
+ */
+fun Fragment.addViewToZYLayout(
+    target: RelativeLayout,
+    @LayoutRes layoutId: Int,
+    vararg rules: Int
+): View {
+    val view = requireContext().layout2View(layoutId)
+    addViewToZYLayout(target, view, *rules)
+    return view
+}
+
+/**
+ * 扩展函数：向RelativeLayout添加视图并支持动态设置布局规则
+ */
+fun addViewToZYLayout(target: RelativeLayout, view: View, vararg rules: Int) {
+    // 安全类型转换
+    val lp = target.layoutParams?.let { it as? RelativeLayout.LayoutParams }
+        ?: RelativeLayout.LayoutParams(
+            RelativeLayout.LayoutParams.MATCH_PARENT,
+            RelativeLayout.LayoutParams.MATCH_PARENT
+        )
+
+    target.removeAllViews()
+    val newLp = RelativeLayout.LayoutParams(lp)
+
+    // 如果没有指定规则，默认使用CENTER_IN_PARENT
+    if (rules.isEmpty()) {
+        newLp.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE)
+    } else {
+        // 应用所有指定的规则
+        rules.forEach { rule ->
+            when (rule) {
+                RelativeLayout.CENTER_IN_PARENT,
+                RelativeLayout.CENTER_VERTICAL,
+                RelativeLayout.CENTER_HORIZONTAL,
+                RelativeLayout.ALIGN_PARENT_TOP,
+                RelativeLayout.ALIGN_PARENT_BOTTOM,
+                RelativeLayout.ALIGN_PARENT_LEFT,
+                RelativeLayout.ALIGN_PARENT_RIGHT,
+                RelativeLayout.ALIGN_PARENT_START,
+                RelativeLayout.ALIGN_PARENT_END -> {
+                    newLp.addRule(rule, RelativeLayout.TRUE)
+                }
+                else -> {
+                    // 对于需要关联其他视图ID的规则，需要额外参数处�?
+                    newLp.addRule(rule)
+                }
+            }
+        }
+    }
+
+    target.addView(view, newLp)
+}
+
+
+val Fragment.ctx
+    get() = requireContext()
+
+val Fragment.aty
+    get() = requireActivity()

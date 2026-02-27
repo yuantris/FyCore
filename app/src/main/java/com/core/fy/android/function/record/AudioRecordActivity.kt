@@ -4,29 +4,29 @@ import android.os.Bundle
 import com.core.fy.android.databinding.ActivityAudioRecordBinding
 import com.hjq.permissions.Permission
 import com.hjq.permissions.XXPermissions
-import io.core.common.base.component.activity.ReflectBindingActivity
-import io.core.common.util.extensions.cool.PathType
-import io.core.common.util.extensions.cool.getBasePath
-import io.core.common.util.extensions.cool.refreshMediaLibrary
-import io.core.common.util.extensions.cool.runMain
-import io.core.common.util.extensions.cool.timeFormat
-import io.core.common.util.extensions.currentTimeMillis
-import io.core.common.util.extensions.ui.onClick
-import io.core.common.util.log.LogPure
-import io.core.constant.FileSize
-import io.core.constant.FileSize.toFormattedPattern
-import io.core.constant.TimePatterns
+import io.core.ui.base.component.activity.ReflectBindingActivity
+import io.core.utils.extensions.cool.PathType
+import io.core.utils.extensions.cool.getBasePath
+import io.core.utils.extensions.cool.refreshMediaLibrary
+import io.core.utils.extensions.cool.runMain
+import io.core.utils.extensions.cool.timeFormat
+import io.core.utils.extensions.currentTimeMillis
+import io.core.utils.extensions.ui.onClick
+import io.core.utils.log.LogPure
+import io.core.base.constant.FileSize
+import io.core.base.constant.FileSize.toFormattedPattern
+import io.core.base.constant.TimePatterns
 import java.io.File
 
 /**
 # ██████████
-# █▄█████▄█
+# █▄█████▄�?
 # █▼▼▼▼▼
-# █
+# �?
 # █▲▲▲▲▲
 # ██████████
 # ██ ██
-# 注释的艺术，正在加载……
+# 注释的艺术，正在加载…�?
  * 2025/2/17 16:32
  * @description
  * @author Yuan
@@ -81,7 +81,7 @@ class AudioRecordActivity : ReflectBindingActivity<ActivityAudioRecordBinding>()
                     file.refreshMediaLibrary()
 
                     LogPure.v {
-                        "保存路径：${file.path}"
+                        "保存路径�?{file.path}"
                     }
                 }
             })
@@ -90,7 +90,7 @@ class AudioRecordActivity : ReflectBindingActivity<ActivityAudioRecordBinding>()
             XXPermissions.with(this)
                 .permission(Permission.RECORD_AUDIO)
                 .request { permissions, allGranted ->
-                    // 开始录音
+                    // 开始录�?
                     recorder.start(
                         outputDir = getBasePath(PathType.MUSIC),
                         fileName = "recording_${currentTimeMillis.timeFormat(TimePatterns.FILE_SAFE_TIMESTAMP)}"

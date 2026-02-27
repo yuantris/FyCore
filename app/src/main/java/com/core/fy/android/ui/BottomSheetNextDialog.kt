@@ -2,19 +2,19 @@ package com.core.fy.android.ui
 
 import com.core.fy.android.R
 import com.core.fy.android.databinding.DialogBottomStreetBinding
-import io.core.common.base.component.dialog.BaseBottomSheetDialog
-import io.core.common.util.extensions.ui.getCompatColor
-import io.core.common.util.tools.DrawableBuilder
+import io.core.ui.base.component.dialog.BaseBottomSheetDialog
+import io.core.utils.extensions.ui.getCompatColor
+import io.core.utils.tools.DrawableBuilder
 
 /**
 # ██████████
-# █▄█████▄█
+# █▄█████▄�?
 # █▼▼▼▼▼
-# █
+# �?
 # █▲▲▲▲▲
 # ██████████
 # ██ ██
-# 注释的艺术，正在加载……
+# 注释的艺术，正在加载…�?
  * 2025/1/17 9:47
  * @description
  * @author Yuan

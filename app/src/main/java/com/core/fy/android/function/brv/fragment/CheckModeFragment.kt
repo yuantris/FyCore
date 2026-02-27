@@ -5,8 +5,8 @@ import com.core.fy.android.R
 import com.core.fy.android.databinding.FragmentBrvCheckmodeBinding
 import com.core.fy.android.function.brv.BrvActivity
 import com.core.fy.android.function.brv.model.CheckModel
-import io.core.common.base.component.fragment.ReflectBindingFragment
-import io.core.common.util.processNavigationBar
+import io.core.ui.base.component.fragment.ReflectBindingFragment
+import io.core.utils.processNavigationBar
 import io.core.engine.brv.BindingAdapter
 import io.core.engine.brv.utils.bindingAdapter
 import io.core.engine.brv.utils.linear
@@ -14,13 +14,13 @@ import io.core.engine.brv.utils.setup
 
 /**
 # ██████████
-# █▄█████▄█
+# █▄█████▄�?
 # █▼▼▼▼▼
-# █
+# �?
 # █▲▲▲▲▲
 # ██████████
 # ██ ██
-# 注释的艺术，正在加载……
+# 注释的艺术，正在加载…�?
  * 2025/2/17 9:32
  * @description
  * @author Yuan
@@ -42,7 +42,7 @@ class CheckModeFragment : ReflectBindingFragment<FragmentBrvCheckmodeBinding, Br
 
             // 点击列表触发选中
             onFastClick(R.id.cb, R.id.item) {
-                // 如果当前未处于选择模式下 点击无效
+                // 如果当前未处于选择模式�?点击无效
                 if (!toggleMode && it == R.id.item) {
                     return@onFastClick
                 }
@@ -57,7 +57,7 @@ class CheckModeFragment : ReflectBindingFragment<FragmentBrvCheckmodeBinding, Br
                 model.checked = isChecked
                 model.notifyChange()
 
-                // 刷新已选择计数器
+                // 刷新已选择计数�?
                 binding.tvCheckedCount.text = "已选择 ${checkedCount}/${modelCount}"
             }
 
@@ -75,25 +75,25 @@ class CheckModeFragment : ReflectBindingFragment<FragmentBrvCheckmodeBinding, Br
     }
 
     /**
-     * 初始化编辑模式视图
+     * 初始化编辑模式视�?
      */
     private fun initEditMode() {
         val adapter = binding.rv.bindingAdapter
 
-        // 单选模式切换
+        // 单选模式切�?
         binding.tvSingleMode.setOnClickListener {
             adapter.singleMode = !adapter.singleMode
 
-            // 单选模式不应该支持全选
+            // 单选模式不应该支持全�?
             binding.tvAllChecked.isEnabled = !adapter.singleMode
         }
 
-        // 反选
+        // 反�?
         binding.tvReverseChecked.setOnClickListener {
             adapter.checkedReverse()
         }
 
-        // 全选
+        // 全�?
         binding.tvAllChecked.setOnClickListener {
             adapter.checkedAll()
         }
@@ -106,21 +106,21 @@ class CheckModeFragment : ReflectBindingFragment<FragmentBrvCheckmodeBinding, Br
         // 切换选择模式
         binding.tvManage.setOnClickListener {
             adapter.toggle()
-            // binding.rv.bindingAdapter.setChecked(0, true) // 一开始就选中第一个
+            // binding.rv.bindingAdapter.setChecked(0, true) // 一开始就选中第一�?
         }
     }
 
-    /** 改变编辑状态 */
+    /** 改变编辑状�?*/
     private fun changeListEditable(adapter: BindingAdapter) {
         val toggleMode = adapter.toggleMode
         val checkedCount = adapter.checkedCount
         // 管理按钮
         binding.tvManage.text = if (toggleMode) "取消" else "管理"
 
-        // 显示和隐藏编辑菜单
+        // 显示和隐藏编辑菜�?
         binding.llMenu.visibility = if (toggleMode) View.VISIBLE else View.GONE
 
-        // 显示/隐藏计数器
+        // 显示/隐藏计数�?
         binding.tvCheckedCount.visibility = if (toggleMode) View.VISIBLE else View.GONE
         binding.tvCheckedCount.text = "已选择 ${checkedCount}/${adapter.modelCount}"
 

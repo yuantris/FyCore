@@ -4,13 +4,13 @@ import io.core.engine.storage.StorageKey
 
 /**
 # ██████████
-# █▄█████▄█
+# █▄█████▄�?
 # █▼▼▼▼▼
-# █
+# �?
 # █▲▲▲▲▲
 # ██████████
 # ██ ██
-# 注释的艺术，正在加载……
+# 注释的艺术，正在加载…�?
  * 2025/1/11 11:19
  * @description
  * @author Yuan
@@ -24,7 +24,7 @@ object PreferKey {
     const val HOME_SKELETON_ANIM = "isDisplayHomeSkeletonAnim"
     @StorageKey(description = "设置Fragment高亮展示", defaultValue = "true")
     const val SET_HIGHLIGHT = "SetFragment_Highlight"
-    @StorageKey(description = "测试默认值", defaultValue = "1110")
+    @StorageKey(description = "测试默认�?, defaultValue = "1110")
     const val SP_TEST = "isTest_1110"
 
     /** --------------read-------------- */

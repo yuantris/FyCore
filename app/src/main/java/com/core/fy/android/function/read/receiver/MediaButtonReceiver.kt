@@ -11,14 +11,14 @@ import com.core.fy.android.function.read.model.ReadBook
 import com.core.fy.android.help.config.AppConfig
 import com.core.fy.android.function.read.services.AudioPlayService
 import com.core.fy.android.function.read.services.BaseReadAloudService
-import io.core.common.helper.track.AppTrackV2
-import io.core.common.util.extensions.ui.getPrefBoolean
-import io.core.common.util.log.LogPure
+import io.core.ui.helper.track.AppTrackV2
+import io.core.utils.extensions.ui.getPrefBoolean
+import io.core.utils.log.LogPure
 
 
 /**
  * Created by GKF on 2018/1/6.
- * 监听耳机键
+ * 监听耳机�?
  */
 class MediaButtonReceiver : BroadcastReceiver() {
 

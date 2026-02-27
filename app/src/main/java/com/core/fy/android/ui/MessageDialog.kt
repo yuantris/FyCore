@@ -5,8 +5,8 @@ import android.view.View
 import android.widget.TextView
 import androidx.annotation.StringRes
 import com.core.fy.android.R
-import io.core.common.base.component.dialog.BaseDialog
-import io.core.common.base.component.dialog.specific.CommonDialog
+import io.core.ui.base.component.dialog.BaseDialog
+import io.core.ui.base.component.dialog.specific.CommonDialog
 
 
 class MessageDialog {
@@ -39,7 +39,7 @@ class MessageDialog {
         }
 
         override fun create(): BaseDialog {
-            // 如果内容为空就抛出异常
+            // 如果内容为空就抛出异�?
             if (("" == messageView?.text.toString())) {
                 throw IllegalArgumentException("Dialog message not null")
             }

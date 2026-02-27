@@ -5,24 +5,24 @@ import android.content.res.Resources
 import com.core.fy.android.BuildConfig
 import com.core.fy.android.constants.PreferKey
 import com.core.fy.android.constants.PreferKey.themeMode
-import io.core.appCtx
-import io.core.common.util.extensions.ui.defaultSharedPreferences
-import io.core.common.util.extensions.ui.getPrefBoolean
-import io.core.common.util.extensions.ui.getPrefInt
-import io.core.common.util.extensions.ui.getPrefString
-import io.core.common.util.extensions.ui.putPrefBoolean
-import io.core.common.util.extensions.ui.putPrefInt
-import io.core.common.util.extensions.ui.putPrefString
+import io.core.base.appCtx
+import io.core.utils.extensions.ui.defaultSharedPreferences
+import io.core.utils.extensions.ui.getPrefBoolean
+import io.core.utils.extensions.ui.getPrefInt
+import io.core.utils.extensions.ui.getPrefString
+import io.core.utils.extensions.ui.putPrefBoolean
+import io.core.utils.extensions.ui.putPrefInt
+import io.core.utils.extensions.ui.putPrefString
 
 /**
 # ██████████
-# █▄█████▄█
+# █▄█████▄�?
 # █▼▼▼▼▼
-# █
+# �?
 # █▲▲▲▲▲
 # ██████████
 # ██ ██
-# 注释的艺术，正在加载……
+# 注释的艺术，正在加载…�?
  * 2025/1/11 10:52
  * @description
  * @author Yuan

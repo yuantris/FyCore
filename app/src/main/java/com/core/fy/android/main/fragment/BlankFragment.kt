@@ -10,21 +10,21 @@ import com.core.fy.android.R
 import com.core.fy.android.databinding.FragmentBlankBinding
 import com.core.fy.android.databinding.ItemSingleTextBinding
 import com.core.fy.android.ui.receiver.TimeBatteryReceiver
-import io.core.appCtx
-import io.core.common.base.component.fragment.ReflectBindingFragment
-import io.core.common.helper.coroutine.Coroutine
-import io.core.common.helper.pool.UniversalPool
-import io.core.common.helper.track.AppTrackV2
-import io.core.common.helper.track.FragmentVisibilityDetectorV2
-import io.core.common.util.extensions.cool.runDelayedMain
-import io.core.common.util.extensions.logI
-import io.core.common.util.extensions.ui.getCompatColor
-import io.core.common.util.log.v
+import io.core.base.appCtx
+import io.core.ui.base.component.fragment.ReflectBindingFragment
+import io.core.utils.coroutine.Coroutine
+import io.core.utils.pool.UniversalPool
+import io.core.ui.helper.track.AppTrackV2
+import io.core.ui.helper.track.FragmentVisibilityDetectorV2
+import io.core.utils.extensions.cool.runDelayedMain
+import io.core.utils.extensions.logI
+import io.core.utils.extensions.ui.getCompatColor
+import io.core.utils.log.v
 import io.core.engine.brv.utils.linear
 import io.core.engine.brv.utils.setup
-import io.core.other.IntentData
-import io.core.widget.view.LoadingView
-import io.core.widget.view.RotateLoading
+import io.core.nav.other.IntentData
+import io.core.ui.widget.view.LoadingView
+import io.core.ui.widget.view.RotateLoading
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -33,13 +33,13 @@ import java.io.InputStreamReader
 
 /**
 # ██████████
-# █▄█████▄█
+# █▄█████▄�?
 # █▼▼▼▼▼
-# █
+# �?
 # █▲▲▲▲▲
 # ██████████
 # ██ ██
-# 注释的艺术，正在加载……
+# 注释的艺术，正在加载…�?
  * 2025/1/9 9:07
  * @description
  * @author Yuan
@@ -69,12 +69,12 @@ class BlankFragment : ReflectBindingFragment<FragmentBlankBinding, MainActivity>
         val get = IntentData.get<Int>("23")
         appCtx.registerReceiver(timeBatteryReceiver, timeBatteryReceiver.filter)
 //        binding.time.onClick {
-//            showDialog("对话框标题", "这是一个对话框消息。") {
+//            showDialog("对话框标�?, "这是一个对话框消息�?) {
 //                okButton {
-//                    Toaster.show("点击了确定")
+//                    Toaster.show("点击了确�?)
 //                }
 //                cancelButton {
-//                    Toaster.show("点击了取消")
+//                    Toaster.show("点击了取�?)
 //                }
 //            }
 //        }
@@ -138,12 +138,12 @@ class BlankFragment : ReflectBindingFragment<FragmentBlankBinding, MainActivity>
         val loading = RotateLoading(requireContext())
 //        addViewToZYLayout(binding.zyLayout, loadingView)
 //        addViewToZYLayout(binding.zyLayout1, loading)
-        // 在协程作用域中启动
+        // 在协程作用域中启�?
 //        job = Coroutine.async(
-//            scope = CoroutineScope(Dispatchers.Main), // 指定作用域，默认为 MainScope()
-//            context = Dispatchers.Default,          // 指定执行上下文，默认为 Dispatchers.IO
+//            scope = CoroutineScope(Dispatchers.Main), // 指定作用域，默认�?MainScope()
+//            context = Dispatchers.Default,          // 指定执行上下文，默认�?Dispatchers.IO
 //            start = CoroutineStart.LAZY,            // 指定启动选项，默认为 CoroutineStart.DEFAULT
-//            executeContext = Dispatchers.Main,      // 指定回调执行上下文，默认为 Dispatchers.Main
+//            executeContext = Dispatchers.Main,      // 指定回调执行上下文，默认�?Dispatchers.Main
 //        ) {
 //            while (isActive) { // 循环条件
 //                runMain {
@@ -161,7 +161,7 @@ class BlankFragment : ReflectBindingFragment<FragmentBlankBinding, MainActivity>
 //            binding.time.text = timeFormat.format(Date(System.currentTimeMillis()))
 //        }
 //        observeEvent<Int>(BATTERY_CHANGED) {
-//            binding.battery.text = "当前电量：$it%"
+//            binding.battery.text = "当前电量�?it%"
 //        }
     }
 
@@ -181,7 +181,7 @@ class BlankFragment : ReflectBindingFragment<FragmentBlankBinding, MainActivity>
             // 读取命令输出
             var line: String?
             while (reader.readLine().also { line = it } != null) {
-                // 解析每一行，格式通常为"[property.name]: [value]"
+                // 解析每一行，格式通常�?[property.name]: [value]"
                 line?.let {
                     val parts = it.split("]: [", limit = 2)
                     if (parts.size == 2) {

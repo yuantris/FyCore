@@ -5,36 +5,36 @@ import com.blankj.utilcode.util.GsonUtils
 import com.core.fy.android.databinding.FragmentKotlinBinding
 import com.core.fy.android.function.TestPageActivity
 import com.core.fy.android.help.ProgressNotifier
-import io.core.common.base.component.fragment.ReflectBindingFragment
-import io.core.common.helper.CallCoordinator
-import io.core.common.helper.JsonUltra
-import io.core.common.helper.TimeoutCallback
-import io.core.common.helper.TimeoutHandler
-import io.core.common.helper.coroutine.info.GlobalCoroutine
-import io.core.common.helper.coroutine.info.LoopEngine
-import io.core.common.helper.jetpack.SingleLiveData
-import io.core.common.helper.track.AppTrackV2
-import io.core.common.helper.track.FragmentVisibilityDetectorV2
-import io.core.common.util.Toaster
-import io.core.common.util.concurrent.Concurrency
-import io.core.common.util.concurrent.TaskExecutor
-import io.core.common.util.extensions.cool.GSON
-import io.core.common.util.extensions.cool.PathType
-import io.core.common.util.extensions.cool.createMap
-import io.core.common.util.extensions.cool.getSettingsPathV2
-import io.core.common.util.extensions.cool.joinPath
-import io.core.common.util.extensions.cool.launch
-import io.core.common.util.extensions.cool.mapBuilder
-import io.core.common.util.extensions.cool.runDelayedMain
-import io.core.common.util.extensions.cool.withMain
-import io.core.common.util.extensions.logD
-import io.core.common.util.extensions.simpleName
-import io.core.common.util.extensions.ui.ctx
-import io.core.common.util.extensions.ui.onClick
-import io.core.common.util.log.LogCat
-import io.core.common.util.log.LogPure
-import io.core.common.util.log.bury.AppLog
-import io.core.common.util.tools.FileTools
+import io.core.ui.base.component.fragment.ReflectBindingFragment
+import io.core.utils.CallCoordinator
+import io.core.utils.JsonUltra
+import io.core.utils.TimeoutCallback
+import io.core.utils.TimeoutHandler
+import io.core.utils.coroutine.info.GlobalCoroutine
+import io.core.utils.coroutine.info.LoopEngine
+import io.core.ui.helper.jetpack.SingleLiveData
+import io.core.ui.helper.track.AppTrackV2
+import io.core.ui.helper.track.FragmentVisibilityDetectorV2
+import io.core.utils.Toaster
+import io.core.utils.concurrent.Concurrency
+import io.core.utils.concurrent.TaskExecutor
+import io.core.utils.extensions.cool.GSON
+import io.core.utils.extensions.cool.PathType
+import io.core.utils.extensions.cool.createMap
+import io.core.utils.extensions.cool.getSettingsPathV2
+import io.core.utils.extensions.cool.joinPath
+import io.core.utils.extensions.cool.launch
+import io.core.utils.extensions.cool.mapBuilder
+import io.core.utils.extensions.cool.runDelayedMain
+import io.core.utils.extensions.cool.withMain
+import io.core.utils.extensions.logD
+import io.core.utils.extensions.simpleName
+import io.core.utils.extensions.ui.ctx
+import io.core.utils.extensions.ui.onClick
+import io.core.utils.log.LogCat
+import io.core.utils.log.LogPure
+import io.core.utils.log.bury.AppLog
+import io.core.utils.tools.FileTools
 import io.core.engine.storage.storage
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -57,21 +57,21 @@ class KotlinFragment : ReflectBindingFragment<FragmentKotlinBinding, TestPageAct
             val d1 = async {
                 CallCoordinator.guardedSingleFlight("KET") {
                     delay(300) // 模拟耗时
-                    LogPure.i { "我开始执行" }
+                    LogPure.i { "我开始执�? }
                     "OK"
                 }
             }
             val d2 = async {
                 CallCoordinator.guardedSingleFlight("KET") {
                     delay(300)
-                    LogPure.i { "我开始执行" }
+                    LogPure.i { "我开始执�? }
                     "OK"
                 }
             }
             val d3 = async {
                 CallCoordinator.guardedSingleFlight("KET") {
                     delay(300)
-                    LogPure.i { "我开始执行" }
+                    LogPure.i { "我开始执�? }
                     "OK"
                 }
             }
@@ -186,7 +186,7 @@ class KotlinFragment : ReflectBindingFragment<FragmentKotlinBinding, TestPageAct
 
     override fun initData() {
         super.initData()
-        // 注册监听器
+        // 注册监听�?
         ProgressNotifier.register { id, progress ->
             LogPure.i { "id:$id\nprogress: $progress%" }
         }

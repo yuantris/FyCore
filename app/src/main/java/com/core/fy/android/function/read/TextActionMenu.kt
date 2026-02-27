@@ -25,12 +25,12 @@ import com.core.fy.android.databinding.PopupActionMenuBinding
 import com.core.fy.android.help.config.AppConfig
 import com.core.fy.android.widget.rv.ItemViewHolder
 import com.core.fy.android.widget.rv.RecyclerAdapter
-import io.core.common.util.extensions.cool.isAbsUrl
-import io.core.common.util.extensions.cool.printOnDebug
-import io.core.common.util.extensions.cool.toastOnUI
-import io.core.common.util.extensions.ui.getPrefBoolean
-import io.core.common.util.extensions.ui.gone
-import io.core.common.util.extensions.ui.visible
+import io.core.utils.extensions.cool.isAbsUrl
+import io.core.utils.extensions.cool.printOnDebug
+import io.core.utils.extensions.cool.toastOnUI
+import io.core.utils.extensions.ui.getPrefBoolean
+import io.core.utils.extensions.ui.gone
+import io.core.utils.extensions.ui.visible
 
 @SuppressLint("RestrictedApi")
 class TextActionMenu(private val context: Context, private val callBack: CallBack) :
@@ -197,7 +197,7 @@ class TextActionMenu(private val context: Context, private val callBack: CallBac
             holder.itemView.setOnLongClickListener {
                 if (AppConfig.contentSelectSpeakMod == 0) {
                     AppConfig.contentSelectSpeakMod = 1
-                    context.toastOnUI("切换为从选择的地方开始一直朗读")
+                    context.toastOnUI("切换为从选择的地方开始一直朗�?)
                 } else {
                     AppConfig.contentSelectSpeakMod = 0
                     context.toastOnUI("切换为朗读选择内容")

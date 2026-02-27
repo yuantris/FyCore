@@ -8,16 +8,16 @@ import com.core.fy.android.room.appDb
 import com.core.fy.android.room.entity.User
 import com.core.fy.android.room.repository.UserRepository
 import com.core.fy.android.viewmodel.UserVM
-import io.core.common.base.component.activity.ReflectBindingActivity
-import io.core.common.base.vm.ViewStatus
-import io.core.common.util.CoreUtil
-import io.core.common.util.Toaster
-import io.core.common.util.extensions.cool.launch
-import io.core.common.util.extensions.logD
-import io.core.common.util.extensions.logE
-import io.core.common.util.extensions.logI
-import io.core.common.util.extensions.logW
-import io.core.common.util.extensions.ui.toast
+import io.core.ui.base.component.activity.ReflectBindingActivity
+import io.core.ui.base.vm.ViewStatus
+import io.core.utils.CoreUtil
+import io.core.utils.Toaster
+import io.core.utils.extensions.cool.launch
+import io.core.utils.extensions.logD
+import io.core.utils.extensions.logE
+import io.core.utils.extensions.logI
+import io.core.utils.extensions.logW
+import io.core.utils.extensions.ui.toast
 
 class RoomActivity : ReflectBindingActivity<ActivityRoomBinding>() {
 
@@ -29,24 +29,24 @@ class RoomActivity : ReflectBindingActivity<ActivityRoomBinding>() {
         super.initial(savedInstanceState)
 
         userVM.getUserById(1) {
-            "查询到：${it?.name}，details：${it?.age}".logW()
+            "查询到：${it?.name}，details�?{it?.age}".logW()
         }
 
         launch {
 //            userVM.getUserAsync(1).let {
-//                "查询到：${it?.name}，details：${it?.age}".logD()
+//                "查询到：${it?.name}，details�?{it?.age}".logD()
 //
-//                // 先判断是否为空，如果不为空则更新，否则插入
+//                // 先判断是否为空，如果不为空则更新，否则插�?
 //                it?.let { user ->
 //                    user.name = CoreUtil.Files.generateNameNoExtension("name")
 //                    user.age = 100
 //                    userVM.update(user)
-//                    "查询到：${user.name}，details已更新为：${user.age}".logD()
+//                    "查询到：${user.name}，details已更新为�?{user.age}".logD()
 //                } ?: run {
 //                    "查询为空".logE()
 //                    val origin = User(name = "fy", age = 16)
 //                    userVM.insert(origin)
-//                    "插入年龄为${origin.age}岁的用户".logI()
+//                    "插入年龄�?{origin.age}岁的用户".logI()
 //                }
 //            }
         }
@@ -97,7 +97,7 @@ class RoomActivity : ReflectBindingActivity<ActivityRoomBinding>() {
         userVM.userLiveData.observe(this) {
             if (it.isNotEmpty()) {
                 it.forEach { bean ->
-                    "查询到ID：${bean.id}，用户：${bean.name}，年龄：${bean.age}".logD()
+                    "查询到ID�?{bean.id}，用户：${bean.name}，年龄：${bean.age}".logD()
 
                     launch {
                         bean.age = 19
@@ -116,7 +116,7 @@ class RoomActivity : ReflectBindingActivity<ActivityRoomBinding>() {
             when (status) {
                 ViewStatus.SUCCESS -> toast("成功")
                 ViewStatus.ERROR -> toast("失败")
-                else -> "其他状态".logD()
+                else -> "其他状�?.logD()
             }
         }
     }

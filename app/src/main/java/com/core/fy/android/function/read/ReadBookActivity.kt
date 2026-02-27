@@ -23,31 +23,31 @@ import com.core.fy.android.function.read.page.provider.TextPageFactory
 import com.core.fy.android.help.config.AppConfig
 import com.core.fy.android.help.config.ReadBookConfig
 import com.core.fy.android.room.entity.Book
-import io.core.common.base.component.activity.ReflectBindingActivity
-import io.core.common.helper.track.AppTrackV2
-import io.core.common.util.DiveGestureLine
-import io.core.common.util.extensions.cool.HandlerGT.main
-import io.core.common.util.extensions.cool.toastOnUI
-import io.core.common.util.extensions.logD
-import io.core.common.util.extensions.ui.getCompatColor
-import io.core.common.util.extensions.ui.getPrefString
-import io.core.common.util.extensions.ui.invisible
-import io.core.common.util.extensions.ui.keepScreenOn
-import io.core.common.util.extensions.ui.navigationBarGravity
-import io.core.common.util.extensions.ui.sysScreenOffTime
-import io.core.common.util.extensions.ui.toast
-import io.core.common.util.extensions.ui.visible
+import io.core.ui.base.component.activity.ReflectBindingActivity
+import io.core.ui.helper.track.AppTrackV2
+import io.core.utils.DiveGestureLine
+import io.core.utils.extensions.cool.HandlerGT.main
+import io.core.utils.extensions.cool.toastOnUI
+import io.core.utils.extensions.logD
+import io.core.utils.extensions.ui.getCompatColor
+import io.core.utils.extensions.ui.getPrefString
+import io.core.utils.extensions.ui.invisible
+import io.core.utils.extensions.ui.keepScreenOn
+import io.core.utils.extensions.ui.navigationBarGravity
+import io.core.utils.extensions.ui.sysScreenOffTime
+import io.core.utils.extensions.ui.toast
+import io.core.utils.extensions.ui.visible
 import kotlinx.coroutines.launch
 
 /**
 # ██████████
-# █▄█████▄█
+# █▄█████▄�?
 # █▼▼▼▼▼
-# █
+# �?
 # █▲▲▲▲▲
 # ██████████
 # ██ ██
-# 注释的艺术，正在加载……
+# 注释的艺术，正在加载…�?
  * 2025/1/11 10:48
  * @description
  * @author Yuan

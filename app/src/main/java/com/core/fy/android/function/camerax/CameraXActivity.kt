@@ -7,18 +7,18 @@ import androidx.camera.core.CameraSelector
 import com.core.fy.android.databinding.ActivityCameraxBinding
 import com.hjq.permissions.Permission
 import com.hjq.permissions.XXPermissions
-import io.core.common.base.component.activity.ReflectBindingActivity
-import io.core.common.util.extensions.ui.onClick
+import io.core.ui.base.component.activity.ReflectBindingActivity
+import io.core.utils.extensions.ui.onClick
 
 /**
 # ██████████
-# █▄█████▄█
+# █▄█████▄�?
 # █▼▼▼▼▼
-# █
+# �?
 # █▲▲▲▲▲
 # ██████████
 # ██ ██
-# 注释的艺术，正在加载……
+# 注释的艺术，正在加载…�?
  * 2025/2/5 15:52
  * @description
  * @author Yuan

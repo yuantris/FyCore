@@ -5,7 +5,7 @@ import android.os.Bundle
 import androidx.lifecycle.lifecycleScope
 import com.core.fy.android.MainActivity
 import com.core.fy.android.databinding.ActivityLaunchBinding
-import io.core.common.base.component.activity.ReflectBindingActivity
+import io.core.ui.base.component.activity.ReflectBindingActivity
 import com.gyf.immersionbar.BarHide
 import com.gyf.immersionbar.ImmersionBar
 import kotlinx.coroutines.delay
@@ -13,13 +13,13 @@ import kotlinx.coroutines.launch
 
 /**
 # ██████████
-# █▄█████▄█
+# █▄█████▄�?
 # █▼▼▼▼▼
-# █
+# �?
 # █▲▲▲▲▲
 # ██████████
 # ██ ██
-# 注释的艺术，正在加载……
+# 注释的艺术，正在加载…�?
  * 2024/12/24 15:21
  * @description
  * @author Yuan

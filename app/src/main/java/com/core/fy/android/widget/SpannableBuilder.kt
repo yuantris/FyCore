@@ -22,7 +22,7 @@ import android.view.View
 import android.widget.TextView
 import androidx.annotation.ColorInt
 
-// ======================== 核心 DSL 构建器 ========================
+// ======================== 核心 DSL 构建�?========================
 class SpannableBuilder {
     private val spans = mutableListOf<SpanHolder>()
     private var currentPosition = 0
@@ -57,7 +57,7 @@ class SpannableBuilder {
     private data class SpanHolder(val content: String, val block: SpanConfig.() -> Unit)
 }
 
-// ======================== 类型安全配置类 ========================
+// ======================== 类型安全配置�?========================
 open class SpanConfig {
     internal val spans = mutableListOf<Any>()
 
@@ -85,7 +85,7 @@ open class SpanConfig {
 
     fun url(url: String) = addSpan(URLSpan(url))
 
-    // =============== 高级用法扩展点 ===============
+    // =============== 高级用法扩展�?===============
     // 自定义圆角背景色
     fun roundedBg(
         @ColorInt color: Int,
@@ -144,7 +144,7 @@ fun TextView.enableLinkMovementMethod() {
 
 // ======================== 完整使用示例 ========================
 /*
-// 在 Activity 中使用：
+// �?Activity 中使用：
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

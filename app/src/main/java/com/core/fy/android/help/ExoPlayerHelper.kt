@@ -8,8 +8,8 @@ import androidx.media3.datasource.cache.Cache
 import androidx.media3.datasource.cache.LeastRecentlyUsedCacheEvictor
 import androidx.media3.datasource.cache.SimpleCache
 import androidx.media3.exoplayer.ExoPlayer
-import io.core.appCtx
-import io.core.common.util.extensions.cool.GSON
+import io.core.base.appCtx
+import io.core.utils.extensions.cool.GSON
 import com.google.gson.reflect.TypeToken
 import java.io.File
 
@@ -35,14 +35,14 @@ object ExoPlayerHelper {
 
 
     /**
-     * Exoplayer 内置的缓存
+     * Exoplayer 内置的缓�?
      */
     private val cache: Cache by lazy {
         val databaseProvider = StandaloneDatabaseProvider(appCtx)
         return@lazy SimpleCache(
-            //Exoplayer的缓存路径
+            //Exoplayer的缓存路�?
             File(appCtx.externalCacheDir, "exoplayer"),
-            //100M的缓存
+            //100M的缓�?
             LeastRecentlyUsedCacheEvictor((100 * 1024 * 1024).toLong()),
             //记录缓存的数据库
             databaseProvider
@@ -50,8 +50,8 @@ object ExoPlayerHelper {
     }
 
     /**
-     * 通过kotlin扩展函数+反射实现CacheDataSource.Factory设置默认请求头
-     * 需要添加混淆规则 -keepclassmembers class com.google.android.exoplayer2.upstream.cache.CacheDataSource$Factory{upstreamDataSourceFactory;}
+     * 通过kotlin扩展函数+反射实现CacheDataSource.Factory设置默认请求�?
+     * 需要添加混淆规�?-keepclassmembers class com.google.android.exoplayer2.upstream.cache.CacheDataSource$Factory{upstreamDataSourceFactory;}
      * @param headers
      * @return
      */

@@ -17,7 +17,7 @@ abstract class PageDelegate(protected val readView: ReadView) {
 
     protected val context: Context = readView.context
 
-    //起始点
+    //起始�?
     protected val startX: Float get() = readView.startX
     protected val startY: Float get() = readView.startY
 
@@ -25,7 +25,7 @@ abstract class PageDelegate(protected val readView: ReadView) {
     protected val lastX: Float get() = readView.lastX
     protected val lastY: Float get() = readView.lastY
 
-    //触碰点
+    //触碰�?
     protected val touchX: Float get() = readView.touchX
     protected val touchY: Float get() = readView.touchY
 
@@ -142,18 +142,18 @@ abstract class PageDelegate(protected val readView: ReadView) {
     fun onDown() {
         //是否移动
         isMoved = false
-        //是否存在下一章
+        //是否存在下一�?
         noNext = false
         //是否正在执行动画
         isRunning = false
         //取消
         isCancel = false
-        //是下一章还是前一章
+        //是下一章还是前一�?
         setDirection(PageDirection.NONE)
     }
 
     /**
-     * 判断是否有上一页
+     * 判断是否有上一�?
      */
     fun hasPrev(): Boolean {
         val hasPrev = readView.pageFactory.hasPrev()
@@ -167,7 +167,7 @@ abstract class PageDelegate(protected val readView: ReadView) {
     }
 
     /**
-     * 判断是否有下一页
+     * 判断是否有下一�?
      */
     fun hasNext(): Boolean {
         val hasNext = readView.pageFactory.hasNext()

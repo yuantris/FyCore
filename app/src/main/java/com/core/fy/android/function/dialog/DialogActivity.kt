@@ -19,36 +19,36 @@ import com.core.fy.android.util.showDxMessage
 import com.core.fy.android.util.showDxNotification
 import com.core.fy.android.widget.buildSpannable
 import com.core.fy.android.widget.enableLinkMovementMethod
-import io.core.common.base.component.activity.ReflectBindingActivity
-import io.core.common.base.component.dialog.BasePopup
-import io.core.common.base.component.dialog.showCustomDialog
-import io.core.common.base.component.dialog.specific.BubbleDialog
-import io.core.common.util.CoreUtil
-import io.core.common.util.extensions.cool.dpToPx
-import io.core.common.util.extensions.cool.runDelayedMain
-import io.core.common.util.extensions.currentTimeMillis
-import io.core.common.util.extensions.logD
-import io.core.common.util.extensions.ui.getCompatColor
-import io.core.common.util.extensions.ui.onClick
-import io.core.common.util.extensions.ui.screenRealWidthPx
-import io.core.common.util.extensions.ui.showDialogFragment
-import io.core.common.util.extensions.ui.toast
-import io.core.common.util.tools.DrawableBuilder
-import io.core.common.util.tools.androidApiVersion
-import io.core.common.util.tools.androidVersion
+import io.core.ui.base.component.activity.ReflectBindingActivity
+import io.core.ui.base.component.dialog.BasePopup
+import io.core.ui.base.component.dialog.showCustomDialog
+import io.core.ui.base.component.dialog.specific.BubbleDialog
+import io.core.utils.CoreUtil
+import io.core.utils.extensions.cool.dpToPx
+import io.core.utils.extensions.cool.runDelayedMain
+import io.core.utils.extensions.currentTimeMillis
+import io.core.utils.extensions.logD
+import io.core.utils.extensions.ui.getCompatColor
+import io.core.utils.extensions.ui.onClick
+import io.core.utils.extensions.ui.screenRealWidthPx
+import io.core.utils.extensions.ui.showDialogFragment
+import io.core.utils.extensions.ui.toast
+import io.core.utils.tools.DrawableBuilder
+import io.core.utils.tools.androidApiVersion
+import io.core.utils.tools.androidVersion
 import io.core.engine.dialogs.showDialog
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 /**
 # ██████████
-# █▄█████▄█
+# █▄█████▄�?
 # █▼▼▼▼▼
-# █
+# �?
 # █▲▲▲▲▲
 # ██████████
 # ██ ██
-# 注释的艺术，正在加载……
+# 注释的艺术，正在加载…�?
  * 2024/12/25 13:43
  * @description
  * @author Yuan
@@ -87,7 +87,7 @@ class DialogActivity : ReflectBindingActivity<ActivityDialogBinding>() {
                         scaleType = ImageView.ScaleType.FIT_XY
                     })
                     okButton {
-                        CoreUtil.toast("已关闭")
+                        CoreUtil.toast("已关�?)
                     }
                 }
             }
@@ -197,7 +197,7 @@ class DialogActivity : ReflectBindingActivity<ActivityDialogBinding>() {
 
                     }
                     setOnDismissListener {
-                        toast("已关闭")
+                        toast("已关�?)
                     }
                 }
             }

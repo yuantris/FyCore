@@ -8,17 +8,17 @@ object AppPattern {
         Pattern.compile("<js>([\\w\\W]*?)</js>|@js:([\\w\\W]*)", Pattern.CASE_INSENSITIVE)
     val EXP_PATTERN: Pattern = Pattern.compile("\\{\\{([\\w\\W]*?)\\}\\}")
 
-    //匹配格式化后的图片格式
+    //匹配格式化后的图片格�?
     val imgPattern: Pattern = Pattern.compile("<img[^>]*src=\"([^\"]*(?:\"[^>]+\\})?)\"[^>]*>")
 
     //dataURL图片类型
     val dataUriRegex = Regex("data:.*?;base64,(.*)")
 
-    val nameRegex = Regex("\\s+作\\s*者.*|\\s+\\S+\\s+著")
-    val authorRegex = Regex("^\\s*作\\s*者[:：\\s]+|\\s+著")
+    val nameRegex = Regex("\\s+作\\s*�?*|\\s+\\S+\\s+�?)
+    val authorRegex = Regex("^\\s*作\\s*者[:：\\s]+|\\s+�?)
     val fileNameRegex = Regex("[\\\\/:*?\"<>|.]")
     val splitGroupRegex = Regex("[,;，；]")
-    val titleNumPattern: Pattern = Pattern.compile("(第)(.+?)(章)")
+    val titleNumPattern: Pattern = Pattern.compile("(�?(.+?)(�?")
 
     //书源调试信息中的各种符号
     val debugMessageSymbolRegex = Regex("[⇒◇┌└≡]")
@@ -29,7 +29,7 @@ object AppPattern {
     val archiveFileRegex = Regex(".*\\.(zip|rar|7z)$", RegexOption.IGNORE_CASE)
 
     /**
-     * 所有标点
+     * 所有标�?
      */
     val bdRegex = Regex("(\\p{P})+")
 
@@ -39,7 +39,7 @@ object AppPattern {
     val rnRegex = Regex("[\\r\\n]")
 
     /**
-     * 不发音段落判断
+     * 不发音段落判�?
      */
     val notReadAloudRegex = Regex("^(\\s|\\p{C}|\\p{P}|\\p{Z}|\\p{S})+$")
 

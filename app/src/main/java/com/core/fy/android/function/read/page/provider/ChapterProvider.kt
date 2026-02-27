@@ -22,28 +22,28 @@ import com.core.fy.android.help.config.ReadBookConfig
 import com.core.fy.android.help.textHeight
 import com.core.fy.android.room.entity.Book
 import com.core.fy.android.room.entity.BookChapter
-import io.core.appCtx
-import io.core.common.util.extensions.cool.dpToPx
-import io.core.common.util.extensions.cool.fastSum
-import io.core.common.util.extensions.cool.isContentScheme
-import io.core.common.util.extensions.cool.spToPx
-import io.core.common.util.extensions.logD
-import io.core.common.util.extensions.ui.isPad
-import io.core.common.util.tools.RealPathUtil
+import io.core.base.appCtx
+import io.core.utils.extensions.cool.dpToPx
+import io.core.utils.extensions.cool.fastSum
+import io.core.utils.extensions.cool.isContentScheme
+import io.core.utils.extensions.cool.spToPx
+import io.core.utils.extensions.logD
+import io.core.utils.extensions.ui.isPad
+import io.core.utils.tools.RealPathUtil
 import kotlinx.coroutines.CoroutineScope
 import java.util.LinkedList
 import java.util.Locale
 
 /**
- * 解析内容生成章节和页面
+ * 解析内容生成章节和页�?
  */
 @Suppress("DEPRECATION", "ConstPropertyName")
 object ChapterProvider {
     //用于图片字的替换
-    const val srcReplaceChar = "▩"
+    const val srcReplaceChar = "�?
 
-    //用于评论按钮的替换
-    const val reviewChar = "▨"
+    //用于评论按钮的替�?
+    const val reviewChar = "�?
 
     const val indentChar = "　"
 
@@ -192,7 +192,7 @@ object ChapterProvider {
                 if (textPage.height < durY) {
                     textPage.height = durY
                 }
-                textPage.text = stringBuilder.toString().ifEmpty { "本页无文字内容" }
+                textPage.text = stringBuilder.toString().ifEmpty { "本页无文字内�? }
                 stringBuilder.clear()
                 textPages.add(TextPage())
                 durY = 0f
@@ -223,21 +223,21 @@ object ChapterProvider {
                             if (textPage.leftLineSize == 0) {
                                 textPage.leftLineSize = textPage.lineSize
                             }
-                            textPage.text = stringBuilder.toString().ifEmpty { "本页无文字内容" }
+                            textPage.text = stringBuilder.toString().ifEmpty { "本页无文字内�? }
                             stringBuilder.clear()
                             textPages.add(TextPage())
                         }
-                        // 双页的 durY 不正确，可能会小于实际高度
+                        // 双页�?durY 不正确，可能会小于实际高�?
                         if (textPage.height < durY) {
                             textPage.height = durY
                         }
                         durY = 0f
                     }
 
-                    // 图片竖直方向居中：调整 Y 坐标
+                    // 图片竖直方向居中：调�?Y 坐标
                     if (height < visibleHeight) {
                         val adjustHeight = (visibleHeight - height) / 2f
-                        durY = adjustHeight // 将 Y 坐标设置为居中位置
+                        durY = adjustHeight // �?Y 坐标设置为居中位�?
                     }
                 }
 
@@ -261,11 +261,11 @@ object ChapterProvider {
                             if (textPage.leftLineSize == 0) {
                                 textPage.leftLineSize = textPage.lineSize
                             }
-                            textPage.text = stringBuilder.toString().ifEmpty { "本页无文字内容" }
+                            textPage.text = stringBuilder.toString().ifEmpty { "本页无文字内�? }
                             stringBuilder.clear()
                             textPages.add(TextPage())
                         }
-                        // 双页的 durY 不正确，可能会小于实际高度
+                        // 双页�?durY 不正确，可能会小于实际高�?
                         if (textPage.height < durY) {
                             textPage.height = durY
                         }
@@ -287,7 +287,7 @@ object ChapterProvider {
                 ImageColumn(start = x + start, end = x + end, src = src)
             )
             calcTextLinePosition(textPages, textLine, stringBuilder.length)
-            stringBuilder.append(" ") // 确保翻页时索引计算正确
+            stringBuilder.append(" ") // 确保翻页时索引计算正�?
             textPages.last().addLine(textLine)
         }
         return absStartX to durY + textHeight * paragraphSpacing / 10f
@@ -318,7 +318,7 @@ object ChapterProvider {
             StaticLayout(text, textPaint, visibleWidth, Layout.Alignment.ALIGN_NORMAL, 0f, 0f, true)
         }
         var durY = when {
-            //标题y轴居中
+            //标题y轴居�?
             emptyContent && textPages.size == 1 -> {
                 val textPage = textPages.last()
                 if (textPage.lineSize == 0) {
@@ -353,7 +353,7 @@ object ChapterProvider {
                     textPage.leftLineSize = textPage.lineSize
                     absStartX = viewWidth / 2 + paddingLeft
                 } else {
-                    //当前页面结束,设置各种值
+                    //当前页面结束,设置各种�?
                     if (textPage.leftLineSize == 0) {
                         textPage.leftLineSize = textPage.lineSize
                     }
@@ -375,7 +375,7 @@ object ChapterProvider {
             val desiredWidth = widths.fastSum()
             when {
                 lineIndex == 0 && layout.lineCount > 1 && !isTitle -> {
-                    //第一行 非标题
+                    //第一�?非标�?
                     textLine.text = lineText
                     addCharsToLineFirst(
                         book, absStartX, textLine, words,
@@ -384,9 +384,9 @@ object ChapterProvider {
                 }
 
                 lineIndex == layout.lineCount - 1 -> {
-                    //最后一行
+                    //最后一�?
                     textLine.text = lineText
-                    //标题x轴居中
+                    //标题x轴居�?
                     val startX = if (
                         isTitle &&
                         (ReadBookConfig.isMiddleTitle || emptyContent || isVolumeTitle)
@@ -413,7 +413,7 @@ object ChapterProvider {
                             startX, false, widths, srcList
                         )
                     } else {
-                        //中间行
+                        //中间�?
                         textLine.text = lineText
                         addCharsToLineMiddle(
                             book, absStartX, textLine, words,
@@ -460,7 +460,7 @@ object ChapterProvider {
     }
 
     /**
-     * 有缩进,两端对齐
+     * 有缩�?两端对齐
      */
     private suspend fun addCharsToLineFirst(
         book: Book,
@@ -504,7 +504,7 @@ object ChapterProvider {
     }
 
     /**
-     * 无缩进,两端对齐
+     * 无缩�?两端对齐
      */
     private suspend fun addCharsToLineMiddle(
         book: Book,
@@ -815,7 +815,7 @@ object ChapterProvider {
             } else {
                 viewWidth - paddingLeft - paddingRight
             }
-            //留1dp画最后一行下划线
+            //�?dp画最后一行下划线
             visibleHeight = viewHeight - paddingTop - paddingBottom
             visibleRight = viewWidth - paddingRight
             visibleBottom = paddingTop + visibleHeight

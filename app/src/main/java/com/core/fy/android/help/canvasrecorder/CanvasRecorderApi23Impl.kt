@@ -3,7 +3,7 @@ package com.core.fy.android.help.canvasrecorder
 import android.graphics.Canvas
 import android.graphics.Picture
 import com.core.fy.android.help.canvasrecorder.pools.PicturePool
-import io.core.common.helper.pool.synchronized
+import io.core.utils.pool.synchronized
 
 class CanvasRecorderApi23Impl : BaseCanvasRecorder() {
 

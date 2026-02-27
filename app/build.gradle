@@ -53,23 +53,7 @@ android {
     }
 }
 
-// 选择依赖版本
-// libs.versions.local.get()  本地模块
-// libs.versions.jitpack.get() GitHub Jitpack版本
-// libs.versions.package.get() GitHub package版本
-def version = libs.versions.local.get()
-
-ext {
-    fycoreDependencies = [
-            jitpack: libs.fycore.github,
-            package: libs.fycore.git.package,
-            local  : project(':modules:core_feature')
-    ]
-}
-
 dependencies {
-
-    // implementation fileTree(dir: "libs", include: ["*.aar"])
 
     implementation libs.core.ktx
     implementation libs.appcompat
@@ -79,9 +63,12 @@ dependencies {
     androidTestImplementation libs.ext.junit
     androidTestImplementation libs.espresso.core
     implementation libs.core.splashscreen
-    implementation fycoreDependencies[version]
-    debugImplementation libs.leakcanary.android
     implementation libs.annotations
+
+    // FyCore 模块依赖
+    implementation project(':modules:core-nav')
+    
+    debugImplementation libs.leakcanary.android
 
     implementation libs.room.ktx
     //noinspection KaptUsageInsteadOfKsp
@@ -92,14 +79,11 @@ dependencies {
     implementation(libs.media.media)
     // For media playback using ExoPlayer
     implementation(libs.media3.exoplayer)
-    // For exposing and controlling media sessions
-    //implementation "androidx.media3:media3-session:$media3_version"
 
     //Glide
     implementation(libs.glide)
 
     // 动画解析库：https://github.com/airbnb/lottie-android
-    // 动画资源：https://lottiefiles.com、https://icons8.com/animated-icons
     implementation libs.lottie
     implementation libs.xxpermissions
 
@@ -115,9 +99,6 @@ dependencies {
 
     // https://github.com/Tencent/MMKV
     implementation libs.mmkv
-
-    // https://github.com/mmin18/RealtimeBlurView
-    //implementation libs.realtimeblurview
 
     // https://github.com/arthenica/ffmpeg-kit/tree/main/android
     implementation libs.ffmpeg.kit.full

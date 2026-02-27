@@ -1,7 +1,7 @@
 package com.core.fy.android.help
 
 import android.os.SystemClock
-import io.core.common.util.tools.buildMainHandler
+import io.core.utils.tools.buildMainHandler
 import kotlin.math.max
 
 @Suppress("MemberVisibilityCanBePrivate")

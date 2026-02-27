@@ -33,8 +33,8 @@ import com.core.fy.android.help.canvasrecorder.pools.BitmapPool
 import com.core.fy.android.help.config.AppConfig
 import com.core.fy.android.help.config.ReadBookConfig
 import com.core.fy.android.help.throttle
-import io.core.common.util.extensions.ui.activity
-import io.core.common.util.extensions.ui.invisible
+import io.core.utils.extensions.ui.activity
+import io.core.utils.extensions.ui.invisible
 import java.text.BreakIterator
 import java.util.Locale
 import kotlin.math.abs
@@ -63,7 +63,7 @@ class ReadView(context: Context, attrs: AttributeSet? = null) :
     private var pressDown = false
     private var isMove = false
 
-    //起始点
+    //起始�?
     var startX: Float = 0f
     var startY: Float = 0f
 
@@ -71,7 +71,7 @@ class ReadView(context: Context, attrs: AttributeSet? = null) :
     var lastX: Float = 0f
     var lastY: Float = 0f
 
-    //触碰点
+    //触碰�?
     var touchX: Float = 0f
     var touchY: Float = 0f
 
@@ -274,7 +274,7 @@ class ReadView(context: Context, attrs: AttributeSet? = null) :
     }
 
     /**
-     * 保存开始位置
+     * 保存开始位�?
      */
     fun setStartPoint(x: Float, y: Float, invalidate: Boolean = true) {
         startX = x
@@ -469,7 +469,7 @@ class ReadView(context: Context, attrs: AttributeSet? = null) :
     }
 
     /**
-     * 销毁事件
+     * 销毁事�?
      */
     fun onDestroy() {
         pageDelegate?.onDestroy()
@@ -479,7 +479,7 @@ class ReadView(context: Context, attrs: AttributeSet? = null) :
     }
 
     /**
-     * 翻页动画完成后事件
+     * 翻页动画完成后事�?
      * @param direction 翻页方向
      */
     fun fillPage(direction: PageDirection): Boolean {
@@ -539,8 +539,8 @@ class ReadView(context: Context, attrs: AttributeSet? = null) :
 
     /**
      * 更新阅读内容
-     * @param relativePosition 相对位置 -1 上一页 0 当前页 1 下一页
-     * @param resetPageOffset 滚动阅读是是否重置位置
+     * @param relativePosition 相对位置 -1 上一�?0 当前�?1 下一�?
+     * @param resetPageOffset 滚动阅读是是否重置位�?
      */
     override fun upContent(relativePosition: Int, resetPageOffset: Boolean) {
         post {
@@ -600,7 +600,7 @@ class ReadView(context: Context, attrs: AttributeSet? = null) :
     }
 
     /**
-     * 更新背景透明度
+     * 更新背景透明�?
      */
     fun upBgAlpha() {
         curPage.upBgAlpha()
@@ -627,7 +627,7 @@ class ReadView(context: Context, attrs: AttributeSet? = null) :
     }
 
     /**
-     * 从选择位置开始朗读
+     * 从选择位置开始朗�?
      */
     suspend fun aloudStartSelect() {
         val selectStartPos = curPage.selectStartPos
@@ -645,7 +645,7 @@ class ReadView(context: Context, attrs: AttributeSet? = null) :
     }
 
     /**
-     * @return 选择的文本
+     * @return 选择的文�?
      */
     fun getSelectText(): String {
         return curPage.selectedText

@@ -7,24 +7,24 @@ import com.core.fy.android.databinding.ActivityEventBinding
 import com.gyf.immersionbar.ImmersionBar
 import com.hjq.permissions.Permission
 import com.hjq.permissions.XXPermissions
-import io.core.common.base.component.activity.ReflectBindingActivity
-import io.core.common.base.component.dialog.specific.LoadingAir
-import io.core.common.helper.LocationDetail
-import io.core.common.helper.LocationFailure
-import io.core.common.helper.LocationFetcher
-import io.core.common.helper.OnLocationCallback
-import io.core.common.util.extensions.cool.GSON
-import io.core.common.util.extensions.cool.observeEvent
-import io.core.common.util.extensions.cool.postEvent
-import io.core.common.util.extensions.currentTimeMillis
-import io.core.common.util.extensions.logD
-import io.core.common.util.extensions.logE
-import io.core.common.util.extensions.ui.getCompatColor
-import io.core.common.util.extensions.ui.onDebouncedClick
-import io.core.common.util.extensions.ui.toast
-import io.core.common.util.tools.DrawableBuilder
-import io.core.other.LiveDataPro
-import io.core.widget.view.StatefulImageViewV2
+import io.core.ui.base.component.activity.ReflectBindingActivity
+import io.core.ui.base.component.dialog.specific.LoadingAir
+import io.core.utils.LocationDetail
+import io.core.utils.LocationFailure
+import io.core.utils.LocationFetcher
+import io.core.utils.OnLocationCallback
+import io.core.utils.extensions.cool.GSON
+import io.core.utils.extensions.cool.observeEvent
+import io.core.utils.extensions.cool.postEvent
+import io.core.utils.extensions.currentTimeMillis
+import io.core.utils.extensions.logD
+import io.core.utils.extensions.logE
+import io.core.utils.extensions.ui.getCompatColor
+import io.core.utils.extensions.ui.onDebouncedClick
+import io.core.utils.extensions.ui.toast
+import io.core.utils.tools.DrawableBuilder
+import io.core.nav.other.LiveDataPro
+import io.core.ui.widget.view.StatefulImageViewV2
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -44,7 +44,7 @@ class EventActivity : ReflectBindingActivity<ActivityEventBinding>() {
 
     override fun setListener() {
         super.setListener()
-        "个数：${binding.root.childCount}".logD()
+        "个数�?{binding.root.childCount}".logD()
         LocationFetcher.DEBUG = true
         binding.apply {
 

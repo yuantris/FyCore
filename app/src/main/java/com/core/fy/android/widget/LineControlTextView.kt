@@ -40,7 +40,7 @@ class LineControlTextView @JvmOverloads constructor(
         super.setMaxLines(Int.MAX_VALUE) // 使用内置的maxLines管理换行
     }
 
-    // region 行操作核心方法
+    // region 行操作核心方�?
     fun addSingleLine(text: String) = addLineInternal(text, null)
 
     fun addStyledLine(text: String, style: (SpannableString) -> Unit) {

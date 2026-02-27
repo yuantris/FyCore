@@ -9,9 +9,9 @@ import com.kongzue.dialogx.dialogs.PopNotification
 import com.kongzue.dialogx.interfaces.DialogLifecycleCallback
 import com.kongzue.dialogx.interfaces.OnBindView
 import com.kongzue.dialogx.style.KongzueStyle
-import io.core.common.helper.coroutine.info.GlobalCoroutine
+import io.core.utils.coroutine.info.GlobalCoroutine
 
-// DSL 配置类
+// DSL 配置�?
 class DialogXConfig {
     var title: String = "温馨提示"
     var content: String = ""
@@ -36,7 +36,7 @@ class NotificationConfig {
 
 class CustomDialogConfig {
     var layoutResId: Int = 0 // 默认布局
-    var onBindView: (CustomDialog, View) -> Unit = { _, _ -> } // 绑定视图的回调
+    var onBindView: (CustomDialog, View) -> Unit = { _, _ -> } // 绑定视图的回�?
 }
 
 
