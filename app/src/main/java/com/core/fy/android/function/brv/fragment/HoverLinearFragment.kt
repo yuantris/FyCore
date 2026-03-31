@@ -7,11 +7,11 @@ import com.core.fy.android.databinding.FragmentBrvMultitypeBinding
 import com.core.fy.android.function.brv.BrvActivity
 import com.core.fy.android.function.brv.model.HoverHeaderModel
 import com.core.fy.android.function.brv.model.SimpleModel
+import com.drake.brv.listener.OnHoverAttachListener
+import com.drake.brv.utils.linear
+import com.drake.brv.utils.setup
 import io.core.common.base.component.fragment.ReflectBindingFragment
 import io.core.common.util.CoreUtil.Companion.toast
-import io.core.engine.brv.listener.OnHoverAttachListener
-import io.core.engine.brv.utils.linear
-import io.core.engine.brv.utils.setup
 
 /**
 # ██████████

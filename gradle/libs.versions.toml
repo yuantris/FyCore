@@ -46,6 +46,7 @@ shapeview = "9.3"
 shapedrawable = "3.3"
 refresh-layout = "2.0.5"
 ffmpeg-kit-full = "6.0-2"
+lifecycle-service = "2.6.1"
 # --------- # --------- #
 [libraries]
 # 项目build.gradle 所需依赖信息
@@ -79,6 +80,8 @@ lifecycle-livedata-ktx = { module = "androidx.lifecycle:lifecycle-livedata-ktx",
 preference-ktx = { module = "androidx.preference:preference-ktx", version.ref = "preference" }
 lifecycle-viewmodel-ktx = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "lifecycle-ktx" }
 lifecycle-runtime-ktx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "lifecycle-ktx" }
+lifecycle-service = { module = "androidx.lifecycle:lifecycle-service", version.ref = "lifecycle-ktx" }
+lifecycle-process = { module = "androidx.lifecycle:lifecycle-process", version.ref = "lifecycle-ktx" }
 kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin-version" }
 room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
 room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
@@ -107,5 +110,6 @@ ffmpeg-kit-full = { module = "com.arthenica:ffmpeg-kit-full", version.ref = "ffm
 refresh-footer-classics = { module = "io.github.scwang90:refresh-footer-classics", version.ref = "refresh-layout" }
 refresh-layout-kernel = { module = "io.github.scwang90:refresh-layout-kernel", version.ref = "refresh-layout" }
 refresh-header-material = { module = "io.github.scwang90:refresh-header-material", version.ref = "refresh-layout" }
+
 
 

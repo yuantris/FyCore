@@ -1,6 +1,6 @@
 package com.core.fy.android.function.brv.model
 
-import io.core.engine.brv.item.ItemHover
+import com.drake.brv.item.ItemHover
 
 
 class HoverHeaderModel : ItemHover {

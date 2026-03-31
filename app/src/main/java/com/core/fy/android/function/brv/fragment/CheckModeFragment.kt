@@ -1,16 +1,18 @@
 package com.core.fy.android.function.brv.fragment
 
 import android.view.View
+import androidx.databinding.adapters.CompoundButtonBindingAdapter.setChecked
+import com.blankj.utilcode.util.DeviceUtils.getModel
 import com.core.fy.android.R
 import com.core.fy.android.databinding.FragmentBrvCheckmodeBinding
 import com.core.fy.android.function.brv.BrvActivity
 import com.core.fy.android.function.brv.model.CheckModel
+import com.drake.brv.BindingAdapter
+import com.drake.brv.utils.bindingAdapter
+import com.drake.brv.utils.linear
+import com.drake.brv.utils.setup
 import io.core.common.base.component.fragment.ReflectBindingFragment
 import io.core.common.util.processNavigationBar
-import io.core.engine.brv.BindingAdapter
-import io.core.engine.brv.utils.bindingAdapter
-import io.core.engine.brv.utils.linear
-import io.core.engine.brv.utils.setup
 
 /**
 # ██████████

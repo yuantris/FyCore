@@ -2,7 +2,9 @@ package com.core.fy.android.function.brv
 
 import android.os.Bundle
 import android.view.ViewGroup
+import androidx.databinding.DataBindingUtil.getBinding
 import androidx.recyclerview.widget.RecyclerView
+import com.blankj.utilcode.util.DeviceUtils.getModel
 import com.core.fy.android.R
 import com.core.fy.android.databinding.ActivityBrvBinding
 import com.core.fy.android.databinding.ItemTabBinding
@@ -13,6 +15,9 @@ import com.core.fy.android.function.brv.fragment.HoverLinearFragment
 import com.core.fy.android.function.brv.fragment.MultiTypeFragment
 import com.core.fy.android.interfaces.FragmentPagerAdapter
 import com.core.fy.android.model.Tab
+import com.drake.brv.utils.bindingAdapter
+import com.drake.brv.utils.linear
+import com.drake.brv.utils.setup
 import io.core.common.base.component.activity.ReflectBindingActivity
 import io.core.common.base.component.fragment.BaseFragment
 import io.core.common.util.extensions.ui.notifyAllDataChanged
@@ -21,9 +26,6 @@ import io.core.common.util.extensions.ui.getCompatColor
 import io.core.common.util.extensions.ui.hide
 import io.core.common.util.extensions.ui.screenWidthPx
 import io.core.common.util.extensions.ui.show
-import io.core.engine.brv.utils.bindingAdapter
-import io.core.engine.brv.utils.linear
-import io.core.engine.brv.utils.setup
 
 class BrvActivity : ReflectBindingActivity<ActivityBrvBinding>() {
 

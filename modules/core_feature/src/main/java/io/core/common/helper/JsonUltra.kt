@@ -5,8 +5,7 @@ import kotlinx.serialization.json.*
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
-import java.lang.ref.SoftReference
-import java.util.WeakHashMap
+import java.util.Collections
 
 /**
  * ██╗  ██╗███████╗██╗   ██╗    ╔═════════════════╗
@@ -28,6 +27,9 @@ class JsonUltra private constructor(
 ) : AutoCloseable {
     // region 核心解析功能
     operator fun get(path: String): JsonUltra? {
+        if (path.isEmpty()) {
+            throw IllegalArgumentException("路径不能为空")
+        }
         // 新增路径缓存优化
         val cachedPath = pathCache.getOrPut(path) { parseCalibratedPath(path) }
         var current: JsonElement = jsonElement
@@ -48,6 +50,9 @@ class JsonUltra private constructor(
      * 用于Java环境调用者已知存在此节点的情况下使用，如{code,message,data}结构直接取code
      */
     fun getNotNull(path: String): JsonUltra {
+        if (path.isEmpty()) {
+            throw IllegalArgumentException("路径不能为空")
+        }
         val cachedPath = pathCache.getOrPut(path) { parseCalibratedPath(path) }
         var current: JsonElement = jsonElement
         val processedPath = mutableListOf<String>()
@@ -503,27 +508,41 @@ class JsonUltra private constructor(
     // TODO: 2025/3/14 16:59 新增如下默认解析方法
     /** 将所有没有被单引号包裹的key，增加单引号包裹，降低输入Path错误率*/
     private fun calibrationPath(path: String): String {
-        val element = Json.parseToJsonElement(Json.encodeToString(jsonElement))
-        val allKeys = getAllKeysCached(element)
+        if (path.isEmpty()) return path
+        
+        // 如果路径已经包含引号，直接返回
+        if (path.contains("'") || path.contains("\"")) return path
+        
+        val allKeys = getAllKeysCached()
+        if (allKeys.isEmpty()) return path
 
         var modifiedPath = path
+        
+        // 使用精确匹配：确保 key 是独立的单词，不会被部分匹配
         allKeys.sortedByDescending { it.length }.forEach { key ->
-            modifiedPath = modifiedPath.replace(
-                Regex("(?<!')${Regex.escape(key)}(?!')"),
-                "'$key'"
-            )
+            val escaped = Regex.escape(key)
+            // 使用 \b 单词边界确保完整匹配，且不在引号内
+            val pattern = """(?x)
+                (?<![a-zA-Z0-9_])   # 前面不能是字母数字下划线
+                $escaped            # 匹配 key
+                (?![a-zA-Z0-9_])   # 后面不能是字母数字下划线
+            """
+            modifiedPath = modifiedPath.replace(Regex(pattern), "'$key'")
         }
         return modifiedPath
     }
 
-    private fun getAllKeysCached(element: JsonElement): Set<String> {
-        val currentHash = jsonElement.hashCode().toString()
-
-        return keysCache.getOrPut(currentHash) {
-            SoftReference(KeyCache(currentHash.toInt(), getAllKeys(element)))
-        }?.get()?.takeIf { it.jsonHash == currentHash.toInt() }?.keys ?: run {
-            val newKeys = getAllKeys(element)
-            keysCache[currentHash] = SoftReference(KeyCache(currentHash.toInt(), newKeys))
+    private fun getAllKeysCached(): Set<String> {
+        val currentHash = jsonElement.hashCode()
+        
+        return keysCache[currentHash] ?: run {
+            val newKeys = getAllKeys(jsonElement)
+            keysCache[currentHash] = newKeys
+            // 限制缓存大小
+            if (keysCache.size > 50) {
+                val oldest = keysCache.keys.firstOrNull()
+                oldest?.let { keysCache.remove(it) }
+            }
             newKeys
         }
     }
@@ -533,7 +552,12 @@ class JsonUltra private constructor(
         val keys = mutableSetOf<String>()
         val stack = ArrayDeque<JsonElement>().apply { add(jsonElement) }
 
-        while (stack.isNotEmpty()) {
+        // 添加深度限制，防止无限递归
+        var depth = 0
+        val maxDepth = 50
+        
+        while (stack.isNotEmpty() && depth < maxDepth) {
+            depth++
             when (val current = stack.removeLast()) {
                 is JsonObject -> {
                     current.keys.forEach { key ->
@@ -554,25 +578,14 @@ class JsonUltra private constructor(
         return keys
     }
 
-    private data class KeyCache(
-        val jsonHash: Int,
-        val keys: Set<String>
-    )
-
-    private val keysCache = WeakHashMap<String, SoftReference<KeyCache>>()
-
-    // 结合软引用，避免内存泄漏
-    private val pathCache = object : LinkedHashMap<String, List<String>>(
-        100, 0.75f, true
-    ) {
-        private val weakMap = WeakHashMap<String, SoftReference<List<String>>>()
-
-        override fun get(key: String): List<String> {
-            return weakMap[key]?.get() ?: parseCalibratedPath(key).also {
-                weakMap[key] = SoftReference(it)
-            }
+    private val keysCache = object : LinkedHashMap<Int, Set<String>>(100, 0.75f, true) {
+        override fun removeEldestEntry(eldest: MutableMap.MutableEntry<Int, Set<String>>): Boolean {
+            return size > 50
         }
+    }
 
+    // 改进的 LRU 路径缓存
+    private val pathCache = object : LinkedHashMap<String, List<String>>(100, 0.75f, true) {
         override fun removeEldestEntry(eldest: MutableMap.MutableEntry<String, List<String>>): Boolean {
             return size > 100
         }
@@ -599,25 +612,57 @@ class JsonUltra private constructor(
     }
 
     private fun parsePath(path: String): List<String> {
-        return path.split(Regex("""(?<!\\)\.(?=(?:[^"']*["'][^"']*["'])*[^"']*$)""")) // 新增转义点号支持
-            .flatMap { segment ->
-                val processed = mutableListOf<String>()
-                var current = segment.replace("\\\\.", ".") // 处理转义点号
-
-                while (current.isNotEmpty()) {
-                    when {
-                        current.startsWith('[') -> handleArrayNotation(current, processed)
-                        current.startsWith('\'') || current.startsWith('"') -> handleQuotedSegment(
-                            current,
-                            processed
-                        )
-
-                        else -> handlePlainSegment(current, processed)
-                    }.let { current = it }
+        if (path.isEmpty()) return emptyList()
+        
+        val segments = mutableListOf<String>()
+        var remaining = path
+        
+        while (remaining.isNotEmpty()) {
+            when {
+                // 处理数组索引 [0]
+                remaining.startsWith('[') -> {
+                    val end = remaining.indexOf(']')
+                    if (end == -1) {
+                        throw IllegalArgumentException("未闭合的括号: ${remaining.take(20)}")
+                    }
+                    segments.add(remaining.substring(0, end + 1))
+                    remaining = remaining.substring(end + 1)
                 }
-                processed
+                // 处理带引号的字符串 'key' 或 "key"
+                remaining.startsWith('\'') || remaining.startsWith('"') -> {
+                    val quote = remaining[0]
+                    val end = remaining.indexOf(quote, 1)
+                    if (end == -1) {
+                        throw IllegalArgumentException("未闭合的引号: ${remaining.take(20)}")
+                    }
+                    segments.add(remaining.substring(0, end + 1))
+                    remaining = remaining.substring(end + 1)
+                }
+                // 跳过点号
+                remaining.startsWith('.') -> {
+                    remaining = remaining.substring(1)
+                }
+                // 处理普通段
+                else -> {
+                    val nextSpecial = remaining.indexOfFirst { it == '.' || it == '[' || it == '\'' || it == '"' }
+                    when (nextSpecial) {
+                        -1 -> {
+                            segments.add(remaining)
+                            remaining = ""
+                        }
+                        0 -> {
+                            // 未知字符，跳过
+                            remaining = remaining.substring(1)
+                        }
+                        else -> {
+                            segments.add(remaining.substring(0, nextSpecial))
+                            remaining = remaining.substring(nextSpecial)
+                        }
+                    }
+                }
             }
-            .filter { it.isNotEmpty() }
+        }
+        return segments.filter { it.isNotEmpty() }
     }
 
     // 新增三种路径段处理策略
@@ -666,17 +711,30 @@ class JsonUltra private constructor(
     private fun String.removeQuotes(): String = replace(Regex("^['\"]|['\"]$"), "")
 
     private fun handleArray(element: JsonElement, segment: ParsedSegment): JsonElement? {
+        val index = segment.index
+        if (index == null || index < 0) return null
+        
         return when {
             // 处理纯数组语法 (例如 "[0]")
             segment.key.isEmpty() && element is JsonArray -> {
-                element.getOrNull(segment.index ?: return null)
+                if (index >= element.size) {
+                    throw IllegalArgumentException("数组索引越界: 索引 $index >= 数组大小 ${element.size}")
+                }
+                element.getOrNull(index)
             }
 
             // 处理对象中的数组 (例如 "books[0]")
             else -> (element as? JsonObject)
                 ?.get(segment.key)
-                ?.takeIf { it is JsonArray }
-                ?.let { (it as JsonArray).getOrNull(segment.index ?: return null) }
+                ?.let { arrElement ->
+                    if (arrElement !is JsonArray) {
+                        throw IllegalArgumentException("期望数组类型，实际为: ${arrElement::class.simpleName}")
+                    }
+                    if (index >= arrElement.size) {
+                        throw IllegalArgumentException("数组索引越界: 索引 $index >= 数组大小 ${arrElement.size}")
+                    }
+                    arrElement.getOrNull(index)
+                }
         }
     }
 

@@ -4,12 +4,16 @@ import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.os.Build
 import androidx.core.graphics.createBitmap
+import androidx.databinding.DataBindingUtil.getBinding
 import androidx.lifecycle.lifecycleScope
+import com.blankj.utilcode.util.DeviceUtils.getModel
 import com.core.fy.android.MainActivity
 import com.core.fy.android.R
 import com.core.fy.android.databinding.FragmentBlankBinding
 import com.core.fy.android.databinding.ItemSingleTextBinding
 import com.core.fy.android.ui.receiver.TimeBatteryReceiver
+import com.drake.brv.utils.linear
+import com.drake.brv.utils.setup
 import io.core.appCtx
 import io.core.common.base.component.fragment.ReflectBindingFragment
 import io.core.common.helper.coroutine.Coroutine
@@ -20,8 +24,6 @@ import io.core.common.util.extensions.cool.runDelayedMain
 import io.core.common.util.extensions.logI
 import io.core.common.util.extensions.ui.getCompatColor
 import io.core.common.util.log.v
-import io.core.engine.brv.utils.linear
-import io.core.engine.brv.utils.setup
 import io.core.other.IntentData
 import io.core.widget.view.LoadingView
 import io.core.widget.view.RotateLoading

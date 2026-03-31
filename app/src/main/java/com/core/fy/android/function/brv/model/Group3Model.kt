@@ -1,6 +1,6 @@
 package com.core.fy.android.function.brv.model
 
-import io.core.engine.brv.item.ItemExpand
+import com.drake.brv.item.ItemExpand
 
 
 open class Group3Model(

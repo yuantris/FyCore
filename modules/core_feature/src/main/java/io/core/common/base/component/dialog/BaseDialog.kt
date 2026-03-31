@@ -63,7 +63,7 @@ open class BaseDialog(context: Context, @StyleRes themeResId: Int = R.style.Base
     DialogInterface.OnCancelListener, DialogInterface.OnDismissListener {
 
     private val listeners: ListenersWrapper<BaseDialog> = ListenersWrapper(this)
-    private val lifecycle: LifecycleRegistry = LifecycleRegistry(this)
+    private val lifecycleRegistry: LifecycleRegistry = LifecycleRegistry(this)
     private var showListeners: MutableList<OnShowListener?>? = null
     private var cancelListeners: MutableList<OnCancelListener?>? = null
     private var dismissListeners: MutableList<OnDismissListener?>? = null
@@ -535,7 +535,7 @@ open class BaseDialog(context: Context, @StyleRes themeResId: Int = R.style.Base
      * [DialogInterface.OnShowListener]
      */
     override fun onShow(dialog: DialogInterface?) {
-        lifecycle.handleLifecycleEvent(Lifecycle.Event.ON_RESUME)
+        lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_RESUME)
         showListeners?.let {
             for (i in it.indices) {
                 it[i]?.onShow(this)
@@ -558,7 +558,7 @@ open class BaseDialog(context: Context, @StyleRes themeResId: Int = R.style.Base
      * [DialogInterface.OnDismissListener]
      */
     override fun onDismiss(dialog: DialogInterface?) {
-        lifecycle.handleLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+        lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_DESTROY)
         dismissListeners?.let {
             for (i in it.indices) {
                 it[i]?.onDismiss(this)
@@ -568,17 +568,17 @@ open class BaseDialog(context: Context, @StyleRes themeResId: Int = R.style.Base
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        lifecycle.handleLifecycleEvent(Lifecycle.Event.ON_CREATE)
+        lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_CREATE)
     }
 
     override fun onStart() {
         super.onStart()
-        lifecycle.handleLifecycleEvent(Lifecycle.Event.ON_START)
+        lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_START)
     }
 
     override fun onStop() {
         super.onStop()
-        lifecycle.handleLifecycleEvent(Lifecycle.Event.ON_STOP)
+        lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_STOP)
     }
 
     @Suppress("UNCHECKED_CAST")

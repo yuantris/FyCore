@@ -2,7 +2,7 @@ package com.core.fy.android.function.brv.model
 
 import androidx.databinding.BaseObservable
 import com.core.fy.android.R
-import io.core.engine.brv.item.ItemExpand
+import com.drake.brv.item.ItemExpand
 
 class Group2Model : ItemExpand, BaseObservable() {
 

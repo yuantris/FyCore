@@ -1,7 +1,7 @@
 package com.core.fy.android.function.brv.model
 
-import io.core.engine.brv.annotaion.ItemOrientation
-import io.core.engine.brv.item.ItemSwipe
+import com.drake.brv.annotaion.ItemOrientation
+import com.drake.brv.item.ItemSwipe
 
 
 /** 为[Group3Model]添加侧滑功能 */

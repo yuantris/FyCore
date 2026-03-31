@@ -2,9 +2,9 @@ package com.core.fy.android.function.brv.model
 
 import androidx.databinding.BaseObservable
 import com.core.fy.android.R
-import io.core.engine.brv.item.ItemExpand
-import io.core.engine.brv.item.ItemHover
-import io.core.engine.brv.item.ItemPosition
+import com.drake.brv.item.ItemExpand
+import com.drake.brv.item.ItemHover
+import com.drake.brv.item.ItemPosition
 
 open class Group1Model : ItemExpand, ItemHover, ItemPosition,
     BaseObservable() {

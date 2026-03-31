@@ -1,5 +1,6 @@
 package com.core.fy.android.function.brv.fragment
 
+import androidx.databinding.DataBindingUtil.getBinding
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.blankj.utilcode.util.DeviceUtils.getModel
@@ -9,13 +10,13 @@ import com.core.fy.android.databinding.ItemGroup1Binding
 import com.core.fy.android.function.brv.BrvActivity
 import com.core.fy.android.function.brv.model.GroupDrag1Model
 import com.core.fy.android.function.brv.model.GroupDrag2Model
+import com.drake.brv.BindingAdapter
+import com.drake.brv.item.ItemExpand
+import com.drake.brv.listener.DefaultItemTouchCallback
+import com.drake.brv.utils.linear
+import com.drake.brv.utils.setup
 import io.core.common.base.component.fragment.ReflectBindingFragment
 import io.core.common.util.CoreUtil.Companion.toast
-import io.core.engine.brv.BindingAdapter
-import io.core.engine.brv.item.ItemExpand
-import io.core.engine.brv.listener.DefaultItemTouchCallback
-import io.core.engine.brv.utils.linear
-import io.core.engine.brv.utils.setup
 
 /**
 # ██████████

@@ -9,10 +9,6 @@ import com.hjq.permissions.Permission
 import com.hjq.permissions.XXPermissions
 import io.core.common.base.component.activity.ReflectBindingActivity
 import io.core.common.base.component.dialog.specific.LoadingAir
-import io.core.common.helper.LocationDetail
-import io.core.common.helper.LocationFailure
-import io.core.common.helper.LocationFetcher
-import io.core.common.helper.OnLocationCallback
 import io.core.common.util.extensions.cool.GSON
 import io.core.common.util.extensions.cool.observeEvent
 import io.core.common.util.extensions.cool.postEvent
@@ -23,6 +19,11 @@ import io.core.common.util.extensions.ui.getCompatColor
 import io.core.common.util.extensions.ui.onDebouncedClick
 import io.core.common.util.extensions.ui.toast
 import io.core.common.util.tools.DrawableBuilder
+import io.core.engine.location.LocationConfig
+import io.core.engine.location.LocationDetail
+import io.core.engine.location.LocationFailure
+import io.core.engine.location.LocationKit
+import io.core.engine.location.OnLocationCallback
 import io.core.other.LiveDataPro
 import io.core.widget.view.StatefulImageViewV2
 import kotlinx.coroutines.delay
@@ -31,6 +32,15 @@ import kotlinx.coroutines.launch
 class EventActivity : ReflectBindingActivity<ActivityEventBinding>() {
 
     private val _ratio = "3:1"
+
+    private val locationKit by lazy {
+        LocationKit(
+            LocationConfig.Builder()
+                .setDebug(true)
+                .setPeriodicIntervalMs(5_000L)
+                .build()
+        ).also { lifecycle.addObserver(it) }
+    }
 
     override fun initial(savedInstanceState: Bundle?) {
         ImmersionBar.setTitleBar(this, binding.titleBar)
@@ -45,7 +55,6 @@ class EventActivity : ReflectBindingActivity<ActivityEventBinding>() {
     override fun setListener() {
         super.setListener()
         "个数：${binding.root.childCount}".logD()
-        LocationFetcher.DEBUG = true
         binding.apply {
 
             asyncImg.setOnClickListener {
@@ -91,7 +100,7 @@ class EventActivity : ReflectBindingActivity<ActivityEventBinding>() {
                         )
                         .request { permissions, allGranted ->
                             LoadingAir.show("正在加载位置信息...")
-                            LocationFetcher.startPeriodicLocationUpdates(callback = object :
+                            locationKit.tracker.startPeriodicUpdates(callback = object :
                                 OnLocationCallback {
                                 override fun onLocationRetrieved(detail: LocationDetail) {
                                     LoadingAir.closeWith {
@@ -134,10 +143,5 @@ class EventActivity : ReflectBindingActivity<ActivityEventBinding>() {
             .with(this) { toast(currentTimeMillis.toString()) }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        LocationFetcher.stopRealtimeLocationTracking()
-        LocationFetcher.stopPeriodicLocationUpdates()
-    }
 }
 

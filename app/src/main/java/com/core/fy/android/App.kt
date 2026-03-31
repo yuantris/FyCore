@@ -12,9 +12,9 @@ import com.core.fy.android.function.tts.ClickTextActivity
 import com.core.fy.android.util.HttpClient
 import com.core.fy.android.util.NetworkException
 import com.core.fy.android.util.initDialogX
+import com.drake.brv.utils.BRV
 import com.tencent.mmkv.MMKV
 import io.core.Android
-import io.core.BR
 import io.core.common.CoreConfig
 import io.core.common.helper.coroutine.info.GlobalCoroutine
 import io.core.common.helper.net.NetworkMonitor
@@ -22,11 +22,9 @@ import io.core.common.helper.track.AppTrackV2
 import io.core.common.helper.track.TurboTracker
 import io.core.common.util.CoreUtil.Companion.toast
 import io.core.common.util.extensions.notificationManager
-import io.core.common.util.extensions.simpleName
 import io.core.common.util.log.LogPure
 import io.core.common.util.tools.OSAir
 import io.core.constant.ANDROID_8
-import io.core.engine.brv.utils.BRV
 import io.core.engine.storage.StorageFactory
 import io.core.engine.storage.StorageType
 import io.core.nav.AuthProvider

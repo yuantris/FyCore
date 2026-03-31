@@ -1,5 +1,7 @@
 package com.core.fy.android.function.brv.fragment
 
+import androidx.databinding.DataBindingUtil.getBinding
+import com.blankj.utilcode.util.DeviceUtils.getModel
 import com.core.fy.android.R
 import com.core.fy.android.databinding.FragmentBrvGroupdragBinding
 import com.core.fy.android.databinding.ItemGroup1Binding
@@ -10,12 +12,11 @@ import com.core.fy.android.function.brv.model.Group2Model
 import com.core.fy.android.function.brv.model.Group3Model
 import com.core.fy.android.function.brv.model.GroupDrag1Model
 import com.core.fy.android.function.brv.model.GroupDrag2Model
+import com.drake.brv.item.ItemExpand
+import com.drake.brv.utils.linear
+import com.drake.brv.utils.setup
 import io.core.common.base.component.fragment.ReflectBindingFragment
 import io.core.common.util.CoreUtil.Companion.toast
-import io.core.engine.brv.item.ItemExpand
-import io.core.engine.brv.utils.linear
-import io.core.engine.brv.utils.setup
-
 /**
 # ██████████
 # █▄█████▄█

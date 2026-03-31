@@ -1,7 +1,9 @@
 package com.core.fy.android.main.fragment
 
+import androidx.databinding.DataBindingUtil.getBinding
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.ItemTouchHelper
+import com.blankj.utilcode.util.DeviceUtils.getModel
 import com.core.fy.android.Config
 import com.core.fy.android.MainActivity
 import com.core.fy.android.R
@@ -32,6 +34,11 @@ import com.core.fy.android.room.VMFactory
 import com.core.fy.android.room.entity.Function
 import com.core.fy.android.room.repository.FunctionRepository
 import com.core.fy.android.viewmodel.FunctionVM
+import com.drake.brv.BindingAdapter
+import com.drake.brv.listener.DefaultItemTouchCallback
+import com.drake.brv.utils.grid
+import com.drake.brv.utils.models
+import com.drake.brv.utils.setup
 import io.core.common.base.component.custom.ToastGT
 import io.core.common.base.component.fragment.ReflectBindingFragment
 import io.core.common.helper.track.AppTrackV2
@@ -42,10 +49,6 @@ import io.core.common.util.extensions.ui.startActivity
 import io.core.common.util.log.e
 import io.core.common.util.log.v
 import io.core.common.util.tools.TimeTools
-import io.core.engine.brv.BindingAdapter
-import io.core.engine.brv.listener.DefaultItemTouchCallback
-import io.core.engine.brv.utils.grid
-import io.core.engine.brv.utils.setup
 import io.core.nav.routerTo
 
 /**
