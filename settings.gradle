@@ -1,3 +1,12 @@
 rootProject.name = "FyCore"
 include ':app'
-include ':modules:core_feature'
+include ':modules:fy-core'
+include ':modules:fy-kernel'
+include ':modules:fy-utils'
+include ':modules:fy-event'
+include ':modules:fy-storage'
+include ':modules:fy-validation'
+include ':modules:fy-shape'
+include ':modules:fy-widget'
+include ':modules:fy-ui'
+include ':modules:fy-kits'

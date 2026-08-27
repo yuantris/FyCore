@@ -1,0 +1,22 @@
+ext {
+    fyNamespace = 'io.core.event'
+}
+
+apply from: '../fy-library.gradle'
+apply from: '../fy-publish.gradle'
+
+dependencies {
+    api project(':modules:fy-kernel')
+    // LiveEventBusCore 复用 utils 的 Handler/OS 工具
+    api project(':modules:fy-utils')
+
+    implementation libs.kotlinx.coroutines.core
+    // ExternalLiveData 基于 androidx LiveData
+    api libs.lifecycle.livedata.ktx
+    // LiveEventBus 扩展支持 LifecycleService
+    api libs.lifecycle.service
+    // LiveEventBus 扩展的 Activity/Fragment 观察者封装
+    implementation libs.appcompat
+    implementation "androidx.fragment:fragment-ktx:1.5.7"
+    implementation libs.lifecycle.process
+}

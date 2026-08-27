@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- fy-core 为聚合模块，不含自身组件；组件声明见各子模块清单 -->
+</manifest>

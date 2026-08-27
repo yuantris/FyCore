@@ -1,0 +1,12 @@
+ext {
+    fyNamespace = 'io.core.validation'
+}
+
+apply from: '../fy-library.gradle'
+apply from: '../fy-publish.gradle'
+
+dependencies {
+    api project(':modules:fy-kernel')
+    // Retry 的网络状态判断复用 NetworkMonitor
+    implementation project(':modules:fy-utils')
+}

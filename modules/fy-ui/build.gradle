@@ -1,0 +1,38 @@
+ext {
+    fyNamespace = 'io.core.ui'
+    fyViewBinding = true
+    fyDataBinding = true
+}
+
+apply from: '../fy-library.gradle'
+apply from: '../fy-publish.gradle'
+
+apply plugin: 'com.google.devtools.ksp'
+
+android {
+    sourceSets {
+        main {
+            res.srcDirs(
+                    'src/main/res',
+            )
+        }
+    }
+}
+
+dependencies {
+    api project(':modules:fy-kernel')
+    api project(':modules:fy-utils')
+    api project(':modules:fy-event')
+    api project(':modules:fy-widget')
+
+    // 基建组件（Activity/Fragment/Dialog/VM）
+    implementation libs.appcompat
+    api libs.activity.ktx
+    implementation libs.material
+
+    // Room 基类可选能力：使用方需自行引入 room-runtime
+    compileOnly libs.room.ktx
+    ksp libs.room.compiler
+
+    implementation libs.flexbox
+}

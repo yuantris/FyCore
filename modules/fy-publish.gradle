@@ -1,0 +1,36 @@
+// fy-publish.gradle —— FyCore 2.0 子模块统一发布模板
+// artifactId 取自项目名（modules/fy-xxx -> io.core:fy-xxx）
+// 版本号由根项目 ext.fyVersion 统一控制（gradle.properties 无关，-Prelease 切换正式版）
+
+apply plugin: 'maven-publish'
+apply from: rootProject.file('maven-credentials.gradle')
+
+afterEvaluate {
+    publishing {
+        publications {
+            fy(MavenPublication) {
+                from components.release
+                groupId = 'io.core'
+                artifactId = project.name
+                version = rootProject.ext.fyVersion
+            }
+        }
+        repositories {
+            fyMavenRepos(repositories, rootProject.ext.fyVersion)
+            mavenLocal()
+        }
+    }
+}
+
+// 快捷任务别名（与旧 maven.gradle 保持一致的使用习惯）
+tasks.register('publishSnapshot') {
+    dependsOn 'publish'
+}
+
+tasks.register('publishRelease') {
+    dependsOn 'publish'
+}
+
+tasks.register('publishLocal') {
+    dependsOn 'publishToMavenLocal'
+}

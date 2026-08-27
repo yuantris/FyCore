@@ -63,7 +63,7 @@ ext {
     fycoreDependencies = [
             jitpack: libs.fycore.github,
             package: libs.fycore.git.package,
-            local  : project(':modules:core_feature')
+            local  : project(':modules:fy-core')
     ]
 }
 

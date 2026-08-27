@@ -1,0 +1,35 @@
+ext {
+    fyNamespace = 'io.core.utils'
+}
+
+apply from: '../fy-library.gradle'
+apply from: '../fy-publish.gradle'
+
+dependencies {
+    api project(':modules:fy-kernel')
+
+    implementation libs.core.ktx
+    implementation libs.kotlinx.coroutines.core
+    // JsonUltra 使用 kotlinx.serialization
+    api libs.kotlinx.serialization.json
+    // Gson 类型随扩展函数对外暴露
+    api libs.google.gson
+    // ReflectHelper 反射增强
+    implementation libs.kotlin.reflect
+    // ImageLoader 可选实现：使用方需自行引入 Glide
+    compileOnly libs.glide
+    // FileDoc SAF 文档操作
+    implementation "androidx.documentfile:documentfile:1.0.1"
+    // Uri/Activity 扩展中的 AppCompatActivity 支持
+    implementation libs.appcompat
+    // Coroutine 扩展的 viewModelScope
+    api libs.lifecycle.viewmodel.ktx
+    // RecyclerView 扩展
+    api libs.recyclerview
+    // Window 扩展的状态栏/导航栏能力（ImmersionBar）
+    api libs.immersionbar
+    api libs.immersionbar.ktx
+    // ConstraintModify 布局工具
+    implementation "androidx.constraintlayout:constraintlayout:2.1.4"
+    implementation "androidx.transition:transition:1.4.1"
+}

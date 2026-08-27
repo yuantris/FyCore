@@ -1,0 +1,19 @@
+ext {
+    fyNamespace = 'io.core'
+}
+
+apply from: '../fy-library.gradle'
+apply from: '../fy-publish.gradle'
+
+dependencies {
+    // FyCore 2.0 umbrella：聚合所有子模块，普通用户只需依赖本模块
+    api project(':modules:fy-kernel')
+    api project(':modules:fy-utils')
+    api project(':modules:fy-event')
+    api project(':modules:fy-storage')
+    api project(':modules:fy-validation')
+    api project(':modules:fy-shape')
+    api project(':modules:fy-widget')
+    api project(':modules:fy-ui')
+    api project(':modules:fy-kits')
+}

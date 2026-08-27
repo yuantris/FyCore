@@ -1,0 +1,19 @@
+ext {
+    fyNamespace = 'io.core.storage'
+}
+
+apply from: '../fy-library.gradle'
+apply from: '../fy-publish.gradle'
+
+dependencies {
+    api project(':modules:fy-kernel')
+    // SharedPreferences.edit{} ktx 扩展
+    implementation libs.core.ktx
+    // StorageFactory 反射读取属性
+    implementation libs.kotlin.reflect
+    // StorageEngineExt 复用 GSON 扩展
+    implementation project(':modules:fy-utils')
+
+    // MMKV 为可选实现：使用方需自行引入；不引入时可用 SharedPreferencesEngine
+    compileOnly libs.mmkv
+}

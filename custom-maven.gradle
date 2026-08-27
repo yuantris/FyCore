@@ -1,26 +1,7 @@
 // custom-maven.gradle
+// 私有 Maven 仓库统一注入（凭据见 maven-credentials.gradle，从 local.properties / gradle.properties / 环境变量读取）
+apply from: rootProject.file('maven-credentials.gradle')
+
 allprojects {
-    repositories {
-        maven {
-            credentials {
-                username '63d4d579378edb0fd9aa3b2d'
-                password 'nXJxEWiiObre'
-            }
-            url 'https://packages.aliyun.com/maven/repository/2512815-release-NDmHZu/'
-        }
-        maven {
-            credentials {
-                username '63d4d579378edb0fd9aa3b2d'
-                password 'nXJxEWiiObre'
-            }
-            url 'https://packages.aliyun.com/maven/repository/2512815-snapshot-TM86u0/'
-        }
-//        maven {
-//            url = uri("https://maven.pkg.github.com/yuantris/FyCore")
-//            credentials {
-//                username = 'yuantris'
-//                password = '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'
-//            }
-//        }
-    }
+    fyMavenRepos(repositories)
 }

@@ -5,14 +5,8 @@ apply from: 'app/repositories.gradle'
 apply from: 'custom-maven.gradle'
 
 buildscript {
+    // AGP/Kotlin/KSP 插件均可在公共仓库获取，私有云效仓库凭据已外置（见 maven-credentials.gradle）
     repositories {
-        maven {
-            credentials {
-                username '63d4d579378edb0fd9aa3b2d'
-                password 'nXJxEWiiObre'
-            }
-            url 'https://packages.aliyun.com/67789758cdfeb44ae202deb7/maven/2512815-release-ndmhzu'
-        }
         maven { url 'https://jitpack.io' }
         mavenCentral()
         google()
@@ -30,6 +24,12 @@ allprojects {
         mavenCentral()
         google()
     }
+}
+
+ext {
+    // FyCore 2.0 统一版本号：-Prelease 发布正式版，默认 SNAPSHOT
+    fyVersionBase = '2.0.0'
+    fyVersion = project.hasProperty('release') ? fyVersionBase : "${fyVersionBase}-SNAPSHOT"
 }
 
 tasks.register('clean', Delete) {

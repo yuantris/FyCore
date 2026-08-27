@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <application>
+        <!-- 崩溃展示（必须在独立进程） -->
+        <activity
+            android:name="io.core.common.base.component.activity.CrashActivity"
+            android:launchMode="singleTop"
+            android:process=":crash"
+            android:screenOrientation="landscape" />
+
+        <activity
+            android:name="io.core.common.base.component.activity.CrashSameProcessActivity"
+            android:launchMode="singleTop"
+            android:screenOrientation="landscape" />
+
+        <activity
+            android:name="io.core.common.base.component.activity.RestartActivity"
+            android:launchMode="singleTop"
+            android:process=":restart" />
+
+        <!-- 迁移期聚合安装器：XFileProvider 由 fy-kernel 的清单提供 -->
+        <provider
+            android:name="io.core.other.FyLegacyInstaller"
+            android:authorities="${applicationId}.fycore.legacyinstaller"
+            android:exported="false" />
+    </application>
+</manifest>

@@ -1,0 +1,25 @@
+ext {
+    fyNamespace = 'io.core.widget'
+}
+
+apply from: '../fy-library.gradle'
+apply from: '../fy-publish.gradle'
+
+android {
+    sourceSets {
+        main {
+            // 屏幕适配密度限定符资源
+            res.srcDirs('src/main/res-dimen')
+        }
+    }
+}
+
+dependencies {
+    api project(':modules:fy-kernel')
+    api project(':modules:fy-utils')
+    // Shape 控件体系强依赖 shape 引擎（builder + styleable）
+    api project(':modules:fy-shape')
+    // CollapsingHeaderLayout 需要 Material 组件
+    implementation libs.material
+    implementation "androidx.coordinatorlayout:coordinatorlayout:1.2.0"
+}

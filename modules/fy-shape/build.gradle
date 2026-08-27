@@ -1,0 +1,12 @@
+ext {
+    fyNamespace = 'io.core.shape'
+}
+
+apply from: '../fy-library.gradle'
+apply from: '../fy-publish.gradle'
+
+dependencies {
+    // DrawableBuilder 复用 utils 的尺寸/颜色扩展
+    api project(':modules:fy-utils')
+    compileOnly "androidx.annotation:annotation:1.3.0"
+}

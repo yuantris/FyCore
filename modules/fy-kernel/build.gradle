@@ -1,0 +1,12 @@
+ext {
+    fyNamespace = 'io.core.kernel'
+}
+
+apply from: '../fy-library.gradle'
+apply from: '../fy-publish.gradle'
+
+dependencies {
+    implementation libs.core.ktx
+    implementation libs.kotlinx.coroutines.core
+    api libs.lifecycle.runtime.ktx
+}
