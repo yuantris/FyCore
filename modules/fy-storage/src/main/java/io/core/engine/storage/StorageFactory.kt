@@ -9,24 +9,35 @@ import kotlin.reflect.full.memberProperties
 object StorageFactory {
     private var engine: StorageEngine? = null
     private var currentType: StorageType = StorageType.SHARED_PREFS
+    private var currentName: String = ""
     val keyDefaultMap = mutableMapOf<String, Pair<String, KClass<*>>>()
 
     @JvmStatic
     fun initialize(config: StorageConfig.() -> Unit) {
         val builder = StorageConfig().apply(config)
 
-        currentType = builder.type
-        engine = when (builder.type) {
-            StorageType.SHARED_PREFS -> SharedPreferencesEngine(
-                appCtx.getSharedPreferences(
-                    builder.name,
-                    builder.mode
+        if (engine == null) {
+            currentType = builder.type
+            engine = when (builder.type) {
+                StorageType.SHARED_PREFS -> SharedPreferencesEngine(
+                    appCtx.getSharedPreferences(
+                        builder.name,
+                        builder.mode
+                    )
                 )
-            )
 
-            StorageType.MMKV -> {
-                MMKV.initialize(appCtx)
-                MMKVEngine(MMKV.mmkvWithID(builder.name, builder.mmkvMode))
+                StorageType.MMKV -> {
+                    MMKV.initialize(appCtx)
+                    MMKVEngine(MMKV.mmkvWithID(builder.name, builder.mmkvMode))
+                }
+            }
+            currentName = builder.name
+        } else {
+            require(builder.type == currentType) {
+                "Storage type conflict: already initialized with $currentType, but got ${builder.type}"
+            }
+            require(builder.name == currentName) {
+                "Storage name conflict: already initialized with '$currentName', but got '${builder.name}'"
             }
         }
         builder.validateClass?.let { validateKeys(it) }
@@ -45,14 +56,12 @@ object StorageFactory {
                 require(field.type == String::class.java) {
                     "Key ${field.name} must be String type"
                 }
-                val key = field.get(null) as String // 获取注解字段的实际值作为key
-                val fieldClass = clazz.kotlin.memberProperties
-                    .first { it.name == field.name }
-                    .returnType.classifier as KClass<*>
-
+                val key = field.get(null) as String
+                val fieldClass = field.type.kotlin
                 keyDefaultMap[key] = annotation.defaultValue to fieldClass
             }
         }
     }
+
 
 }

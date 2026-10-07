@@ -5,7 +5,7 @@ apply from: rootProject.file('maven-credentials.gradle')
 ext.isRelease = project.hasProperty('release')
 
 // 动态版本号配置
-def version_number = '0.1.89'
+def version_number = '2.0.1'
 def version_number_snapshot = isRelease ? version_number : "${version_number}-SNAPSHOT"
 
 /**

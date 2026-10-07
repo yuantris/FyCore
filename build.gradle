@@ -28,7 +28,7 @@ allprojects {
 
 ext {
     // FyCore 2.0 统一版本号：-Prelease 发布正式版，默认 SNAPSHOT
-    fyVersionBase = '2.0.0'
+    fyVersionBase = '2.0.1'
     fyVersion = project.hasProperty('release') ? fyVersionBase : "${fyVersionBase}-SNAPSHOT"
 }
 
